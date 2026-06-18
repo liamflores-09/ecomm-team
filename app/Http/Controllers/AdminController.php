@@ -25,6 +25,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'mobile_number' => 'nullable|string|max:20',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
             'role' => 'required|in:manager,lead,content,graphics',
@@ -33,6 +34,7 @@ class AdminController extends Controller
         User::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
+            'mobile_number' => $validated['mobile_number'] ?? null,
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -46,6 +48,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'mobile_number' => 'nullable|string|max:20',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'role' => 'required|in:manager,lead,content,graphics',
             'password' => 'nullable|string|min:6',
@@ -53,6 +56,7 @@ class AdminController extends Controller
 
         $user->first_name = $validated['first_name'];
         $user->last_name = $validated['last_name'];
+        $user->mobile_number = $validated['mobile_number'] ?? null;
         $user->username = $validated['username'];
         $user->role = $validated['role'];
 

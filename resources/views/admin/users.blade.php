@@ -307,7 +307,7 @@
                     <td style="color: var(--gray-500);">{{ $u->created_at->diffForHumans() }}</td>
                     <td>
                         <div class="action-btns">
-                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->first_name }}', '{{ $u->last_name }}', '{{ $u->username }}', '{{ $u->role }}')">
+                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->first_name }}', '{{ $u->last_name }}', '{{ $u->username }}', '{{ $u->role }}', '{{ $u->mobile_number }}')">
                                 <i class="fas fa-pen"></i>
                             </button>
                             @if ($u->id !== $user->id)
@@ -361,6 +361,10 @@
                             <label class="label-flat">Last Name</label>
                             <input type="text" name="last_name" class="input-flat" placeholder="e.g. Dela Cruz" required>
                         </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="label-flat">Mobile Number</label>
+                        <input type="text" name="mobile_number" class="input-flat" placeholder="e.g. 09171234567">
                     </div>
                     <div style="margin-bottom: 1rem;">
                         <label class="label-flat">Username</label>
@@ -422,6 +426,10 @@
                         </div>
                     </div>
                     <div style="margin-bottom: 1rem;">
+                        <label class="label-flat">Mobile Number</label>
+                        <input type="text" name="mobile_number" id="editMobile" class="input-flat" placeholder="e.g. 09171234567">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
                         <label class="label-flat">Username</label>
                         <input type="text" name="username" id="editUsername" class="input-flat" placeholder="e.g. juandelacruz" required>
                     </div>
@@ -458,11 +466,12 @@ function openAddModal() {
     new bootstrap.Modal(document.getElementById('addUserModal')).show();
 }
 
-function openEditModal(id, firstName, lastName, username, role) {
+function openEditModal(id, firstName, lastName, username, role, mobile) {
     document.getElementById('editUserForm').action = '/admin/users/' + id;
     document.getElementById('editFirstName').value = firstName;
     document.getElementById('editLastName').value = lastName;
     document.getElementById('editUsername').value = username;
+    document.getElementById('editMobile').value = mobile || '';
     document.getElementById('editRoleSelect').value = role;
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
