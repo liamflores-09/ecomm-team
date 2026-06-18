@@ -240,7 +240,7 @@
             <div class="avatar admin-av">{{ strtoupper(substr($user->username, 0, 1)) }}</div>
             <div class="user-info">
                 <span class="user-name">{{ $user->username }}</span>
-                <span class="role-tag admin-role">Admin</span>
+                <span class="role-tag admin-role">Manager</span>
             </div>
         </div>
     </div>
