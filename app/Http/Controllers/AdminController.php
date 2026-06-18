@@ -23,12 +23,16 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,manager,content,graphics',
         ]);
 
         User::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -40,11 +44,15 @@ class AdminController extends Controller
     public function updateUser(Request $request, User $user)
     {
         $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,manager,content,graphics',
             'password' => 'nullable|string|min:6',
         ]);
 
+        $user->first_name = $validated['first_name'];
+        $user->last_name = $validated['last_name'];
         $user->username = $validated['username'];
         $user->role = $validated['role'];
 

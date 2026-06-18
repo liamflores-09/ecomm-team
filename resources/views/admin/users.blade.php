@@ -10,7 +10,7 @@
 <style>
     .admin-stat-row {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 0.75rem;
         margin-bottom: 1.5rem;
     }
@@ -98,7 +98,7 @@
         font-weight: 600;
     }
 
-    .user-id {
+    .user-fullname {
         font-size: 0.75rem;
         color: var(--gray-500);
     }
@@ -139,7 +139,51 @@
         cursor: not-allowed;
     }
 
+    /* Custom Role Select */
+    .role-pills {
+        display: flex;
+        gap: 0;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        flex-wrap: wrap;
+    }
+
+    .role-pills button {
+        padding: 0.5rem 0.875rem;
+        border: none;
+        background: var(--muted);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all 0.15s;
+        border-right: 2px solid var(--border);
+    }
+
+    .role-pills button:last-child {
+        border-right: none;
+    }
+
+    .role-pills button.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .role-pills button:hover:not(.active) {
+        background: var(--gray-200);
+    }
+
+    .role-hidden-input {
+        display: none;
+    }
+
     @media (max-width: 768px) {
+        .admin-stat-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
         .admin-stat-row { grid-template-columns: 1fr; }
     }
 </style>
@@ -203,17 +247,24 @@
             </div>
         </div>
         <div class="admin-stat">
-            <div class="as-icon" style="background: var(--secondary);"><i class="fas fa-user-shield"></i></div>
+            <div class="as-icon" style="background: #DC2626;"><i class="fas fa-user-shield"></i></div>
             <div>
-                <div class="as-count">{{ $users->where('role', 'admin')->count() }}</div>
-                <div class="as-label">Admins</div>
+                <div class="as-count">{{ $users->whereIn('role', ['admin', 'manager'])->count() }}</div>
+                <div class="as-label">Admins / Managers</div>
             </div>
         </div>
         <div class="admin-stat">
-            <div class="as-icon" style="background: var(--accent);"><i class="fas fa-user"></i></div>
+            <div class="as-icon" style="background: var(--secondary);"><i class="fas fa-pen-nib"></i></div>
             <div>
-                <div class="as-count">{{ $users->where('role', 'user')->count() }}</div>
-                <div class="as-label">Users</div>
+                <div class="as-count">{{ $users->where('role', 'content')->count() }}</div>
+                <div class="as-label">Content</div>
+            </div>
+        </div>
+        <div class="admin-stat">
+            <div class="as-icon" style="background: var(--accent);"><i class="fas fa-palette"></i></div>
+            <div>
+                <div class="as-count">{{ $users->where('role', 'graphics')->count() }}</div>
+                <div class="as-label">Graphics</div>
             </div>
         </div>
     </div>
@@ -245,17 +296,28 @@
                             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $u->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="user-avatar" alt="{{ $u->username }}">
                             <div>
                                 <div class="user-name">{{ $u->username }}</div>
-                                <div class="user-id">ID: {{ $u->id }}</div>
+                                <div class="user-fullname">{{ $u->first_name }} {{ $u->last_name }}</div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span class="tag tag-{{ $u->role }}">{{ ucfirst($u->role) }}</span>
+                        @php
+                            $roleColors = [
+                                'admin' => ['bg' => '#FEE2E2', 'text' => '#DC2626'],
+                                'manager' => ['bg' => '#FEF3C7', 'text' => '#D97706'],
+                                'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
+                                'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
+                            ];
+                            $rc = $roleColors[$u->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
+                        @endphp
+                        <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: {{ $rc['bg'] }}; color: {{ $rc['text'] }};">
+                            {{ ucfirst($u->role) }}
+                        </span>
                     </td>
                     <td style="color: var(--gray-500);">{{ $u->created_at->diffForHumans() }}</td>
                     <td>
                         <div class="action-btns">
-                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->username }}', '{{ $u->role }}')">
+                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->first_name }}', '{{ $u->last_name }}', '{{ $u->username }}', '{{ $u->role }}')">
                                 <i class="fas fa-pen"></i>
                             </button>
                             @if ($u->id !== $user->id)
@@ -300,26 +362,39 @@
             <form method="POST" action="{{ route('admin.users.store') }}">
                 @csrf
                 <div class="modal-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="label-flat">First Name</label>
+                            <input type="text" name="first_name" class="input-flat" placeholder="e.g. Juan" required>
+                        </div>
+                        <div>
+                            <label class="label-flat">Last Name</label>
+                            <input type="text" name="last_name" class="input-flat" placeholder="e.g. Dela Cruz" required>
+                        </div>
+                    </div>
                     <div style="margin-bottom: 1rem;">
                         <label class="label-flat">Username</label>
-                        <input type="text" name="username" class="input-flat" placeholder="Enter username" required>
+                        <input type="text" name="username" class="input-flat" placeholder="e.g. juandelacruz" required>
                         @error('username')
                         <small style="color: #DC2626; font-weight: 600; font-size: 0.8rem;">{{ $message }}</small>
                         @enderror
                     </div>
                     <div style="margin-bottom: 1rem;">
                         <label class="label-flat">Password</label>
-                        <input type="password" name="password" class="input-flat" placeholder="Enter password" required>
+                        <input type="password" name="password" class="input-flat" placeholder="Min. 6 characters" required>
                         @error('password')
                         <small style="color: #DC2626; font-weight: 600; font-size: 0.8rem;">{{ $message }}</small>
                         @enderror
                     </div>
                     <div>
                         <label class="label-flat">Role</label>
-                        <select name="role" class="input-flat" required style="appearance: auto;">
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                        <input type="hidden" name="role" id="addRoleInput" value="content">
+                        <div class="role-pills" id="addRolePills">
+                            <button type="button" class="active" onclick="setRole('add', 'content', this)">Content</button>
+                            <button type="button" onclick="setRole('add', 'graphics', this)">Graphics</button>
+                            <button type="button" onclick="setRole('add', 'manager', this)">Manager</button>
+                            <button type="button" onclick="setRole('add', 'admin', this)">Admin</button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -347,9 +422,19 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="label-flat">First Name</label>
+                            <input type="text" name="first_name" id="editFirstName" class="input-flat" placeholder="e.g. Juan" required>
+                        </div>
+                        <div>
+                            <label class="label-flat">Last Name</label>
+                            <input type="text" name="last_name" id="editLastName" class="input-flat" placeholder="e.g. Dela Cruz" required>
+                        </div>
+                    </div>
                     <div style="margin-bottom: 1rem;">
                         <label class="label-flat">Username</label>
-                        <input type="text" name="username" id="editUsername" class="input-flat" placeholder="Enter username" required>
+                        <input type="text" name="username" id="editUsername" class="input-flat" placeholder="e.g. juandelacruz" required>
                     </div>
                     <div style="margin-bottom: 1rem;">
                         <label class="label-flat">New Password <span style="color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0;">(leave blank to keep current)</span></label>
@@ -357,10 +442,13 @@
                     </div>
                     <div>
                         <label class="label-flat">Role</label>
-                        <select name="role" id="editRole" class="input-flat" required style="appearance: auto;">
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                        <input type="hidden" name="role" id="editRoleInput" value="content">
+                        <div class="role-pills" id="editRolePills">
+                            <button type="button" onclick="setRole('edit', 'content', this)">Content</button>
+                            <button type="button" onclick="setRole('edit', 'graphics', this)">Graphics</button>
+                            <button type="button" onclick="setRole('edit', 'manager', this)">Manager</button>
+                            <button type="button" onclick="setRole('edit', 'admin', this)">Admin</button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -377,14 +465,30 @@
 
 @section('scripts')
 <script>
+function setRole(prefix, value, btn) {
+    document.getElementById(prefix + 'RoleInput').value = value;
+    var pills = document.getElementById(prefix + 'RolePills');
+    pills.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+}
+
 function openAddModal() {
+    document.getElementById('addRoleInput').value = 'content';
+    document.getElementById('addRolePills').querySelectorAll('button').forEach(function(b, i) {
+        b.classList.toggle('active', i === 0);
+    });
     new bootstrap.Modal(document.getElementById('addUserModal')).show();
 }
 
-function openEditModal(id, username, role) {
+function openEditModal(id, firstName, lastName, username, role) {
     document.getElementById('editUserForm').action = '/admin/users/' + id;
+    document.getElementById('editFirstName').value = firstName;
+    document.getElementById('editLastName').value = lastName;
     document.getElementById('editUsername').value = username;
-    document.getElementById('editRole').value = role;
+    document.getElementById('editRoleInput').value = role;
+    document.getElementById('editRolePills').querySelectorAll('button').forEach(function(b) {
+        b.classList.toggle('active', b.textContent.trim().toLowerCase() === role);
+    });
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
 </script>

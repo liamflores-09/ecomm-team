@@ -12,6 +12,8 @@ class User extends Authenticatable
 
     protected $fillable = [
         'username',
+        'first_name',
+        'last_name',
         'password',
         'role',
     ];
@@ -30,6 +32,21 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->role === 'manager';
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        $name = $this->full_name;
+        if ($name) {
+            $parts = explode(' ', $name);
+            return strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+        }
+        return strtoupper(substr($this->username, 0, 2));
     }
 }
