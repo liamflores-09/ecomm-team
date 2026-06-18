@@ -139,44 +139,27 @@
         cursor: not-allowed;
     }
 
-    /* Custom Role Select */
-    .role-pills {
-        display: flex;
-        gap: 0;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        overflow: hidden;
-        flex-wrap: wrap;
-    }
-
-    .role-pills button {
-        padding: 0.5rem 0.875rem;
-        border: none;
+    /* Role Select */
+    .role-select {
+        height: 48px;
+        padding: 0 1rem;
         background: var(--muted);
+        border: 2px solid transparent;
+        border-radius: 6px;
         font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 0.8rem;
-        color: var(--gray-500);
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--fg);
         cursor: pointer;
+        outline: none;
         transition: all 0.15s;
-        border-right: 2px solid var(--border);
+        width: 100%;
+        appearance: auto;
     }
 
-    .role-pills button:last-child {
-        border-right: none;
-    }
-
-    .role-pills button.active {
-        background: var(--primary);
-        color: white;
-    }
-
-    .role-pills button:hover:not(.active) {
-        background: var(--gray-200);
-    }
-
-    .role-hidden-input {
-        display: none;
+    .role-select:focus {
+        border-color: var(--primary);
+        background: var(--white);
     }
 
     @media (max-width: 768px) {
@@ -395,13 +378,12 @@
                     </div>
                     <div>
                         <label class="label-flat">Role</label>
-                        <input type="hidden" name="role" id="addRoleInput" value="content">
-                        <div class="role-pills" id="addRolePills">
-                            <button type="button" class="active" onclick="setRole('add', 'content', this)">Content</button>
-                            <button type="button" onclick="setRole('add', 'graphics', this)">Graphics</button>
-                            <button type="button" onclick="setRole('add', 'lead', this)">Lead</button>
-                            <button type="button" onclick="setRole('add', 'manager', this)">Manager</button>
-                        </div>
+                        <select name="role" class="role-select" required>
+                            <option value="content">Content</option>
+                            <option value="graphics">Graphics</option>
+                            <option value="lead">Lead</option>
+                            <option value="manager">Manager</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -449,13 +431,12 @@
                     </div>
                     <div>
                         <label class="label-flat">Role</label>
-                        <input type="hidden" name="role" id="editRoleInput" value="content">
-                        <div class="role-pills" id="editRolePills">
-                            <button type="button" onclick="setRole('edit', 'content', this)">Content</button>
-                            <button type="button" onclick="setRole('edit', 'graphics', this)">Graphics</button>
-                            <button type="button" onclick="setRole('edit', 'lead', this)">Lead</button>
-                            <button type="button" onclick="setRole('edit', 'manager', this)">Manager</button>
-                        </div>
+                        <select name="role" id="editRoleSelect" class="role-select" required>
+                            <option value="content">Content</option>
+                            <option value="graphics">Graphics</option>
+                            <option value="lead">Lead</option>
+                            <option value="manager">Manager</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -472,18 +453,8 @@
 
 @section('scripts')
 <script>
-function setRole(prefix, value, btn) {
-    document.getElementById(prefix + 'RoleInput').value = value;
-    var pills = document.getElementById(prefix + 'RolePills');
-    pills.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-}
-
 function openAddModal() {
-    document.getElementById('addRoleInput').value = 'content';
-    document.getElementById('addRolePills').querySelectorAll('button').forEach(function(b, i) {
-        b.classList.toggle('active', i === 0);
-    });
+    document.getElementById('addUserModal').querySelector('form').reset();
     new bootstrap.Modal(document.getElementById('addUserModal')).show();
 }
 
@@ -492,10 +463,7 @@ function openEditModal(id, firstName, lastName, username, role) {
     document.getElementById('editFirstName').value = firstName;
     document.getElementById('editLastName').value = lastName;
     document.getElementById('editUsername').value = username;
-    document.getElementById('editRoleInput').value = role;
-    document.getElementById('editRolePills').querySelectorAll('button').forEach(function(b) {
-        b.classList.toggle('active', b.textContent.trim().toLowerCase() === role);
-    });
+    document.getElementById('editRoleSelect').value = role;
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
 </script>
