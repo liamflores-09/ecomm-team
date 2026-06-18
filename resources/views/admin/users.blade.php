@@ -237,7 +237,7 @@
             <p>Add, edit, or remove team members</p>
         </div>
         <div class="user-badge">
-            <div class="avatar admin-av">{{ strtoupper(substr($user->username, 0, 1)) }}</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $user->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="avatar" alt="{{ $user->username }}" style="width: 36px; height: 36px; border-radius: 50%;">
             <div class="user-info">
                 <span class="user-name">{{ $user->username }}</span>
                 <span class="role-tag admin-role">Manager</span>
