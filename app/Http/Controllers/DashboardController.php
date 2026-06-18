@@ -41,4 +41,9 @@ class DashboardController extends Controller
     {
         return view('important-links');
     }
+
+    public function team()
+    {
+        return view('team');
+    }
 }

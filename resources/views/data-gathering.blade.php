@@ -55,6 +55,7 @@
         <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
         <li><a href="{{ route('end-of-day') }}"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
         <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>
+        <li><a href="{{ route('team') }}"><i class="fas fa-users"></i> The Team</a></li>
     </ul>
 
     <div class="sidebar-footer">

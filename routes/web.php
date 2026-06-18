@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/price-calculator', [DashboardController::class, 'priceCalculator'])->name('price-calculator');
     Route::get('/end-of-day', [DashboardController::class, 'endOfDay'])->name('end-of-day');
     Route::get('/important-links', [DashboardController::class, 'importantLinks'])->name('important-links');
+    Route::get('/team', [DashboardController::class, 'team'])->name('team');
 
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
