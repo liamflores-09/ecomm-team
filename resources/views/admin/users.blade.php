@@ -273,6 +273,8 @@
             <thead>
                 <tr>
                     <th>User</th>
+                    <th>Full Name</th>
+                    <th>Mobile</th>
                     <th>Role</th>
                     <th>Created</th>
                     <th style="text-align: right;">Actions</th>
@@ -286,10 +288,11 @@
                             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $u->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="user-avatar" alt="{{ $u->username }}">
                             <div>
                                 <div class="user-name">{{ $u->username }}</div>
-                                <div class="user-fullname">{{ $u->first_name }} {{ $u->last_name }}</div>
                             </div>
                         </div>
                     </td>
+                    <td style="font-weight: 500;">{{ $u->first_name }} {{ $u->last_name }}</td>
+                    <td style="color: var(--gray-500);">{{ $u->mobile_number ?: '—' }}</td>
                     <td>
                         @php
                             $roleColors = [
@@ -328,7 +331,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 3rem; color: var(--gray-300);">
+                    <td colspan="6" style="text-align: center; padding: 3rem; color: var(--gray-300);">
                         <i class="fas fa-users" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                         No users found.
                     </td>

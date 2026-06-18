@@ -93,5 +93,42 @@ class UserSeeder extends Seeder
             'password' => Hash::make('1234'),
             'role' => 'content',
         ]);
+
+        // Graphics
+        User::create([
+            'first_name' => 'Fern',
+            'last_name' => '',
+            'username' => 'fern',
+            'mobile_number' => '09261234567',
+            'password' => Hash::make('1234'),
+            'role' => 'graphics',
+        ]);
+
+        User::create([
+            'first_name' => 'Tim',
+            'last_name' => '',
+            'username' => 'tim',
+            'mobile_number' => '09271234567',
+            'password' => Hash::make('1234'),
+            'role' => 'graphics',
+        ]);
+
+        User::create([
+            'first_name' => 'Angelo',
+            'last_name' => '',
+            'username' => 'angelo',
+            'mobile_number' => '09281234567',
+            'password' => Hash::make('1234'),
+            'role' => 'graphics',
+        ]);
+
+        User::create([
+            'first_name' => 'Latrell',
+            'last_name' => '',
+            'username' => 'latrell',
+            'mobile_number' => '09291234567',
+            'password' => Hash::make('1234'),
+            'role' => 'graphics',
+        ]);
     }
 }
