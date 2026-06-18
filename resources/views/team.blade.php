@@ -2,10 +2,6 @@
 
 @section('title', 'The Team — Ecomm Dept')
 
-@section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 00-3-3.87'/><path d='M16 3.13a4 4 0 010 7.75'/></svg>">
-@endsection
-
 @section('styles')
 <style>
     .team-hero {
@@ -99,25 +95,17 @@
         align-items: center;
         gap: 1.25rem;
         transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
     }
 
     .leader-card:hover { transform: scale(1.01); }
 
-    .leader-card.manager {
-        background: var(--primary);
-    }
-
+    .leader-card.manager { background: var(--primary); }
     .leader-card.manager * { color: white !important; }
     .leader-card.manager .lc-role { color: rgba(255,255,255,0.75) !important; }
     .leader-card.manager .lc-badge { background: rgba(255,255,255,0.2); color: white !important; }
 
-    .leader-card.lead {
-        border: 2px solid var(--secondary);
-    }
-
-    .leader-card.lead .lc-badge { background: #D1FAE5; color: #059669; }
+    .leader-card.lead { border: 2px solid #EC4899; }
+    .leader-card.lead .lc-badge { background: #FCE7F3; color: #DB2777; }
 
     .lc-avatar {
         width: 64px;
@@ -132,18 +120,8 @@
 
     .lc-info { flex: 1; }
 
-    .lc-name {
-        font-weight: 800;
-        font-size: 1.1rem;
-        margin-bottom: 0.125rem;
-    }
-
-    .lc-role {
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: var(--gray-400);
-        margin-bottom: 0.5rem;
-    }
+    .lc-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.125rem; text-transform: lowercase; }
+    .lc-role { font-size: 0.8rem; font-weight: 500; color: var(--gray-400); margin-bottom: 0.5rem; }
 
     .lc-badge {
         display: inline-block;
@@ -155,8 +133,8 @@
         letter-spacing: 0.06em;
     }
 
-    /* Content team grid */
-    .content-grid {
+    /* Member grid */
+    .member-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 0.75rem;
@@ -182,8 +160,19 @@
         object-fit: cover;
     }
 
-    .member-info h5 { font-weight: 700; font-size: 0.85rem; margin: 0; line-height: 1.2; }
-    .member-info span { font-size: 0.7rem; font-weight: 500; color: var(--gray-400); }
+    .member-name { font-weight: 700; font-size: 0.85rem; text-transform: lowercase; }
+    .member-role { font-size: 0.7rem; font-weight: 500; color: var(--gray-400); }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray-400);
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-300); }
 
     /* Design team */
     .design-grid {
@@ -218,7 +207,7 @@
         object-fit: cover;
     }
 
-    .dc-name { font-weight: 800; font-size: 1rem; }
+    .dc-name { font-weight: 800; font-size: 1rem; text-transform: lowercase; }
     .dc-role { font-size: 0.75rem; font-weight: 500; color: var(--gray-400); }
 
     .prio-label {
@@ -247,14 +236,14 @@
 
     @media (max-width: 768px) {
         .leader-row { grid-template-columns: 1fr; }
-        .content-grid { grid-template-columns: 1fr 1fr; }
+        .member-grid { grid-template-columns: 1fr 1fr; }
         .design-grid { grid-template-columns: 1fr; }
         .team-hero { flex-direction: column; text-align: center; }
         .team-hero .th-stats { justify-content: center; }
     }
 
     @media (max-width: 480px) {
-        .content-grid { grid-template-columns: 1fr; }
+        .member-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
@@ -298,6 +287,10 @@
         </div>
     </div>
 
+    @php
+        $total = $managers->count() + $leads->count() + $content->count() + $graphics->count();
+    @endphp
+
     <!-- Hero Card -->
     <div class="team-hero anim-up d1">
         <div class="th-icon"><i class="fas fa-users"></i></div>
@@ -305,166 +298,117 @@
             <h3>Ecomm Department</h3>
             <p>Content and Design teams working together across e-commerce platforms</p>
             <div class="th-stats">
-                <div class="th-stat"><div class="dot" style="background: var(--primary);"></div> Content Team — 9</div>
-                <div class="th-stat"><div class="dot" style="background: var(--secondary);"></div> Design Team — 4</div>
+                <div class="th-stat"><div class="dot" style="background: var(--secondary);"></div> Content — {{ $content->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: var(--accent);"></div> Graphics — {{ $graphics->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #EC4899;"></div> Lead — {{ $leads->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: var(--primary);"></div> Manager — {{ $managers->count() }}</div>
             </div>
         </div>
     </div>
 
-    <!-- Content Team Divider -->
+    <!-- Manager -->
+    @if($managers->count())
     <div class="team-divider anim-up d2">
-        <div class="td-icon" style="background: var(--primary);"><i class="fas fa-pen-nib"></i></div>
-        <h3>Content Team</h3>
-        <span class="td-count">9 members</span>
+        <div class="td-icon" style="background: var(--primary);"><i class="fas fa-crown"></i></div>
+        <h3>Manager</h3>
+        <span class="td-count">{{ $managers->count() }}</span>
         <div class="td-line"></div>
     </div>
-
-    <!-- Leadership Row -->
     <div class="leader-row anim-up d2">
+        @foreach($managers as $m)
         <div class="leader-card manager">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=KevinLim&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="Kevin Lim">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $m->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $m->username }}">
             <div class="lc-info">
-                <div class="lc-name">Kevin Lim</div>
-                <div class="lc-role">E-Commerce Manager</div>
+                <div class="lc-name">{{ $m->first_name }} {{ $m->last_name }}</div>
+                <div class="lc-role">{{ $m->role }}</div>
                 <span class="lc-badge">Manager</span>
             </div>
         </div>
+        @endforeach
+    </div>
+    @endif
+
+    <!-- Lead -->
+    @if($leads->count())
+    <div class="team-divider anim-up d3">
+        <div class="td-icon" style="background: #EC4899;"><i class="fas fa-star"></i></div>
+        <h3>Lead</h3>
+        <span class="td-count">{{ $leads->count() }}</span>
+        <div class="td-line"></div>
+    </div>
+    <div class="leader-row anim-up d3">
+        @foreach($leads as $l)
         <div class="leader-card lead">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MiloGorospe&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="Milo Gorospe">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $l->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $l->username }}">
             <div class="lc-info">
-                <div class="lc-name">Milo Gorospe</div>
-                <div class="lc-role">Content / PR Lead</div>
+                <div class="lc-name">{{ $l->first_name }} {{ $l->last_name }}</div>
+                <div class="lc-role">{{ $l->role }}</div>
                 <span class="lc-badge">Lead</span>
             </div>
         </div>
+        @endforeach
     </div>
+    @endif
 
-    <!-- Content Associates -->
-    <div class="content-grid anim-up d3">
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=AngelynCatolico&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Angelyn Catolico">
-            <div class="member-info">
-                <h5>Angelyn Catolico</h5>
-                <span>Content Associate / Backend</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=CzeinLaruscain&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Czein Laruscain">
-            <div class="member-info">
-                <h5>Czein Laruscain</h5>
-                <span>Content Associate</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=JamieOrtiz&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Jamie Ortiz">
-            <div class="member-info">
-                <h5>Jamie Ortiz</h5>
-                <span>Product Researcher</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=WellDacoco&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Well Dacoco">
-            <div class="member-info">
-                <h5>Well Dacoco</h5>
-                <span>Product Researcher</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=EmDelosSantos&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Em Delos Santos">
-            <div class="member-info">
-                <h5>Em Delos Santos</h5>
-                <span>Content Associate</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MarkIvanEmpleo&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Mark Ivan Empleo">
-            <div class="member-info">
-                <h5>Mark Ivan Empleo</h5>
-                <span>Content Associate</span>
-            </div>
-        </div>
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=LiamFlores&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Liam Flores">
-            <div class="member-info">
-                <h5>Liam Flores</h5>
-                <span>Content Associate</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Design Team Divider -->
+    <!-- Content Team -->
     <div class="team-divider anim-up d4">
-        <div class="td-icon" style="background: var(--secondary);"><i class="fas fa-palette"></i></div>
-        <h3>Design Team</h3>
-        <span class="td-count">4 members</span>
+        <div class="td-icon" style="background: var(--secondary);"><i class="fas fa-pen-nib"></i></div>
+        <h3>Content Team</h3>
+        <span class="td-count">{{ $content->count() }}</span>
         <div class="td-line"></div>
     </div>
 
-    <!-- Design Team Grid -->
-    <div class="design-grid anim-up d4">
-        <div class="design-card">
-            <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=FernDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Fern">
-                <div>
-                    <div class="dc-name">Fern</div>
-                    <div class="dc-role">Graphic Designer</div>
-                </div>
-            </div>
-            <div class="prio-label">Priorities</div>
-            <div class="prio-tags">
-                <span class="prio-tag pt-blue">Ecom</span>
-                <span class="prio-tag pt-green">Internal</span>
-                <span class="prio-tag pt-purple">Marketing</span>
+    @if($content->count())
+    <div class="member-grid anim-up d4">
+        @foreach($content as $c)
+        <div class="member-card">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $c->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $c->username }}">
+            <div>
+                <div class="member-name">{{ $c->first_name }} {{ $c->last_name }}</div>
+                <div class="member-role">Content Associate</div>
             </div>
         </div>
-
-        <div class="design-card">
-            <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=TimTantalizer&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Tim">
-                <div>
-                    <div class="dc-name">Tim</div>
-                    <div class="dc-role">Graphic Tantalizer</div>
-                </div>
-            </div>
-            <div class="prio-label">Priorities</div>
-            <div class="prio-tags">
-                <span class="prio-tag pt-amber">Events</span>
-                <span class="prio-tag pt-purple">Marketing</span>
-                <span class="prio-tag pt-blue">Ecom</span>
-            </div>
-        </div>
-
-        <div class="design-card">
-            <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=AngeloDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Angelo">
-                <div>
-                    <div class="dc-name">Angelo</div>
-                    <div class="dc-role">Graphic Designer</div>
-                </div>
-            </div>
-            <div class="prio-label">Priorities</div>
-            <div class="prio-tags">
-                <span class="prio-tag pt-blue">Ecom</span>
-                <span class="prio-tag pt-purple">Marketing</span>
-                <span class="prio-tag pt-red">Retail</span>
-            </div>
-        </div>
-
-        <div class="design-card">
-            <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=LatrellDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Latrell">
-                <div>
-                    <div class="dc-name">Latrell</div>
-                    <div class="dc-role">Graphic Designer</div>
-                </div>
-            </div>
-            <div class="prio-label">Priorities</div>
-            <div class="prio-tags">
-                <span class="prio-tag pt-blue">Ecom</span>
-                <span class="prio-tag pt-purple">Marketing</span>
-                <span class="prio-tag pt-amber">Events</span>
-            </div>
-        </div>
+        @endforeach
     </div>
+    @else
+    <div class="empty-state anim-up d4">
+        <i class="fas fa-users"></i>
+        No content team members yet. Add them in the Admin Panel.
+    </div>
+    @endif
+
+    <!-- Design Team -->
+    <div class="team-divider anim-up d5">
+        <div class="td-icon" style="background: var(--accent);"><i class="fas fa-palette"></i></div>
+        <h3>Design Team</h3>
+        <span class="td-count">{{ $graphics->count() }}</span>
+        <div class="td-line"></div>
+    </div>
+
+    @if($graphics->count())
+    <div class="design-grid anim-up d5">
+        @foreach($graphics as $g)
+        <div class="design-card">
+            <div class="design-card-header">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $g->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="{{ $g->username }}">
+                <div>
+                    <div class="dc-name">{{ $g->first_name }}</div>
+                    <div class="dc-role">Graphic Designer</div>
+                </div>
+            </div>
+            <div class="prio-label">Priorities</div>
+            <div class="prio-tags">
+                <span class="prio-tag pt-blue">Ecom</span>
+                <span class="prio-tag pt-purple">Marketing</span>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @else
+    <div class="empty-state anim-up d5">
+        <i class="fas fa-palette"></i>
+        No graphics team members yet. Add them in the Admin Panel.
+    </div>
+    @endif
 </div>
 @endsection

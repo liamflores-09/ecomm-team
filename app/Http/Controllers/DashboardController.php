@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,11 @@ class DashboardController extends Controller
 
     public function team()
     {
-        return view('team');
+        $managers = User::where('role', 'manager')->get();
+        $leads = User::where('role', 'lead')->get();
+        $content = User::where('role', 'content')->get();
+        $graphics = User::where('role', 'graphics')->get();
+
+        return view('team', compact('managers', 'leads', 'content', 'graphics'));
     }
 }
