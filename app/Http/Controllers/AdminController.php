@@ -11,7 +11,15 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard', ['user' => Auth::user()]);
+        $user = Auth::user();
+        $totalUsers = User::count();
+        $managers = User::where('role', 'manager')->count();
+        $leads = User::where('role', 'lead')->count();
+        $content = User::where('role', 'content')->count();
+        $graphics = User::where('role', 'graphics')->count();
+        $recentUsers = User::latest()->take(5)->get();
+
+        return view('admin.dashboard', compact('user', 'totalUsers', 'managers', 'leads', 'content', 'graphics', 'recentUsers'));
     }
 
     public function users()
