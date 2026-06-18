@@ -36,4 +36,9 @@ class DashboardController extends Controller
     {
         return view('end-of-day');
     }
+
+    public function importantLinks()
+    {
+        return view('important-links');
+    }
 }
