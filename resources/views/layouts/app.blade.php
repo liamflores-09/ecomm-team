@@ -198,10 +198,10 @@
             gap: 0.5rem;
             width: 100%;
             padding: 0.5rem 0.75rem;
-            border: 2px solid var(--gray-700);
+            border: 2px solid var(--gray-600);
             border-radius: 6px;
-            background: transparent;
-            color: var(--gray-400);
+            background: var(--gray-700);
+            color: var(--gray-300);
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
             font-size: 0.8rem;
@@ -211,7 +211,8 @@
 
         .cmd-trigger-btn:hover {
             border-color: var(--primary);
-            color: var(--primary);
+            color: var(--white);
+            background: var(--gray-600);
         }
 
         .cmd-trigger-btn i { font-size: 0.75rem; }
@@ -219,7 +220,7 @@
         .cmd-trigger-btn kbd {
             margin-left: auto;
             font-size: 0.55rem;
-            background: var(--gray-700);
+            background: var(--gray-600);
             border: 1px solid var(--gray-500);
             padding: 0.1rem 0.3rem;
             border-radius: 3px;
