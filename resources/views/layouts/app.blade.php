@@ -646,6 +646,10 @@
             justify-content: center;
         }
 
+        .mobile-toggle.has-sidebar {
+            display: none;
+        }
+
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -657,9 +661,14 @@
         .sidebar-overlay.show { display: block; }
 
         @media (max-width: 768px) {
+            .mobile-toggle.has-sidebar {
+                display: flex;
+            }
+
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                z-index: 150;
             }
 
             .sidebar.open {
@@ -670,10 +679,6 @@
                 margin-left: 0 !important;
                 padding: 1.5rem 1rem !important;
                 padding-top: 4rem !important;
-            }
-
-            .mobile-toggle {
-                display: flex;
             }
 
             .top-bar {
@@ -877,10 +882,10 @@
 </head>
 <body>
     <!-- Mobile Toggle -->
-    <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()" style="display:none;">
+    <button class="mobile-toggle has-sidebar" id="mobileToggle">
         <i class="fas fa-bars"></i>
     </button>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     @yield('content')
 
@@ -905,42 +910,44 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    function toggleSidebar() {
-        var sidebar = document.querySelector('.sidebar');
-        var overlay = document.getElementById('sidebarOverlay');
-        var toggle = document.getElementById('mobileToggle');
-        if (!sidebar) return;
-
-        var isOpen = sidebar.classList.contains('open');
-        if (isOpen) {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-            toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        } else {
-            sidebar.classList.add('open');
-            overlay.classList.add('show');
-            toggle.innerHTML = '<i class="fas fa-times"></i>';
-        }
-    }
-
-    function checkMobile() {
+    document.addEventListener('DOMContentLoaded', function() {
         var sidebar = document.querySelector('.sidebar');
         var toggle = document.getElementById('mobileToggle');
         var overlay = document.getElementById('sidebarOverlay');
-        if (!sidebar || !toggle) return;
 
-        if (window.innerWidth <= 768) {
-            toggle.style.display = 'flex';
-        } else {
-            toggle.style.display = 'none';
+        if (!sidebar || !toggle || !overlay) return;
+
+        // Remove has-sidebar class if no sidebar found (shouldn't happen but safety)
+        toggle.addEventListener('click', function() {
+            var isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                toggle.innerHTML = '<i class="fas fa-bars"></i>';
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                toggle.innerHTML = '<i class="fas fa-times"></i>';
+            }
+        });
+
+        overlay.addEventListener('click', function() {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
             toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        }
-    }
+        });
 
-    window.addEventListener('load', checkMobile);
-    window.addEventListener('resize', checkMobile);
+        // Close sidebar when clicking a nav link on mobile
+        sidebar.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
+                    toggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+    });
     </script>
 
     <script>
