@@ -4,87 +4,128 @@
 
 @section('styles')
 <style>
-    .links-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+    .links-container {
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
     }
 
-    .link-card {
+    .cat-card {
         background: var(--white);
         border-radius: 8px;
-        padding: 1.5rem;
-        transition: all 0.2s;
-        cursor: pointer;
-        text-decoration: none;
-        display: block;
-        position: relative;
         overflow: hidden;
     }
 
-    .link-card:hover {
-        transform: scale(1.02);
-    }
-
-    .link-card .lc-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
+    .cat-header {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-        color: white;
-        margin-bottom: 1rem;
-        transition: transform 0.2s;
-    }
-
-    .link-card:hover .lc-icon {
-        transform: scale(1.1);
-    }
-
-    .lc-icon.ic-blue { background: var(--primary); }
-    .lc-icon.ic-green { background: var(--secondary); }
-    .lc-icon.ic-amber { background: var(--accent); }
-    .lc-icon.ic-dark { background: var(--fg); }
-
-    .link-card h5 {
-        font-weight: 700;
-        font-size: 1rem;
-        margin-bottom: 0.375rem;
-    }
-
-    .link-card p {
-        color: var(--gray-500);
-        font-size: 0.8rem;
-        font-weight: 500;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .link-card .lc-arrow {
-        position: absolute;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        width: 28px;
-        height: 28px;
+        gap: 0.625rem;
+        padding: 0.875rem 1.25rem;
         background: var(--muted);
+        border-bottom: 2px solid var(--border);
+    }
+
+    .cat-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--fg);
         border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--gray-400);
+        color: white;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .cat-title {
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--fg);
+    }
+
+    .cat-badge {
+        margin-left: auto;
+        background: var(--fg);
+        color: white;
+        padding: 0.15rem 0.5rem;
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-radius: 4px;
+    }
+
+    .links-list {
+        padding: 0;
+    }
+
+    .link-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid var(--muted);
+        transition: all 0.15s;
+    }
+
+    .link-item:last-child {
+        border-bottom: none;
+    }
+
+    .link-item:hover {
+        background: var(--muted);
+        padding-left: 1.5rem;
+    }
+
+    .link-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex: 1;
+    }
+
+    .link-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--muted);
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-500);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .link-name a {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--fg);
+        text-decoration: none;
+        transition: color 0.15s;
+    }
+
+    .link-name a:hover {
+        color: var(--primary);
+    }
+
+    .link-arrow {
+        color: var(--gray-300);
         font-size: 0.7rem;
         transition: all 0.2s;
     }
 
-    .link-card:hover .lc-arrow {
-        background: var(--primary);
-        color: white;
+    .link-item:hover .link-arrow {
+        color: var(--primary);
+        transform: translateX(3px);
     }
 
     @media (max-width: 768px) {
-        .links-grid { grid-template-columns: 1fr; }
+        .cat-header { padding: 0.75rem 1rem; }
+        .link-item { padding: 0.625rem 1rem; }
     }
 </style>
 @endsection
@@ -123,38 +164,126 @@
     <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>
             <h2>Important <span class="highlight">Links</span></h2>
-            <p>Quick access to tools and platforms</p>
+            <p>Quick access to essential resources and tracking sheets</p>
         </div>
     </div>
 
-    <div class="links-grid anim-up d1">
-        <a href="https://app.selluseller.com" target="_blank" class="link-card">
-            <div class="lc-icon ic-blue"><i class="fas fa-store"></i></div>
-            <h5>SelluSeller</h5>
-            <p>Product catalog management and sync across platforms</p>
-            <div class="lc-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
-        </a>
+    <div class="links-container">
 
-        <a href="#" class="link-card">
-            <div class="lc-icon ic-green"><i class="fas fa-database"></i></div>
-            <h5>inFlow</h5>
-            <p>Inventory and SKU management system</p>
-            <div class="lc-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
-        </a>
+        <!-- Posted SKUs Tracking -->
+        <div class="cat-card anim-up d1">
+            <div class="cat-header">
+                <div class="cat-icon"><i class="fas fa-box"></i></div>
+                <div class="cat-title">Posted SKUs Tracking</div>
+                <span class="cat-badge">2 sheets</span>
+            </div>
+            <div class="links-list">
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Content x PR Posted SKUs 2026</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Content x PR Posted SKUs 2025</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
 
-        <a href="#" class="link-card">
-            <div class="lc-icon ic-amber"><i class="fas fa-sheet-table"></i></div>
-            <h5>Link Sheet</h5>
-            <p>SKU tracking and listing URLs</p>
-            <div class="lc-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
-        </a>
+        <!-- Reports & Tracking -->
+        <div class="cat-card anim-up d2">
+            <div class="cat-header">
+                <div class="cat-icon"><i class="fas fa-chart-simple"></i></div>
+                <div class="cat-title">Reports & Tracking</div>
+                <span class="cat-badge">4 sheets</span>
+            </div>
+            <div class="links-list">
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Content x GA Dept Report 2026 V2</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">JG QC Tracker</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Operation x Content Inactive Monitoring</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">JG Ecom CP Tracker</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
 
-        <a href="#" class="link-card">
-            <div class="lc-icon ic-dark"><i class="fas fa-file-lines"></i></div>
-            <h5>PR Files</h5>
-            <p>Product research documents and specifications</p>
-            <div class="lc-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
-        </a>
+        <!-- Directories & Master Files -->
+        <div class="cat-card anim-up d3">
+            <div class="cat-header">
+                <div class="cat-icon"><i class="fas fa-folder-open"></i></div>
+                <div class="cat-title">Directories & Master Files</div>
+                <span class="cat-badge">3 sheets</span>
+            </div>
+            <div class="links-list">
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-folder"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">JG SUPERSTORE ECOMMERCE DIRECTORY</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-folder"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Change SKU Tracker</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-folder"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Freebie & Update CVP Monitoring V2 2026</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Resources -->
+        <div class="cat-card anim-up d4">
+            <div class="cat-header">
+                <div class="cat-icon" style="background: var(--primary);"><i class="fas fa-graduation-cap"></i></div>
+                <div class="cat-title">Training Resources</div>
+                <span class="cat-badge">1 folder</span>
+            </div>
+            <div class="links-list">
+                <div class="link-item">
+                    <div class="link-info">
+                        <div class="link-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="link-name"><a href="#" target="_blank">Content Associate Training Files</a></div>
+                    </div>
+                    <div class="link-arrow"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
