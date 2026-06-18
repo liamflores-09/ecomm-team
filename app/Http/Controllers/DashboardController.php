@@ -26,4 +26,9 @@ class DashboardController extends Controller
     {
         return view('ecommerce-requirements');
     }
+
+    public function priceCalculator()
+    {
+        return view('price-calculator');
+    }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Data Gathering — EC Training Hub')
+@section('title', 'Price Calculator — EC Training Hub')
 
 @section('styles')
 <style>
@@ -50,9 +50,9 @@
     <ul class="sidebar-nav">
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
         <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
-        <li><a href="{{ route('data-gathering') }}" class="active"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
+        <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
         <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
-        <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
+        <li><a href="{{ route('price-calculator') }}" class="active"><i class="fas fa-calculator"></i> Price Calculator</a></li>
     </ul>
 
     <div class="sidebar-footer">
@@ -68,14 +68,14 @@
 
     <div class="top-bar anim-up" style="margin-bottom: 2.5rem;">
         <div>
-            <h2>Data Gathering</h2>
-            <p>Collect product information and assets for posting</p>
+            <h2>Price Calculator</h2>
+            <p>Calculate product pricing across platforms</p>
         </div>
     </div>
 
     <div class="placeholder-card anim-up d1">
-        <div class="icon"><i class="fas fa-folder-open"></i></div>
-        <h4>Data Gathering Module</h4>
+        <div class="icon"><i class="fas fa-calculator"></i></div>
+        <h4>Price Calculator Module</h4>
         <p>This section is coming soon. Content will be added here.</p>
     </div>
 </div>

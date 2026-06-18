@@ -495,6 +495,7 @@
         <li><a href="{{ route('posting-procedure') }}" class="active"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
         <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
         <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
+        <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
     </ul>
 
     <div class="sidebar-footer">
