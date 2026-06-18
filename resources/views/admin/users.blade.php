@@ -162,6 +162,39 @@
         background: var(--white);
     }
 
+    /* Role Filter */
+    .role-filter {
+        display: flex;
+        gap: 0;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .rf-btn {
+        padding: 0.375rem 0.75rem;
+        border: none;
+        border-right: 2px solid var(--border);
+        background: var(--white);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .rf-btn:last-child { border-right: none; }
+
+    .rf-btn.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .rf-btn:hover:not(.active) {
+        background: var(--muted);
+    }
+
     @media (max-width: 768px) {
         .admin-stat-row { grid-template-columns: 1fr 1fr; }
     }
@@ -261,7 +294,16 @@
 
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;" class="anim-up d2">
-        <h3 style="font-weight: 800; font-size: 1rem;">Team Members</h3>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h3 style="font-weight: 800; font-size: 1rem;">Team Members</h3>
+            <div class="role-filter" id="roleFilter">
+                <button class="rf-btn active" onclick="filterByRole('all', this)">All</button>
+                <button class="rf-btn" onclick="filterByRole('manager', this)">Manager</button>
+                <button class="rf-btn" onclick="filterByRole('lead', this)">Lead</button>
+                <button class="rf-btn" onclick="filterByRole('content', this)">Content</button>
+                <button class="rf-btn" onclick="filterByRole('graphics', this)">Graphics</button>
+            </div>
+        </div>
         <button class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openAddModal()">
             <i class="fas fa-plus"></i> Add User
         </button>
@@ -282,7 +324,7 @@
             </thead>
             <tbody>
                 @forelse ($users as $u)
-                <tr>
+                <tr data-role="{{ $u->role }}">
                     <td>
                         <div class="user-cell">
                             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $u->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="user-avatar" alt="{{ $u->username }}">
@@ -464,6 +506,19 @@
 
 @section('scripts')
 <script>
+function filterByRole(role, btn) {
+    document.querySelectorAll('.rf-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    document.querySelectorAll('.user-table tbody tr[data-role]').forEach(function(row) {
+        if (role === 'all' || row.getAttribute('data-role') === role) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 function openAddModal() {
     document.getElementById('addUserModal').querySelector('form').reset();
     new bootstrap.Modal(document.getElementById('addUserModal')).show();
