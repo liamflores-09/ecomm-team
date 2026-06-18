@@ -16,4 +16,9 @@ class DashboardController extends Controller
     {
         return view('posting-procedure');
     }
+
+    public function dataGathering()
+    {
+        return view('data-gathering');
+    }
 }

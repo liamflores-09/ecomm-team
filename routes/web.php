@@ -16,6 +16,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/posting-procedure', [DashboardController::class, 'postingProcedure'])->name('posting-procedure');
+    Route::get('/data-gathering', [DashboardController::class, 'dataGathering'])->name('data-gathering');
 
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');

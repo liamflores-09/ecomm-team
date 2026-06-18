@@ -200,6 +200,7 @@
     <ul class="sidebar-nav">
         <li><a href="{{ route('dashboard') }}" class="active"><i class="fas fa-grip"></i> Dashboard</a></li>
         <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
+        <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
     </ul>
 
     <div class="sidebar-footer">
