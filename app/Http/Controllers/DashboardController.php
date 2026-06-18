@@ -21,4 +21,9 @@ class DashboardController extends Controller
     {
         return view('data-gathering');
     }
+
+    public function ecommerceRequirements()
+    {
+        return view('ecommerce-requirements');
+    }
 }
