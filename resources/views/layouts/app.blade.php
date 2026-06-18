@@ -659,15 +659,7 @@
         .sidebar-overlay.show { display: block; }
 
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 150;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
+            body { overflow-x: hidden; }
 
             .main-content {
                 margin-left: 0 !important;
@@ -874,8 +866,8 @@
     @yield('styles')
 </head>
 <body>
-    <!-- Mobile Toggle -->
-    <button class="mobile-toggle" id="mobileToggle">
+    <!-- Mobile Toggle (always rendered, JS shows/hides) -->
+    <button class="mobile-toggle" id="mobileToggle" style="display:none;">
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -903,63 +895,64 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    (function() {
         var sidebar = document.querySelector('.sidebar');
         var toggle = document.getElementById('mobileToggle');
         var overlay = document.getElementById('sidebarOverlay');
-
-        // If no sidebar on this page, keep toggle hidden forever
-        if (!sidebar) {
-            toggle.style.display = 'none';
-            return;
-        }
 
         function isMobile() {
             return window.innerWidth <= 768;
         }
 
-        function showToggle() {
-            toggle.style.display = isMobile() ? 'flex' : 'none';
+        function update() {
+            if (!sidebar) {
+                toggle.style.display = 'none';
+                return;
+            }
+            if (isMobile()) {
+                toggle.style.display = 'flex';
+                sidebar.style.transform = sidebar.classList.contains('open') ? 'translateX(0)' : 'translateX(-100%)';
+                sidebar.style.transition = 'transform 0.3s ease';
+                sidebar.style.position = 'fixed';
+                sidebar.style.zIndex = '150';
+            } else {
+                toggle.style.display = 'none';
+                sidebar.style.transform = '';
+                sidebar.style.transition = '';
+                sidebar.style.position = '';
+                sidebar.style.zIndex = '';
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
         }
 
-        function closeSidebar() {
+        toggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+            sidebar.style.transform = sidebar.classList.contains('open') ? 'translateX(0)' : 'translateX(-100%)';
+        });
+
+        overlay.addEventListener('click', function() {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
-        }
-
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('show');
-        }
-
-        // Initial state
-        showToggle();
-
-        // Toggle button
-        toggle.addEventListener('click', function() {
-            if (sidebar.classList.contains('open')) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
+            sidebar.style.transform = 'translateX(-100%)';
         });
 
-        // Overlay click closes
-        overlay.addEventListener('click', closeSidebar);
-
-        // Nav link click closes on mobile
-        sidebar.querySelectorAll('a').forEach(function(link) {
-            link.addEventListener('click', function() {
-                if (isMobile()) closeSidebar();
+        if (sidebar) {
+            sidebar.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (isMobile()) {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('show');
+                        sidebar.style.transform = 'translateX(-100%)';
+                    }
+                });
             });
-        });
+        }
 
-        // Resize handler
-        window.addEventListener('resize', function() {
-            showToggle();
-            if (!isMobile()) closeSidebar();
-        });
-    });
+        update();
+        window.addEventListener('resize', update);
+    })();
     </script>
 
     <script>

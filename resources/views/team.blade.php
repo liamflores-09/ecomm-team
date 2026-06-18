@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'The Team — Ecomm Dept')
+@section('has-sidebar', true)
 
 @section('styles')
 <style>
@@ -442,12 +443,6 @@
                     </div>
                     @endif
                 </div>
-            </div>
-            </div>
-            <div class="prio-label">Priorities</div>
-            <div class="prio-tags">
-                <span class="prio-tag pt-blue">Ecom</span>
-                <span class="prio-tag pt-purple">Marketing</span>
             </div>
         </div>
         @endforeach
