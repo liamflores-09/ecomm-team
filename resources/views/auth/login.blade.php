@@ -2,6 +2,10 @@
 
 @section('title', 'Login — Ecomm Dept Hub')
 
+@section('favicon')
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z'/></svg>">
+@endsection
+
 @section('styles')
 <style>
     body { background: var(--muted); }

@@ -2,6 +2,10 @@
 
 @section('title', 'Data Gathering — Ecomm Dept Hub')
 
+@section('favicon')
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z'/></svg>">
+@endsection
+
 @section('styles')
 <style>
     .placeholder-card {
