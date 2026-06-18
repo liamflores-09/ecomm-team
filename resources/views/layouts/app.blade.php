@@ -583,12 +583,353 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--muted); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+
+        /* ====== COMMAND PALETTE ====== */
+        .cmd-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 9999;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 15vh;
+        }
+
+        .cmd-overlay.open {
+            display: flex;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .cmd-palette {
+            width: 100%;
+            max-width: 520px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: fadeInUp 0.15s ease-out;
+        }
+
+        .cmd-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 1.25rem;
+            border-bottom: 2px solid var(--muted);
+        }
+
+        .cmd-input-wrap i {
+            color: var(--gray-400);
+            font-size: 1rem;
+        }
+
+        .cmd-input {
+            flex: 1;
+            height: 52px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--fg);
+        }
+
+        .cmd-input::placeholder { color: var(--gray-300); }
+
+        .cmd-kbd {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cmd-kbd kbd {
+            background: var(--muted);
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            padding: 0.15rem 0.375rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--gray-500);
+        }
+
+        .cmd-results {
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .cmd-group-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gray-400);
+            padding: 0.5rem 0.75rem 0.25rem;
+        }
+
+        .cmd-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.1s;
+            text-decoration: none;
+            color: var(--fg);
+        }
+
+        .cmd-item:hover, .cmd-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .cmd-item .ci-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--muted);
+            color: var(--gray-500);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            transition: all 0.1s;
+        }
+
+        .cmd-item:hover .ci-icon, .cmd-item.active .ci-icon {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .cmd-item .ci-text {
+            flex: 1;
+        }
+
+        .cmd-item .ci-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .cmd-item .ci-desc {
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0.6;
+        }
+
+        .cmd-item .ci-arrow {
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: all 0.1s;
+        }
+
+        .cmd-item:hover .ci-arrow, .cmd-item.active .ci-arrow {
+            opacity: 1;
+        }
+
+        .cmd-footer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.625rem 1rem;
+            border-top: 2px solid var(--muted);
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--gray-400);
+        }
+
+        .cmd-footer .cmd-hint {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cmd-footer kbd {
+            background: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0.1rem 0.3rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+
+        .cmd-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-400);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .cmd-empty i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray-300);
+        }
     </style>
     @yield('styles')
 </head>
 <body>
     @yield('content')
+
+    <!-- Command Palette -->
+    <div class="cmd-overlay" id="cmdOverlay">
+        <div class="cmd-palette">
+            <div class="cmd-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="cmd-input" id="cmdInput" placeholder="Type a command or search..." autocomplete="off">
+                <div class="cmd-kbd">
+                    <kbd>ESC</kbd>
+                </div>
+            </div>
+            <div class="cmd-results" id="cmdResults"></div>
+            <div class="cmd-footer">
+                <div class="cmd-hint"><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</div>
+                <div class="cmd-hint"><kbd>&crarr;</kbd> Open</div>
+                <div class="cmd-hint"><kbd>ESC</kbd> Close</div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    (function() {
+        var overlay = document.getElementById('cmdOverlay');
+        var input = document.getElementById('cmdInput');
+        var results = document.getElementById('cmdResults');
+        var activeIndex = -1;
+
+        var commands = [
+            { name: 'Dashboard', desc: 'Overview of your training system', icon: 'fa-grip', url: '{{ route("dashboard") }}', group: 'Pages' },
+            { name: 'Posting Procedure', desc: '8-step guide for product posting', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}', group: 'Pages' },
+            { name: 'Data Gathering', desc: 'Collect product info and assets', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}', group: 'Pages' },
+            { name: 'E-commerce Requirements', desc: 'Platform-specific posting rules', icon: 'fa-clipboard-list', url: '{{ route("ecommerce-requirements") }}', group: 'Pages' },
+            { name: 'Price Calculator', desc: 'Compute SRP across platforms', icon: 'fa-calculator', url: '{{ route("price-calculator") }}', group: 'Pages' },
+            { name: 'End-of-Day Report', desc: 'Daily activity logging guidelines', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}', group: 'Pages' },
+            { name: 'Important Links', desc: 'Quick access to resources', icon: 'fa-link', url: '{{ route("important-links") }}', group: 'Pages' },
+            { name: 'The Team', desc: 'Meet the people behind Ecomm Dept', icon: 'fa-users', url: '{{ route("team") }}', group: 'Pages' },
+            { name: 'Logout', desc: 'Sign out of your account', icon: 'fa-arrow-right-from-bracket', url: '#', group: 'Actions', action: function() { document.querySelector('form[action="{{ route("logout") }}"]').submit(); } }
+        ];
+
+        function render(query) {
+            var q = (query || '').toLowerCase();
+            var filtered = commands.filter(function(c) {
+                return c.name.toLowerCase().indexOf(q) !== -1 || c.desc.toLowerCase().indexOf(q) !== -1;
+            });
+
+            if (filtered.length === 0) {
+                results.innerHTML = '<div class="cmd-empty"><i class="fas fa-search"></i>No results found</div>';
+                activeIndex = -1;
+                return;
+            }
+
+            var groups = {};
+            filtered.forEach(function(c) {
+                if (!groups[c.group]) groups[c.group] = [];
+                groups[c.group].push(c);
+            });
+
+            var html = '';
+            var idx = 0;
+            for (var g in groups) {
+                html += '<div class="cmd-group-label">' + g + '</div>';
+                groups[g].forEach(function(c) {
+                    html += '<div class="cmd-item' + (idx === activeIndex ? ' active' : '') + '" data-idx="' + idx + '" data-url="' + c.url + '" data-action="' + (c.action ? 'true' : '') + '">';
+                    html += '<div class="ci-icon"><i class="fas ' + c.icon + '"></i></div>';
+                    html += '<div class="ci-text"><div class="ci-name">' + c.name + '</div><div class="ci-desc">' + c.desc + '</div></div>';
+                    html += '<div class="ci-arrow"><i class="fas fa-arrow-right"></i></div>';
+                    html += '</div>';
+                    idx++;
+                });
+            }
+            results.innerHTML = html;
+
+            // Re-attach click events
+            results.querySelectorAll('.cmd-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var url = this.getAttribute('data-url');
+                    if (this.getAttribute('data-action') === 'true') {
+                        var cmd = commands.find(function(c) { return c.action; });
+                        if (cmd && cmd.action) cmd.action();
+                    } else {
+                        window.location.href = url;
+                    }
+                });
+            });
+        }
+
+        function openPalette() {
+            overlay.classList.add('open');
+            input.value = '';
+            activeIndex = -1;
+            render('');
+            setTimeout(function() { input.focus(); }, 50);
+        }
+
+        function closePalette() {
+            overlay.classList.remove('open');
+            input.value = '';
+        }
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (overlay.classList.contains('open')) closePalette();
+                else openPalette();
+            }
+            if (e.key === 'Escape' && overlay.classList.contains('open')) {
+                closePalette();
+            }
+            if (overlay.classList.contains('open') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+                e.preventDefault();
+                var items = results.querySelectorAll('.cmd-item');
+                if (items.length === 0) return;
+                if (e.key === 'ArrowDown') activeIndex = (activeIndex + 1) % items.length;
+                else activeIndex = (activeIndex - 1 + items.length) % items.length;
+                items.forEach(function(item) { item.classList.remove('active'); });
+                items[activeIndex].classList.add('active');
+                items[activeIndex].scrollIntoView({ block: 'nearest' });
+            }
+            if (e.key === 'Enter' && overlay.classList.contains('open')) {
+                e.preventDefault();
+                var items = results.querySelectorAll('.cmd-item');
+                if (items.length > 0 && activeIndex >= 0) {
+                    items[activeIndex].click();
+                }
+            }
+        });
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closePalette();
+        });
+
+        input.addEventListener('input', function() {
+            activeIndex = -1;
+            render(this.value);
+        });
+
+        // Add trigger button to sidebar footer
+        document.querySelectorAll('.sidebar-footer').forEach(function(footer) {
+            var btn = document.createElement('button');
+            btn.className = 'btn-logout';
+            btn.style.cssText = 'margin-top: 0.5rem; background: var(--muted); color: var(--gray-500); border-color: var(--border); font-size: 0.8rem;';
+            btn.innerHTML = '<i class="fas fa-search" style="font-size: 0.7rem;"></i> Search <kbd style="margin-left: auto; font-size: 0.6rem; background: white; border: 1px solid var(--border); padding: 0.1rem 0.3rem; border-radius: 3px;">Ctrl+K</kbd>';
+            btn.addEventListener('click', openPalette);
+            btn.style.cssText += 'display: flex; align-items: center; gap: 0.5rem; width: 100; padding: 0.5rem 0.75rem; border: 2px solid var(--border); border-radius: 6px; background: var(--muted); color: var(--gray-500); font-family: Outfit, sans-serif; font-weight: 600; cursor: pointer; transition: all 0.15s;';
+            btn.onmouseenter = function() { this.style.borderColor = 'var(--primary)'; this.style.color = 'var(--primary)'; };
+            btn.onmouseleave = function() { this.style.borderColor = 'var(--border)'; this.style.color = 'var(--gray-500)'; };
+            footer.insertBefore(btn, footer.firstChild);
+        });
+    })();
+    </script>
+
     @yield('scripts')
 </body>
 </html>
