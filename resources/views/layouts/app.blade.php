@@ -631,12 +631,11 @@
         .mobile-toggle {
             display: none;
             position: fixed;
-            top: 1rem;
-            left: 1rem;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 200;
-            width: 44px;
-            height: 44px;
-            border-radius: 8px;
+            height: 48px;
             background: var(--fg);
             color: white;
             border: none;
@@ -644,10 +643,9 @@
             cursor: pointer;
             align-items: center;
             justify-content: center;
-        }
-
-        .mobile-toggle.has-sidebar {
-            display: none;
+            gap: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
         }
 
         .sidebar-overlay {
@@ -661,10 +659,6 @@
         .sidebar-overlay.show { display: block; }
 
         @media (max-width: 768px) {
-            .mobile-toggle.has-sidebar {
-                display: flex;
-            }
-
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
@@ -677,8 +671,7 @@
 
             .main-content {
                 margin-left: 0 !important;
-                padding: 1.5rem 1rem !important;
-                padding-top: 4rem !important;
+                padding: 3.5rem 1rem 1.5rem !important;
             }
 
             .top-bar {
@@ -882,8 +875,8 @@
 </head>
 <body>
     <!-- Mobile Toggle -->
-    <button class="mobile-toggle has-sidebar" id="mobileToggle">
-        <i class="fas fa-bars"></i>
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="fas fa-bars"></i> Menu
     </button>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -915,37 +908,56 @@
         var toggle = document.getElementById('mobileToggle');
         var overlay = document.getElementById('sidebarOverlay');
 
-        if (!sidebar || !toggle || !overlay) return;
+        // If no sidebar on this page, keep toggle hidden forever
+        if (!sidebar) {
+            toggle.style.display = 'none';
+            return;
+        }
 
-        // Remove has-sidebar class if no sidebar found (shouldn't happen but safety)
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function showToggle() {
+            toggle.style.display = isMobile() ? 'flex' : 'none';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+        }
+
+        // Initial state
+        showToggle();
+
+        // Toggle button
         toggle.addEventListener('click', function() {
-            var isOpen = sidebar.classList.contains('open');
-            if (isOpen) {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('show');
-                toggle.innerHTML = '<i class="fas fa-bars"></i>';
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
             } else {
-                sidebar.classList.add('open');
-                overlay.classList.add('show');
-                toggle.innerHTML = '<i class="fas fa-times"></i>';
+                openSidebar();
             }
         });
 
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-            toggle.innerHTML = '<i class="fas fa-bars"></i>';
-        });
+        // Overlay click closes
+        overlay.addEventListener('click', closeSidebar);
 
-        // Close sidebar when clicking a nav link on mobile
+        // Nav link click closes on mobile
         sidebar.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('show');
-                    toggle.innerHTML = '<i class="fas fa-bars"></i>';
-                }
+                if (isMobile()) closeSidebar();
             });
+        });
+
+        // Resize handler
+        window.addEventListener('resize', function() {
+            showToggle();
+            if (!isMobile()) closeSidebar();
         });
     });
     </script>
