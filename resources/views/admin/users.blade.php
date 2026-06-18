@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Users — EC Training Hub')
+@section('title', 'Manage Users — Ecomm Dept Hub')
 
 @section('content')
 <div class="sidebar">
     <div class="sidebar-brand">
         <div class="brand-icon" style="background: #DC2626;">EC</div>
         <div>
-            <h5>EC Training</h5>
+            <h5>Ecomm Dept</h5>
             <span>Admin Panel</span>
         </div>
     </div>

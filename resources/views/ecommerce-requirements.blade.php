@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'E-commerce Requirements — EC Training Hub')
+@section('title', 'E-commerce Requirements — Ecomm Dept Hub')
 
 @section('styles')
 <style>
@@ -141,7 +141,7 @@
     <div class="sidebar-brand">
         <div class="brand-icon">EC</div>
         <div>
-            <h5>EC Training</h5>
+            <h5>Ecomm Dept</h5>
             <span>PR x Content</span>
         </div>
     </div>

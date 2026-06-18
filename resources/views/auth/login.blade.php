@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login — EC Training Hub')
+@section('title', 'Login — Ecomm Dept Hub')
 
 @section('styles')
 <style>
@@ -141,7 +141,7 @@
     <div class="login-card anim-up">
         <div class="login-brand">
             <div class="icon">EC</div>
-            <h3>EC Training Hub</h3>
+            <h3>Ecomm Dept Hub</h3>
             <p>PR x Content Training System</p>
         </div>
 
