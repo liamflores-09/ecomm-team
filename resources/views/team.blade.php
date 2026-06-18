@@ -4,18 +4,71 @@
 
 @section('styles')
 <style>
-    .team-section {
-        margin-bottom: 2rem;
-    }
-
-    .section-title {
+    .team-hero {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
-        gap: 0.625rem;
-        margin-bottom: 1.25rem;
+        gap: 1.5rem;
     }
 
-    .section-title .st-icon {
+    .team-hero .th-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .team-hero h3 {
+        font-weight: 800;
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .team-hero p {
+        color: var(--gray-500);
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .team-hero .th-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.75rem;
+    }
+
+    .th-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .th-stat .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    /* Section divider */
+    .team-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 2rem 0 1.25rem;
+    }
+
+    .team-divider .td-icon {
         width: 36px;
         height: 36px;
         border-radius: 8px;
@@ -24,28 +77,34 @@
         justify-content: center;
         color: white;
         font-size: 0.9rem;
+        flex-shrink: 0;
     }
 
-    .section-title h3 {
+    .team-divider h3 {
         font-weight: 800;
         font-size: 1.1rem;
         margin: 0;
     }
 
-    .section-title .st-count {
+    .team-divider .td-count {
         background: var(--muted);
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
         font-size: 0.7rem;
         font-weight: 700;
         color: var(--gray-400);
-        margin-left: 0.25rem;
     }
 
-    /* Content Team Grid */
+    .team-divider .td-line {
+        flex: 1;
+        height: 2px;
+        background: var(--muted);
+    }
+
+    /* Content Team */
     .content-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 0.75rem;
     }
 
@@ -55,17 +114,35 @@
         padding: 1.25rem;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.875rem;
         transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .member-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        opacity: 0;
+        transition: opacity 0.2s;
     }
 
     .member-card:hover {
         transform: scale(1.02);
     }
 
+    .member-card:hover::before {
+        opacity: 1;
+    }
+
     .member-avatar {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -78,7 +155,7 @@
 
     .member-info h5 {
         font-weight: 700;
-        font-size: 0.875rem;
+        font-size: 0.9rem;
         margin: 0;
         line-height: 1.2;
     }
@@ -87,6 +164,26 @@
         font-size: 0.7rem;
         font-weight: 500;
         color: var(--gray-400);
+    }
+
+    /* Manager special card */
+    .member-card.manager {
+        grid-column: span 1;
+        background: var(--primary);
+        color: white;
+    }
+
+    .member-card.manager .member-info h5 { color: white; }
+    .member-card.manager .member-info span { color: rgba(255,255,255,0.7); }
+    .member-card.manager::before { display: none; }
+
+    /* Lead special card */
+    .member-card.lead {
+        border: 2px solid var(--secondary);
+    }
+
+    .member-card.lead::before {
+        background: var(--secondary);
     }
 
     /* Design Team */
@@ -101,6 +198,20 @@
         border-radius: 8px;
         padding: 1.5rem;
         transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .design-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+        background: var(--muted);
+        border-radius: 0 0 0 50%;
+        opacity: 0.5;
     }
 
     .design-card:hover {
@@ -112,32 +223,37 @@
         align-items: center;
         gap: 0.75rem;
         margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid var(--muted);
+        position: relative;
+        z-index: 1;
     }
 
-    .design-card-header .dc-avatar {
-        width: 44px;
-        height: 44px;
+    .dc-avatar {
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 800;
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: white;
         flex-shrink: 0;
     }
 
-    .design-card-header .dc-name {
+    .dc-name {
         font-weight: 800;
-        font-size: 1rem;
+        font-size: 1.05rem;
     }
 
-    .design-card-header .dc-role {
+    .dc-role {
         font-size: 0.75rem;
         font-weight: 500;
         color: var(--gray-400);
+    }
+
+    .prio-section {
+        position: relative;
+        z-index: 1;
     }
 
     .prio-label {
@@ -180,8 +296,10 @@
     .av-9 { background: #84CC16; }
 
     @media (max-width: 768px) {
-        .design-grid { grid-template-columns: 1fr; }
         .content-grid { grid-template-columns: 1fr 1fr; }
+        .design-grid { grid-template-columns: 1fr; }
+        .team-hero { flex-direction: column; text-align: center; }
+        .team-hero .th-stats { justify-content: center; }
     }
 
     @media (max-width: 480px) {
@@ -222,104 +340,120 @@
 <div class="main-content">
     <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
-    <div class="top-bar anim-up" style="margin-bottom: 2rem;">
+    <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>
             <h2>The <span class="highlight">Team</span></h2>
             <p>Meet the people behind Ecomm Dept</p>
         </div>
     </div>
 
-    <!-- Content Team -->
-    <div class="team-section anim-up d1">
-        <div class="section-title">
-            <div class="st-icon" style="background: var(--primary);"><i class="fas fa-pen-nib"></i></div>
-            <h3>Content Team</h3>
-            <span class="st-count">9 members</span>
-        </div>
-        <div class="content-grid">
-            <div class="member-card">
-                <div class="member-avatar av-1">KL</div>
-                <div class="member-info">
-                    <h5>Kevin Lim</h5>
-                    <span>E-Commerce Manager</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-2">MG</div>
-                <div class="member-info">
-                    <h5>Milo Gorospe</h5>
-                    <span>Content / PR Lead</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-3">AC</div>
-                <div class="member-info">
-                    <h5>Angelyn Catolico</h5>
-                    <span>Content Associate / Backend</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-4">CL</div>
-                <div class="member-info">
-                    <h5>Czein Laruscain</h5>
-                    <span>Content Associate</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-5">JO</div>
-                <div class="member-info">
-                    <h5>Jamie Ortiz</h5>
-                    <span>Product Researcher</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-6">WD</div>
-                <div class="member-info">
-                    <h5>Well Dacoco</h5>
-                    <span>Product Researcher</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-7">ED</div>
-                <div class="member-info">
-                    <h5>Em Delos Santos</h5>
-                    <span>Content Associate</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-8">ME</div>
-                <div class="member-info">
-                    <h5>Mark Ivan Empleo</h5>
-                    <span>Content Associate</span>
-                </div>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar av-9">LF</div>
-                <div class="member-info">
-                    <h5>Liam Flores</h5>
-                    <span>Content Associate</span>
-                </div>
+    <!-- Hero Card -->
+    <div class="team-hero anim-up d1">
+        <div class="th-icon"><i class="fas fa-users"></i></div>
+        <div>
+            <h3>Ecomm Department</h3>
+            <p>Content and Design teams working together across e-commerce platforms</p>
+            <div class="th-stats">
+                <div class="th-stat"><div class="dot" style="background: var(--primary);"></div> Content Team — 9</div>
+                <div class="th-stat"><div class="dot" style="background: var(--secondary);"></div> Design Team — 4</div>
             </div>
         </div>
     </div>
 
-    <!-- Design Team -->
-    <div class="team-section anim-up d2">
-        <div class="section-title">
-            <div class="st-icon" style="background: var(--secondary);"><i class="fas fa-palette"></i></div>
-            <h3>Design Team</h3>
-            <span class="st-count">4 members</span>
+    <!-- Content Team Divider -->
+    <div class="team-divider anim-up d2">
+        <div class="td-icon" style="background: var(--primary);"><i class="fas fa-pen-nib"></i></div>
+        <h3>Content Team</h3>
+        <span class="td-count">9 members</span>
+        <div class="td-line"></div>
+    </div>
+
+    <!-- Content Team Grid -->
+    <div class="content-grid anim-up d2">
+        <div class="member-card manager">
+            <div class="member-avatar" style="background: rgba(255,255,255,0.2);">KL</div>
+            <div class="member-info">
+                <h5>Kevin Lim</h5>
+                <span>E-Commerce Manager</span>
+            </div>
         </div>
-        <div class="design-grid">
-            <!-- Fern -->
-            <div class="design-card">
-                <div class="design-card-header">
-                    <div class="dc-avatar av-5">F</div>
-                    <div>
-                        <div class="dc-name">Fern</div>
-                        <div class="dc-role">Graphic Designer</div>
-                    </div>
+        <div class="member-card lead">
+            <div class="member-avatar av-2">MG</div>
+            <div class="member-info">
+                <h5>Milo Gorospe</h5>
+                <span>Content / PR Lead</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-3">AC</div>
+            <div class="member-info">
+                <h5>Angelyn Catolico</h5>
+                <span>Content Associate / Backend</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-4">CL</div>
+            <div class="member-info">
+                <h5>Czein Laruscain</h5>
+                <span>Content Associate</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-5">JO</div>
+            <div class="member-info">
+                <h5>Jamie Ortiz</h5>
+                <span>Product Researcher</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-6">WD</div>
+            <div class="member-info">
+                <h5>Well Dacoco</h5>
+                <span>Product Researcher</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-7">ED</div>
+            <div class="member-info">
+                <h5>Em Delos Santos</h5>
+                <span>Content Associate</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-8">ME</div>
+            <div class="member-info">
+                <h5>Mark Ivan Empleo</h5>
+                <span>Content Associate</span>
+            </div>
+        </div>
+        <div class="member-card">
+            <div class="member-avatar av-9">LF</div>
+            <div class="member-info">
+                <h5>Liam Flores</h5>
+                <span>Content Associate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Design Team Divider -->
+    <div class="team-divider anim-up d3">
+        <div class="td-icon" style="background: var(--secondary);"><i class="fas fa-palette"></i></div>
+        <h3>Design Team</h3>
+        <span class="td-count">4 members</span>
+        <div class="td-line"></div>
+    </div>
+
+    <!-- Design Team Grid -->
+    <div class="design-grid anim-up d3">
+        <div class="design-card">
+            <div class="design-card-header">
+                <div class="dc-avatar av-5">F</div>
+                <div>
+                    <div class="dc-name">Fern</div>
+                    <div class="dc-role">Graphic Designer</div>
                 </div>
+            </div>
+            <div class="prio-section">
                 <div class="prio-label">Priorities</div>
                 <div class="prio-tags">
                     <span class="prio-tag pt-blue">Ecom</span>
@@ -327,16 +461,17 @@
                     <span class="prio-tag pt-purple">Marketing</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Tim -->
-            <div class="design-card">
-                <div class="design-card-header">
-                    <div class="dc-avatar av-4">T</div>
-                    <div>
-                        <div class="dc-name">Tim</div>
-                        <div class="dc-role">Graphic Tantalizer</div>
-                    </div>
+        <div class="design-card">
+            <div class="design-card-header">
+                <div class="dc-avatar av-4">T</div>
+                <div>
+                    <div class="dc-name">Tim</div>
+                    <div class="dc-role">Graphic Tantalizer</div>
                 </div>
+            </div>
+            <div class="prio-section">
                 <div class="prio-label">Priorities</div>
                 <div class="prio-tags">
                     <span class="prio-tag pt-amber">Events</span>
@@ -344,16 +479,17 @@
                     <span class="prio-tag pt-blue">Ecom</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Angelo -->
-            <div class="design-card">
-                <div class="design-card-header">
-                    <div class="dc-avatar av-1">A</div>
-                    <div>
-                        <div class="dc-name">Angelo</div>
-                        <div class="dc-role">Graphic Designer</div>
-                    </div>
+        <div class="design-card">
+            <div class="design-card-header">
+                <div class="dc-avatar av-1">A</div>
+                <div>
+                    <div class="dc-name">Angelo</div>
+                    <div class="dc-role">Graphic Designer</div>
                 </div>
+            </div>
+            <div class="prio-section">
                 <div class="prio-label">Priorities</div>
                 <div class="prio-tags">
                     <span class="prio-tag pt-blue">Ecom</span>
@@ -361,16 +497,17 @@
                     <span class="prio-tag pt-red">Retail</span>
                 </div>
             </div>
+        </div>
 
-            <!-- Latrell -->
-            <div class="design-card">
-                <div class="design-card-header">
-                    <div class="dc-avatar av-6">L</div>
-                    <div>
-                        <div class="dc-name">Latrell</div>
-                        <div class="dc-role">Graphic Designer</div>
-                    </div>
+        <div class="design-card">
+            <div class="design-card-header">
+                <div class="dc-avatar av-6">L</div>
+                <div>
+                    <div class="dc-name">Latrell</div>
+                    <div class="dc-role">Graphic Designer</div>
                 </div>
+            </div>
+            <div class="prio-section">
                 <div class="prio-label">Priorities</div>
                 <div class="prio-tags">
                     <span class="prio-tag pt-blue">Ecom</span>

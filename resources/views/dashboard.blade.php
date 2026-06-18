@@ -11,7 +11,7 @@
         color: white;
         position: relative;
         overflow: hidden;
-        margin-bottom: 2rem;
+        margin-bottom: 0;
     }
 
     .welcome-banner::after {
@@ -53,63 +53,45 @@
         z-index: 1;
     }
 
-    .stat-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
+    /* Section Divider */
+    .section-divider {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
+        margin: 1.75rem 0 1rem;
     }
 
-    .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 8px;
+    .section-divider .sd-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
         color: white;
+        font-size: 0.75rem;
         flex-shrink: 0;
     }
 
-    .stat-icon.s-blue { background: var(--primary); }
-    .stat-icon.s-green { background: var(--secondary); }
-    .stat-icon.s-amber { background: var(--accent); }
-
-    .stat-body h4 {
-        font-size: 1.5rem;
+    .section-divider h4 {
         font-weight: 800;
-        line-height: 1;
-        margin-bottom: 0.125rem;
-    }
-
-    .stat-body span {
-        color: var(--gray-500);
-        font-weight: 600;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.04em;
+        margin: 0;
     }
 
+    .section-divider .sd-line {
+        flex: 1;
+        height: 2px;
+        background: var(--muted);
+    }
+
+    /* Quick Access */
     .quick-section {
         background: var(--white);
         border-radius: 8px;
         padding: 1.5rem;
-    }
-
-    .quick-section h4 {
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
     }
 
     .quick-links {
@@ -155,9 +137,7 @@
         flex-shrink: 0;
     }
 
-    .ql-text {
-        flex: 1;
-    }
+    .ql-text { flex: 1; }
 
     .ql-text strong {
         display: block;
@@ -181,8 +161,98 @@
         transition: all 0.2s;
     }
 
-    .quick-link:hover .ql-arrow {
+    .quick-link:hover .ql-arrow { color: white; }
+
+    /* Quick Reference */
+    .ref-section {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+
+    .ref-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+    }
+
+    .ref-card {
+        background: var(--muted);
+        border-radius: 6px;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .ref-card:hover {
+        transform: scale(1.03);
+    }
+
+    .ref-card .rc-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-size: 0.9rem;
         color: white;
+    }
+
+    .ref-card h5 {
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    /* Team Preview */
+    .team-preview {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+
+    .team-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .team-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.65rem;
+        color: white;
+        margin-left: -8px;
+        border: 2px solid var(--white);
+    }
+
+    .team-avatar:first-child { margin-left: 0; }
+
+    .team-more {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.65rem;
+        color: var(--gray-500);
+        margin-left: -8px;
+        border: 2px solid var(--white);
+    }
+
+    @media (max-width: 768px) {
+        .quick-links { grid-template-columns: 1fr; }
+        .ref-grid { grid-template-columns: repeat(2, 1fr); }
     }
 </style>
 @endsection
@@ -190,7 +260,7 @@
 @section('content')
 <div class="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">EC</div>
+        <div class="brand-icon">ED</div>
         <div>
             <h5>Ecomm Dept</h5>
             <span>PR x Content</span>
@@ -231,13 +301,21 @@
         </div>
     </div>
 
+    <!-- Welcome Banner -->
     <div class="welcome-banner anim-up d1">
         <h2>Welcome back, {{ $user->username }}!</h2>
         <p>You're all caught up. Pick up where you left off or explore a new module.</p>
     </div>
 
+    <!-- Divider: Quick Access -->
+    <div class="section-divider anim-up d2">
+        <div class="sd-icon" style="background: var(--accent);"><i class="fas fa-bolt"></i></div>
+        <h4>Quick Access</h4>
+        <div class="sd-line"></div>
+    </div>
+
+    <!-- Quick Access Links -->
     <div class="quick-section anim-up d2">
-        <h4><i class="fas fa-bolt" style="color: var(--accent); margin-right: 0.375rem;"></i> Quick Access</h4>
         <div class="quick-links">
             <a href="{{ route('posting-procedure') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-book-open"></i></div>
@@ -247,30 +325,87 @@
                 </div>
                 <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
-            <div class="quick-link" style="opacity: 0.45; cursor: not-allowed;">
-                <div class="ql-icon" style="background: var(--gray-200); color: var(--gray-500);"><i class="fas fa-chart-line"></i></div>
+            <a href="{{ route('data-gathering') }}" class="quick-link">
+                <div class="ql-icon"><i class="fas fa-folder-open"></i></div>
                 <div class="ql-text">
-                    <strong>My Progress</strong>
-                    <small>Coming soon</small>
+                    <strong>Data Gathering</strong>
+                    <small>Collect product info and assets</small>
                 </div>
-                <div class="ql-arrow"><i class="fas fa-lock"></i></div>
-            </div>
-            <div class="quick-link" style="opacity: 0.45; cursor: not-allowed;">
-                <div class="ql-icon" style="background: var(--gray-200); color: var(--gray-500);"><i class="fas fa-clipboard-list"></i></div>
+                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <a href="{{ route('ecommerce-requirements') }}" class="quick-link">
+                <div class="ql-icon"><i class="fas fa-clipboard-list"></i></div>
                 <div class="ql-text">
-                    <strong>Quick Reference</strong>
-                    <small>Coming soon</small>
+                    <strong>E-commerce Requirements</strong>
+                    <small>Platform-specific posting rules</small>
                 </div>
-                <div class="ql-arrow"><i class="fas fa-lock"></i></div>
-            </div>
-            <div class="quick-link" style="opacity: 0.45; cursor: not-allowed;">
-                <div class="ql-icon" style="background: var(--gray-200); color: var(--gray-500);"><i class="fas fa-image"></i></div>
+                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            <a href="{{ route('price-calculator') }}" class="quick-link">
+                <div class="ql-icon"><i class="fas fa-calculator"></i></div>
                 <div class="ql-text">
-                    <strong>Image Guide</strong>
-                    <small>Coming soon</small>
+                    <strong>Price Calculator</strong>
+                    <small>Compute SRP across platforms</small>
                 </div>
-                <div class="ql-arrow"><i class="fas fa-lock"></i></div>
+                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Divider: Quick Reference -->
+    <div class="section-divider anim-up d3">
+        <div class="sd-icon" style="background: var(--secondary);"><i class="fas fa-star"></i></div>
+        <h4>Quick Reference</h4>
+        <div class="sd-line"></div>
+    </div>
+
+    <!-- Reference Cards -->
+    <div class="ref-section anim-up d3">
+        <div class="ref-grid">
+            <a href="{{ route('end-of-day') }}" class="ref-card" style="text-decoration: none; color: var(--fg);">
+                <div class="rc-icon" style="background: var(--primary);"><i class="fas fa-calendar-check"></i></div>
+                <h5>EOD Report</h5>
+            </a>
+            <a href="{{ route('important-links') }}" class="ref-card" style="text-decoration: none; color: var(--fg);">
+                <div class="rc-icon" style="background: var(--secondary);"><i class="fas fa-link"></i></div>
+                <h5>Important Links</h5>
+            </a>
+            <a href="{{ route('team') }}" class="ref-card" style="text-decoration: none; color: var(--fg);">
+                <div class="rc-icon" style="background: var(--accent);"><i class="fas fa-users"></i></div>
+                <h5>The Team</h5>
+            </a>
+            <div class="ref-card">
+                <div class="rc-icon" style="background: var(--gray-300);"><i class="fas fa-chart-line"></i></div>
+                <h5 style="color: var(--gray-400);">Progress</h5>
             </div>
+        </div>
+    </div>
+
+    <!-- Divider: Team -->
+    <div class="section-divider anim-up d4">
+        <div class="sd-icon" style="background: #8B5CF6;"><i class="fas fa-users"></i></div>
+        <h4>Team</h4>
+        <div class="sd-line"></div>
+    </div>
+
+    <!-- Team Preview -->
+    <div class="team-preview anim-up d4">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="team-row">
+                <div class="team-avatar" style="background: var(--primary);">KL</div>
+                <div class="team-avatar" style="background: var(--secondary);">MG</div>
+                <div class="team-avatar" style="background: var(--accent);">AC</div>
+                <div class="team-avatar" style="background: #8B5CF6;">CL</div>
+                <div class="team-avatar" style="background: #EC4899;">JO</div>
+                <div class="team-avatar" style="background: #14B8A6;">WD</div>
+                <div class="team-avatar" style="background: #F97316;">ED</div>
+                <div class="team-avatar" style="background: #06B6D4;">ME</div>
+                <div class="team-avatar" style="background: #84CC16;">LF</div>
+                <div class="team-more">+4</div>
+            </div>
+            <a href="{{ route('team') }}" class="btn-flat-secondary" style="height: 36px; padding: 0 0.75rem; font-size: 0.8rem; text-decoration: none;">
+                View All <i class="fas fa-arrow-right" style="margin-left: 0.25rem;"></i>
+            </a>
         </div>
     </div>
 </div>
