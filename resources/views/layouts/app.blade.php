@@ -848,8 +848,9 @@
         var results = document.getElementById('cmdResults');
         var activeIndex = -1;
         var flatList = [];
+        var isAdmin = window.location.pathname.startsWith('/admin');
 
-        var pages = [
+        var userPages = [
             { name: 'Dashboard', desc: 'Overview of your training system', icon: 'fa-grip', url: '{{ route("dashboard") }}' },
             { name: 'Posting Procedure', desc: '8-step guide for product posting', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}' },
             { name: 'Data Gathering', desc: 'Collect product info and assets', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}' },
@@ -859,6 +860,14 @@
             { name: 'Important Links', desc: 'Quick access to resources', icon: 'fa-link', url: '{{ route("important-links") }}' },
             { name: 'The Team', desc: 'Meet the people behind Ecomm Dept', icon: 'fa-users', url: '{{ route("team") }}' }
         ];
+
+        var adminPages = [
+            { name: 'Admin Dashboard', desc: 'Overview of admin panel', icon: 'fa-grip', url: '{{ route("admin.dashboard") }}' },
+            { name: 'Manage Users', desc: 'Add, edit, or remove team members', icon: 'fa-users', url: '{{ route("admin.users") }}' },
+            { name: 'User Dashboard', desc: 'Switch to user-facing dashboard', icon: 'fa-arrow-right-from-bracket', url: '{{ route("dashboard") }}' }
+        ];
+
+        var pages = isAdmin ? adminPages : userPages;
 
         function render(query) {
             var q = (query || '').toLowerCase();
