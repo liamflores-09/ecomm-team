@@ -4,20 +4,121 @@
 
 @section('styles')
 <style>
-    .calc-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.5rem;
+    /* Add Row Card */
+    .add-card {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
         margin-bottom: 1.25rem;
+    }
+
+    .add-card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gray-500);
+        margin-bottom: 1rem;
+    }
+
+    .add-card-title .title-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.65rem;
+    }
+
+    .add-fields {
+        display: flex;
+        align-items: flex-end;
+        gap: 1rem;
         flex-wrap: wrap;
     }
 
-    .filter-bar {
+    .add-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .add-field label {
+        font-weight: 700;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--gray-500);
+    }
+
+    .add-field .input-flat {
+        height: 44px;
+    }
+
+    /* SKU Type Pills */
+    .type-pills {
+        display: flex;
+        gap: 0;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        height: 44px;
+    }
+
+    .type-pills button {
+        padding: 0 1rem;
+        border: none;
+        background: var(--muted);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .type-pills button + button {
+        border-left: 2px solid var(--border);
+    }
+
+    .type-pills button.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .type-pills button:hover:not(.active) {
+        background: var(--gray-200);
+    }
+
+    /* Toolbar */
+    .toolbar {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
         flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto;
     }
 
     .search-box {
@@ -28,9 +129,8 @@
         border: 2px solid var(--border);
         border-radius: 6px;
         padding: 0 0.75rem;
-        height: 44px;
-        flex: 1;
-        min-width: 200px;
+        height: 40px;
+        min-width: 220px;
     }
 
     .search-box input {
@@ -46,36 +146,22 @@
 
     .search-box input::placeholder { color: var(--gray-300); }
 
-    .group-filter {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+    .filter-select {
+        height: 40px;
+        padding: 0 0.75rem;
         background: var(--white);
         border: 2px solid var(--border);
         border-radius: 6px;
-        padding: 0 0.75rem;
-        height: 44px;
-    }
-
-    .group-filter select {
-        border: none;
-        outline: none;
-        background: transparent;
         font-family: 'Outfit', sans-serif;
         font-size: 0.85rem;
         font-weight: 500;
         color: var(--fg);
         cursor: pointer;
+        outline: none;
+        appearance: auto;
     }
 
-    .filter-info {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-left: auto;
-    }
-
-    .result-badge {
+    .result-count {
         background: var(--muted);
         padding: 0.25rem 0.625rem;
         border-radius: 4px;
@@ -92,20 +178,16 @@
         -webkit-overflow-scrolling: touch;
     }
 
-    .table-head {
+    .table-title-bar {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.875rem 1rem;
         background: var(--muted);
-        font-weight: 700;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--gray-500);
+        border-bottom: 2px solid var(--border);
     }
 
-    .table-head .th-icon {
+    .table-title-bar .t-icon {
         width: 24px;
         height: 24px;
         background: var(--primary);
@@ -117,17 +199,34 @@
         font-size: 0.65rem;
     }
 
+    .table-title-bar span {
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gray-500);
+    }
+
+    .table-title-bar small {
+        margin-left: auto;
+        font-size: 0.75rem;
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--gray-400);
+    }
+
     .price-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.85rem;
-        min-width: 800px;
+        min-width: 850px;
     }
 
     .price-table thead th {
         background: var(--fg);
         color: var(--white);
-        padding: 0.75rem 0.75rem;
+        padding: 0.75rem;
         font-weight: 700;
         font-size: 0.7rem;
         text-transform: uppercase;
@@ -155,15 +254,15 @@
         background: #F8FAFC;
     }
 
-    .price-table tbody tr.group-row td {
+    .price-table tbody tr.group-sep td {
         border-top: 3px solid var(--primary);
     }
 
-    .price-table tbody tr.dupe-row td {
+    .price-table tbody tr.dupe-highlight td {
         background: #FEF2F2;
     }
 
-    .price-table .cell-input {
+    .price-table .c-input {
         border: 2px solid transparent;
         border-radius: 4px;
         padding: 0.375rem 0.5rem;
@@ -177,27 +276,34 @@
         width: 100%;
     }
 
-    .price-table .cell-input:focus {
+    .price-table .c-input:focus {
         border-color: var(--primary);
         background: var(--white);
     }
 
-    .price-table .cell-input.input-error {
+    .price-table .c-input.err {
         border-color: #DC2626;
         background: #FEF2F2;
     }
 
-    .price-table .cell-input.num {
-        width: 100px;
-    }
-
-    .price-table .cell-input.grp {
-        width: 70px;
-    }
+    .price-table .c-num { width: 100px; }
+    .price-table .c-grp { width: 70px; }
 
     .price-table .computed {
         font-weight: 600;
         font-variant-numeric: tabular-nums;
+    }
+
+    .cell-check {
+        width: 40px;
+        text-align: center;
+    }
+
+    .cell-check input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary);
+        cursor: pointer;
     }
 
     .badge-good {
@@ -224,82 +330,18 @@
         display: inline-block;
         background: #FEF3C7;
         color: #92400E;
-        padding: 0.15rem 0.5rem;
+        padding: 0.125rem 0.375rem;
         border-radius: 4px;
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         font-weight: 700;
-        margin-left: 0.25rem;
+        margin-left: 0.375rem;
+        vertical-align: middle;
     }
 
-    .cell-check {
-        width: 40px;
-        text-align: center;
-    }
-
-    .cell-check input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-        accent-color: var(--primary);
-        cursor: pointer;
-    }
-
-    /* Add Row Modal */
-    .add-row-bar {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
-        margin-bottom: 1.25rem;
-        display: flex;
-        align-items: flex-end;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .add-row-bar .field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.375rem;
-    }
-
-    .add-row-bar .field label {
-        font-weight: 700;
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--gray-500);
-    }
-
-    .sku-type-toggle {
-        display: flex;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        overflow: hidden;
-    }
-
-    .sku-type-toggle button {
-        padding: 0.5rem 1rem;
-        border: none;
-        background: var(--muted);
-        font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: var(--gray-500);
-        cursor: pointer;
-        transition: all 0.15s;
-    }
-
-    .sku-type-toggle button.active {
-        background: var(--primary);
-        color: white;
-    }
-
-    .sku-type-toggle button:not(:last-child) {
-        border-right: 2px solid var(--border);
-    }
-
-    .footer-note {
-        margin-top: 1.5rem;
-        padding: 1rem 1.25rem;
+    /* Footer */
+    .calc-footer {
+        margin-top: 1rem;
+        padding: 0.875rem 1rem;
         background: var(--muted);
         border-radius: 6px;
         font-size: 0.8rem;
@@ -308,35 +350,18 @@
         line-height: 1.6;
     }
 
-    .footer-note strong {
-        color: var(--fg);
-    }
+    .calc-footer strong { color: var(--fg); }
 
     /* Responsive */
     @media (max-width: 768px) {
-        .add-row-bar {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filter-bar {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filter-info {
-            margin-left: 0;
-            justify-content: space-between;
-        }
-
-        .calc-actions {
-            justify-content: stretch;
-        }
-
-        .calc-actions .btn-flat-primary,
-        .calc-actions .btn-flat-secondary {
-            flex: 1;
-        }
+        .add-fields { flex-direction: column; align-items: stretch; }
+        .add-fields .add-field { width: 100%; }
+        .toolbar { flex-direction: column; align-items: stretch; }
+        .toolbar-left, .toolbar-right { width: 100%; }
+        .toolbar-right { margin-left: 0; justify-content: stretch; }
+        .toolbar-right .btn-flat-primary,
+        .toolbar-right .btn-flat-secondary { flex: 1; }
+        .search-box { min-width: 0; width: 100%; }
     }
 </style>
 @endsection
@@ -377,68 +402,73 @@
         </div>
     </div>
 
-    <!-- Add Row Section -->
-    <div class="add-row-bar anim-up d1">
-        <div class="field">
-            <label>Group</label>
-            <input type="number" id="addGroupInput" class="cell-input grp" placeholder="#" style="width: 70px;">
+    <!-- Add Row Card -->
+    <div class="add-card anim-up d1">
+        <div class="add-card-title">
+            <div class="title-icon"><i class="fas fa-plus"></i></div>
+            Add Row
         </div>
-        <div class="field">
-            <label>SKU Type</label>
-            <div class="sku-type-toggle">
-                <button type="button" class="active" onclick="setSkuType('single', this)">Single</button>
-                <button type="button" onclick="setSkuType('variant', this)">Variant</button>
+        <div class="add-fields">
+            <div class="add-field">
+                <label>Group</label>
+                <input type="number" id="addGroupInput" class="input-flat" placeholder="#" style="width: 80px;">
+            </div>
+            <div class="add-field">
+                <label>SKU Type</label>
+                <div class="type-pills">
+                    <button type="button" class="active" onclick="setSkuType('single', this)">
+                        <i class="fas fa-cube" style="font-size: 0.7rem;"></i> Single
+                    </button>
+                    <button type="button" onclick="setSkuType('variant', this)">
+                        <i class="fas fa-cubes" style="font-size: 0.7rem;"></i> Variant
+                    </button>
+                </div>
+            </div>
+            <div class="add-field" id="variantCountField" style="display: none;">
+                <label>Variant Count</label>
+                <input type="number" id="variantCountInput" class="input-flat" placeholder="#" min="1" style="width: 90px;">
+            </div>
+            <div class="add-field">
+                <label>Unit Price</label>
+                <input type="number" id="addPriceInput" class="input-flat" placeholder="0.00" step="any" style="width: 120px;">
+            </div>
+            <div class="add-field" style="align-self: flex-end;">
+                <button class="btn-flat-primary" style="height: 44px; padding: 0 1.25rem; font-size: 0.85rem;" onclick="addRow()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
             </div>
         </div>
-        <div class="field" id="variantCountField" style="display: none;">
-            <label>Variants</label>
-            <input type="number" id="variantCountInput" class="cell-input num" placeholder="#" min="1" style="width: 80px;">
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar anim-up d2">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <i class="fas fa-search" style="color: var(--gray-300); font-size: 0.8rem;"></i>
+                <input type="text" id="searchInput" placeholder="Search by Group, SKU, or Price..." oninput="handleSearch(this.value)">
+            </div>
+            <select class="filter-select" id="groupFilterSelect" onchange="handleGroupFilter(this.value)">
+                <option value="all">All Groups</option>
+            </select>
         </div>
-        <div class="field">
-            <label>Unit Price</label>
-            <input type="number" id="addPriceInput" class="cell-input num" placeholder="0.00" step="any" style="width: 110px;">
-        </div>
-        <div class="field" style="align-self: flex-end;">
-            <button class="btn-flat-primary" style="height: 44px; padding: 0 1.25rem; font-size: 0.85rem;" onclick="addRow()">
-                <i class="fas fa-plus"></i> Add
+        <div class="toolbar-right">
+            <span class="result-count" id="resultCount">0 results</span>
+            <button class="btn-flat-secondary" style="height: 40px; padding: 0 0.75rem; font-size: 0.8rem;" onclick="clearFilters()">Clear</button>
+            <button class="btn-flat-secondary" style="height: 40px; padding: 0 0.875rem; font-size: 0.8rem;" onclick="deleteSelectedRows()">
+                <i class="fas fa-trash-can"></i> Delete
+            </button>
+            <button class="btn-flat-primary" style="height: 40px; padding: 0 0.875rem; font-size: 0.8rem;" onclick="calculateAll()">
+                <i class="fas fa-calculator"></i> Calculate
             </button>
         </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="calc-actions anim-up d2">
-        <button class="btn-flat-secondary" style="height: 44px; padding: 0 1rem; font-size: 0.85rem;" onclick="deleteSelectedRows()">
-            <i class="fas fa-trash-can"></i> Delete Selected
-        </button>
-        <button class="btn-flat-primary" style="height: 44px; padding: 0 1rem; font-size: 0.85rem;" onclick="calculateAll()">
-            <i class="fas fa-calculator"></i> Calculate
-        </button>
-    </div>
-
-    <!-- Filter Bar -->
-    <div class="filter-bar anim-up d3">
-        <div class="search-box">
-            <i class="fas fa-search" style="color: var(--gray-300);"></i>
-            <input type="text" id="searchInput" placeholder="Search by Group, SKU, or Unit Price..." oninput="handleSearch(this.value)">
-        </div>
-        <div class="group-filter">
-            <i class="fas fa-filter" style="color: var(--gray-300);"></i>
-            <select id="groupFilterSelect" onchange="handleGroupFilter(this.value)">
-                <option value="all">All Groups</option>
-            </select>
-        </div>
-        <div class="filter-info">
-            <span class="result-badge" id="resultCount">0 results</span>
-            <button class="btn-flat-secondary" style="height: 36px; padding: 0 0.75rem; font-size: 0.8rem;" onclick="clearFilters()">Clear</button>
-        </div>
-    </div>
-
     <!-- Table -->
-    <div class="table-wrap anim-up d4">
-        <div class="table-head">
-            <div class="th-icon"><i class="fas fa-table"></i></div>
-            Price Calculator Table
-            <span style="margin-left: auto; font-size: 0.75rem; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--gray-400);">Check box to select row for deletion | Same group numbers are calculated together</span>
+    <div class="table-wrap anim-up d3">
+        <div class="table-title-bar">
+            <div class="t-icon"><i class="fas fa-table"></i></div>
+            <span>Price Calculator Table</span>
+            <small>Check box to select row for deletion | Same group numbers are calculated together</small>
         </div>
         <table class="price-table">
             <thead>
@@ -459,7 +489,7 @@
         </table>
     </div>
 
-    <div class="footer-note anim-up d5">
+    <div class="calc-footer anim-up d4">
         <strong>Formula:</strong> Min/Max based on same Group | Shopee SRP = MIN(ROUNDUP(((Min × 4.5 − UnitPrice) ÷ 10 + UnitPrice), 0), 150000)<br>
         <strong>Tip:</strong> Select "Variant" and enter the number of variants to auto-generate rows under the same group. Duplicate SKUs are highlighted in red.
     </div>
@@ -476,7 +506,6 @@
     var skuType = 'single';
     var STORAGE_KEY = 'ecommPriceData';
 
-    // --- Storage ---
     function load() {
         try {
             var s = localStorage.getItem(STORAGE_KEY);
@@ -486,7 +515,6 @@
 
     function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(priceData)); }
 
-    // --- Formulas (unchanged) ---
     function getMinForGroup(g) {
         var items = priceData.filter(function(i){return i.group === g;});
         return items.length === 0 ? 0 : Math.min.apply(null, items.map(function(i){return i.unitPrice;}));
@@ -518,7 +546,6 @@
         return (max / min > 4.5) ? 'Error' : 'Good';
     }
 
-    // --- Duplicate detection ---
     function getDupeSkus() {
         var counts = {};
         priceData.forEach(function(i) {
@@ -530,7 +557,6 @@
         return dupes;
     }
 
-    // --- Group filter options ---
     function updateGroupOptions() {
         var groups = [];
         priceData.forEach(function(i) { if (i.group && groups.indexOf(i.group) === -1) groups.push(i.group); });
@@ -543,7 +569,6 @@
         else { currentGroupFilter = 'all'; sel.value = 'all'; }
     }
 
-    // --- Filter ---
     function getFiltered() {
         var f = priceData;
         if (currentSearch) {
@@ -559,13 +584,11 @@
         return f;
     }
 
-    // --- Escape HTML ---
     function esc(s) {
         if (!s) return '';
         return s.replace(/[&<>"]/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; });
     }
 
-    // --- Render ---
     function render() {
         var tbody = document.getElementById('tableBody');
         updateGroupOptions();
@@ -574,7 +597,7 @@
         var dupes = getDupeSkus();
 
         if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:var(--gray-300);">' + (priceData.length === 0 ? 'No data yet. Add a row above to start.' : 'No matching results found.') + '</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:var(--gray-300);">' + (priceData.length === 0 ? '<i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:0.5rem;"></i>No data yet. Add a row above to start.' : 'No matching results found.') + '</td></tr>';
             document.getElementById('selectAllCheckbox').checked = false;
             return;
         }
@@ -583,9 +606,10 @@
         var lastGroup = null;
         filtered.forEach(function(item) {
             var isNewGroup = item.group !== lastGroup;
-            var rowClass = (isNewGroup && lastGroup !== null) ? 'group-row' : '';
+            var classes = [];
+            if (isNewGroup && lastGroup !== null) classes.push('group-sep');
             var skuKey = (item.sku || '').trim().toLowerCase();
-            if (skuKey && dupes[skuKey]) rowClass += ' dupe-row';
+            if (skuKey && dupes[skuKey]) classes.push('dupe-highlight');
 
             var min = getMinForGroup(item.group);
             var max = getMaxForGroup(item.group);
@@ -594,13 +618,13 @@
             var lSrp = lazadaSRP(item.unitPrice, min);
             var lChk = lazadaChecker(item.unitPrice, max, min);
 
-            html += '<tr class="' + rowClass + '">';
+            html += '<tr class="' + classes.join(' ') + '">';
             html += '<td class="cell-check"><input type="checkbox" class="row-cb" data-id="' + item.id + '"></td>';
-            html += '<td><input type="number" class="cell-input grp" value="' + item.group + '" onchange="updateField(' + item.id + ',\'group\',this.value)"></td>';
-            html += '<td><input type="text" class="cell-input' + (skuKey && dupes[skuKey] ? ' input-error' : '') + '" value="' + esc(item.sku) + '" placeholder="SKU" onchange="updateField(' + item.id + ',\'sku\',this.value)">';
-            if (skuKey && dupes[skuKey]) html += '<span class="badge-dupe">Duplicate</span>';
+            html += '<td><input type="number" class="c-input c-grp" value="' + item.group + '" onchange="updateField(' + item.id + ',\'group\',this.value)"></td>';
+            html += '<td><input type="text" class="c-input' + (skuKey && dupes[skuKey] ? ' err' : '') + '" value="' + esc(item.sku) + '" placeholder="SKU" onchange="updateField(' + item.id + ',\'sku\',this.value)">';
+            if (skuKey && dupes[skuKey]) html += ' <span class="badge-dupe">Duplicate</span>';
             html += '</td>';
-            html += '<td><input type="number" class="cell-input num" value="' + (item.unitPrice || '') + '" step="any" placeholder="0.00" onchange="updateField(' + item.id + ',\'unitPrice\',this.value)"></td>';
+            html += '<td><input type="number" class="c-input c-num" value="' + (item.unitPrice || '') + '" step="any" placeholder="0.00" onchange="updateField(' + item.id + ',\'unitPrice\',this.value)"></td>';
             html += '<td class="computed">' + (min ? min.toLocaleString() : '-') + '</td>';
             html += '<td class="computed">' + (max ? max.toLocaleString() : '-') + '</td>';
             html += '<td class="computed">' + (sSrp === 0 ? '0' : (sSrp ? sSrp.toLocaleString() : '-')) + '</td>';
@@ -611,31 +635,25 @@
             lastGroup = item.group;
         });
         tbody.innerHTML = html;
-        updateSelectAll();
-    }
 
-    function updateSelectAll() {
         var cbs = document.querySelectorAll('.row-cb');
         var sa = document.getElementById('selectAllCheckbox');
         if (cbs.length > 0) sa.checked = Array.from(cbs).every(function(c){return c.checked;});
         else sa.checked = false;
     }
 
-    // --- Field updates ---
     window.updateField = function(id, field, value) {
         var item = priceData.find(function(i){return i.id === id;});
         if (!item) return;
         if (field === 'group') item.group = parseInt(value) || 0;
         else if (field === 'sku') item.sku = value;
         else if (field === 'unitPrice') item.unitPrice = parseFloat(value) || 0;
-        save();
-        render();
+        save(); render();
     };
 
-    // --- Add row ---
     window.setSkuType = function(type, btn) {
         skuType = type;
-        document.querySelectorAll('.sku-type-toggle button').forEach(function(b){b.classList.remove('active');});
+        document.querySelectorAll('.type-pills button').forEach(function(b){b.classList.remove('active');});
         btn.classList.add('active');
         document.getElementById('variantCountField').style.display = type === 'variant' ? '' : 'none';
     };
@@ -654,14 +672,12 @@
             priceData.push({ id: nextId++, group: group, sku: '', unitPrice: price, min: 0, max: 0 });
         }
 
-        save();
-        render();
+        save(); render();
         document.getElementById('addGroupInput').value = '';
         document.getElementById('addPriceInput').value = '';
         document.getElementById('variantCountInput').value = '';
     };
 
-    // --- Delete ---
     window.deleteSelectedRows = function() {
         var cbs = document.querySelectorAll('.row-cb:checked');
         var ids = Array.from(cbs).map(function(c){return parseInt(c.getAttribute('data-id'));});
@@ -672,7 +688,6 @@
         }
     };
 
-    // --- Calculate ---
     window.calculateAll = function() {
         for (var i = 0; i < priceData.length; i++) {
             priceData[i].min = getMinForGroup(priceData[i].group);
@@ -681,12 +696,10 @@
         save(); render();
     };
 
-    // --- Select all ---
     window.toggleSelectAll = function(checked) {
         document.querySelectorAll('.row-cb').forEach(function(c){c.checked = checked;});
     };
 
-    // --- Search / Filter ---
     window.handleSearch = function(val) { currentSearch = val.trim(); render(); };
     window.handleGroupFilter = function(val) { currentGroupFilter = val; render(); };
     window.clearFilters = function() {
@@ -697,9 +710,7 @@
         render();
     };
 
-    // --- Init ---
-    load();
-    render();
+    load(); render();
 })();
 </script>
 @endsection
