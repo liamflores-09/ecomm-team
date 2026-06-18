@@ -908,24 +908,34 @@
     function toggleSidebar() {
         var sidebar = document.querySelector('.sidebar');
         var overlay = document.getElementById('sidebarOverlay');
-        if (sidebar) {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
+        var toggle = document.getElementById('mobileToggle');
+        if (!sidebar) return;
+
+        var isOpen = sidebar.classList.contains('open');
+        if (isOpen) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+            toggle.innerHTML = '<i class="fas fa-bars"></i>';
+        } else {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+            toggle.innerHTML = '<i class="fas fa-times"></i>';
         }
     }
 
-    // Only show hamburger if sidebar exists and screen is mobile
     function checkMobile() {
         var sidebar = document.querySelector('.sidebar');
         var toggle = document.getElementById('mobileToggle');
-        if (sidebar && window.innerWidth <= 768) {
+        var overlay = document.getElementById('sidebarOverlay');
+        if (!sidebar || !toggle) return;
+
+        if (window.innerWidth <= 768) {
             toggle.style.display = 'flex';
         } else {
             toggle.style.display = 'none';
-            // Close sidebar if switching to desktop
-            if (sidebar) sidebar.classList.remove('open');
-            var overlay = document.getElementById('sidebarOverlay');
-            if (overlay) overlay.classList.remove('show');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+            toggle.innerHTML = '<i class="fas fa-bars"></i>';
         }
     }
 
