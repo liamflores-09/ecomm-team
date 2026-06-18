@@ -188,34 +188,25 @@
 
         /* ====== CMD TRIGGER ====== */
         .cmd-trigger {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            z-index: 999;
-            pointer-events: none;
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .cmd-trigger-btn {
-            position: absolute;
-            bottom: 5rem;
-            left: 0.75rem;
-            right: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            width: 100%;
             padding: 0.5rem 0.75rem;
             border: 2px solid var(--gray-700);
             border-radius: 6px;
-            background: var(--gray-700);
+            background: transparent;
             color: var(--gray-400);
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.15s;
-            pointer-events: all;
         }
 
         .cmd-trigger-btn:hover {
@@ -228,7 +219,7 @@
         .cmd-trigger-btn kbd {
             margin-left: auto;
             font-size: 0.55rem;
-            background: var(--gray-600);
+            background: var(--gray-700);
             border: 1px solid var(--gray-500);
             padding: 0.1rem 0.3rem;
             border-radius: 3px;
@@ -828,14 +819,6 @@
 <body>
     @yield('content')
 
-    <!-- Command Palette Trigger -->
-    <div class="cmd-trigger">
-        <button class="cmd-trigger-btn" onclick="document.getElementById('cmdOverlay').classList.add('open');setTimeout(function(){document.getElementById('cmdInput').focus();},50);">
-            <i class="fas fa-search"></i> Search
-            <kbd>Ctrl+K</kbd>
-        </button>
-    </div>
-
     <!-- Command Palette -->
     <div class="cmd-overlay" id="cmdOverlay">
         <div class="cmd-palette">
@@ -972,6 +955,17 @@
         input.addEventListener('input', function() {
             activeIndex = -1;
             render(this.value);
+        });
+
+        // Inject search trigger into each sidebar, after the brand
+        document.querySelectorAll('.sidebar').forEach(function(sidebar) {
+            var brand = sidebar.querySelector('.sidebar-brand');
+            if (brand) {
+                var trigger = document.createElement('div');
+                trigger.className = 'cmd-trigger';
+                trigger.innerHTML = '<button class="cmd-trigger-btn" onclick="document.getElementById(\'cmdOverlay\').classList.add(\'open\');setTimeout(function(){document.getElementById(\'cmdInput\').focus();},50);"><i class="fas fa-search"></i> Search<kbd>Ctrl+K</kbd></button>';
+                brand.insertAdjacentElement('afterend', trigger);
+            }
         });
     })();
     </script>
