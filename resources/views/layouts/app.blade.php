@@ -846,64 +846,41 @@
         var input = document.getElementById('cmdInput');
         var results = document.getElementById('cmdResults');
         var activeIndex = -1;
+        var flatList = [];
 
-        var commands = [
-            { name: 'Dashboard', desc: 'Overview of your training system', icon: 'fa-grip', url: '{{ route("dashboard") }}', group: 'Pages' },
-            { name: 'Posting Procedure', desc: '8-step guide for product posting', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}', group: 'Pages' },
-            { name: 'Data Gathering', desc: 'Collect product info and assets', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}', group: 'Pages' },
-            { name: 'E-commerce Requirements', desc: 'Platform-specific posting rules', icon: 'fa-clipboard-list', url: '{{ route("ecommerce-requirements") }}', group: 'Pages' },
-            { name: 'Price Calculator', desc: 'Compute SRP across platforms', icon: 'fa-calculator', url: '{{ route("price-calculator") }}', group: 'Pages' },
-            { name: 'End-of-Day Report', desc: 'Daily activity logging guidelines', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}', group: 'Pages' },
-            { name: 'Important Links', desc: 'Quick access to resources', icon: 'fa-link', url: '{{ route("important-links") }}', group: 'Pages' },
-            { name: 'The Team', desc: 'Meet the people behind Ecomm Dept', icon: 'fa-users', url: '{{ route("team") }}', group: 'Pages' },
-            { name: 'Logout', desc: 'Sign out of your account', icon: 'fa-arrow-right-from-bracket', url: '#', group: 'Actions', action: function() { document.querySelector('form[action="{{ route("logout") }}"]').submit(); } }
+        var pages = [
+            { name: 'Dashboard', desc: 'Overview of your training system', icon: 'fa-grip', url: '{{ route("dashboard") }}' },
+            { name: 'Posting Procedure', desc: '8-step guide for product posting', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}' },
+            { name: 'Data Gathering', desc: 'Collect product info and assets', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}' },
+            { name: 'E-commerce Requirements', desc: 'Platform-specific posting rules', icon: 'fa-clipboard-list', url: '{{ route("ecommerce-requirements") }}' },
+            { name: 'Price Calculator', desc: 'Compute SRP across platforms', icon: 'fa-calculator', url: '{{ route("price-calculator") }}' },
+            { name: 'End-of-Day Report', desc: 'Daily activity logging guidelines', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}' },
+            { name: 'Important Links', desc: 'Quick access to resources', icon: 'fa-link', url: '{{ route("important-links") }}' },
+            { name: 'The Team', desc: 'Meet the people behind Ecomm Dept', icon: 'fa-users', url: '{{ route("team") }}' }
         ];
 
         function render(query) {
             var q = (query || '').toLowerCase();
-            var filtered = commands.filter(function(c) {
-                return c.name.toLowerCase().indexOf(q) !== -1 || c.desc.toLowerCase().indexOf(q) !== -1;
+            var filtered = pages.filter(function(p) {
+                return p.name.toLowerCase().indexOf(q) !== -1 || p.desc.toLowerCase().indexOf(q) !== -1;
             });
 
+            flatList = [];
             if (filtered.length === 0) {
                 results.innerHTML = '<div class="cmd-empty"><i class="fas fa-search"></i>No results found</div>';
-                activeIndex = -1;
                 return;
             }
 
-            var groups = {};
-            filtered.forEach(function(c) {
-                if (!groups[c.group]) groups[c.group] = [];
-                groups[c.group].push(c);
+            var html = '<div class="cmd-group-label">Pages</div>';
+            filtered.forEach(function(p, i) {
+                flatList.push(p);
+                html += '<a href="' + p.url + '" class="cmd-item" data-idx="' + i + '">';
+                html += '<div class="ci-icon"><i class="fas ' + p.icon + '"></i></div>';
+                html += '<div class="ci-text"><div class="ci-name">' + p.name + '</div><div class="ci-desc">' + p.desc + '</div></div>';
+                html += '<div class="ci-arrow"><i class="fas fa-arrow-right"></i></div>';
+                html += '</a>';
             });
-
-            var html = '';
-            var idx = 0;
-            for (var g in groups) {
-                html += '<div class="cmd-group-label">' + g + '</div>';
-                groups[g].forEach(function(c) {
-                    html += '<div class="cmd-item' + (idx === activeIndex ? ' active' : '') + '" data-idx="' + idx + '" data-url="' + c.url + '" data-action="' + (c.action ? 'true' : '') + '">';
-                    html += '<div class="ci-icon"><i class="fas ' + c.icon + '"></i></div>';
-                    html += '<div class="ci-text"><div class="ci-name">' + c.name + '</div><div class="ci-desc">' + c.desc + '</div></div>';
-                    html += '<div class="ci-arrow"><i class="fas fa-arrow-right"></i></div>';
-                    html += '</div>';
-                    idx++;
-                });
-            }
             results.innerHTML = html;
-
-            // Re-attach click events
-            results.querySelectorAll('.cmd-item').forEach(function(item) {
-                item.addEventListener('click', function() {
-                    var url = this.getAttribute('data-url');
-                    if (this.getAttribute('data-action') === 'true') {
-                        var cmd = commands.find(function(c) { return c.action; });
-                        if (cmd && cmd.action) cmd.action();
-                    } else {
-                        window.location.href = url;
-                    }
-                });
-            });
         }
 
         function openPalette() {
@@ -911,7 +888,7 @@
             input.value = '';
             activeIndex = -1;
             render('');
-            setTimeout(function() { input.focus(); }, 50);
+            setTimeout(function() { input.focus(); }, 100);
         }
 
         function closePalette() {
@@ -933,8 +910,8 @@
                 e.preventDefault();
                 var items = results.querySelectorAll('.cmd-item');
                 if (items.length === 0) return;
-                if (e.key === 'ArrowDown') activeIndex = (activeIndex + 1) % items.length;
-                else activeIndex = (activeIndex - 1 + items.length) % items.length;
+                if (e.key === 'ArrowDown') activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                else activeIndex = Math.max(activeIndex - 1, 0);
                 items.forEach(function(item) { item.classList.remove('active'); });
                 items[activeIndex].classList.add('active');
                 items[activeIndex].scrollIntoView({ block: 'nearest' });
@@ -943,7 +920,7 @@
                 e.preventDefault();
                 var items = results.querySelectorAll('.cmd-item');
                 if (items.length > 0 && activeIndex >= 0) {
-                    items[activeIndex].click();
+                    window.location.href = flatList[activeIndex].url;
                 }
             }
         });
@@ -957,7 +934,7 @@
             render(this.value);
         });
 
-        // Inject search trigger into each sidebar, after the brand
+        // Inject search trigger into each sidebar
         document.querySelectorAll('.sidebar').forEach(function(sidebar) {
             var brand = sidebar.querySelector('.sidebar-brand');
             if (brand) {
@@ -966,10 +943,7 @@
                 var btn = document.createElement('button');
                 btn.className = 'cmd-trigger-btn';
                 btn.innerHTML = '<i class="fas fa-search"></i> Search<kbd>Ctrl+K</kbd>';
-                btn.addEventListener('click', function() {
-                    overlay.classList.add('open');
-                    setTimeout(function() { input.focus(); }, 50);
-                });
+                btn.addEventListener('click', function() { openPalette(); });
                 trigger.appendChild(btn);
                 brand.insertAdjacentElement('afterend', trigger);
             }
