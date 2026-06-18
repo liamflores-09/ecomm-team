@@ -963,7 +963,14 @@
             if (brand) {
                 var trigger = document.createElement('div');
                 trigger.className = 'cmd-trigger';
-                trigger.innerHTML = '<button class="cmd-trigger-btn" onclick="document.getElementById(\'cmdOverlay\').classList.add(\'open\');setTimeout(function(){document.getElementById(\'cmdInput\').focus();},50);"><i class="fas fa-search"></i> Search<kbd>Ctrl+K</kbd></button>';
+                var btn = document.createElement('button');
+                btn.className = 'cmd-trigger-btn';
+                btn.innerHTML = '<i class="fas fa-search"></i> Search<kbd>Ctrl+K</kbd>';
+                btn.addEventListener('click', function() {
+                    overlay.classList.add('open');
+                    setTimeout(function() { input.focus(); }, 50);
+                });
+                trigger.appendChild(btn);
                 brand.insertAdjacentElement('afterend', trigger);
             }
         });
