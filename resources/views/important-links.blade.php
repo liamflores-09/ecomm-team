@@ -246,6 +246,12 @@
 
         .link-content { padding: 1rem; }
     }
+
+    @media (max-width: 480px) {
+        .cat-tab { min-width: 60px; padding: 0.375rem 0.5rem; font-size: 0.7rem; }
+        .link-row { padding: 0.625rem 0.75rem; }
+        .link-row .lr-name { font-size: 0.8rem; }
+    }
 </style>
 @endsection
 

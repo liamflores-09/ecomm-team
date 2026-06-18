@@ -184,10 +184,14 @@
     @media (max-width: 768px) {
         .stat-grid { grid-template-columns: repeat(2, 1fr); }
         .quick-grid { grid-template-columns: 1fr; }
+        .welcome-banner { padding: 1.5rem; }
+        .welcome-banner h2 { font-size: 1.25rem; }
     }
 
     @media (max-width: 480px) {
         .stat-grid { grid-template-columns: 1fr; }
+        .recent-item { flex-wrap: wrap; }
+        .recent-time { margin-left: 0; width: 100%; margin-top: 0.25rem; }
     }
 </style>
 @endsection

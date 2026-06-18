@@ -452,10 +452,16 @@
         .add-fields .add-field { width: 100%; }
         .toolbar { flex-direction: column; align-items: stretch; }
         .toolbar-left, .toolbar-right { width: 100%; }
-        .toolbar-right { margin-left: 0; justify-content: stretch; }
+        .toolbar-right { margin-left: 0; justify-content: stretch; flex-wrap: wrap; }
         .toolbar-right .btn-flat-primary,
-        .toolbar-right .btn-flat-secondary { flex: 1; }
+        .toolbar-right .btn-flat-secondary { flex: 1; min-width: 80px; }
         .search-box { min-width: 0; width: 100%; }
+        .table-wrap { overflow-x: auto; }
+    }
+
+    @media (max-width: 480px) {
+        .add-card { padding: 1rem; }
+        .type-pills button { padding: 0 0.625rem; font-size: 0.8rem; }
     }
 </style>
 @endsection

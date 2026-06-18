@@ -197,6 +197,9 @@
 
     @media (max-width: 768px) {
         .admin-stat-row { grid-template-columns: 1fr 1fr; }
+        .user-table-wrap { overflow-x: auto; }
+        .role-filter { flex-wrap: wrap; }
+        .rf-btn { font-size: 0.7rem; padding: 0.3rem 0.5rem; }
     }
 
     @media (max-width: 480px) {

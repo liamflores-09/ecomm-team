@@ -136,6 +136,10 @@
         .req-table tbody td:first-child {
             box-shadow: 2px 0 0 var(--white);
         }
+    @media (max-width: 480px) {
+        .req-table { font-size: 0.75rem; }
+        .req-table thead th,
+        .req-table tbody td { padding: 0.5rem; }
     }
 </style>
 @endsection

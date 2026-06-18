@@ -450,9 +450,6 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-        .sidebar { display: none; }
-        .main-content { margin-left: 0; padding: 1.5rem 1rem; }
-
         .timeline { padding-left: 2.25rem; }
         .timeline::before { left: 13px; }
 
@@ -473,13 +470,16 @@
 
         .platform-list li { gap: 0.5rem; }
         .pl-num { width: 24px; height: 24px; font-size: 0.65rem; }
+
+        .folder-tree { overflow-x: auto; }
+        .folder-tree pre { font-size: 0.7rem; }
     }
 
     @media (max-width: 480px) {
         .step-head h5 { font-size: 0.9rem; }
         .def-block p { font-size: 0.85rem; }
         .task-list li { font-size: 0.85rem; }
-        .folder-tree pre { font-size: 0.7rem; }
+        .callout p, .callout li { font-size: 0.8rem; }
     }
 </style>
 @endsection

@@ -322,6 +322,8 @@
         .ref-item:nth-child(2n) { border-right: none; }
         .ref-item:nth-last-child(-n+2) { border-bottom: none; }
         .ref-item:nth-child(3n) { border-right: 2px solid var(--muted); }
+
+        .ex-table-wrap { overflow-x: auto; }
     }
 
     @media (max-width: 480px) {
@@ -332,6 +334,8 @@
         .ref-grid { grid-template-columns: 1fr; }
         .ref-item { border-right: none !important; border-bottom: 2px solid var(--muted) !important; }
         .ref-item:last-child { border-bottom: none !important; }
+
+        .info-banner { flex-direction: column; text-align: center; }
     }
 </style>
 @endsection

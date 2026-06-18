@@ -250,8 +250,15 @@
     }
 
     @media (max-width: 768px) {
+        .welcome-banner { padding: 1.5rem; }
+        .welcome-banner h2 { font-size: 1.25rem; }
         .quick-links { grid-template-columns: 1fr; }
         .ref-grid { grid-template-columns: repeat(2, 1fr); }
+        .team-row { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 480px) {
+        .ref-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
