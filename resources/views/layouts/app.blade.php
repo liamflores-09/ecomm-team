@@ -627,6 +627,64 @@
         ::-webkit-scrollbar-track { background: var(--muted); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
 
+        /* ====== MOBILE TOGGLE ====== */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 200;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: var(--fg);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.show { display: block; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1.5rem 1rem !important;
+                padding-top: 4rem !important;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 1rem;
+            }
+
+            .cmd-trigger { display: none; }
+        }
+
         /* ====== COMMAND PALETTE ====== */
         .cmd-overlay {
             display: none;
@@ -818,6 +876,12 @@
     @yield('styles')
 </head>
 <body>
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     @yield('content')
 
     <!-- Command Palette -->
@@ -840,6 +904,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function toggleSidebar() {
+        var sidebar = document.querySelector('.sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+    </script>
 
     <script>
     (function() {
