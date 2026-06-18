@@ -875,12 +875,10 @@
 </head>
 <body>
     <!-- Mobile Toggle -->
-    @hasSection('has-sidebar')
     <button class="mobile-toggle" id="mobileToggle">
         <i class="fas fa-bars"></i> Menu
     </button>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    @endif
 
     @yield('content')
 
@@ -906,36 +904,60 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var toggle = document.getElementById('mobileToggle');
         var sidebar = document.querySelector('.sidebar');
+        var toggle = document.getElementById('mobileToggle');
         var overlay = document.getElementById('sidebarOverlay');
 
-        if (!toggle || !sidebar || !overlay) return;
+        // If no sidebar on this page, keep toggle hidden forever
+        if (!sidebar) {
+            toggle.style.display = 'none';
+            return;
+        }
 
-        toggle.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-        });
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
 
-        overlay.addEventListener('click', function() {
+        function showToggle() {
+            toggle.style.display = isMobile() ? 'flex' : 'none';
+        }
+
+        function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+        }
+
+        // Initial state
+        showToggle();
+
+        // Toggle button
+        toggle.addEventListener('click', function() {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
         });
 
+        // Overlay click closes
+        overlay.addEventListener('click', closeSidebar);
+
+        // Nav link click closes on mobile
         sidebar.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('show');
-                }
+                if (isMobile()) closeSidebar();
             });
         });
 
+        // Resize handler
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('show');
-            }
+            showToggle();
+            if (!isMobile()) closeSidebar();
         });
     });
     </script>

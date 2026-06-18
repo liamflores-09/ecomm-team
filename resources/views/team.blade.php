@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', 'The Team — Ecomm Dept')
-@section('has-sidebar', true)
 
 @section('styles')
 <style>
