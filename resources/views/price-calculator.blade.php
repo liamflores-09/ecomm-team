@@ -457,9 +457,6 @@
             <button class="btn-flat-secondary" style="height: 40px; padding: 0 0.875rem; font-size: 0.8rem;" onclick="deleteSelectedRows()">
                 <i class="fas fa-trash-can"></i> Delete
             </button>
-            <button class="btn-flat-primary" style="height: 40px; padding: 0 0.875rem; font-size: 0.8rem;" onclick="calculateAll()">
-                <i class="fas fa-calculator"></i> Calculate
-            </button>
         </div>
     </div>
 
@@ -686,14 +683,6 @@
             priceData = priceData.filter(function(i){return ids.indexOf(i.id) === -1;});
             save(); render();
         }
-    };
-
-    window.calculateAll = function() {
-        for (var i = 0; i < priceData.length; i++) {
-            priceData[i].min = getMinForGroup(priceData[i].group);
-            priceData[i].max = getMaxForGroup(priceData[i].group);
-        }
-        save(); render();
     };
 
     window.toggleSelectAll = function(checked) {
