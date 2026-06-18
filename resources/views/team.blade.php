@@ -120,8 +120,31 @@
 
     .lc-info { flex: 1; }
 
-    .lc-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.125rem; text-transform: lowercase; }
+    .lc-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.125rem; }
     .lc-role { font-size: 0.8rem; font-weight: 500; color: var(--gray-400); margin-bottom: 0.5rem; }
+
+    .lc-mobile {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .lc-mobile a {
+        color: inherit;
+        text-decoration: none;
+        transition: opacity 0.15s;
+    }
+
+    .lc-mobile a:hover { opacity: 0.7; }
+
+    .viber-icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
 
     .lc-badge {
         display: inline-block;
@@ -160,7 +183,7 @@
         object-fit: cover;
     }
 
-    .member-name { font-weight: 700; font-size: 0.85rem; text-transform: lowercase; }
+    .member-name { font-weight: 700; font-size: 0.85rem; }
     .member-role { font-size: 0.7rem; font-weight: 500; color: var(--gray-400); }
 
     /* Empty state */
@@ -207,7 +230,7 @@
         object-fit: cover;
     }
 
-    .dc-name { font-weight: 800; font-size: 1rem; text-transform: lowercase; }
+    .dc-name { font-weight: 800; font-size: 1rem; }
     .dc-role { font-size: 0.75rem; font-weight: 500; color: var(--gray-400); }
 
     .prio-label {
@@ -320,6 +343,12 @@
             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $m->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $m->username }}">
             <div class="lc-info">
                 <div class="lc-name">{{ $m->first_name }} {{ $m->last_name }}</div>
+                @if($m->mobile_number)
+                <div class="lc-mobile">
+                    <svg class="viber-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="white"/></svg>
+                    <a href="viber://chat?number={{ $m->mobile_number }}">{{ $m->mobile_number }}</a>
+                </div>
+                @endif
                 <div class="lc-role">{{ $m->role }}</div>
                 <span class="lc-badge">Manager</span>
             </div>
@@ -342,6 +371,12 @@
             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $l->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $l->username }}">
             <div class="lc-info">
                 <div class="lc-name">{{ $l->first_name }} {{ $l->last_name }}</div>
+                @if($l->mobile_number)
+                <div class="lc-mobile">
+                    <svg class="viber-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>
+                    <a href="viber://chat?number={{ $l->mobile_number }}">{{ $l->mobile_number }}</a>
+                </div>
+                @endif
                 <div class="lc-role">{{ $l->role }}</div>
                 <span class="lc-badge">Lead</span>
             </div>
@@ -363,9 +398,15 @@
         @foreach($content as $c)
         <div class="member-card">
             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $c->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $c->username }}">
-            <div>
+            <div style="flex: 1; min-width: 0;">
                 <div class="member-name">{{ $c->first_name }} {{ $c->last_name }}</div>
                 <div class="member-role">Content Associate</div>
+                @if($c->mobile_number)
+                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; font-size: 0.7rem; color: var(--gray-400);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
+                    <a href="viber://chat?number={{ $c->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $c->mobile_number }}</a>
+                </div>
+                @endif
             </div>
         </div>
         @endforeach
@@ -392,9 +433,16 @@
             <div class="design-card-header">
                 <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $g->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="{{ $g->username }}">
                 <div>
-                    <div class="dc-name">{{ $g->first_name }}</div>
+                    <div class="dc-name">{{ $g->first_name }} {{ $g->last_name }}</div>
                     <div class="dc-role">Graphic Designer</div>
+                    @if($g->mobile_number)
+                    <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; font-size: 0.7rem; color: var(--gray-400);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
+                        <a href="viber://chat?number={{ $g->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $g->mobile_number }}</a>
+                    </div>
+                    @endif
                 </div>
+            </div>
             </div>
             <div class="prio-label">Priorities</div>
             <div class="prio-tags">
