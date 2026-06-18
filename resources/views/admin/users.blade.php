@@ -249,8 +249,15 @@
         <div class="admin-stat">
             <div class="as-icon" style="background: #DC2626;"><i class="fas fa-user-shield"></i></div>
             <div>
-                <div class="as-count">{{ $users->whereIn('role', ['admin', 'manager'])->count() }}</div>
-                <div class="as-label">Admins / Managers</div>
+                <div class="as-count">{{ $users->where('role', 'manager')->count() }}</div>
+                <div class="as-label">Managers</div>
+            </div>
+        </div>
+        <div class="admin-stat">
+            <div class="as-icon" style="background: #EC4899;"><i class="fas fa-crown"></i></div>
+            <div>
+                <div class="as-count">{{ $users->where('role', 'lead')->count() }}</div>
+                <div class="as-label">Leads</div>
             </div>
         </div>
         <div class="admin-stat">
@@ -303,8 +310,8 @@
                     <td>
                         @php
                             $roleColors = [
-                                'admin' => ['bg' => '#FEE2E2', 'text' => '#DC2626'],
                                 'manager' => ['bg' => '#FEF3C7', 'text' => '#D97706'],
+                                'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777'],
                                 'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
                                 'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
                             ];
@@ -392,8 +399,8 @@
                         <div class="role-pills" id="addRolePills">
                             <button type="button" class="active" onclick="setRole('add', 'content', this)">Content</button>
                             <button type="button" onclick="setRole('add', 'graphics', this)">Graphics</button>
+                            <button type="button" onclick="setRole('add', 'lead', this)">Lead</button>
                             <button type="button" onclick="setRole('add', 'manager', this)">Manager</button>
-                            <button type="button" onclick="setRole('add', 'admin', this)">Admin</button>
                         </div>
                     </div>
                 </div>
@@ -446,8 +453,8 @@
                         <div class="role-pills" id="editRolePills">
                             <button type="button" onclick="setRole('edit', 'content', this)">Content</button>
                             <button type="button" onclick="setRole('edit', 'graphics', this)">Graphics</button>
+                            <button type="button" onclick="setRole('edit', 'lead', this)">Lead</button>
                             <button type="button" onclick="setRole('edit', 'manager', this)">Manager</button>
-                            <button type="button" onclick="setRole('edit', 'admin', this)">Admin</button>
                         </div>
                     </div>
                 </div>

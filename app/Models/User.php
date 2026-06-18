@@ -32,7 +32,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin' || $this->role === 'manager';
+        return $this->role === 'manager';
     }
 
     public function getFullNameAttribute(): string

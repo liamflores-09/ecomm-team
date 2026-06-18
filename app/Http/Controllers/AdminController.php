@@ -27,7 +27,7 @@ class AdminController extends Controller
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,manager,content,graphics',
+            'role' => 'required|in:manager,lead,content,graphics',
         ]);
 
         User::create([
@@ -47,7 +47,7 @@ class AdminController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'role' => 'required|in:admin,manager,content,graphics',
+            'role' => 'required|in:manager,lead,content,graphics',
             'password' => 'nullable|string|min:6',
         ]);
 
