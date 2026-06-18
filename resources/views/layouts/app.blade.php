@@ -631,11 +631,12 @@
         .mobile-toggle {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 1rem;
+            right: 1rem;
             z-index: 200;
-            height: 48px;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
             background: var(--fg);
             color: white;
             border: none;
@@ -643,9 +644,6 @@
             cursor: pointer;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
         }
 
         .sidebar-overlay {
@@ -868,7 +866,7 @@
 <body>
     <!-- Mobile Toggle (always rendered, JS shows/hides) -->
     <button class="mobile-toggle" id="mobileToggle" style="display:none;">
-        <i class="fas fa-bars"></i> Menu
+        <i class="fas fa-bars"></i>
     </button>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
