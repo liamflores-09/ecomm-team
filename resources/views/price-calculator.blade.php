@@ -146,8 +146,17 @@
 
     .search-box input::placeholder { color: var(--gray-300); }
 
-    .filter-select {
+    /* Custom Dropdown */
+    .custom-dropdown {
+        position: relative;
         height: 40px;
+    }
+
+    .custom-dropdown .dd-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 100%;
         padding: 0 0.75rem;
         background: var(--white);
         border: 2px solid var(--border);
@@ -157,8 +166,89 @@
         font-weight: 500;
         color: var(--fg);
         cursor: pointer;
-        outline: none;
-        appearance: auto;
+        transition: all 0.15s;
+        user-select: none;
+        white-space: nowrap;
+    }
+
+    .custom-dropdown .dd-trigger:hover {
+        border-color: var(--primary);
+    }
+
+    .custom-dropdown .dd-trigger .dd-arrow {
+        margin-left: auto;
+        font-size: 0.6rem;
+        color: var(--gray-400);
+        transition: transform 0.2s;
+    }
+
+    .custom-dropdown.open .dd-trigger {
+        border-color: var(--primary);
+    }
+
+    .custom-dropdown.open .dd-trigger .dd-arrow {
+        transform: rotate(180deg);
+    }
+
+    .custom-dropdown .dd-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        z-index: 20;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0.25rem;
+    }
+
+    .custom-dropdown.open .dd-menu {
+        display: block;
+        animation: fadeInUp 0.15s ease-out;
+    }
+
+    .custom-dropdown .dd-item {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.625rem;
+        border-radius: 4px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--fg);
+        cursor: pointer;
+        transition: all 0.1s;
+        gap: 0.5rem;
+    }
+
+    .custom-dropdown .dd-item:hover {
+        background: var(--muted);
+    }
+
+    .custom-dropdown .dd-item.selected {
+        background: var(--primary);
+        color: white;
+    }
+
+    .custom-dropdown .dd-item .dd-check {
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--border);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.5rem;
+        flex-shrink: 0;
+        transition: all 0.1s;
+    }
+
+    .custom-dropdown .dd-item.selected .dd-check {
+        border-color: white;
+        background: rgba(255,255,255,0.2);
     }
 
     .result-count {
@@ -449,9 +539,16 @@
                 <i class="fas fa-search" style="color: var(--gray-300); font-size: 0.8rem;"></i>
                 <input type="text" id="searchInput" placeholder="Search by Group, SKU, or Price..." oninput="handleSearch(this.value)">
             </div>
-            <select class="filter-select" id="groupFilterSelect" onchange="handleGroupFilter(this.value)">
+            <select class="filter-select" id="groupFilterSelect" onchange="handleGroupFilter(this.value)" style="display: none;">
                 <option value="all">All Groups</option>
             </select>
+            <div class="custom-dropdown" id="groupDropdown">
+                <div class="dd-trigger" onclick="toggleDropdown('groupDropdown')">
+                    <span id="groupDropdownLabel">All Groups</span>
+                    <span class="dd-arrow"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="dd-menu" id="groupDropdownMenu"></div>
+            </div>
         </div>
         <div class="toolbar-right">
             <span class="result-count" id="resultCount">0 results</span>
@@ -566,6 +663,18 @@
         groups.forEach(function(g) { sel.innerHTML += '<option value="' + g + '">Group ' + g + '</option>'; });
         if (cur !== 'all' && groups.indexOf(parseInt(cur)) !== -1) sel.value = cur;
         else { currentGroupFilter = 'all'; sel.value = 'all'; }
+
+        var menu = document.getElementById('groupDropdownMenu');
+        var html = '<div class="dd-item' + (currentGroupFilter === 'all' ? ' selected' : '') + '" onclick="selectGroupOption(\'all\', this)"><span class="dd-check">' + (currentGroupFilter === 'all' ? '<i class="fas fa-check"></i>' : '') + '</span>All Groups</div>';
+        groups.forEach(function(g) {
+            var isActive = currentGroupFilter === g.toString();
+            html += '<div class="dd-item' + (isActive ? ' selected' : '') + '" onclick="selectGroupOption(\'' + g + '\', this)"><span class="dd-check">' + (isActive ? '<i class="fas fa-check"></i>' : '') + '</span>Group ' + g + '</div>';
+        });
+        menu.innerHTML = html;
+
+        var label = document.getElementById('groupDropdownLabel');
+        if (currentGroupFilter === 'all') label.textContent = 'All Groups';
+        else label.textContent = 'Group ' + currentGroupFilter;
     }
 
     function getFiltered() {
@@ -698,8 +807,31 @@
         document.getElementById('groupFilterSelect').value = 'all';
         currentSearch = '';
         currentGroupFilter = 'all';
+        document.getElementById('groupDropdownLabel').textContent = 'All Groups';
         render();
     };
+
+    // --- Custom Dropdown ---
+    window.toggleDropdown = function(id) {
+        var dd = document.getElementById(id);
+        var isOpen = dd.classList.contains('open');
+        document.querySelectorAll('.custom-dropdown').forEach(function(d){ d.classList.remove('open'); });
+        if (!isOpen) dd.classList.add('open');
+    };
+
+    window.selectGroupOption = function(val, el) {
+        document.getElementById('groupFilterSelect').value = val;
+        document.getElementById('groupDropdownLabel').textContent = el.textContent.trim();
+        document.querySelectorAll('.custom-dropdown').forEach(function(d){ d.classList.remove('open'); });
+        currentGroupFilter = val;
+        render();
+    };
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-dropdown')) {
+            document.querySelectorAll('.custom-dropdown').forEach(function(d){ d.classList.remove('open'); });
+        }
+    });
 
     load(); render();
 })();
