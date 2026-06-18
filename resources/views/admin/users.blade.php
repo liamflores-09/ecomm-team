@@ -197,13 +197,16 @@
 
     @media (max-width: 768px) {
         .admin-stat-row { grid-template-columns: 1fr 1fr; }
-        .user-table-wrap { overflow-x: auto; }
+        .user-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .user-table { min-width: 650px; }
         .role-filter { flex-wrap: wrap; }
         .rf-btn { font-size: 0.7rem; padding: 0.3rem 0.5rem; }
+        .action-btns { flex-direction: column; gap: 0.25rem; }
     }
 
     @media (max-width: 480px) {
         .admin-stat-row { grid-template-columns: 1fr; }
+        .user-table { min-width: 550px; }
     }
 </style>
 @endsection

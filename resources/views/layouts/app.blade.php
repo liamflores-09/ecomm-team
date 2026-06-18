@@ -877,7 +877,7 @@
 </head>
 <body>
     <!-- Mobile Toggle -->
-    <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">
+    <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()" style="display:none;">
         <i class="fas fa-bars"></i>
     </button>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -908,9 +908,29 @@
     function toggleSidebar() {
         var sidebar = document.querySelector('.sidebar');
         var overlay = document.getElementById('sidebarOverlay');
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
     }
+
+    // Only show hamburger if sidebar exists and screen is mobile
+    function checkMobile() {
+        var sidebar = document.querySelector('.sidebar');
+        var toggle = document.getElementById('mobileToggle');
+        if (sidebar && window.innerWidth <= 768) {
+            toggle.style.display = 'flex';
+        } else {
+            toggle.style.display = 'none';
+            // Close sidebar if switching to desktop
+            if (sidebar) sidebar.classList.remove('open');
+            var overlay = document.getElementById('sidebarOverlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+    }
+
+    window.addEventListener('load', checkMobile);
+    window.addEventListener('resize', checkMobile);
     </script>
 
     <script>
