@@ -31,4 +31,9 @@ class DashboardController extends Controller
     {
         return view('price-calculator');
     }
+
+    public function endOfDay()
+    {
+        return view('end-of-day');
+    }
 }

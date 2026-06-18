@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/data-gathering', [DashboardController::class, 'dataGathering'])->name('data-gathering');
     Route::get('/ecommerce-requirements', [DashboardController::class, 'ecommerceRequirements'])->name('ecommerce-requirements');
     Route::get('/price-calculator', [DashboardController::class, 'priceCalculator'])->name('price-calculator');
+    Route::get('/end-of-day', [DashboardController::class, 'endOfDay'])->name('end-of-day');
 
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
