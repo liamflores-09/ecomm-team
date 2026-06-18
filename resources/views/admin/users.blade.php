@@ -6,10 +6,149 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23DC2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 00-3-3.87'/><path d='M16 3.13a4 4 0 010 7.75'/></svg>">
 @endsection
 
+@section('styles')
+<style>
+    .admin-stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .admin-stat {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+    }
+
+    .admin-stat .as-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .admin-stat .as-count {
+        font-size: 1.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .admin-stat .as-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--gray-500);
+    }
+
+    .user-table-wrap {
+        background: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+
+    .user-table thead th {
+        background: var(--muted);
+        padding: 0.875rem 1rem;
+        font-weight: 700;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gray-500);
+        text-align: left;
+    }
+
+    .user-table tbody td {
+        padding: 0.875rem 1rem;
+        border-top: 2px solid var(--muted);
+        vertical-align: middle;
+    }
+
+    .user-table tbody tr:hover td {
+        background: #F8FAFC;
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .user-name {
+        font-weight: 600;
+    }
+
+    .user-id {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 0.375rem;
+        justify-content: flex-end;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: transparent;
+        color: var(--gray-500);
+    }
+
+    .action-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .action-btn.btn-danger:hover {
+        border-color: #DC2626;
+        color: #DC2626;
+    }
+
+    .action-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        .admin-stat-row { grid-template-columns: 1fr; }
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon" style="background: #DC2626;">EC</div>
+        <div class="brand-icon" style="background: #DC2626;">ED</div>
         <div>
             <h5>Ecomm Dept</h5>
             <span>Admin Panel</span>
@@ -30,10 +169,12 @@
 </div>
 
 <div class="main-content">
-    <div class="top-bar anim-up">
+    <a href="{{ route('admin.dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+    <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>
             <h2>Manage <span class="highlight">Users</span></h2>
-            <p>Add or remove team members</p>
+            <p>Add, edit, or remove team members</p>
         </div>
         <div class="user-badge">
             <div class="avatar admin-av">{{ strtoupper(substr($user->username, 0, 1)) }}</div>
@@ -52,20 +193,42 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <div class="section-header anim-up d1" style="margin-bottom: 1rem;">
-        <div class="d-flex justify-content-between align-items-center">
+    <!-- Stats -->
+    <div class="admin-stat-row anim-up d1">
+        <div class="admin-stat">
+            <div class="as-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
             <div>
-                <h3>Team Members</h3>
-                <p>{{ $users->count() }} user(s) registered</p>
+                <div class="as-count">{{ $users->count() }}</div>
+                <div class="as-label">Total Users</div>
             </div>
-            <button class="btn-flat-primary" data-bs-toggle="modal" data-bs-target="#addUserModal" style="height: 44px; padding: 0 1.25rem; font-size: 0.875rem;">
-                <i class="fas fa-plus"></i> Add User
-            </button>
+        </div>
+        <div class="admin-stat">
+            <div class="as-icon" style="background: var(--secondary);"><i class="fas fa-user-shield"></i></div>
+            <div>
+                <div class="as-count">{{ $users->where('role', 'admin')->count() }}</div>
+                <div class="as-label">Admins</div>
+            </div>
+        </div>
+        <div class="admin-stat">
+            <div class="as-icon" style="background: var(--accent);"><i class="fas fa-user"></i></div>
+            <div>
+                <div class="as-count">{{ $users->where('role', 'user')->count() }}</div>
+                <div class="as-label">Users</div>
+            </div>
         </div>
     </div>
 
-    <div class="flat-card anim-up d2" style="padding: 0; overflow: hidden;">
-        <table class="table-flat">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;" class="anim-up d2">
+        <h3 style="font-weight: 800; font-size: 1rem;">Team Members</h3>
+        <button class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Add User
+        </button>
+    </div>
+
+    <!-- Table -->
+    <div class="user-table-wrap anim-up d2">
+        <table class="user-table">
             <thead>
                 <tr>
                     <th>User</th>
@@ -78,13 +241,11 @@
                 @forelse ($users as $u)
                 <tr>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <div style="width: 36px; height: 36px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">
-                                {{ strtoupper(substr($u->username, 0, 1)) }}
-                            </div>
+                        <div class="user-cell">
+                            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $u->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="user-avatar" alt="{{ $u->username }}">
                             <div>
-                                <div style="font-weight: 600;">{{ $u->username }}</div>
-                                <div style="font-size: 0.75rem; color: var(--gray-500);">ID: {{ $u->id }}</div>
+                                <div class="user-name">{{ $u->username }}</div>
+                                <div class="user-id">ID: {{ $u->id }}</div>
                             </div>
                         </div>
                     </td>
@@ -92,24 +253,31 @@
                         <span class="tag tag-{{ $u->role }}">{{ ucfirst($u->role) }}</span>
                     </td>
                     <td style="color: var(--gray-500);">{{ $u->created_at->diffForHumans() }}</td>
-                    <td style="text-align: right;">
-                        @if ($u->id !== $user->id)
-                        <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-flat-secondary" style="height: 36px; padding: 0 0.75rem; font-size: 0.8rem; color: #DC2626;">
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->username }}', '{{ $u->role }}')">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            @if ($u->id !== $user->id)
+                            <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="d-inline" onsubmit="return confirm('Delete {{ $u->username }}? This cannot be undone.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-btn btn-danger" title="Delete">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </form>
+                            @else
+                            <button class="action-btn" disabled title="Current user">
                                 <i class="fas fa-trash-can"></i>
                             </button>
-                        </form>
-                        @else
-                        <span style="font-size: 0.75rem; color: var(--gray-300); font-weight: 600;">Current user</span>
-                        @endif
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
                     <td colspan="4" style="text-align: center; padding: 3rem; color: var(--gray-300);">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-users"></i></div>
+                        <i class="fas fa-users" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                         No users found.
                     </td>
                 </tr>
@@ -120,11 +288,11 @@
 </div>
 
 <!-- Add User Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addUserModalLabel" style="font-weight: 700; font-size: 1.1rem;">
+                <h5 class="modal-title" style="font-weight: 700; font-size: 1rem;">
                     <i class="fas fa-user-plus" style="color: var(--primary); margin-right: 0.5rem;"></i>Add New User
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -155,8 +323,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-flat-secondary" data-bs-dismiss="modal" style="height: 44px; font-size: 0.875rem;">Cancel</button>
-                    <button type="submit" class="btn-flat-primary" style="height: 44px; font-size: 0.875rem;">
+                    <button type="button" class="btn-flat-secondary" data-bs-dismiss="modal" style="height: 40px; font-size: 0.85rem;">Cancel</button>
+                    <button type="submit" class="btn-flat-primary" style="height: 40px; font-size: 0.85rem;">
                         <i class="fas fa-plus"></i> Add User
                     </button>
                 </div>
@@ -164,4 +332,60 @@
         </div>
     </div>
 </div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-weight: 700; font-size: 1rem;">
+                    <i class="fas fa-pen" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="editUserForm">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div style="margin-bottom: 1rem;">
+                        <label class="label-flat">Username</label>
+                        <input type="text" name="username" id="editUsername" class="input-flat" placeholder="Enter username" required>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="label-flat">New Password <span style="color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0;">(leave blank to keep current)</span></label>
+                        <input type="password" name="password" class="input-flat" placeholder="Enter new password">
+                    </div>
+                    <div>
+                        <label class="label-flat">Role</label>
+                        <select name="role" id="editRole" class="input-flat" required style="appearance: auto;">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-flat-secondary" data-bs-dismiss="modal" style="height: 40px; font-size: 0.85rem;">Cancel</button>
+                    <button type="submit" class="btn-flat-primary" style="height: 40px; font-size: 0.85rem;">
+                        <i class="fas fa-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+function openAddModal() {
+    new bootstrap.Modal(document.getElementById('addUserModal')).show();
+}
+
+function openEditModal(id, username, role) {
+    document.getElementById('editUserForm').action = '/admin/users/' + id;
+    document.getElementById('editUsername').value = username;
+    document.getElementById('editRole').value = role;
+    new bootstrap.Modal(document.getElementById('editUserModal')).show();
+}
+</script>
 @endsection

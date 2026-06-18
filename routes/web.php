@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
         Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+        Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
     });
 });

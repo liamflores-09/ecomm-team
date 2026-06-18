@@ -9,7 +9,7 @@
 @section('content')
 <div class="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon" style="background: #DC2626;">EC</div>
+        <div class="brand-icon" style="background: #DC2626;">ED</div>
         <div>
             <h5>Ecomm Dept</h5>
             <span>Admin Panel</span>
