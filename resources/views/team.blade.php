@@ -27,18 +27,8 @@
         flex-shrink: 0;
     }
 
-    .team-hero h3 {
-        font-weight: 800;
-        font-size: 1.25rem;
-        margin-bottom: 0.25rem;
-    }
-
-    .team-hero p {
-        color: var(--gray-500);
-        font-weight: 500;
-        font-size: 0.9rem;
-        margin: 0;
-    }
+    .team-hero h3 { font-weight: 800; font-size: 1.25rem; margin-bottom: 0.25rem; }
+    .team-hero p { color: var(--gray-500); font-weight: 500; font-size: 0.9rem; margin: 0; }
 
     .team-hero .th-stats {
         display: flex;
@@ -54,11 +44,7 @@
         font-weight: 600;
     }
 
-    .th-stat .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-    }
+    .th-stat .dot { width: 8px; height: 8px; border-radius: 50%; }
 
     /* Section divider */
     .team-divider {
@@ -80,11 +66,7 @@
         flex-shrink: 0;
     }
 
-    .team-divider h3 {
-        font-weight: 800;
-        font-size: 1.1rem;
-        margin: 0;
-    }
+    .team-divider h3 { font-weight: 800; font-size: 1.1rem; margin: 0; }
 
     .team-divider .td-count {
         background: var(--muted);
@@ -95,13 +77,81 @@
         color: var(--gray-400);
     }
 
-    .team-divider .td-line {
-        flex: 1;
-        height: 2px;
-        background: var(--muted);
+    .team-divider .td-line { flex: 1; height: 2px; background: var(--muted); }
+
+    /* Leadership cards */
+    .leader-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
     }
 
-    /* Content Team */
+    .leader-card {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .leader-card:hover { transform: scale(1.01); }
+
+    .leader-card.manager {
+        background: var(--primary);
+    }
+
+    .leader-card.manager * { color: white !important; }
+    .leader-card.manager .lc-role { color: rgba(255,255,255,0.75) !important; }
+    .leader-card.manager .lc-badge { background: rgba(255,255,255,0.2); color: white !important; }
+
+    .leader-card.lead {
+        border: 2px solid var(--secondary);
+    }
+
+    .leader-card.lead .lc-badge { background: #D1FAE5; color: #059669; }
+
+    .lc-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        border: 3px solid var(--muted);
+        object-fit: cover;
+    }
+
+    .leader-card.manager .lc-avatar { border-color: rgba(255,255,255,0.3); }
+
+    .lc-info { flex: 1; }
+
+    .lc-name {
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-bottom: 0.125rem;
+    }
+
+    .lc-role {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--gray-400);
+        margin-bottom: 0.5rem;
+    }
+
+    .lc-badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    /* Content team grid */
     .content-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -111,82 +161,27 @@
     .member-card {
         background: var(--white);
         border-radius: 8px;
-        padding: 1.25rem;
+        padding: 1rem;
         display: flex;
         align-items: center;
-        gap: 0.875rem;
+        gap: 0.75rem;
         transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
     }
 
-    .member-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: var(--primary);
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-
-    .member-card:hover {
-        transform: scale(1.02);
-    }
-
-    .member-card:hover::before {
-        opacity: 1;
-    }
+    .member-card:hover { transform: scale(1.02); }
 
     .member-avatar {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 0.85rem;
-        color: white;
         flex-shrink: 0;
+        object-fit: cover;
     }
 
-    .member-info h5 {
-        font-weight: 700;
-        font-size: 0.9rem;
-        margin: 0;
-        line-height: 1.2;
-    }
+    .member-info h5 { font-weight: 700; font-size: 0.85rem; margin: 0; line-height: 1.2; }
+    .member-info span { font-size: 0.7rem; font-weight: 500; color: var(--gray-400); }
 
-    .member-info span {
-        font-size: 0.7rem;
-        font-weight: 500;
-        color: var(--gray-400);
-    }
-
-    /* Manager special card */
-    .member-card.manager {
-        grid-column: span 1;
-        background: var(--primary);
-        color: white;
-    }
-
-    .member-card.manager .member-info h5 { color: white; }
-    .member-card.manager .member-info span { color: rgba(255,255,255,0.7); }
-    .member-card.manager::before { display: none; }
-
-    /* Lead special card */
-    .member-card.lead {
-        border: 2px solid var(--secondary);
-    }
-
-    .member-card.lead::before {
-        background: var(--secondary);
-    }
-
-    /* Design Team */
+    /* Design team */
     .design-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -198,63 +193,29 @@
         border-radius: 8px;
         padding: 1.5rem;
         transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
     }
 
-    .design-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 80px;
-        height: 80px;
-        background: var(--muted);
-        border-radius: 0 0 0 50%;
-        opacity: 0.5;
-    }
-
-    .design-card:hover {
-        transform: scale(1.01);
-    }
+    .design-card:hover { transform: scale(1.01); }
 
     .design-card-header {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.875rem;
         margin-bottom: 1rem;
-        position: relative;
-        z-index: 1;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--muted);
     }
 
     .dc-avatar {
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 1rem;
-        color: white;
         flex-shrink: 0;
+        object-fit: cover;
     }
 
-    .dc-name {
-        font-weight: 800;
-        font-size: 1.05rem;
-    }
-
-    .dc-role {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--gray-400);
-    }
-
-    .prio-section {
-        position: relative;
-        z-index: 1;
-    }
+    .dc-name { font-weight: 800; font-size: 1rem; }
+    .dc-role { font-size: 0.75rem; font-weight: 500; color: var(--gray-400); }
 
     .prio-label {
         font-weight: 700;
@@ -265,11 +226,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .prio-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.375rem;
-    }
+    .prio-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
 
     .prio-tag {
         padding: 0.25rem 0.625rem;
@@ -284,18 +241,8 @@
     .prio-tag.pt-purple { background: #EDE9FE; color: #7C3AED; }
     .prio-tag.pt-red { background: #FEE2E2; color: #DC2626; }
 
-    /* Avatar colors */
-    .av-1 { background: var(--primary); }
-    .av-2 { background: var(--secondary); }
-    .av-3 { background: var(--accent); }
-    .av-4 { background: #8B5CF6; }
-    .av-5 { background: #EC4899; }
-    .av-6 { background: #14B8A6; }
-    .av-7 { background: #F97316; }
-    .av-8 { background: #06B6D4; }
-    .av-9 { background: #84CC16; }
-
     @media (max-width: 768px) {
+        .leader-row { grid-template-columns: 1fr; }
         .content-grid { grid-template-columns: 1fr 1fr; }
         .design-grid { grid-template-columns: 1fr; }
         .team-hero { flex-direction: column; text-align: center; }
@@ -368,66 +315,72 @@
         <div class="td-line"></div>
     </div>
 
-    <!-- Content Team Grid -->
-    <div class="content-grid anim-up d2">
-        <div class="member-card manager">
-            <div class="member-avatar" style="background: rgba(255,255,255,0.2);">KL</div>
-            <div class="member-info">
-                <h5>Kevin Lim</h5>
-                <span>E-Commerce Manager</span>
+    <!-- Leadership Row -->
+    <div class="leader-row anim-up d2">
+        <div class="leader-card manager">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=KevinLim&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="Kevin Lim">
+            <div class="lc-info">
+                <div class="lc-name">Kevin Lim</div>
+                <div class="lc-role">E-Commerce Manager</div>
+                <span class="lc-badge">Manager</span>
             </div>
         </div>
-        <div class="member-card lead">
-            <div class="member-avatar av-2">MG</div>
-            <div class="member-info">
-                <h5>Milo Gorospe</h5>
-                <span>Content / PR Lead</span>
+        <div class="leader-card lead">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MiloGorospe&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="Milo Gorospe">
+            <div class="lc-info">
+                <div class="lc-name">Milo Gorospe</div>
+                <div class="lc-role">Content / PR Lead</div>
+                <span class="lc-badge">Lead</span>
             </div>
         </div>
+    </div>
+
+    <!-- Content Associates -->
+    <div class="content-grid anim-up d3">
         <div class="member-card">
-            <div class="member-avatar av-3">AC</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=AngelynCatolico&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Angelyn Catolico">
             <div class="member-info">
                 <h5>Angelyn Catolico</h5>
                 <span>Content Associate / Backend</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-4">CL</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=CzeinLaruscain&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Czein Laruscain">
             <div class="member-info">
                 <h5>Czein Laruscain</h5>
                 <span>Content Associate</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-5">JO</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=JamieOrtiz&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Jamie Ortiz">
             <div class="member-info">
                 <h5>Jamie Ortiz</h5>
                 <span>Product Researcher</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-6">WD</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=WellDacoco&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Well Dacoco">
             <div class="member-info">
                 <h5>Well Dacoco</h5>
                 <span>Product Researcher</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-7">ED</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=EmDelosSantos&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Em Delos Santos">
             <div class="member-info">
                 <h5>Em Delos Santos</h5>
                 <span>Content Associate</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-8">ME</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MarkIvanEmpleo&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Mark Ivan Empleo">
             <div class="member-info">
                 <h5>Mark Ivan Empleo</h5>
                 <span>Content Associate</span>
             </div>
         </div>
         <div class="member-card">
-            <div class="member-avatar av-9">LF</div>
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=LiamFlores&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="Liam Flores">
             <div class="member-info">
                 <h5>Liam Flores</h5>
                 <span>Content Associate</span>
@@ -436,7 +389,7 @@
     </div>
 
     <!-- Design Team Divider -->
-    <div class="team-divider anim-up d3">
+    <div class="team-divider anim-up d4">
         <div class="td-icon" style="background: var(--secondary);"><i class="fas fa-palette"></i></div>
         <h3>Design Team</h3>
         <span class="td-count">4 members</span>
@@ -444,76 +397,68 @@
     </div>
 
     <!-- Design Team Grid -->
-    <div class="design-grid anim-up d3">
+    <div class="design-grid anim-up d4">
         <div class="design-card">
             <div class="design-card-header">
-                <div class="dc-avatar av-5">F</div>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=FernDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Fern">
                 <div>
                     <div class="dc-name">Fern</div>
                     <div class="dc-role">Graphic Designer</div>
                 </div>
             </div>
-            <div class="prio-section">
-                <div class="prio-label">Priorities</div>
-                <div class="prio-tags">
-                    <span class="prio-tag pt-blue">Ecom</span>
-                    <span class="prio-tag pt-green">Internal</span>
-                    <span class="prio-tag pt-purple">Marketing</span>
-                </div>
+            <div class="prio-label">Priorities</div>
+            <div class="prio-tags">
+                <span class="prio-tag pt-blue">Ecom</span>
+                <span class="prio-tag pt-green">Internal</span>
+                <span class="prio-tag pt-purple">Marketing</span>
             </div>
         </div>
 
         <div class="design-card">
             <div class="design-card-header">
-                <div class="dc-avatar av-4">T</div>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=TimTantalizer&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Tim">
                 <div>
                     <div class="dc-name">Tim</div>
                     <div class="dc-role">Graphic Tantalizer</div>
                 </div>
             </div>
-            <div class="prio-section">
-                <div class="prio-label">Priorities</div>
-                <div class="prio-tags">
-                    <span class="prio-tag pt-amber">Events</span>
-                    <span class="prio-tag pt-purple">Marketing</span>
-                    <span class="prio-tag pt-blue">Ecom</span>
-                </div>
+            <div class="prio-label">Priorities</div>
+            <div class="prio-tags">
+                <span class="prio-tag pt-amber">Events</span>
+                <span class="prio-tag pt-purple">Marketing</span>
+                <span class="prio-tag pt-blue">Ecom</span>
             </div>
         </div>
 
         <div class="design-card">
             <div class="design-card-header">
-                <div class="dc-avatar av-1">A</div>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=AngeloDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Angelo">
                 <div>
                     <div class="dc-name">Angelo</div>
                     <div class="dc-role">Graphic Designer</div>
                 </div>
             </div>
-            <div class="prio-section">
-                <div class="prio-label">Priorities</div>
-                <div class="prio-tags">
-                    <span class="prio-tag pt-blue">Ecom</span>
-                    <span class="prio-tag pt-purple">Marketing</span>
-                    <span class="prio-tag pt-red">Retail</span>
-                </div>
+            <div class="prio-label">Priorities</div>
+            <div class="prio-tags">
+                <span class="prio-tag pt-blue">Ecom</span>
+                <span class="prio-tag pt-purple">Marketing</span>
+                <span class="prio-tag pt-red">Retail</span>
             </div>
         </div>
 
         <div class="design-card">
             <div class="design-card-header">
-                <div class="dc-avatar av-6">L</div>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=LatrellDesigner&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="Latrell">
                 <div>
                     <div class="dc-name">Latrell</div>
                     <div class="dc-role">Graphic Designer</div>
                 </div>
             </div>
-            <div class="prio-section">
-                <div class="prio-label">Priorities</div>
-                <div class="prio-tags">
-                    <span class="prio-tag pt-blue">Ecom</span>
-                    <span class="prio-tag pt-purple">Marketing</span>
-                    <span class="prio-tag pt-amber">Events</span>
-                </div>
+            <div class="prio-label">Priorities</div>
+            <div class="prio-tags">
+                <span class="prio-tag pt-blue">Ecom</span>
+                <span class="prio-tag pt-purple">Marketing</span>
+                <span class="prio-tag pt-amber">Events</span>
             </div>
         </div>
     </div>

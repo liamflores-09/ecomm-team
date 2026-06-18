@@ -223,12 +223,7 @@
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 0.65rem;
-        color: white;
+        object-fit: cover;
         margin-left: -8px;
         border: 2px solid var(--white);
     }
@@ -392,15 +387,15 @@
     <div class="team-preview anim-up d4">
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div class="team-row">
-                <div class="team-avatar" style="background: var(--primary);">KL</div>
-                <div class="team-avatar" style="background: var(--secondary);">MG</div>
-                <div class="team-avatar" style="background: var(--accent);">AC</div>
-                <div class="team-avatar" style="background: #8B5CF6;">CL</div>
-                <div class="team-avatar" style="background: #EC4899;">JO</div>
-                <div class="team-avatar" style="background: #14B8A6;">WD</div>
-                <div class="team-avatar" style="background: #F97316;">ED</div>
-                <div class="team-avatar" style="background: #06B6D4;">ME</div>
-                <div class="team-avatar" style="background: #84CC16;">LF</div>
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=KevinLim&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="KL">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MiloGorospe&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="MG">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=AngelynCatolico&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="AC">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=CzeinLaruscain&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="CL">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=JamieOrtiz&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="JO">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=WellDacoco&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="WD">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=EmDelosSantos&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="ED">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=MarkIvanEmpleo&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="ME">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=LiamFlores&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="team-avatar" alt="LF">
                 <div class="team-more">+4</div>
             </div>
             <a href="{{ route('team') }}" class="btn-flat-secondary" style="height: 36px; padding: 0 0.75rem; font-size: 0.8rem; text-decoration: none;">
