@@ -236,73 +236,20 @@
         <p>Here's an overview of your team and system.</p>
     </div>
 
-    <!-- Divider: Overview -->
-    <div class="admin-divider anim-up d2">
-        <div class="ad-icon" style="background: var(--primary);"><i class="fas fa-chart-simple"></i></div>
-        <h4>Overview</h4>
-        <div class="ad-line"></div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stat-grid anim-up d2">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
-            <div>
-                <div class="stat-count">{{ $totalUsers }}</div>
-                <div class="stat-label">Total Users</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #DC2626;"><i class="fas fa-crown"></i></div>
-            <div>
-                <div class="stat-count">{{ $managers }}</div>
-                <div class="stat-label">Managers</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: #EC4899;"><i class="fas fa-star"></i></div>
-            <div>
-                <div class="stat-count">{{ $leads }}</div>
-                <div class="stat-label">Leads</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--secondary);"><i class="fas fa-pen-nib"></i></div>
-            <div>
-                <div class="stat-count">{{ $content }}</div>
-                <div class="stat-label">Content</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--accent);"><i class="fas fa-palette"></i></div>
-            <div>
-                <div class="stat-count">{{ $graphics }}</div>
-                <div class="stat-label">Graphics</div>
-            </div>
-        </div>
-    </div>
-
     <!-- Divider: Quick Actions -->
-    <div class="admin-divider anim-up d3">
+    <div class="admin-divider anim-up d2">
         <div class="ad-icon" style="background: var(--accent);"><i class="fas fa-bolt"></i></div>
         <h4>Quick Actions</h4>
         <div class="ad-line"></div>
     </div>
 
     <!-- Quick Links -->
-    <div class="quick-grid anim-up d3">
+    <div class="quick-grid anim-up d2">
         <a href="{{ route('admin.users') }}" class="quick-card">
             <div class="qc-icon" style="background: var(--primary);"><i class="fas fa-user-plus"></i></div>
             <div>
                 <h5>Add User</h5>
                 <p>Create a new team member account</p>
-            </div>
-        </a>
-        <a href="{{ route('team') }}" class="quick-card">
-            <div class="qc-icon" style="background: var(--secondary);"><i class="fas fa-users"></i></div>
-            <div>
-                <h5>View Team</h5>
-                <p>See all team members on the Team page</p>
             </div>
         </a>
         <a href="{{ route('dashboard') }}" class="quick-card">
