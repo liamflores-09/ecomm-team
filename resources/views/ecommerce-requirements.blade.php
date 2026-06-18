@@ -7,7 +7,8 @@
     .req-table-wrap {
         background: var(--white);
         border-radius: 8px;
-        overflow: hidden;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .req-table {
@@ -107,12 +108,29 @@
 
     @media (max-width: 768px) {
         .req-table-wrap {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            margin: 0 -1rem;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
         }
 
         .req-table {
-            min-width: 700px;
+            min-width: 750px;
+        }
+
+        .req-table thead th:first-child,
+        .req-table tbody td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+        }
+
+        .req-table thead th:first-child {
+            z-index: 3;
+        }
+
+        .req-table tbody td:first-child {
+            box-shadow: 2px 0 0 var(--white);
         }
     }
 </style>
