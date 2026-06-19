@@ -19,9 +19,9 @@ class TaskLabels
             $labels = [];
             foreach ($categories as $cat) {
                 $labels[$cat->column_key] = $cat->label;
+                $labels['desc_' . $cat->column_key] = $cat->description ?? '';
             }
 
-            // Fallback to content if role not found
             if (empty($labels)) {
                 return self::get('content');
             }

@@ -372,23 +372,23 @@
     <div class="col-guide anim-up d2">
         <div class="cg-item">
             <div class="cg-name">{{ $taskLabels['task_1'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc1'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc_task_1'] }}</div>
         </div>
         <div class="cg-item">
             <div class="cg-name">{{ $taskLabels['task_2'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc2'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc_task_2'] }}</div>
         </div>
         <div class="cg-item">
             <div class="cg-name">{{ $taskLabels['task_3'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc3'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc_task_3'] }}</div>
         </div>
         <div class="cg-item">
             <div class="cg-name">{{ $taskLabels['task_4'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc4'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc_task_4'] }}</div>
         </div>
         <div class="cg-item">
             <div class="cg-name">{{ $taskLabels['task_5'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc5'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc_task_5'] }}</div>
         </div>
     </div>
 
