@@ -31,28 +31,28 @@ class AdminController extends Controller
         $dailyTotals = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
             ->select(
                 'date',
-                DB::raw('SUM(new_sku) as total_new_sku'),
-                DB::raw('SUM(variation_sku) as total_variation_sku'),
-                DB::raw('SUM(advance_data_gathering) as total_data_gathering'),
-                DB::raw('SUM(update_listings) as total_update_listings'),
-                DB::raw('SUM(other_tasks) as total_other_tasks')
+                DB::raw('SUM(task_1) as total_task_1'),
+                DB::raw('SUM(task_2) as total_task_2'),
+                DB::raw('SUM(task_3) as total_task_3'),
+                DB::raw('SUM(task_4) as total_task_4'),
+                DB::raw('SUM(task_5) as total_task_5')
             )
             ->groupBy('date')
             ->orderBy('date')
             ->get();
 
         $chartLabels = $dailyTotals->pluck('date')->map(fn($d) => $d->format('M d'))->toArray();
-        $chartNewSku = $dailyTotals->pluck('total_new_sku')->toArray();
-        $chartVariationSku = $dailyTotals->pluck('total_variation_sku')->toArray();
-        $chartDataGathering = $dailyTotals->pluck('total_data_gathering')->toArray();
-        $chartUpdateListings = $dailyTotals->pluck('total_update_listings')->toArray();
-        $chartOtherTasks = $dailyTotals->pluck('total_other_tasks')->toArray();
+        $chartNewSku = $dailyTotals->pluck('total_task_1')->toArray();
+        $chartVariationSku = $dailyTotals->pluck('total_task_2')->toArray();
+        $chartDataGathering = $dailyTotals->pluck('total_task_3')->toArray();
+        $chartUpdateListings = $dailyTotals->pluck('total_task_4')->toArray();
+        $chartOtherTasks = $dailyTotals->pluck('total_task_5')->toArray();
 
         $userProductivity = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select(
                 'users.username',
-                DB::raw('SUM(new_sku + variation_sku + advance_data_gathering + update_listings + other_tasks) as total_tasks')
+                DB::raw('SUM(task_1 + task_2 + task_3 + task_4 + task_5) as total_tasks')
             )
             ->groupBy('users.username')
             ->orderByDesc('total_tasks')
@@ -185,7 +185,7 @@ class AdminController extends Controller
             ->where('daily_logs.date', now()->toDateString())
             ->count();
 
-        $totalTasks = (clone $logQuery)->sum(DB::raw('daily_logs.new_sku + daily_logs.variation_sku + daily_logs.advance_data_gathering + daily_logs.update_listings + daily_logs.other_tasks'));
+        $totalTasks = (clone $logQuery)->sum(DB::raw('daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5'));
         $totalDays = (clone $logQuery)->distinct('daily_logs.date')->count('daily_logs.date');
         $avgDailyTasks = $totalDays > 0 ? round($totalTasks / $totalDays) : 0;
 
@@ -193,22 +193,22 @@ class AdminController extends Controller
             ->where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->select(
                 'daily_logs.date',
-                DB::raw('SUM(daily_logs.new_sku) as total_new_sku'),
-                DB::raw('SUM(daily_logs.variation_sku) as total_variation_sku'),
-                DB::raw('SUM(daily_logs.advance_data_gathering) as total_data_gathering'),
-                DB::raw('SUM(daily_logs.update_listings) as total_update_listings'),
-                DB::raw('SUM(daily_logs.other_tasks) as total_other_tasks')
+                DB::raw('SUM(daily_logs.task_1) as total_task_1'),
+                DB::raw('SUM(daily_logs.task_2) as total_task_2'),
+                DB::raw('SUM(daily_logs.task_3) as total_task_3'),
+                DB::raw('SUM(daily_logs.task_4) as total_task_4'),
+                DB::raw('SUM(daily_logs.task_5) as total_task_5')
             )
             ->groupBy('daily_logs.date')
             ->orderBy('daily_logs.date')
             ->get();
 
         $chartLabels = $dailyTotals->pluck('date')->map(fn($d) => $d->format('M d'))->toArray();
-        $chartNewSku = $dailyTotals->pluck('total_new_sku')->toArray();
-        $chartVariationSku = $dailyTotals->pluck('total_variation_sku')->toArray();
-        $chartDataGathering = $dailyTotals->pluck('total_data_gathering')->toArray();
-        $chartUpdateListings = $dailyTotals->pluck('total_update_listings')->toArray();
-        $chartOtherTasks = $dailyTotals->pluck('total_other_tasks')->toArray();
+        $chartNewSku = $dailyTotals->pluck('total_task_1')->toArray();
+        $chartVariationSku = $dailyTotals->pluck('total_task_2')->toArray();
+        $chartDataGathering = $dailyTotals->pluck('total_task_3')->toArray();
+        $chartUpdateListings = $dailyTotals->pluck('total_task_4')->toArray();
+        $chartOtherTasks = $dailyTotals->pluck('total_task_5')->toArray();
 
         $userProductivity = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id');
@@ -218,7 +218,7 @@ class AdminController extends Controller
         $userProductivity = $userProductivity
             ->select(
                 'users.username',
-                DB::raw('SUM(daily_logs.new_sku + daily_logs.variation_sku + daily_logs.advance_data_gathering + daily_logs.update_listings + daily_logs.other_tasks) as total_tasks')
+                DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total_tasks')
             )
             ->groupBy('users.username')
             ->orderByDesc('total_tasks')
@@ -237,11 +237,11 @@ class AdminController extends Controller
                  ->where('daily_logs.date', '=', now()->toDateString());
         })
         ->select('users.id', 'users.username', 'users.role',
-            DB::raw('COALESCE(daily_logs.new_sku, 0) as new_sku'),
-            DB::raw('COALESCE(daily_logs.variation_sku, 0) as variation_sku'),
-            DB::raw('COALESCE(daily_logs.advance_data_gathering, 0) as advance_data_gathering'),
-            DB::raw('COALESCE(daily_logs.update_listings, 0) as update_listings'),
-            DB::raw('COALESCE(daily_logs.other_tasks, 0) as other_tasks'),
+            DB::raw('COALESCE(daily_logs.task_1, 0) as task_1'),
+            DB::raw('COALESCE(daily_logs.task_2, 0) as task_2'),
+            DB::raw('COALESCE(daily_logs.task_3, 0) as task_3'),
+            DB::raw('COALESCE(daily_logs.task_4, 0) as task_4'),
+            DB::raw('COALESCE(daily_logs.task_5, 0) as task_5'),
             'daily_logs.remarks',
             DB::raw('CASE WHEN daily_logs.id IS NULL THEN 0 ELSE 1 END as has_logged')
         )
@@ -326,11 +326,11 @@ class AdminController extends Controller
         $historyDays = $historyDays->select(
                 'daily_logs.date',
                 DB::raw('COUNT(DISTINCT daily_logs.user_id) as user_count'),
-                DB::raw('SUM(daily_logs.new_sku) as total_new_sku'),
-                DB::raw('SUM(daily_logs.variation_sku) as total_variation_sku'),
-                DB::raw('SUM(daily_logs.advance_data_gathering) as total_data_gathering'),
-                DB::raw('SUM(daily_logs.update_listings) as total_update_listings'),
-                DB::raw('SUM(daily_logs.other_tasks) as total_other_tasks')
+                DB::raw('SUM(daily_logs.task_1) as total_task_1'),
+                DB::raw('SUM(daily_logs.task_2) as total_task_2'),
+                DB::raw('SUM(daily_logs.task_3) as total_task_3'),
+                DB::raw('SUM(daily_logs.task_4) as total_task_4'),
+                DB::raw('SUM(daily_logs.task_5) as total_task_5')
             )
             ->groupBy('daily_logs.date')
             ->orderByDesc('daily_logs.date')

@@ -315,12 +315,15 @@
                 </div>
             </div>
             @if($m['todayLog'])
+            @php
+                $mLabels = \App\Support\TaskLabels::get($m['user']->role);
+            @endphp
             <div style="display: flex; gap: 0.25rem;">
-                <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #3B82F6;">{{ $m['todayLog']->new_sku }}</span>
-                <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #8B5CF6;">{{ $m['todayLog']->variation_sku }}</span>
-                <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #059669;">{{ $m['todayLog']->advance_data_gathering }}</span>
-                <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #F59E0B;">{{ $m['todayLog']->update_listings }}</span>
-                <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #EC4899;">{{ $m['todayLog']->other_tasks }}</span>
+                <span title="{{ $mLabels['task_1'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $m['todayLog']->task_1 }}</span>
+                <span title="{{ $mLabels['task_2'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $m['todayLog']->task_2 }}</span>
+                <span title="{{ $mLabels['task_3'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #059669; cursor: help;">{{ $m['todayLog']->task_3 }}</span>
+                <span title="{{ $mLabels['task_4'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $m['todayLog']->task_4 }}</span>
+                <span title="{{ $mLabels['task_5'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $m['todayLog']->task_5 }}</span>
             </div>
             @else
             <span style="font-size: 0.65rem; color: var(--gray-400); font-weight: 500; white-space: nowrap;">{{ $m['lastLog'] ? $m['lastLog']->date->diffForHumans() : 'Never' }}</span>
@@ -336,6 +339,10 @@
         <div class="ad-line"></div>
     </div>
 
+    @php
+        $currentLabels = $roleFilter ? \App\Support\TaskLabels::get($roleFilter) : \App\Support\TaskLabels::get('content');
+    @endphp
+
     <div style="background: var(--white); border-radius: 10px; overflow: hidden; margin-bottom: 2rem;" class="anim-up d3">
         @if($todayLogs->count())
         <div class="logs-table-wrap">
@@ -344,11 +351,11 @@
                     <tr>
                         <th>User</th>
                         <th>Role</th>
-                        <th style="text-align: center;">Col 1</th>
-                        <th style="text-align: center;">Col 2</th>
-                        <th style="text-align: center;">Col 3</th>
-                        <th style="text-align: center;">Col 4</th>
-                        <th style="text-align: center;">Other</th>
+                        <th style="text-align: center;">{{ $currentLabels['col1'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['col2'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['col3'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['col4'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['col5'] }}</th>
                         <th>Status</th>
                         <th>Remarks</th>
                     </tr>
@@ -375,11 +382,11 @@
                         <td>
                             <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; background: {{ $rc['bg'] }}; color: {{ $rc['text'] }};">{{ $log->role }}</span>
                         </td>
-                        <td class="num">{{ $log->new_sku }}</td>
-                        <td class="num">{{ $log->variation_sku }}</td>
-                        <td class="num">{{ $log->advance_data_gathering }}</td>
-                        <td class="num">{{ $log->update_listings }}</td>
-                        <td class="num">{{ $log->other_tasks }}</td>
+                        <td class="num">{{ $log->task_1 }}</td>
+                        <td class="num">{{ $log->task_2 }}</td>
+                        <td class="num">{{ $log->task_3 }}</td>
+                        <td class="num">{{ $log->task_4 }}</td>
+                        <td class="num">{{ $log->task_5 }}</td>
                         <td>
                             @if($log->has_logged)
                             <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #D1FAE5; color: #059669;"><i class="fas fa-check" style="margin-right: 0.15rem;"></i>Logged</span>
@@ -478,12 +485,15 @@
                         <div style="font-weight: 700; font-size: 0.8rem;">{{ $log->username }}</div>
                         <span style="padding: 0.05rem 0.3rem; border-radius: 2px; font-size: 0.5rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc2['bg'] }}; color: {{ $rbc2['text'] }};">{{ $log->role }}</span>
                     </div>
+                    @php
+                        $logLabels = \App\Support\TaskLabels::get($log->role);
+                    @endphp
                     <div style="display: flex; gap: 0.25rem;">
-                        <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #3B82F6;">{{ $log->new_sku }}</span>
-                        <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #8B5CF6;">{{ $log->variation_sku }}</span>
-                        <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #059669;">{{ $log->advance_data_gathering }}</span>
-                        <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #F59E0B;">{{ $log->update_listings }}</span>
-                        <span style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #EC4899;">{{ $log->other_tasks }}</span>
+                        <span title="{{ $logLabels['task_1'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $log->task_1 }}</span>
+                        <span title="{{ $logLabels['task_2'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $log->task_2 }}</span>
+                        <span title="{{ $logLabels['task_3'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #059669; cursor: help;">{{ $log->task_3 }}</span>
+                        <span title="{{ $logLabels['task_4'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $log->task_4 }}</span>
+                        <span title="{{ $logLabels['task_5'] }}" style="min-width: 24px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $log->task_5 }}</span>
                     </div>
                 </div>
                 @endforeach
@@ -524,11 +534,11 @@
                 <tr>
                     <th>Date</th>
                     <th style="text-align: center;">Members</th>
-                    <th style="text-align: center;">Col 1</th>
-                    <th style="text-align: center;">Col 2</th>
-                    <th style="text-align: center;">Col 3</th>
-                    <th style="text-align: center;">Col 4</th>
-                    <th style="text-align: center;">Other</th>
+                    <th style="text-align: center;">{{ $currentLabels['col1'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['col2'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['col3'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['col4'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['col5'] }}</th>
                     <th style="text-align: center;">Total</th>
                 </tr>
             </thead>
@@ -537,12 +547,12 @@
                 <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'">
                     <td style="font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
                     <td class="num">{{ $hd->user_count }}</td>
-                    <td class="num">{{ $hd->total_new_sku }}</td>
-                    <td class="num">{{ $hd->total_variation_sku }}</td>
-                    <td class="num">{{ $hd->total_data_gathering }}</td>
-                    <td class="num">{{ $hd->total_update_listings }}</td>
-                    <td class="num">{{ $hd->total_other_tasks }}</td>
-                    <td class="num" style="font-weight: 800;">{{ $hd->total_new_sku + $hd->total_variation_sku + $hd->total_data_gathering + $hd->total_update_listings + $hd->total_other_tasks }}</td>
+                    <td class="num">{{ $hd->total_task_1 }}</td>
+                    <td class="num">{{ $hd->total_task_2 }}</td>
+                    <td class="num">{{ $hd->total_task_3 }}</td>
+                    <td class="num">{{ $hd->total_task_4 }}</td>
+                    <td class="num">{{ $hd->total_task_5 }}</td>
+                    <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
                 </tr>
                 @endforeach
             </tbody>

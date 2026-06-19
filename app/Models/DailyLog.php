@@ -11,11 +11,11 @@ class DailyLog extends Model
         'user_id',
         'date',
         'attendance',
-        'new_sku',
-        'variation_sku',
-        'advance_data_gathering',
-        'update_listings',
-        'other_tasks',
+        'task_1',
+        'task_2',
+        'task_3',
+        'task_4',
+        'task_5',
         'remarks',
     ];
 
@@ -23,31 +23,16 @@ class DailyLog extends Model
     {
         return [
             'date' => 'date',
-            'new_sku' => 'integer',
-            'variation_sku' => 'integer',
-            'advance_data_gathering' => 'integer',
-            'update_listings' => 'integer',
-            'other_tasks' => 'integer',
+            'task_1' => 'integer',
+            'task_2' => 'integer',
+            'task_3' => 'integer',
+            'task_4' => 'integer',
+            'task_5' => 'integer',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function getWeekNumberAttribute(): int
-    {
-        return (int) $this->date->format('W');
-    }
-
-    public function getMonthNameAttribute(): string
-    {
-        return $this->date->format('F');
-    }
-
-    public function getQuarterAttribute(): string
-    {
-        return 'Q' . ceil($this->date->month / 3);
     }
 }

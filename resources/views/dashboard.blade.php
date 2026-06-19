@@ -286,22 +286,22 @@
                     @php
                         $tl = \App\Support\TaskLabels::get($user->role);
                     @endphp
-                    <th style="text-align: center;">{{ $tl['col1'] }}</th>
-                    <th style="text-align: center;">{{ $tl['col2'] }}</th>
-                    <th style="text-align: center;">{{ $tl['col3'] }}</th>
-                    <th style="text-align: center;">{{ $tl['col4'] }}</th>
-                    <th style="text-align: center;">{{ $tl['col5'] }}</th>
+                    <th style="text-align: center;">{{ $tl['task_1'] }}</th>
+                    <th style="text-align: center;">{{ $tl['task_2'] }}</th>
+                    <th style="text-align: center;">{{ $tl['task_3'] }}</th>
+                    <th style="text-align: center;">{{ $tl['task_4'] }}</th>
+                    <th style="text-align: center;">{{ $tl['task_5'] }}</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($recentLogs as $log)
                 <tr>
                     <td class="date-cell">{{ $log->date->format('M d, Y') }}</td>
-                    <td class="num">{{ $log->new_sku }}</td>
-                    <td class="num">{{ $log->variation_sku }}</td>
-                    <td class="num">{{ $log->advance_data_gathering }}</td>
-                    <td class="num">{{ $log->update_listings }}</td>
-                    <td class="num">{{ $log->other_tasks }}</td>
+                    <td class="num">{{ $log->task_1 }}</td>
+                    <td class="num">{{ $log->task_2 }}</td>
+                    <td class="num">{{ $log->task_3 }}</td>
+                    <td class="num">{{ $log->task_4 }}</td>
+                    <td class="num">{{ $log->task_5 }}</td>
                 </tr>
                 @endforeach
             </tbody>

@@ -26,12 +26,12 @@ class DashboardController extends Controller
 
         $thisWeekTasks = DailyLog::where('user_id', $user->id)
             ->where('date', '>=', now()->startOfWeek())
-            ->sum(DB::raw('new_sku + variation_sku + advance_data_gathering + update_listings + other_tasks'));
+            ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
 
         $thisMonthTasks = DailyLog::where('user_id', $user->id)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
-            ->sum(DB::raw('new_sku + variation_sku + advance_data_gathering + update_listings + other_tasks'));
+            ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
 
         $teamLogsToday = DailyLog::where('date', $today)
             ->join('users', 'daily_logs.user_id', '=', 'users.id')

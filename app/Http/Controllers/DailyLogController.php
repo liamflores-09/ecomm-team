@@ -33,11 +33,11 @@ class DailyLogController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'attendance' => 'nullable|string|max:10',
-            'new_sku' => 'required|integer|min:0',
-            'variation_sku' => 'required|integer|min:0',
-            'advance_data_gathering' => 'required|integer|min:0',
-            'update_listings' => 'required|integer|min:0',
-            'other_tasks' => 'required|integer|min:0',
+            'task_1' => 'required|integer|min:0',
+            'task_2' => 'required|integer|min:0',
+            'task_3' => 'required|integer|min:0',
+            'task_4' => 'required|integer|min:0',
+            'task_5' => 'required|integer|min:0',
             'remarks' => 'nullable|string|max:500',
         ]);
 
@@ -48,11 +48,11 @@ class DailyLogController extends Controller
             ],
             [
                 'attendance' => $validated['attendance'] ?? null,
-                'new_sku' => $validated['new_sku'],
-                'variation_sku' => $validated['variation_sku'],
-                'advance_data_gathering' => $validated['advance_data_gathering'],
-                'update_listings' => $validated['update_listings'],
-                'other_tasks' => $validated['other_tasks'],
+                'task_1' => $validated['task_1'],
+                'task_2' => $validated['task_2'],
+                'task_3' => $validated['task_3'],
+                'task_4' => $validated['task_4'],
+                'task_5' => $validated['task_5'],
                 'remarks' => $validated['remarks'] ?? null,
             ]
         );
@@ -63,7 +63,7 @@ class DailyLogController extends Controller
             'description' => Auth::user()->first_name . ' submitted EOD report for ' . now()->format('M d, Y'),
             'metadata' => [
                 'date' => $validated['date'],
-                'total_tasks' => $validated['new_sku'] + $validated['variation_sku'] + $validated['advance_data_gathering'] + $validated['update_listings'] + $validated['other_tasks'],
+                'total_tasks' => $validated['task_1'] + $validated['task_2'] + $validated['task_3'] + $validated['task_4'] + $validated['task_5'],
             ],
         ]);
 
@@ -94,21 +94,21 @@ class DailyLogController extends Controller
 
         $validated = $request->validate([
             'attendance' => 'nullable|string|max:10',
-            'new_sku' => 'required|integer|min:0',
-            'variation_sku' => 'required|integer|min:0',
-            'advance_data_gathering' => 'required|integer|min:0',
-            'update_listings' => 'required|integer|min:0',
-            'other_tasks' => 'required|integer|min:0',
+            'task_1' => 'required|integer|min:0',
+            'task_2' => 'required|integer|min:0',
+            'task_3' => 'required|integer|min:0',
+            'task_4' => 'required|integer|min:0',
+            'task_5' => 'required|integer|min:0',
             'remarks' => 'nullable|string|max:500',
         ]);
 
         $dailyLog->update([
             'attendance' => $validated['attendance'] ?? null,
-            'new_sku' => $validated['new_sku'],
-            'variation_sku' => $validated['variation_sku'],
-            'advance_data_gathering' => $validated['advance_data_gathering'],
-            'update_listings' => $validated['update_listings'],
-            'other_tasks' => $validated['other_tasks'],
+            'task_1' => $validated['task_1'],
+            'task_2' => $validated['task_2'],
+            'task_3' => $validated['task_3'],
+            'task_4' => $validated['task_4'],
+            'task_5' => $validated['task_5'],
             'remarks' => $validated['remarks'] ?? null,
         ]);
 
@@ -134,106 +134,6 @@ class DailyLogController extends Controller
             'type' => 'eod_deleted',
             'description' => Auth::user()->first_name . ' deleted EOD report',
         ]);
-
-        return redirect()->route('end-of-day')->with('success', 'Daily log deleted.');
-    }
-
-    public function history()
-    {
-        $user = Auth::user();
-
-        $logs = DailyLog::where('user_id', $user->id)
-            ->latest('date')
-            ->paginate(20);
-
-        return view('daily-logs.history', compact('user', 'logs'));
-    }
-}
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'attendance' => 'nullable|string|max:10',
-            'new_sku' => 'required|integer|min:0',
-            'variation_sku' => 'required|integer|min:0',
-            'advance_data_gathering' => 'required|integer|min:0',
-            'update_listings' => 'required|integer|min:0',
-            'other_tasks' => 'required|integer|min:0',
-            'remarks' => 'nullable|string|max:500',
-        ]);
-
-        $log = DailyLog::updateOrCreate(
-            [
-                'user_id' => Auth::id(),
-                'date' => $validated['date'],
-            ],
-            [
-                'attendance' => $validated['attendance'] ?? null,
-                'new_sku' => $validated['new_sku'],
-                'variation_sku' => $validated['variation_sku'],
-                'advance_data_gathering' => $validated['advance_data_gathering'],
-                'update_listings' => $validated['update_listings'],
-                'other_tasks' => $validated['other_tasks'],
-                'remarks' => $validated['remarks'] ?? null,
-            ]
-        );
-
-        return redirect()->route('end-of-day')->with('success', 'Daily log saved successfully!');
-    }
-
-    public function edit(DailyLog $dailyLog)
-    {
-        $user = Auth::user();
-
-        if ($dailyLog->user_id !== $user->id) {
-            abort(403);
-        }
-
-        $recentLogs = DailyLog::where('user_id', $user->id)
-            ->latest('date')
-            ->take(10)
-            ->get();
-
-        return view('end-of-day', compact('user', 'existingLog', 'recentLogs'));
-    }
-
-    public function update(Request $request, DailyLog $dailyLog)
-    {
-        if ($dailyLog->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $validated = $request->validate([
-            'attendance' => 'nullable|string|max:10',
-            'new_sku' => 'required|integer|min:0',
-            'variation_sku' => 'required|integer|min:0',
-            'advance_data_gathering' => 'required|integer|min:0',
-            'update_listings' => 'required|integer|min:0',
-            'other_tasks' => 'required|integer|min:0',
-            'remarks' => 'nullable|string|max:500',
-        ]);
-
-        $dailyLog->update([
-            'attendance' => $validated['attendance'] ?? null,
-            'new_sku' => $validated['new_sku'],
-            'variation_sku' => $validated['variation_sku'],
-            'advance_data_gathering' => $validated['advance_data_gathering'],
-            'update_listings' => $validated['update_listings'],
-            'other_tasks' => $validated['other_tasks'],
-            'remarks' => $validated['remarks'] ?? null,
-        ]);
-
-        return redirect()->route('end-of-day')->with('success', 'Daily log updated!');
-    }
-
-    public function destroy(DailyLog $dailyLog)
-    {
-        if ($dailyLog->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $dailyLog->delete();
 
         return redirect()->route('end-of-day')->with('success', 'Daily log deleted.');
     }

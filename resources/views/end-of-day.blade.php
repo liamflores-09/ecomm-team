@@ -425,32 +425,32 @@
 
                     <!-- Col 1 -->
                     <div class="form-group">
-                        <label class="form-label">{{ $taskLabels['col1'] }}</label>
-                        <input type="number" name="new_sku" class="form-input" min="0" value="{{ $existingLog ? $existingLog->new_sku : 0 }}" required>
+                        <label class="form-label">{{ $taskLabels['task_1'] }}</label>
+                        <input type="number" name="task_1" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_1 : 0 }}" required>
                     </div>
 
                     <!-- Col 2 -->
                     <div class="form-group">
-                        <label class="form-label">{{ $taskLabels['col2'] }}</label>
-                        <input type="number" name="variation_sku" class="form-input" min="0" value="{{ $existingLog ? $existingLog->variation_sku : 0 }}" required>
+                        <label class="form-label">{{ $taskLabels['task_2'] }}</label>
+                        <input type="number" name="task_2" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_2 : 0 }}" required>
                     </div>
 
                     <!-- Col 3 -->
                     <div class="form-group">
-                        <label class="form-label">{{ $taskLabels['col3'] }}</label>
-                        <input type="number" name="advance_data_gathering" class="form-input" min="0" value="{{ $existingLog ? $existingLog->advance_data_gathering : 0 }}" required>
+                        <label class="form-label">{{ $taskLabels['task_3'] }}</label>
+                        <input type="number" name="task_3" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_3 : 0 }}" required>
                     </div>
 
                     <!-- Col 4 -->
                     <div class="form-group">
-                        <label class="form-label">{{ $taskLabels['col4'] }}</label>
-                        <input type="number" name="update_listings" class="form-input" min="0" value="{{ $existingLog ? $existingLog->update_listings : 0 }}" required>
+                        <label class="form-label">{{ $taskLabels['task_4'] }}</label>
+                        <input type="number" name="task_4" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_4 : 0 }}" required>
                     </div>
 
                     <!-- Col 5 -->
                     <div class="form-group">
-                        <label class="form-label">{{ $taskLabels['col5'] }}</label>
-                        <input type="number" name="other_tasks" class="form-input" min="0" value="{{ $existingLog ? $existingLog->other_tasks : 0 }}" required>
+                        <label class="form-label">{{ $taskLabels['task_5'] }}</label>
+                        <input type="number" name="task_5" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_5 : 0 }}" required>
                     </div>
 
                     <div class="form-group"></div>
@@ -504,11 +504,11 @@
                             <span style="color: var(--gray-300);">—</span>
                             @endif
                         </td>
-                        <td class="num">{{ $log->new_sku }}</td>
-                        <td class="num">{{ $log->variation_sku }}</td>
-                        <td class="num">{{ $log->advance_data_gathering }}</td>
-                        <td class="num">{{ $log->update_listings }}</td>
-                        <td class="num">{{ $log->other_tasks }}</td>
+                    <td class="num">{{ $log->task_1 }}</td>
+                    <td class="num">{{ $log->task_2 }}</td>
+                    <td class="num">{{ $log->task_3 }}</td>
+                    <td class="num">{{ $log->task_4 }}</td>
+                    <td class="num">{{ $log->task_5 }}</td>
                         <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
                         <td>
                             @if($log->date->toDateString() === now()->toDateString())
