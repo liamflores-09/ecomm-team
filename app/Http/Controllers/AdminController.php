@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\DailyLog;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,6 @@ class AdminController extends Controller
         $content = User::where('role', 'content')->count();
         $graphics = User::where('role', 'graphics')->count();
         $backend = User::where('role', 'backend')->count();
-        $recentUsers = User::latest()->take(5)->get();
 
         $totalLogs = DailyLog::count();
         $thisMonthLogs = DailyLog::whereMonth('date', now()->month)
@@ -62,14 +62,19 @@ class AdminController extends Controller
         $prodLabels = $userProductivity->pluck('username')->toArray();
         $prodData = $userProductivity->pluck('total_tasks')->toArray();
 
+        $recentActivity = ActivityLog::with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+
         $todayLogs = DailyLog::where('date', now()->toDateString())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select('daily_logs.*', 'users.username', 'users.role')
             ->get();
 
         return view('admin.dashboard', compact(
-            'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend', 'recentUsers',
-            'totalLogs', 'thisMonthLogs',
+            'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend',
+            'totalLogs', 'thisMonthLogs', 'recentActivity',
             'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
             'prodLabels', 'prodData',
             'todayLogs'
@@ -102,6 +107,12 @@ class AdminController extends Controller
             'role' => $validated['role'],
         ]);
 
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'type' => 'user_created',
+            'description' => Auth::user()->first_name . ' added ' . $validated['first_name'] . ' ' . $validated['last_name'] . ' as ' . $validated['role'],
+        ]);
+
         return redirect()->route('admin.users')->with('success', 'User created successfully.');
     }
 
@@ -127,6 +138,12 @@ class AdminController extends Controller
 
         $user->save();
 
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'type' => 'user_updated',
+            'description' => Auth::user()->first_name . ' updated ' . $user->first_name . ' ' . $user->last_name,
+        ]);
+
         return redirect()->route('admin.users')->with('success', 'User updated successfully.');
     }
 
@@ -136,7 +153,15 @@ class AdminController extends Controller
             return back()->with('error', 'You cannot delete your own account.');
         }
 
+        $userName = $user->first_name . ' ' . $user->last_name;
         $user->delete();
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'type' => 'user_deleted',
+            'description' => Auth::user()->first_name . ' deleted ' . $userName,
+        ]);
+
         return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
     }
 
@@ -254,12 +279,58 @@ class AdminController extends Controller
             ];
         });
 
+        // Calendar data - which days have logs
+        $calendarMonth = request()->query('month') ? \Carbon\Carbon::parse(request()->query('month')) : now();
+        $calendarDays = DailyLog::whereMonth('date', $calendarMonth->month)
+            ->whereYear('date', $calendarMonth->year);
+        if ($roleFilter) {
+            $calendarDays->join('users', 'daily_logs.user_id', '=', 'users.id')
+                ->where('users.role', $roleFilter);
+        }
+        $calendarDays = $calendarDays->distinct('daily_logs.date')
+            ->pluck('daily_logs.date')
+            ->map(fn($d) => $d->format('Y-m-d'))
+            ->toArray();
+
+        $selectedDay = request()->query('day');
+        $selectedDayLogs = null;
+        if ($selectedDay) {
+            $selectedDayLogs = DailyLog::where('daily_logs.date', $selectedDay)
+                ->join('users', 'daily_logs.user_id', '=', 'users.id')
+                ->select('daily_logs.*', 'users.username', 'users.role');
+            if ($roleFilter) {
+                $selectedDayLogs->where('users.role', $roleFilter);
+            }
+            $selectedDayLogs = $selectedDayLogs->get();
+        }
+
+        // Day-by-day history (last 14 days)
+        $historyDays = DailyLog::where('daily_logs.date', '>=', now()->subDays(14)->startOfDay());
+        if ($roleFilter) {
+            $historyDays->join('users', 'daily_logs.user_id', '=', 'users.id')
+                ->where('users.role', $roleFilter);
+        }
+        $historyDays = $historyDays->select(
+                'daily_logs.date',
+                DB::raw('COUNT(DISTINCT daily_logs.user_id) as user_count'),
+                DB::raw('SUM(daily_logs.new_sku) as total_new_sku'),
+                DB::raw('SUM(daily_logs.variation_sku) as total_variation_sku'),
+                DB::raw('SUM(daily_logs.advance_data_gathering) as total_data_gathering'),
+                DB::raw('SUM(daily_logs.update_listings) as total_update_listings'),
+                DB::raw('SUM(daily_logs.other_tasks) as total_other_tasks')
+            )
+            ->groupBy('daily_logs.date')
+            ->orderByDesc('daily_logs.date')
+            ->get();
+
         return view('admin.daily-logs', compact(
             'user', 'totalLogs', 'thisMonthLogs', 'todayLogCount', 'avgDailyTasks',
             'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
             'prodLabels', 'prodData',
             'todayLogs', 'allLogs', 'missingLogs',
-            'memberLogStatus', 'roleFilter'
+            'memberLogStatus', 'roleFilter',
+            'calendarMonth', 'calendarDays', 'selectedDay', 'selectedDayLogs',
+            'historyDays'
         ));
     }
 }

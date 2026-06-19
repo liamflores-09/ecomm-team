@@ -458,75 +458,154 @@
     </div>
     @endif
 
-    <!-- Divider: All Logs -->
-    <div class="admin-divider anim-up d4">
-        <div class="ad-icon" style="background: var(--secondary);"><i class="fas fa-history"></i></div>
-        <h4>All Logs</h4>
+    <!-- Divider: Calendar -->
+    <div class="admin-divider anim-up d5">
+        <div class="ad-icon" style="background: var(--primary);"><i class="fas fa-calendar"></i></div>
+        <h4>Activity Calendar — {{ $calendarMonth->format('F Y') }}</h4>
         <div class="ad-line"></div>
     </div>
 
-    <!-- All Logs Table -->
-    <div class="logs-card anim-up d4">
-        @if($allLogs->count())
-        <div class="logs-header">
-            <h4>Recent Activity</h4>
-            <div class="filter-row">
-                <select class="filter-select" id="roleFilter" onchange="filterTable()">
-                    <option value="all">All Roles</option>
-                    <option value="content">Content</option>
-                    <option value="lead">Lead</option>
-                    <option value="researcher">Researcher</option>
-                    <option value="graphics">Graphics</option>
-                    <option value="backend">Backend</option>
-                </select>
-            </div>
+    <!-- Calendar -->
+    <div style="background: var(--white); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;" class="anim-up d5">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-500); font-weight: 600;"><i class="fas fa-chevron-left"></i></a>
+            <h4 style="font-weight: 800; font-size: 1rem; margin: 0;">{{ $calendarMonth->format('F Y') }}</h4>
+            <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-500); font-weight: 600;"><i class="fas fa-chevron-right"></i></a>
         </div>
-        <div class="logs-table-wrap">
-            <table class="logs-table" id="allLogsTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th style="text-align: center;">New SKU</th>
-                        <th style="text-align: center;">Var. SKU</th>
-                        <th style="text-align: center;">Data Gather</th>
-                        <th style="text-align: center;">Update</th>
-                        <th style="text-align: center;">Other</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($allLogs as $log)
-                    <tr data-role="{{ $log->role }}">
-                        <td style="font-weight: 700; white-space: nowrap;">{{ $log->date->format('M d, Y') }}</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 24px; height: 24px; border-radius: 50%;" alt="">
-                                <span style="font-weight: 600;">{{ $log->username }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            @php
-                                $rc2 = $roleColors[$log->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
-                            @endphp
-                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; background: {{ $rc2['bg'] }}; color: {{ $rc2['text'] }};">{{ $log->role }}</span>
-                        </td>
-                        <td class="num">{{ $log->new_sku }}</td>
-                        <td class="num">{{ $log->variation_sku }}</td>
-                        <td class="num">{{ $log->advance_data_gathering }}</td>
-                        <td class="num">{{ $log->update_listings }}</td>
-                        <td class="num">{{ $log->other_tasks }}</td>
-                        <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.375rem;">
+            @foreach(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayName)
+            <div style="text-align: center; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--gray-400); padding: 0.5rem 0;">{{ $dayName }}</div>
+            @endforeach
+            @php
+                $firstDay = $calendarMonth->copy()->startOfMonth();
+                $startOffset = $firstDay->dayOfWeek;
+                $daysInMonth = $calendarMonth->daysInMonth;
+            @endphp
+            @for($i = 0; $i < $startOffset; $i++)
+            <div></div>
+            @endfor
+            @for($day = 1; $day <= $daysInMonth; $day++)
+                @php
+                    $dateStr = $calendarMonth->copy()->day($day)->format('Y-m-d');
+                    $hasLogs = in_array($dateStr, $calendarDays);
+                    $isToday = $dateStr === now()->format('Y-m-d');
+                    $isSelected = $dateStr === $selectedDay;
+                @endphp
+                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $dateStr])) }}"
+                   style="display: flex; align-items: center; justify-content: center; height: 40px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.15s;
+                   @if($isSelected) background: var(--primary); color: white;
+                   @elseif($isToday) background: #DBEAFE; color: #2563EB;
+                   @elseif($hasLogs) background: #D1FAE5; color: #059669;
+                   @else color: var(--gray-600);
+                   @endif">
+                    {{ $day }}
+                </a>
+            @endfor
         </div>
+        <div style="display: flex; gap: 1rem; margin-top: 0.75rem; font-size: 0.7rem; color: var(--gray-400);">
+            <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #D1FAE5; vertical-align: middle; margin-right: 0.25rem;"></span> Has logs</span>
+            <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #DBEAFE; vertical-align: middle; margin-right: 0.25rem;"></span> Today</span>
+            <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--primary); vertical-align: middle; margin-right: 0.25rem;"></span> Selected</span>
+        </div>
+    </div>
+
+    <!-- Selected Day Logs -->
+    @if($selectedDay)
+    <div style="background: var(--white); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; border: 2px solid var(--primary);" class="anim-up d5b">
+        <div style="padding: 1rem 1.5rem; border-bottom: 2px solid var(--muted); display: flex; align-items: center; justify-content: space-between;">
+            <h4 style="font-weight: 800; font-size: 0.85rem; margin: 0;"><i class="fas fa-calendar-day" style="color: var(--primary); margin-right: 0.5rem;"></i>{{ \Carbon\Carbon::parse($selectedDay)->format('l, F j, Y') }}</h4>
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--gray-400);">{{ $selectedDayLogs->count() }} log{{ $selectedDayLogs->count() !== 1 ? 's' : '' }}</span>
+        </div>
+        @if($selectedDayLogs->count())
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th style="text-align: center;">Col 1</th>
+                    <th style="text-align: center;">Col 2</th>
+                    <th style="text-align: center;">Col 3</th>
+                    <th style="text-align: center;">Col 4</th>
+                    <th style="text-align: center;">Other</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($selectedDayLogs as $log)
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 24px; height: 24px; border-radius: 50%;" alt="">
+                            <span style="font-weight: 600;">{{ $log->username }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        @php
+                            $rc2 = $roleColors[$log->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
+                        @endphp
+                        <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; background: {{ $rc2['bg'] }}; color: {{ $rc2['text'] }};">{{ $log->role }}</span>
+                    </td>
+                    <td class="num">{{ $log->new_sku }}</td>
+                    <td class="num">{{ $log->variation_sku }}</td>
+                    <td class="num">{{ $log->advance_data_gathering }}</td>
+                    <td class="num">{{ $log->update_listings }}</td>
+                    <td class="num">{{ $log->other_tasks }}</td>
+                    <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
         @else
-        <div class="empty-logs">
-            <i class="fas fa-clipboard-list"></i>
-            No logs recorded yet.
+        <div style="text-align: center; padding: 2rem; color: var(--gray-400); font-weight: 500;">
+            <i class="fas fa-clipboard-list" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+            No logs submitted on this day.
+        </div>
+        @endif
+    </div>
+    @endif
+
+    <!-- Divider: History -->
+    <div class="admin-divider anim-up d6">
+        <div class="ad-icon" style="background: var(--secondary);"><i class="fas fa-history"></i></div>
+        <h4>History — Last 14 Days</h4>
+        <div class="ad-line"></div>
+    </div>
+
+    <!-- Day-by-Day History -->
+    <div style="background: var(--white); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem;" class="anim-up d6">
+        @if($historyDays->count())
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th style="text-align: center;">Members</th>
+                    <th style="text-align: center;">Col 1</th>
+                    <th style="text-align: center;">Col 2</th>
+                    <th style="text-align: center;">Col 3</th>
+                    <th style="text-align: center;">Col 4</th>
+                    <th style="text-align: center;">Other</th>
+                    <th style="text-align: center;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($historyDays as $hd)
+                <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'">
+                    <td style="font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
+                    <td class="num">{{ $hd->user_count }}</td>
+                    <td class="num">{{ $hd->total_new_sku }}</td>
+                    <td class="num">{{ $hd->total_variation_sku }}</td>
+                    <td class="num">{{ $hd->total_data_gathering }}</td>
+                    <td class="num">{{ $hd->total_update_listings }}</td>
+                    <td class="num">{{ $hd->total_other_tasks }}</td>
+                    <td class="num" style="font-weight: 800;">{{ $hd->total_new_sku + $hd->total_variation_sku + $hd->total_data_gathering + $hd->total_update_listings + $hd->total_other_tasks }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @else
+        <div style="text-align: center; padding: 2rem; color: var(--gray-400); font-weight: 500;">
+            <i class="fas fa-history" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+            No history yet.
         </div>
         @endif
     </div>

@@ -212,32 +212,45 @@
         </a>
     </div>
 
-    <!-- Recent Users -->
+    <!-- Recent Activity -->
     <div class="section-divider anim-up d4">
         <div class="sd-icon" style="background: var(--secondary);"><i class="fas fa-clock-rotate-left"></i></div>
-        <h4>Recent Users</h4>
+        <h4>Recent Activity</h4>
         <div class="sd-line"></div>
     </div>
 
     <div class="recent-card anim-up d4">
         <div class="recent-header">
-            <h4>Recently Added</h4>
-            <a href="{{ route('admin.users') }}">View All <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></a>
+            <h4>Latest Actions</h4>
+            <a href="{{ route('admin.daily-logs') }}">View All <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></a>
         </div>
         <div class="recent-list">
-            @forelse($recentUsers as $ru)
+            @forelse($recentActivity as $activity)
             <div class="recent-item">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $ru->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="recent-avatar" alt="{{ $ru->username }}">
-                <div>
-                    <div class="recent-name">{{ $ru->first_name }} {{ $ru->last_name }}</div>
-                    <div class="recent-info">{{ $ru->username }} · {{ ucfirst($ru->role) }}</div>
+                @php
+                    $activityIcons = [
+                        'eod_submitted' => ['icon' => 'fa-clipboard-check', 'color' => '#059669'],
+                        'eod_updated' => ['icon' => 'fa-pen', 'color' => '#3B82F6'],
+                        'eod_deleted' => ['icon' => 'fa-trash', 'color' => '#DC2626'],
+                        'user_created' => ['icon' => 'fa-user-plus', 'color' => '#8B5CF6'],
+                        'user_updated' => ['icon' => 'fa-user-pen', 'color' => '#F59E0B'],
+                        'user_deleted' => ['icon' => 'fa-user-minus', 'color' => '#DC2626'],
+                    ];
+                    $ai = $activityIcons[$activity->type] ?? ['icon' => 'fa-circle-info', 'color' => '#6B7280'];
+                @endphp
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: {{ $ai['color'] }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fas {{ $ai['icon'] }}" style="color: white; font-size: 0.8rem;"></i>
                 </div>
-                <div class="recent-time">{{ $ru->created_at->diffForHumans() }}</div>
+                <div style="flex: 1;">
+                    <div class="recent-name" style="font-size: 0.85rem;">{{ $activity->description }}</div>
+                    <div class="recent-info">{{ $activity->user->first_name ?? 'System' }} · {{ ucfirst(str_replace('_', ' ', $activity->type)) }}</div>
+                </div>
+                <div class="recent-time">{{ $activity->created_at->diffForHumans() }}</div>
             </div>
             @empty
             <div style="text-align: center; padding: 2.5rem; color: var(--gray-400); font-weight: 500;">
-                <i class="fas fa-users" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
-                No users yet.
+                <i class="fas fa-clock-rotate-left" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+                No activity yet.
             </div>
             @endforelse
         </div>
