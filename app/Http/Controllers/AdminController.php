@@ -249,6 +249,9 @@ class AdminController extends Controller
         ->orderBy('users.first_name')
         ->get();
 
+        // Group todayLogs by role for "All Roles" view
+        $todayLogsByRole = $todayLogs->groupBy('role');
+
         $allLogs = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select('daily_logs.*', 'users.username', 'users.role')
             ->latest('daily_logs.date')
@@ -268,6 +271,9 @@ class AdminController extends Controller
             $missingLogs->where('role', $roleFilter);
         }
         $missingLogs = $missingLogs->get();
+
+        // Group missingLogs by role
+        $missingLogsByRole = $missingLogs->groupBy('role');
 
         // Member log status for role filter
         $members = User::where('role', '!=', 'manager');
@@ -318,13 +324,14 @@ class AdminController extends Controller
         }
 
         // Day-by-day history (last 14 days)
-        $historyDays = DailyLog::where('daily_logs.date', '>=', now()->subDays(14)->startOfDay());
+        $historyQuery = DailyLog::where('daily_logs.date', '>=', now()->subDays(14)->startOfDay())
+            ->join('users', 'daily_logs.user_id', '=', 'users.id');
         if ($roleFilter) {
-            $historyDays->join('users', 'daily_logs.user_id', '=', 'users.id')
-                ->where('users.role', $roleFilter);
+            $historyQuery->where('users.role', $roleFilter);
         }
-        $historyDays = $historyDays->select(
+        $historyDays = $historyQuery->select(
                 'daily_logs.date',
+                'users.role',
                 DB::raw('COUNT(DISTINCT daily_logs.user_id) as user_count'),
                 DB::raw('SUM(daily_logs.task_1) as total_task_1'),
                 DB::raw('SUM(daily_logs.task_2) as total_task_2'),
@@ -332,18 +339,24 @@ class AdminController extends Controller
                 DB::raw('SUM(daily_logs.task_4) as total_task_4'),
                 DB::raw('SUM(daily_logs.task_5) as total_task_5')
             )
-            ->groupBy('daily_logs.date')
+            ->groupBy('daily_logs.date', 'users.role')
             ->orderByDesc('daily_logs.date')
             ->get();
+
+        // Group history by role for "All Roles" view
+        $historyByRole = $historyDays->groupBy('role');
+
+        // Roles present in data
+        $rolesWithData = $todayLogsByRole->keys()->merge($historyByRole->keys())->unique()->sort()->values();
 
         return view('admin.daily-logs', compact(
             'user', 'totalLogs', 'thisMonthLogs', 'todayLogCount', 'avgDailyTasks',
             'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
             'prodLabels', 'prodData',
-            'todayLogs', 'allLogs', 'missingLogs',
+            'todayLogs', 'todayLogsByRole', 'allLogs', 'missingLogs', 'missingLogsByRole',
             'memberLogStatus', 'roleFilter',
             'calendarMonth', 'calendarDays', 'selectedDay', 'selectedDayLogs',
-            'historyDays'
+            'historyDays', 'historyByRole', 'rolesWithData'
         ));
     }
 }

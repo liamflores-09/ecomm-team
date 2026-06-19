@@ -205,6 +205,423 @@
         </div>
     </div>
 
+    @php
+        $roleBadgeColors = [
+            'content' => ['bg' => '#D1FAE5', 'text' => '#059669', 'accent' => '#059669'],
+            'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777', 'accent' => '#DB2777'],
+            'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E', 'accent' => '#92400E'],
+            'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB', 'accent' => '#2563EB'],
+            'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED', 'accent' => '#7C3AED'],
+        ];
+        $roleDisplayNames = [
+            'content' => 'Content',
+            'lead' => 'Lead (PR)',
+            'researcher' => 'Researcher',
+            'graphics' => 'Graphics',
+            'backend' => 'Backend',
+        ];
+        $roleIcons = [
+            'content' => 'fa-pen-nib',
+            'lead' => 'fa-star',
+            'researcher' => 'fa-magnifying-glass',
+            'graphics' => 'fa-palette',
+            'backend' => 'fa-server',
+        ];
+    @endphp
+
+    <!-- Bento Grid -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(120px, auto); gap: 1rem; margin-bottom: 2rem;" class="anim-up d1 bento-grid">
+        <!-- Total Logs (2 cols, gradient) -->
+        <div style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); border-radius: 14px; padding: 1.5rem; color: white; grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+            <div>
+                <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7;">Total Logs</div>
+                <div style="font-size: 2.75rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $totalLogs }}</div>
+            </div>
+            <div style="font-size: 0.75rem; opacity: 0.6; font-weight: 500;">All time submissions</div>
+        </div>
+
+        <!-- This Month -->
+        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">This Month</div>
+                <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $thisMonthLogs }}</div>
+            </div>
+            <div style="font-size: 0.7rem; color: #059669; font-weight: 600;"><i class="fas fa-arrow-up" style="margin-right: 0.2rem;"></i>{{ now()->format('M Y') }}</div>
+        </div>
+
+        <!-- Logged Today -->
+        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">Logged Today</div>
+                <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $todayLogCount }}</div>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--gray-400); font-weight: 500;">{{ now()->format('M d') }}</div>
+        </div>
+
+        <!-- Chart: Daily Tasks (2 cols) -->
+        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; grid-column: span 2;">
+            <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 0.5rem;">Daily Tasks (7 Days)</div>
+            <div style="position: relative; height: 140px;">
+                <canvas id="dailyTasksChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem;">
+            <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 0.5rem;">Top Performers</div>
+            <div style="position: relative; height: 140px;">
+                <canvas id="productivityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Missing / Avg -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="background: {{ $missingLogs->count() ? '#FEF2F2' : '#F0FDF4' }}; border-radius: 14px; padding: 1rem; flex: 1; border: 2px solid {{ $missingLogs->count() ? '#FECACA' : '#BBF7D0' }};">
+                <div style="font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: {{ $missingLogs->count() ? '#DC2626' : '#059669' }};">Missing</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: {{ $missingLogs->count() ? '#DC2626' : '#059669' }}; line-height: 1;">{{ $missingLogs->count() }}</div>
+            </div>
+            <div style="background: var(--white); border-radius: 14px; padding: 1rem; flex: 1;">
+                <div style="font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">Avg/Day</div>
+                <div style="font-size: 1.75rem; font-weight: 800; line-height: 1;">{{ $avgDailyTasks }}</div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    @media (max-width: 900px) { .bento-grid { grid-template-columns: repeat(2, 1fr) !important; } .bento-grid > div { grid-column: span 1 !important; } }
+    @media (max-width: 600px) { .bento-grid { grid-template-columns: 1fr !important; } }
+    </style>
+
+    <!-- Member Status -->
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d2">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: #8B5CF6; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-users"></i></div>
+        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">{{ $roleFilter ? ucfirst($roleFilter) . ' Team' : 'All Members' }}</h4>
+        <span style="background: var(--muted); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: var(--gray-400);">{{ $memberLogStatus->count() }}</span>
+        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
+    </div>
+
+    <!-- Compact Member Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem; margin-bottom: 2rem;" class="anim-up d2">
+        @foreach($memberLogStatus as $m)
+        @php
+            $rbc = $roleBadgeColors[$m['user']->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280'];
+        @endphp
+        <div style="background: var(--white); border-radius: 10px; padding: 0.75rem; border-left: 3px solid {{ $m['todayLog'] ? '#059669' : '#E5E7EB' }}; display: flex; align-items: center; gap: 0.625rem; transition: all 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow='none'">
+            <div style="position: relative;">
+                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $m['user']->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 36px; height: 36px; border-radius: 50%;" alt="">
+                <span style="position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; background: {{ $m['todayLog'] ? '#059669' : '#DC2626' }};"></span>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 700; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $m['user']->first_name }}</div>
+                <span style="padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.5rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc['bg'] }}; color: {{ $rbc['text'] }};">{{ $m['user']->role }}</span>
+            </div>
+            @if($m['todayLog'])
+            @php $mLabels = \App\Support\TaskLabels::get($m['user']->role); @endphp
+            <div style="display: flex; gap: 0.2rem;">
+                <span title="{{ $mLabels['task_1'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #EFF6FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $m['todayLog']->task_1 }}</span>
+                <span title="{{ $mLabels['task_2'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #F5F3FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $m['todayLog']->task_2 }}</span>
+                <span title="{{ $mLabels['task_3'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #ECFDF5; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #059669; cursor: help;">{{ $m['todayLog']->task_3 }}</span>
+                <span title="{{ $mLabels['task_4'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FFFBEB; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $m['todayLog']->task_4 }}</span>
+                <span title="{{ $mLabels['task_5'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FDF2F8; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $m['todayLog']->task_5 }}</span>
+            </div>
+            @else
+            <span style="font-size: 0.6rem; color: var(--gray-300); font-weight: 500;">{{ $m['lastLog'] ? $m['lastLog']->date->diffForHumans() : '—' }}</span>
+            @endif
+        </div>
+        @endforeach
+    </div>
+
+    <!-- Today's Logs -->
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d3">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: #059669; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-list-check"></i></div>
+        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">Today's Logs</h4>
+        <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">{{ now()->format('l, F j, Y') }}</span>
+        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
+    </div>
+
+    @if($roleFilter)
+        @php $currentLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
+        @php $rbc = $roleBadgeColors[$roleFilter] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
+        <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);" class="anim-up d3">
+            <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 28px; height: 28px; border-radius: 6px; background: {{ $rbc['accent'] }}; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas {{ $roleIcons[$roleFilter] ?? 'fa-users' }}"></i></div>
+                <span style="font-weight: 700; font-size: 0.85rem;">{{ $roleDisplayNames[$roleFilter] ?? ucfirst($roleFilter) }}</span>
+                <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);">{{ $todayLogs->count() }}</span>
+            </div>
+            @if($todayLogs->count())
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Member</th>
+                            @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $currentLabels[$tk] }}</th>
+                            @endforeach
+                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Status</th>
+                            <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($todayLogs as $log)
+                        <tr style="border-bottom: 1px solid #F5F5F5; {{ !$log->has_logged ? 'opacity: 0.5;' : '' }}" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt="">
+                                    <span style="font-weight: 600; font-size: 0.85rem;">{{ $log->username }}</span>
+                                </div>
+                            </td>
+                            @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                            <td style="padding: 0.75rem; text-align: center; font-weight: 700;">{{ $log->$tk }}</td>
+                            @endforeach
+                            <td style="padding: 0.75rem; text-align: center;">
+                                @if($log->has_logged)
+                                <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #ECFDF5; color: #059669;"><i class="fas fa-check" style="font-size: 0.55rem;"></i>Logged</span>
+                                @else
+                                <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #FEF2F2; color: #DC2626;"><i class="fas fa-clock" style="font-size: 0.55rem;"></i>Pending</span>
+                                @endif
+                            </td>
+                            <td style="padding: 0.75rem 1rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-400); font-size: 0.75rem;">{{ $log->remarks ?: '—' }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div style="text-align: center; padding: 3rem; color: var(--gray-300);">
+                <i class="fas fa-clipboard-list" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                <span style="font-weight: 600; font-size: 0.85rem;">No members found</span>
+            </div>
+            @endif
+        </div>
+    @else
+        @foreach($rolesWithData as $role)
+            @php $rLabels = \App\Support\TaskLabels::get($role); @endphp
+            @php $rLogs = $todayLogsByRole[$role] ?? collect(); @endphp
+            @php $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
+            <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--border); border-left: 4px solid {{ $rbc['accent'] }};" class="anim-up d3">
+                <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 28px; height: 28px; border-radius: 6px; background: {{ $rbc['accent'] }}; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas {{ $roleIcons[$role] ?? 'fa-users' }}"></i></div>
+                    <span style="font-weight: 700; font-size: 0.85rem;">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
+                    <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);">{{ $rLogs->count() }}</span>
+                </div>
+                @if($rLogs->count())
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Member</th>
+                                @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                                <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $rLabels[$tk] }}</th>
+                                @endforeach
+                                <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Status</th>
+                                <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($rLogs as $log)
+                            <tr style="border-bottom: 1px solid #F5F5F5; {{ !$log->has_logged ? 'opacity: 0.5;' : '' }}" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
+                                <td style="padding: 0.75rem 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt="">
+                                        <span style="font-weight: 600; font-size: 0.85rem;">{{ $log->username }}</span>
+                                    </div>
+                                </td>
+                                @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                                <td style="padding: 0.75rem; text-align: center; font-weight: 700;">{{ $log->$tk }}</td>
+                                @endforeach
+                                <td style="padding: 0.75rem; text-align: center;">
+                                    @if($log->has_logged)
+                                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #ECFDF5; color: #059669;"><i class="fas fa-check" style="font-size: 0.55rem;"></i>Logged</span>
+                                    @else
+                                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #FEF2F2; color: #DC2626;"><i class="fas fa-clock" style="font-size: 0.55rem;"></i>Pending</span>
+                                    @endif
+                                </td>
+                                <td style="padding: 0.75rem 1rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-400); font-size: 0.75rem;">{{ $log->remarks ?: '—' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @else
+                <div style="text-align: center; padding: 2rem; color: var(--gray-300); font-size: 0.85rem;">No members</div>
+                @endif
+            </div>
+        @endforeach
+    @endif
+
+    <!-- Calendar & Day View -->
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d4">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-calendar"></i></div>
+        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">Calendar</h4>
+        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 1rem; margin-bottom: 2rem;" class="anim-up d4 cal-layout">
+        <!-- Calendar -->
+        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s;" onmouseover="this.style.background='var(--muted)'" onmouseout="this.style.background='transparent'"><i class="fas fa-chevron-left" style="font-size: 0.65rem;"></i></a>
+                <span style="font-weight: 800; font-size: 0.85rem;">{{ $calendarMonth->format('F Y') }}</span>
+                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s;" onmouseover="this.style.background='var(--muted)'" onmouseout="this.style.background='transparent'"><i class="fas fa-chevron-right" style="font-size: 0.65rem;"></i></a>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
+                @foreach(['S', 'M', 'T', 'W', 'T', 'F', 'S'] as $d)
+                <div style="text-align: center; font-size: 0.55rem; font-weight: 700; color: var(--gray-300); padding: 0.375rem 0;">{{ $d }}</div>
+                @endforeach
+                @php $firstDay = $calendarMonth->copy()->startOfMonth(); $startOffset = $firstDay->dayOfWeek; $daysInMonth = $calendarMonth->daysInMonth; @endphp
+                @for($i = 0; $i < $startOffset; $i++) <div></div> @endfor
+                @for($day = 1; $day <= $daysInMonth; $day++)
+                    @php
+                        $dateStr = $calendarMonth->copy()->day($day)->format('Y-m-d');
+                        $hasLogs = in_array($dateStr, $calendarDays);
+                        $isToday = $dateStr === now()->format('Y-m-d');
+                        $isSelected = $dateStr === $selectedDay;
+                    @endphp
+                    <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $dateStr])) }}" style="display: flex; align-items: center; justify-content: center; height: 30px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: all 0.15s; position: relative; @if($isSelected) background: var(--primary); color: white; @elseif($isToday) background: #DBEAFE; color: #2563EB; @elseif($hasLogs) background: #D1FAE5; color: #059669; @else color: var(--gray-500); @endif">
+                        {{ $day }}
+                        @if($hasLogs && !$isSelected) <span style="position: absolute; bottom: 2px; width: 3px; height: 3px; border-radius: 50%; background: #059669;"></span> @endif
+                    </a>
+                @endfor
+            </div>
+            <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--muted); font-size: 0.55rem; color: var(--gray-400);">
+                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: #D1FAE5; vertical-align: middle; margin-right: 0.2rem;"></span>Logs</span>
+                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: #DBEAFE; vertical-align: middle; margin-right: 0.2rem;"></span>Today</span>
+                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: var(--primary); vertical-align: middle; margin-right: 0.2rem;"></span>Selected</span>
+            </div>
+        </div>
+
+        <!-- Day Detail -->
+        <div style="background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--border);">
+            @if($selectedDay)
+            <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <span style="font-weight: 800; font-size: 0.9rem;">{{ \Carbon\Carbon::parse($selectedDay)->format('l, F j') }}</span>
+                    <span style="font-size: 0.7rem; color: var(--gray-400); margin-left: 0.5rem;">{{ $selectedDayLogs->count() }} member{{ $selectedDayLogs->count() !== 1 ? 's' : '' }}</span>
+                </div>
+                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); font-size: 0.7rem; font-weight: 600;">Clear</a>
+            </div>
+            @if($selectedDayLogs->count())
+            <div style="max-height: 350px; overflow-y: auto;">
+                @foreach($selectedDayLogs as $log)
+                @php $logLabels = \App\Support\TaskLabels::get($log->role); $rbc2 = $roleBadgeColors[$log->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280']; @endphp
+                <div style="padding: 0.625rem 1.25rem; border-bottom: 1px solid #F5F5F5; display: flex; align-items: center; gap: 0.625rem;" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
+                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt="">
+                    <div style="flex: 1; min-width: 0;">
+                        <span style="font-weight: 700; font-size: 0.8rem;">{{ $log->username }}</span>
+                        <span style="padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.5rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc2['bg'] }}; color: {{ $rbc2['text'] }}; margin-left: 0.375rem;">{{ $log->role }}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.2rem;">
+                        <span title="{{ $logLabels['task_1'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #EFF6FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $log->task_1 }}</span>
+                        <span title="{{ $logLabels['task_2'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #F5F3FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $log->task_2 }}</span>
+                        <span title="{{ $logLabels['task_3'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #ECFDF5; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #059669; cursor: help;">{{ $log->task_3 }}</span>
+                        <span title="{{ $logLabels['task_4'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FFFBEB; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $log->task_4 }}</span>
+                        <span title="{{ $logLabels['task_5'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FDF2F8; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $log->task_5 }}</span>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <div style="text-align: center; padding: 3rem; color: var(--gray-300);"><i class="fas fa-clipboard-list" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;"></i>No logs</div>
+            @endif
+            @else
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; color: var(--gray-300);">
+                <i class="fas fa-calendar-day" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                <span style="font-weight: 600; font-size: 0.85rem;">Select a date</span>
+            </div>
+            @endif
+        </div>
+    </div>
+
+    <style>@media (max-width: 900px) { .cal-layout { grid-template-columns: 1fr !important; } }</style>
+
+    <!-- History -->
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d5">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--secondary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-history"></i></div>
+        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">History</h4>
+        <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">Last 14 Days</span>
+        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
+    </div>
+
+    @if($roleFilter)
+        @php $hLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
+        <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);" class="anim-up d5">
+            @if($historyDays->count())
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Date</th>
+                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Members</th>
+                            @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $hLabels[$tk] }}</th>
+                            @endforeach
+                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($historyDays as $hd)
+                        <tr style="border-bottom: 1px solid #F5F5F5; cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 0.75rem 1rem; font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
+                            <td style="padding: 0.75rem; text-align: center;">{{ $hd->user_count }}</td>
+                            @foreach(['total_task_1', 'total_task_2', 'total_task_3', 'total_task_4', 'total_task_5'] as $tk)
+                            <td style="padding: 0.75rem; text-align: center; font-weight: 600;">{{ $hd->$tk }}</td>
+                            @endforeach
+                            <td style="padding: 0.75rem; text-align: center; font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div style="text-align: center; padding: 2.5rem; color: var(--gray-300);"><i class="fas fa-history" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;"></i>No history</div>
+            @endif
+        </div>
+    @else
+        @foreach($rolesWithData as $role)
+            @php $hLabels = \App\Support\TaskLabels::get($role); @endphp
+            @php $rHistory = $historyByRole[$role] ?? collect(); @endphp
+            @php $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
+            <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--border); border-left: 4px solid {{ $rbc['accent'] }};" class="anim-up d5">
+                <div style="padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-weight: 700; font-size: 0.8rem;">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
+                    <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.6rem; font-weight: 700; color: var(--gray-400);">{{ $rHistory->count() }} days</span>
+                </div>
+                @if($rHistory->count())
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 0.5rem 1rem; text-align: left; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Date</th>
+                                <th style="padding: 0.5rem 0.75rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Members</th>
+                                @foreach(['task_1', 'task_2', 'task_3', 'task_4', 'task_5'] as $tk)
+                                <th style="padding: 0.5rem 0.625rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $hLabels[$tk] }}</th>
+                                @endforeach
+                                <th style="padding: 0.5rem 0.625rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($rHistory as $hd)
+                            <tr style="border-bottom: 1px solid #F5F5F5; cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
+                                <td style="padding: 0.625rem 1rem; font-weight: 700; white-space: nowrap; font-size: 0.8rem;">{{ $hd->date->format('M d, Y') }}</td>
+                                <td style="padding: 0.625rem; text-align: center; font-size: 0.8rem;">{{ $hd->user_count }}</td>
+                                @foreach(['total_task_1', 'total_task_2', 'total_task_3', 'total_task_4', 'total_task_5'] as $tk)
+                                <td style="padding: 0.625rem; text-align: center; font-weight: 600; font-size: 0.8rem;">{{ $hd->$tk }}</td>
+                                @endforeach
+                                <td style="padding: 0.625rem; text-align: center; font-weight: 800; font-size: 0.8rem;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @else
+                <div style="text-align: center; padding: 1.5rem; color: var(--gray-300); font-size: 0.8rem;">No history</div>
+                @endif
+            </div>
+        @endforeach
+    @endif
+</div>
+
     <!-- Bento Grid -->
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(140px, auto); gap: 1rem; margin-bottom: 2rem;" class="anim-up d1 bento-grid">
 
@@ -340,73 +757,139 @@
     </div>
 
     @php
-        $currentLabels = $roleFilter ? \App\Support\TaskLabels::get($roleFilter) : \App\Support\TaskLabels::get('content');
+        $roleBadgeColors = [
+            'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
+            'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777'],
+            'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
+            'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
+            'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED'],
+        ];
+        $roleDisplayNames = [
+            'content' => 'Content',
+            'lead' => 'Lead (PR)',
+            'researcher' => 'Researcher',
+            'graphics' => 'Graphics',
+            'backend' => 'Backend',
+        ];
     @endphp
 
-    <div style="background: var(--white); border-radius: 10px; overflow: hidden; margin-bottom: 2rem;" class="anim-up d3">
-        @if($todayLogs->count())
-        <div class="logs-table-wrap">
-            <table class="logs-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th style="text-align: center;">{{ $currentLabels['task_1'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['task_2'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['task_3'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['task_4'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['task_5'] }}</th>
-                        <th>Status</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($todayLogs as $log)
-                    @php
-                        $roleBadgeColors = [
-                            'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
-                            'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777'],
-                            'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                            'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
-                            'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED'],
-                        ];
-                        $rc = $roleBadgeColors[$log->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
-                    @endphp
-                    <tr style="{{ !$log->has_logged ? 'opacity: 0.6;' : '' }}">
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 24px; height: 24px; border-radius: 50%;" alt="">
-                                <span style="font-weight: 600;">{{ $log->username }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; background: {{ $rc['bg'] }}; color: {{ $rc['text'] }};">{{ $log->role }}</span>
-                        </td>
-                        <td class="num">{{ $log->task_1 }}</td>
-                        <td class="num">{{ $log->task_2 }}</td>
-                        <td class="num">{{ $log->task_3 }}</td>
-                        <td class="num">{{ $log->task_4 }}</td>
-                        <td class="num">{{ $log->task_5 }}</td>
-                        <td>
-                            @if($log->has_logged)
-                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #D1FAE5; color: #059669;"><i class="fas fa-check" style="margin-right: 0.15rem;"></i>Logged</span>
-                            @else
-                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #FEE2E2; color: #DC2626;"><i class="fas fa-clock" style="margin-right: 0.15rem;"></i>Pending</span>
-                            @endif
-                        </td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    @if($roleFilter)
+        @php $currentLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
+        <div style="background: var(--white); border-radius: 10px; overflow: hidden; margin-bottom: 2rem;" class="anim-up d3">
+            @if($todayLogs->count())
+            <div class="logs-table-wrap">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th style="text-align: center;">{{ $currentLabels['task_1'] }}</th>
+                            <th style="text-align: center;">{{ $currentLabels['task_2'] }}</th>
+                            <th style="text-align: center;">{{ $currentLabels['task_3'] }}</th>
+                            <th style="text-align: center;">{{ $currentLabels['task_4'] }}</th>
+                            <th style="text-align: center;">{{ $currentLabels['task_5'] }}</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($todayLogs as $log)
+                        <tr style="{{ !$log->has_logged ? 'opacity: 0.6;' : '' }}">
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 24px; height: 24px; border-radius: 50%;" alt="">
+                                    <span style="font-weight: 600;">{{ $log->username }}</span>
+                                </div>
+                            </td>
+                            <td class="num">{{ $log->task_1 }}</td>
+                            <td class="num">{{ $log->task_2 }}</td>
+                            <td class="num">{{ $log->task_3 }}</td>
+                            <td class="num">{{ $log->task_4 }}</td>
+                            <td class="num">{{ $log->task_5 }}</td>
+                            <td>
+                                @if($log->has_logged)
+                                <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #D1FAE5; color: #059669;"><i class="fas fa-check" style="margin-right: 0.15rem;"></i>Logged</span>
+                                @else
+                                <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #FEE2E2; color: #DC2626;"><i class="fas fa-clock" style="margin-right: 0.15rem;"></i>Pending</span>
+                                @endif
+                            </td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div style="text-align: center; padding: 3rem; color: var(--gray-400); font-weight: 500;">
+                <i class="fas fa-clipboard-list" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+                No members found.
+            </div>
+            @endif
         </div>
-        @else
-        <div style="text-align: center; padding: 3rem; color: var(--gray-400); font-weight: 500;">
-            <i class="fas fa-clipboard-list" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
-            No members found.
-        </div>
-        @endif
-    </div>
+    @else
+        <!-- All Roles: separate table per role -->
+        @foreach($rolesWithData as $role)
+            @php $rLabels = \App\Support\TaskLabels::get($role); @endphp
+            @php $rLogs = $todayLogsByRole[$role] ?? collect(); @endphp
+            @php $rMissing = $missingLogsByRole[$role] ?? collect(); @endphp
+            @php $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280']; @endphp
+
+            <div style="margin-bottom: 1.5rem;" class="anim-up d3">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc['bg'] }}; color: {{ $rbc['text'] }};">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
+                    <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">{{ $rLogs->count() }} member{{ $rLogs->count() !== 1 ? 's' : '' }}</span>
+                </div>
+                <div style="background: var(--white); border-radius: 10px; overflow: hidden;">
+                    @if($rLogs->count())
+                    <div class="logs-table-wrap">
+                        <table class="logs-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th style="text-align: center;">{{ $rLabels['task_1'] }}</th>
+                                    <th style="text-align: center;">{{ $rLabels['task_2'] }}</th>
+                                    <th style="text-align: center;">{{ $rLabels['task_3'] }}</th>
+                                    <th style="text-align: center;">{{ $rLabels['task_4'] }}</th>
+                                    <th style="text-align: center;">{{ $rLabels['task_5'] }}</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($rLogs as $log)
+                                <tr style="{{ !$log->has_logged ? 'opacity: 0.6;' : '' }}">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 24px; height: 24px; border-radius: 50%;" alt="">
+                                            <span style="font-weight: 600;">{{ $log->username }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="num">{{ $log->task_1 }}</td>
+                                    <td class="num">{{ $log->task_2 }}</td>
+                                    <td class="num">{{ $log->task_3 }}</td>
+                                    <td class="num">{{ $log->task_4 }}</td>
+                                    <td class="num">{{ $log->task_5 }}</td>
+                                    <td>
+                                        @if($log->has_logged)
+                                        <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #D1FAE5; color: #059669;"><i class="fas fa-check" style="margin-right: 0.15rem;"></i>Logged</span>
+                                        @else
+                                        <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.6rem; font-weight: 700; background: #FEE2E2; color: #DC2626;"><i class="fas fa-clock" style="margin-right: 0.15rem;"></i>Pending</span>
+                                        @endif
+                                    </td>
+                                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <div style="text-align: center; padding: 2rem; color: var(--gray-400); font-weight: 500;">
+                        No members in this role.
+                    </div>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+    @endif
 
     <!-- Calendar & Day View -->
     <div class="admin-divider anim-up d4">
@@ -527,43 +1010,96 @@
         <div class="ad-line"></div>
     </div>
 
-    <div style="background: var(--white); border-radius: 10px; overflow: hidden; margin-bottom: 2rem;" class="anim-up d5">
-        @if($historyDays->count())
-        <table class="logs-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th style="text-align: center;">Members</th>
-                    <th style="text-align: center;">{{ $currentLabels['task_1'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['task_2'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['task_3'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['task_4'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['task_5'] }}</th>
-                    <th style="text-align: center;">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($historyDays as $hd)
-                <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'">
-                    <td style="font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
-                    <td class="num">{{ $hd->user_count }}</td>
-                    <td class="num">{{ $hd->total_task_1 }}</td>
-                    <td class="num">{{ $hd->total_task_2 }}</td>
-                    <td class="num">{{ $hd->total_task_3 }}</td>
-                    <td class="num">{{ $hd->total_task_4 }}</td>
-                    <td class="num">{{ $hd->total_task_5 }}</td>
-                    <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @else
-        <div style="text-align: center; padding: 2.5rem; color: var(--gray-400); font-weight: 500;">
-            <i class="fas fa-history" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
-            No history yet.
+    @if($roleFilter)
+        @php $hLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
+        <div style="background: var(--white); border-radius: 10px; overflow: hidden; margin-bottom: 2rem;" class="anim-up d5">
+            @if($historyDays->count())
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th style="text-align: center;">Members</th>
+                        <th style="text-align: center;">{{ $hLabels['task_1'] }}</th>
+                        <th style="text-align: center;">{{ $hLabels['task_2'] }}</th>
+                        <th style="text-align: center;">{{ $hLabels['task_3'] }}</th>
+                        <th style="text-align: center;">{{ $hLabels['task_4'] }}</th>
+                        <th style="text-align: center;">{{ $hLabels['task_5'] }}</th>
+                        <th style="text-align: center;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($historyDays as $hd)
+                    <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'">
+                        <td style="font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
+                        <td class="num">{{ $hd->user_count }}</td>
+                        <td class="num">{{ $hd->total_task_1 }}</td>
+                        <td class="num">{{ $hd->total_task_2 }}</td>
+                        <td class="num">{{ $hd->total_task_3 }}</td>
+                        <td class="num">{{ $hd->total_task_4 }}</td>
+                        <td class="num">{{ $hd->total_task_5 }}</td>
+                        <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <div style="text-align: center; padding: 2.5rem; color: var(--gray-400); font-weight: 500;">
+                <i class="fas fa-history" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+                No history yet.
+            </div>
+            @endif
         </div>
-        @endif
-    </div>
+    @else
+        <!-- All Roles: separate history table per role -->
+        @foreach($rolesWithData as $role)
+            @php $hLabels = \App\Support\TaskLabels::get($role); @endphp
+            @php $rHistory = $historyByRole[$role] ?? collect(); @endphp
+            @php $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280']; @endphp
+
+            <div style="margin-bottom: 1.5rem;" class="anim-up d5">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc['bg'] }}; color: {{ $rbc['text'] }};">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
+                    <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">{{ $rHistory->count() }} day{{ $rHistory->count() !== 1 ? 's' : '' }}</span>
+                </div>
+                <div style="background: var(--white); border-radius: 10px; overflow: hidden;">
+                    @if($rHistory->count())
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th style="text-align: center;">Members</th>
+                                <th style="text-align: center;">{{ $hLabels['task_1'] }}</th>
+                                <th style="text-align: center;">{{ $hLabels['task_2'] }}</th>
+                                <th style="text-align: center;">{{ $hLabels['task_3'] }}</th>
+                                <th style="text-align: center;">{{ $hLabels['task_4'] }}</th>
+                                <th style="text-align: center;">{{ $hLabels['task_5'] }}</th>
+                                <th style="text-align: center;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($rHistory as $hd)
+                            <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'">
+                                <td style="font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
+                                <td class="num">{{ $hd->user_count }}</td>
+                                <td class="num">{{ $hd->total_task_1 }}</td>
+                                <td class="num">{{ $hd->total_task_2 }}</td>
+                                <td class="num">{{ $hd->total_task_3 }}</td>
+                                <td class="num">{{ $hd->total_task_4 }}</td>
+                                <td class="num">{{ $hd->total_task_5 }}</td>
+                                <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else
+                    <div style="text-align: center; padding: 2rem; color: var(--gray-400); font-weight: 500;">
+                        No history for this role.
+                    </div>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+    @endif
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
