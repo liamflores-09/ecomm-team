@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -49,5 +50,30 @@ class User extends Authenticatable
             return strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
         }
         return strtoupper(substr($this->username, 0, 2));
+    }
+
+    public function getDepartmentAttribute(): string
+    {
+        return match ($this->role) {
+            'content' => 'Content',
+            'graphics' => 'Graphics',
+            'lead' => 'PR',
+            default => ucfirst($this->role),
+        };
+    }
+
+    public function dailyLogs(): HasMany
+    {
+        return $this->hasMany(DailyLog::class);
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function buddies(): HasMany
+    {
+        return $this->hasMany(Schedule::class, 'buddy_id');
     }
 }

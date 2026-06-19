@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             'role' => 'manager',
         ]);
 
-        // Lead
+        // Lead (Content / PR)
         User::create([
             'first_name' => 'Milo',
             'last_name' => 'Gorospe',
@@ -30,23 +30,14 @@ class UserSeeder extends Seeder
             'role' => 'lead',
         ]);
 
-        // Content
+        // Product Researcher (under PR)
         User::create([
-            'first_name' => 'Angelyn',
-            'last_name' => 'Catolico',
-            'username' => 'ange',
-            'mobile_number' => '09191234567',
+            'first_name' => 'Well',
+            'last_name' => 'Dacoco',
+            'username' => 'well',
+            'mobile_number' => '09221234567',
             'password' => Hash::make('1234'),
-            'role' => 'content',
-        ]);
-
-        User::create([
-            'first_name' => 'Czein',
-            'last_name' => 'Laruscain',
-            'username' => 'czein',
-            'mobile_number' => '09201234567',
-            'password' => Hash::make('1234'),
-            'role' => 'content',
+            'role' => 'researcher',
         ]);
 
         User::create([
@@ -55,14 +46,15 @@ class UserSeeder extends Seeder
             'username' => 'jamie',
             'mobile_number' => '09211234567',
             'password' => Hash::make('1234'),
-            'role' => 'content',
+            'role' => 'researcher',
         ]);
 
+        // Content
         User::create([
-            'first_name' => 'Well',
-            'last_name' => 'Dacoco',
-            'username' => 'well',
-            'mobile_number' => '09221234567',
+            'first_name' => 'Czein',
+            'last_name' => 'Laruscain',
+            'username' => 'czein',
+            'mobile_number' => '09201234567',
             'password' => Hash::make('1234'),
             'role' => 'content',
         ]);
@@ -105,15 +97,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'first_name' => 'Tim',
-            'last_name' => '',
-            'username' => 'tim',
-            'mobile_number' => '09271234567',
-            'password' => Hash::make('1234'),
-            'role' => 'graphics',
-        ]);
-
-        User::create([
             'first_name' => 'Angelo',
             'last_name' => '',
             'username' => 'angelo',
@@ -129,6 +112,25 @@ class UserSeeder extends Seeder
             'mobile_number' => '09291234567',
             'password' => Hash::make('1234'),
             'role' => 'graphics',
+        ]);
+
+        User::create([
+            'first_name' => 'Tim',
+            'last_name' => '',
+            'username' => 'tim',
+            'mobile_number' => '09271234567',
+            'password' => Hash::make('1234'),
+            'role' => 'graphics',
+        ]);
+
+        // Backend
+        User::create([
+            'first_name' => 'Angelyn',
+            'last_name' => 'Catolico',
+            'username' => 'ange',
+            'mobile_number' => '09191234567',
+            'password' => Hash::make('1234'),
+            'role' => 'backend',
         ]);
     }
 }

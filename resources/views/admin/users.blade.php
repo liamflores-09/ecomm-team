@@ -225,6 +225,19 @@
     <ul class="sidebar-nav">
         <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
         <li><a href="{{ route('admin.users') }}" class="active"><i class="fas fa-users"></i> Manage Users</a></li>
+        <li class="nav-dropdown" id="dailyLogsDropdown">
+            <a href="javascript:void(0)" onclick="toggleDropdown()" class="has-submenu">
+                <i class="fas fa-clipboard-list"></i> Daily Logs <i class="fas fa-chevron-down dropdown-arrow" id="dropdownArrow"></i>
+            </a>
+            <ul class="submenu" id="dailyLogsSubmenu">
+                <li><a href="{{ route('admin.daily-logs') }}">All Roles</a></li>
+                <li><a href="{{ route('admin.daily-logs', ['role' => 'content']) }}">Content</a></li>
+                <li><a href="{{ route('admin.daily-logs', ['role' => 'lead']) }}">Lead</a></li>
+                <li><a href="{{ route('admin.daily-logs', ['role' => 'researcher']) }}">Researcher</a></li>
+                <li><a href="{{ route('admin.daily-logs', ['role' => 'graphics']) }}">Graphics</a></li>
+                <li><a href="{{ route('admin.daily-logs', ['role' => 'backend']) }}">Backend</a></li>
+            </ul>
+        </li>
     </ul>
 
     <div class="sidebar-footer">
@@ -261,40 +274,43 @@
     @endif
 
     <!-- Stats -->
-    <div class="admin-stat-row anim-up d1">
-        <div class="admin-stat">
+    <div class="admin-stat-row anim-up d1" style="grid-template-columns: 1fr;">
+        <div class="admin-stat" style="cursor: pointer; transition: all 0.2s;" onclick="toggleRoleBreakdown()" id="totalUsersCard">
             <div class="as-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
-            <div>
+            <div style="flex: 1;">
                 <div class="as-count">{{ $users->count() }}</div>
-                <div class="as-label">Total Users</div>
+                <div class="as-label">Total Users — Click to see breakdown</div>
             </div>
+            <i class="fas fa-chevron-down" id="breakdownChevron" style="color: var(--gray-400); transition: transform 0.2s;"></i>
         </div>
-        <div class="admin-stat">
-            <div class="as-icon" style="background: #DC2626;"><i class="fas fa-user-shield"></i></div>
-            <div>
-                <div class="as-count">{{ $users->where('role', 'manager')->count() }}</div>
-                <div class="as-label">Managers</div>
+    </div>
+
+    <!-- Role Breakdown (hidden by default) -->
+    <div id="roleBreakdown" style="display: none; margin-bottom: 1.5rem;" class="anim-up d1">
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; padding: 1rem; background: var(--white); border-radius: 8px; border: 2px solid var(--border);">
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #D97706;">{{ $users->where('role', 'manager')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Manager</div>
             </div>
-        </div>
-        <div class="admin-stat">
-            <div class="as-icon" style="background: #EC4899;"><i class="fas fa-crown"></i></div>
-            <div>
-                <div class="as-count">{{ $users->where('role', 'lead')->count() }}</div>
-                <div class="as-label">Leads</div>
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #DB2777;">{{ $users->where('role', 'lead')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Lead</div>
             </div>
-        </div>
-        <div class="admin-stat">
-            <div class="as-icon" style="background: var(--secondary);"><i class="fas fa-pen-nib"></i></div>
-            <div>
-                <div class="as-count">{{ $users->where('role', 'content')->count() }}</div>
-                <div class="as-label">Content</div>
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #92400E;">{{ $users->where('role', 'researcher')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Researcher</div>
             </div>
-        </div>
-        <div class="admin-stat">
-            <div class="as-icon" style="background: var(--accent);"><i class="fas fa-palette"></i></div>
-            <div>
-                <div class="as-count">{{ $users->where('role', 'graphics')->count() }}</div>
-                <div class="as-label">Graphics</div>
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #059669;">{{ $users->where('role', 'content')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Content</div>
+            </div>
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #2563EB;">{{ $users->where('role', 'graphics')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Graphics</div>
+            </div>
+            <div style="text-align: center; padding: 0.75rem;">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #7C3AED;">{{ $users->where('role', 'backend')->count() }}</div>
+                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Backend</div>
             </div>
         </div>
     </div>
@@ -309,6 +325,8 @@
                 <button class="rf-btn" onclick="filterByRole('lead', this)">Lead</button>
                 <button class="rf-btn" onclick="filterByRole('content', this)">Content</button>
                 <button class="rf-btn" onclick="filterByRole('graphics', this)">Graphics</button>
+                <button class="rf-btn" onclick="filterByRole('backend', this)">Backend</button>
+                <button class="rf-btn" onclick="filterByRole('researcher', this)">Researcher</button>
             </div>
         </div>
         <button class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openAddModal()">
@@ -349,6 +367,8 @@
                                 'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777'],
                                 'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
                                 'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
+                                'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED'],
+                                'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
                             ];
                             $rc = $roleColors[$u->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
                         @endphp
@@ -439,6 +459,8 @@
                             <option value="graphics">Graphics</option>
                             <option value="lead">Lead</option>
                             <option value="manager">Manager</option>
+                            <option value="backend">Backend</option>
+                            <option value="researcher">Researcher</option>
                         </select>
                     </div>
                 </div>
@@ -496,6 +518,8 @@
                             <option value="graphics">Graphics</option>
                             <option value="lead">Lead</option>
                             <option value="manager">Manager</option>
+                            <option value="backend">Backend</option>
+                            <option value="researcher">Researcher</option>
                         </select>
                     </div>
                 </div>
@@ -540,5 +564,59 @@ function openEditModal(id, firstName, lastName, username, role, mobile) {
     document.getElementById('editRoleSelect').value = role;
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
+
+function toggleRoleBreakdown() {
+    var panel = document.getElementById('roleBreakdown');
+    var chevron = document.getElementById('breakdownChevron');
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        panel.style.display = 'none';
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+function toggleDropdown() {
+    var submenu = document.getElementById('dailyLogsSubmenu');
+    var arrow = document.getElementById('dropdownArrow');
+    if (submenu.style.display === 'none' || submenu.style.display === '') {
+        submenu.style.display = 'block';
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        submenu.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
 </script>
+<style>
+.nav-dropdown .has-submenu {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+.dropdown-arrow {
+    font-size: 0.65rem;
+    transition: transform 0.2s;
+    margin-left: auto;
+}
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0.5rem 1.75rem;
+}
+.submenu li { margin: 0.125rem 0; }
+.submenu a {
+    display: block;
+    padding: 0.5rem 0.875rem;
+    color: var(--gray-300);
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+}
+.submenu a:hover { background: var(--gray-700); color: white; }
+.submenu a.active { background: var(--primary); color: white; }
+</style>
 @endsection

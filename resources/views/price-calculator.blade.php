@@ -479,9 +479,11 @@
 
     <ul class="sidebar-nav">
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
+        @if(Auth::user()->role === 'content')
         <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
         <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
         <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
+        @endif
         <li><a href="{{ route('price-calculator') }}" class="active"><i class="fas fa-calculator"></i> Price Calculator</a></li>
         <li><a href="{{ route('end-of-day') }}"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
         <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>

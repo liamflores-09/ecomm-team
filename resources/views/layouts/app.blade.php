@@ -964,9 +964,11 @@
 
         var userPages = [
             { name: 'Dashboard', desc: 'Overview of your training system', icon: 'fa-grip', url: '{{ route("dashboard") }}' },
+            @if(Auth::check() && Auth::user()->role === 'content')
             { name: 'Posting Procedure', desc: '8-step guide for product posting', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}' },
             { name: 'Data Gathering', desc: 'Collect product info and assets', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}' },
             { name: 'E-commerce Requirements', desc: 'Platform-specific posting rules', icon: 'fa-clipboard-list', url: '{{ route("ecommerce-requirements") }}' },
+            @endif
             { name: 'Price Calculator', desc: 'Compute SRP across platforms', icon: 'fa-calculator', url: '{{ route("price-calculator") }}' },
             { name: 'End-of-Day Report', desc: 'Daily activity logging guidelines', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}' },
             { name: 'Important Links', desc: 'Quick access to resources', icon: 'fa-link', url: '{{ route("important-links") }}' },

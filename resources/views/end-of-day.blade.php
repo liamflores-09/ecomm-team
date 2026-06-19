@@ -9,171 +9,18 @@
 
 @section('styles')
 <style>
-    /* Columns overview */
-    .col-overview {
+    .eod-card {
         background: var(--white);
         border-radius: 8px;
         overflow: hidden;
         margin-bottom: 1.5rem;
     }
 
-    .col-head {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        background: var(--fg);
-    }
-
-    .col-head div {
-        padding: 0.75rem;
-        text-align: center;
-        font-weight: 800;
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: white;
-    }
-
-    .col-body {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-    }
-
-    .col-body div {
-        padding: 0.875rem;
-        text-align: center;
-        border-right: 2px solid var(--muted);
-        border-bottom: 2px solid var(--muted);
-    }
-
-    .col-body div:last-child { border-right: none; }
-
-    .col-body .col-name {
-        font-weight: 700;
-        font-size: 0.8rem;
-        color: var(--fg);
-        margin-bottom: 0.125rem;
-    }
-
-    .col-body .col-desc {
-        font-size: 0.7rem;
-        color: var(--gray-500);
-        font-weight: 500;
-    }
-
-    /* Rules grid */
-    .rules-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-        margin-bottom: 1.5rem;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .rule-cell {
-        padding: 1.25rem;
-        border-right: 2px solid var(--border);
-        border-bottom: 2px solid var(--border);
-    }
-
-    .rule-cell:nth-child(2n) { border-right: none; }
-    .rule-cell:nth-last-child(-n+2) { border-bottom: none; }
-
-    .rule-head {
-        display: flex;
-        align-items: center;
-        gap: 0.625rem;
-        margin-bottom: 0.75rem;
-        padding-bottom: 0.625rem;
-        border-bottom: 2px solid var(--fg);
-    }
-
-    .rule-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--fg);
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.85rem;
-        flex-shrink: 0;
-    }
-
-    .rule-title {
-        font-weight: 800;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--fg);
-    }
-
-    .rule-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 0.75rem;
-    }
-
-    .rule-list li {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.5rem;
-        padding: 0.375rem 0;
-        font-size: 0.85rem;
-        color: var(--gray-700);
-        line-height: 1.5;
-        font-weight: 500;
-    }
-
-    .rule-list li + li {
-        border-top: 1px solid var(--muted);
-    }
-
-    .rule-list .rl-icon {
-        width: 18px;
-        height: 18px;
-        background: #D1FAE5;
-        color: #059669;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.55rem;
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
-
-    .rule-list strong {
-        color: var(--fg);
-        font-weight: 700;
-    }
-
-    .example-tag {
-        display: inline-block;
-        background: var(--muted);
-        border: 2px solid var(--border);
-        padding: 0.375rem 0.75rem;
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: var(--gray-700);
-        border-radius: 4px;
-    }
-
-    /* Example table */
-    .ex-table-wrap {
-        background: var(--white);
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-
-    .ex-table-head {
+    .eod-card-header {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.875rem 1rem;
+        padding: 1rem 1.25rem;
         background: var(--muted);
         font-weight: 700;
         font-size: 0.75rem;
@@ -182,7 +29,7 @@
         color: var(--gray-500);
     }
 
-    .ex-table-head .t-icon {
+    .eod-card-header .t-icon {
         width: 24px;
         height: 24px;
         background: var(--primary);
@@ -194,77 +41,207 @@
         font-size: 0.65rem;
     }
 
-    .ex-table {
+    .eod-card-body {
+        padding: 1.25rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gray-500);
+    }
+
+    .form-input {
+        height: 44px;
+        padding: 0 0.875rem;
+        background: var(--muted);
+        border: 2px solid transparent;
+        border-radius: 6px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--fg);
+        outline: none;
+        transition: all 0.15s;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        background: var(--white);
+    }
+
+    .form-input[type="number"] {
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .form-input::placeholder {
+        color: var(--gray-300);
+    }
+
+    .form-select {
+        height: 44px;
+        padding: 0 0.875rem;
+        background: var(--muted);
+        border: 2px solid transparent;
+        border-radius: 6px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--fg);
+        outline: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        width: 100%;
+        appearance: auto;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary);
+        background: var(--white);
+    }
+
+    .form-textarea {
+        padding: 0.75rem 0.875rem;
+        background: var(--muted);
+        border: 2px solid transparent;
+        border-radius: 6px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--fg);
+        outline: none;
+        resize: vertical;
+        min-height: 80px;
+        transition: all 0.15s;
+    }
+
+    .form-textarea:focus {
+        border-color: var(--primary);
+        background: var(--white);
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 2px solid var(--muted);
+    }
+
+    /* Column guide */
+    .col-guide {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+        margin-bottom: 1.5rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .cg-item {
+        padding: 0.75rem;
+        text-align: center;
+        border-right: 2px solid var(--border);
+    }
+
+    .cg-item:last-child { border-right: none; }
+
+    .cg-item .cg-name {
+        font-weight: 700;
+        font-size: 0.7rem;
+        color: var(--fg);
+        margin-bottom: 0.125rem;
+    }
+
+    .cg-item .cg-desc {
+        font-size: 0.6rem;
+        color: var(--gray-400);
+        font-weight: 500;
+    }
+
+    /* Recent logs table */
+    .logs-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.85rem;
     }
 
-    .ex-table thead th {
-        background: var(--fg);
-        color: white;
-        padding: 0.75rem;
+    .logs-table thead th {
+        background: var(--muted);
+        padding: 0.75rem 1rem;
         font-weight: 700;
         font-size: 0.65rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
+        color: var(--gray-500);
         text-align: left;
     }
 
-    .ex-table tbody td {
-        padding: 0.625rem 0.75rem;
+    .logs-table tbody td {
+        padding: 0.75rem 1rem;
         border-top: 2px solid var(--muted);
-        color: var(--gray-700);
         font-weight: 500;
     }
 
-    .ex-table tbody tr:hover td {
+    .logs-table tbody tr:hover td {
         background: #F8FAFC;
     }
 
-    .ex-table tbody td:first-child {
+    .logs-table .num {
         font-weight: 700;
+        text-align: center;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 0.25rem;
+    }
+
+    .action-btn-sm {
+        width: 28px;
+        height: 28px;
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: transparent;
+        color: var(--gray-400);
+    }
+
+    .action-btn-sm:hover {
+        border-color: var(--primary);
         color: var(--primary);
     }
 
-    /* Quick ref grid */
-    .ref-card {
-        background: var(--white);
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-
-    .ref-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .ref-item {
-        padding: 1rem 1.25rem;
-        border-right: 2px solid var(--muted);
-        border-bottom: 2px solid var(--muted);
-    }
-
-    .ref-item:nth-child(3n) { border-right: none; }
-    .ref-item:nth-last-child(-n+3) { border-bottom: none; }
-
-    .ref-item strong {
-        display: block;
-        font-size: 0.65rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--primary);
-        margin-bottom: 0.375rem;
-    }
-
-    .ref-item p {
-        font-size: 0.8rem;
-        color: var(--gray-700);
-        margin: 0;
-        line-height: 1.5;
-        font-weight: 500;
+    .action-btn-sm.btn-danger:hover {
+        border-color: #DC2626;
+        color: #DC2626;
     }
 
     /* Info banner */
@@ -275,68 +252,58 @@
         background: var(--white);
         border-left: 4px solid var(--fg);
         border-radius: 0 8px 8px 0;
-        padding: 1.25rem 1.5rem;
+        padding: 1rem 1.25rem;
         margin-bottom: 1.5rem;
     }
 
     .info-banner .ib-icon {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         background: var(--fg);
         border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         flex-shrink: 0;
     }
 
     .info-banner p {
         color: var(--gray-700);
         font-weight: 500;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         line-height: 1.5;
         margin: 0;
     }
 
-    /* Responsive */
+    .empty-logs {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray-400);
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .empty-logs i {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--gray-300);
+    }
+
     @media (max-width: 768px) {
-        .col-head { grid-template-columns: repeat(3, 1fr); }
-        .col-head div:nth-child(4),
-        .col-head div:nth-child(5),
-        .col-head div:nth-child(6) {
-            display: none;
-        }
-        .col-body { grid-template-columns: repeat(3, 1fr); }
-        .col-body div:nth-child(4),
-        .col-body div:nth-child(5),
-        .col-body div:nth-child(6) {
-            display: none;
-        }
-
-        .rules-grid { grid-template-columns: 1fr; }
-        .rule-cell { border-right: none !important; }
-        .rule-cell:last-child { border-bottom: none !important; }
-
-        .ref-grid { grid-template-columns: 1fr 1fr; }
-        .ref-item:nth-child(2n) { border-right: none; }
-        .ref-item:nth-last-child(-n+2) { border-bottom: none; }
-        .ref-item:nth-child(3n) { border-right: 2px solid var(--muted); }
-
-        .ex-table-wrap { overflow-x: auto; }
+        .form-grid { grid-template-columns: 1fr; }
+        .col-guide { grid-template-columns: repeat(3, 1fr); }
+        .col-guide .cg-item:nth-child(4),
+        .col-guide .cg-item:nth-child(5) { display: none; }
+        .logs-table-wrap { overflow-x: auto; }
+        .logs-table { min-width: 600px; }
     }
 
     @media (max-width: 480px) {
-        .col-head, .col-body { grid-template-columns: 1fr 1fr; }
-        .col-head div:nth-child(3),
-        .col-body div:nth-child(3) { display: none; }
-
-        .ref-grid { grid-template-columns: 1fr; }
-        .ref-item { border-right: none !important; border-bottom: 2px solid var(--muted) !important; }
-        .ref-item:last-child { border-bottom: none !important; }
-
-        .info-banner { flex-direction: column; text-align: center; }
+        .col-guide { grid-template-columns: 1fr 1fr; }
+        .col-guide .cg-item:nth-child(2n) { border-right: none; }
     }
 </style>
 @endsection
@@ -353,9 +320,11 @@
 
     <ul class="sidebar-nav">
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
+        @if($user->role === 'content')
         <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
         <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
         <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
+        @endif
         <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
         <li><a href="{{ route('end-of-day') }}" class="active"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
         <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>
@@ -376,190 +345,317 @@
     <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>
             <h2>End-of-Day <span class="highlight">Report</span></h2>
-            <p>Guidelines for completing your daily EOD report</p>
+            <p>Log your daily tasks and activities</p>
         </div>
+        @if($user->role === 'content')
+        <button type="button" class="btn-flat-secondary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="new bootstrap.Modal(document.getElementById('tutorialModal')).show()">
+            <i class="fas fa-circle-info"></i> How to Fill
+        </button>
+        @endif
     </div>
+
+    @if (session('success'))
+    <div class="alert-flat success anim-fade"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
+    @endif
+
+    @if (session('error'))
+    <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
+    @endif
 
     <!-- Info Banner -->
     <div class="info-banner anim-up d1">
         <div class="ib-icon"><i class="fas fa-circle-info"></i></div>
-        <p>This is where you'll input the things you did for the day/duty. Follow the guidelines below to properly log your daily activities.</p>
+        <p>Fill in your daily accomplishments below. Each field counts the number of items you completed for the day.</p>
     </div>
 
-    <!-- Column Overview -->
-    <div class="col-overview anim-up d2">
-        <div class="col-head">
-            <div>New SKU</div>
-            <div>Variation SKU</div>
-            <div>Advance Data Gathering</div>
-            <div>Update Listings</div>
-            <div>Other</div>
-            <div>Remarks</div>
+    <!-- Column Guide -->
+    <div class="col-guide anim-up d2">
+        <div class="cg-item">
+            <div class="cg-name">{{ $taskLabels['col1'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc1'] }}</div>
         </div>
-        <div class="col-body">
-            <div>
-                <div class="col-name">Parent/Single</div>
-                <div class="col-desc">New product posted</div>
-            </div>
-            <div>
-                <div class="col-name">Child/Variant</div>
-                <div class="col-desc">Variation posted</div>
-            </div>
-            <div>
-                <div class="col-name">Data Gathered</div>
-                <div class="col-desc">Research completed</div>
-            </div>
-            <div>
-                <div class="col-name">Updated Listings</div>
-                <div class="col-desc">Old SKUs updated</div>
-            </div>
-            <div>
-                <div class="col-name">Extra Tasks</div>
-                <div class="col-desc">Canva, etc.</div>
-            </div>
-            <div>
-                <div class="col-name">Description</div>
-                <div class="col-desc">Explain OTHER</div>
-            </div>
+        <div class="cg-item">
+            <div class="cg-name">{{ $taskLabels['col2'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc2'] }}</div>
+        </div>
+        <div class="cg-item">
+            <div class="cg-name">{{ $taskLabels['col3'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc3'] }}</div>
+        </div>
+        <div class="cg-item">
+            <div class="cg-name">{{ $taskLabels['col4'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc4'] }}</div>
+        </div>
+        <div class="cg-item">
+            <div class="cg-name">{{ $taskLabels['col5'] }}</div>
+            <div class="cg-desc">{{ $taskLabels['desc5'] }}</div>
         </div>
     </div>
 
-    <!-- Rules Grid -->
-    <div class="rules-grid anim-up d3">
-        <!-- New SKU & Variation -->
-        <div class="rule-cell">
-            <div class="rule-head">
-                <div class="rule-icon"><i class="fas fa-box"></i></div>
-                <div class="rule-title">New SKU & Variation SKU</div>
-            </div>
-            <ul class="rule-list">
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span><strong>New SKU (Parent / Single)</strong> — Each parent product or single SKU posted counts as 1</span>
-                </li>
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span><strong>Variation SKU (Child)</strong> — Each child/variant under a parent SKU counts as 1</span>
-                </li>
-            </ul>
-            <div class="example-tag">Example: 1 parent + 4 children = 1 NEW SKU, 4 VARIATION SKU</div>
+    <!-- Log Form -->
+    <div class="eod-card anim-up d3">
+        <div class="eod-card-header">
+            <div class="t-icon"><i class="fas fa-pen"></i></div>
+            {{ $existingLog ? 'Edit Today\'s Log' : 'Log Today\'s Tasks' }} — {{ now()->format('F j, Y') }}
         </div>
+        <div class="eod-card-body">
+            <form method="POST" action="{{ $existingLog ? route('daily-logs.update', $existingLog) : route('daily-logs.store') }}">
+                @csrf
+                @if($existingLog)
+                @method('PUT')
+                @endif
 
-        <!-- Advance Data Gathering -->
-        <div class="rule-cell">
-            <div class="rule-head">
-                <div class="rule-icon"><i class="fas fa-magnifying-glass"></i></div>
-                <div class="rule-title">Advance Data Gathering</div>
-            </div>
-            <ul class="rule-list">
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span>If you gathered data in your mined/chosen SKU, add a value depending on how many SKUs you data gathered</span>
-                </li>
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span>Includes product research from PR files, collecting specifications, gathering images</span>
-                </li>
-            </ul>
-            <div class="example-tag">Example: Data gathered 5 SKUs = 5</div>
-        </div>
+                <input type="hidden" name="date" value="{{ now()->toDateString() }}">
 
-        <!-- Update Listings -->
-        <div class="rule-cell">
-            <div class="rule-head">
-                <div class="rule-icon"><i class="fas fa-pencil"></i></div>
-                <div class="rule-title">Update Listings</div>
-            </div>
-            <ul class="rule-list">
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span>If you have old posting and updated data such as: Photos, Text, Long Description, Wrong SKU input</span>
-                </li>
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span>Count depends on how many you updated</span>
-                </li>
-            </ul>
-            <div class="example-tag">Example: Updated photos for 2 SKUs + corrected SKU for 1 = 3</div>
-        </div>
+                <div class="form-grid">
+                    <!-- Attendance -->
+                    <div class="form-group">
+                        <label class="form-label">Attendance</label>
+                        <select name="attendance" class="form-select">
+                            <option value="">— Present —</option>
+                            <option value="HD" {{ $existingLog && $existingLog->attendance === 'HD' ? 'selected' : '' }}>Half Day (HD)</option>
+                            <option value="VL" {{ $existingLog && $existingLog->attendance === 'VL' ? 'selected' : '' }}>Vacation Leave (VL)</option>
+                            <option value="SL" {{ $existingLog && $existingLog->attendance === 'SL' ? 'selected' : '' }}>Sick Leave (SL)</option>
+                            <option value="A" {{ $existingLog && $existingLog->attendance === 'A' ? 'selected' : '' }}>Absent (A)</option>
+                            <option value="UT" {{ $existingLog && $existingLog->attendance === 'UT' ? 'selected' : '' }}>Unpaid (UT)</option>
+                        </select>
+                    </div>
 
-        <!-- Other & Remarks -->
-        <div class="rule-cell">
-            <div class="rule-head">
-                <div class="rule-icon"><i class="fas fa-list-check"></i></div>
-                <div class="rule-title">Other & Remarks</div>
-            </div>
-            <ul class="rule-list">
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span><strong>Canva Usage</strong> — Automatically counts as 1, Remark: "Canva"</span>
-                </li>
-                <li>
-                    <span class="rl-icon"><i class="fas fa-check"></i></span>
-                    <span><strong>Post Pending SKU</strong> — For unfinished posting from previous day. Remark format: "Post Pending SKU: (number of SKUs)"</span>
-                </li>
-            </ul>
-            <div class="example-tag">Example: Canva → OTHER = 1, REMARKS = "Canva"</div>
+                    <div class="form-group"></div>
+
+                    <!-- Col 1 -->
+                    <div class="form-group">
+                        <label class="form-label">{{ $taskLabels['col1'] }}</label>
+                        <input type="number" name="new_sku" class="form-input" min="0" value="{{ $existingLog ? $existingLog->new_sku : 0 }}" required>
+                    </div>
+
+                    <!-- Col 2 -->
+                    <div class="form-group">
+                        <label class="form-label">{{ $taskLabels['col2'] }}</label>
+                        <input type="number" name="variation_sku" class="form-input" min="0" value="{{ $existingLog ? $existingLog->variation_sku : 0 }}" required>
+                    </div>
+
+                    <!-- Col 3 -->
+                    <div class="form-group">
+                        <label class="form-label">{{ $taskLabels['col3'] }}</label>
+                        <input type="number" name="advance_data_gathering" class="form-input" min="0" value="{{ $existingLog ? $existingLog->advance_data_gathering : 0 }}" required>
+                    </div>
+
+                    <!-- Col 4 -->
+                    <div class="form-group">
+                        <label class="form-label">{{ $taskLabels['col4'] }}</label>
+                        <input type="number" name="update_listings" class="form-input" min="0" value="{{ $existingLog ? $existingLog->update_listings : 0 }}" required>
+                    </div>
+
+                    <!-- Col 5 -->
+                    <div class="form-group">
+                        <label class="form-label">{{ $taskLabels['col5'] }}</label>
+                        <input type="number" name="other_tasks" class="form-input" min="0" value="{{ $existingLog ? $existingLog->other_tasks : 0 }}" required>
+                    </div>
+
+                    <div class="form-group"></div>
+
+                    <!-- Remarks -->
+                    <div class="form-group full-width">
+                        <label class="form-label">Remarks</label>
+                        <textarea name="remarks" class="form-textarea" placeholder="e.g. Canva, Change Price: 20, Repost: 5">{{ $existingLog ? $existingLog->remarks : '' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-flat-primary" style="height: 44px; padding: 0 1.5rem; font-size: 0.9rem;">
+                        <i class="fas fa-check"></i> {{ $existingLog ? 'Update Log' : 'Save Log' }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Example Table -->
-    <div class="ex-table-wrap anim-up d4">
-        <div class="ex-table-head">
-            <div class="t-icon"><i class="fas fa-table"></i></div>
-            How Your EOD Report Should Look
+    <!-- Recent Logs -->
+    <div class="eod-card anim-up d4">
+        <div class="eod-card-header">
+            <div class="t-icon" style="background: var(--secondary);"><i class="fas fa-clock"></i></div>
+            Recent Logs
         </div>
-        <table class="ex-table">
-            <thead>
-                <tr>
-                    <th>New SKU</th>
-                    <th>Variation SKU</th>
-                    <th>Adv. Data Gathering</th>
-                    <th>Update Listings</th>
-                    <th>Other</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>2</td><td>5</td><td>0</td><td>0</td><td>1</td><td>Canva</td></tr>
-                <tr><td>1</td><td>3</td><td>4</td><td>0</td><td>3</td><td>Post Pending SKU: 3</td></tr>
-                <tr><td>4</td><td>8</td><td>0</td><td>2</td><td>0</td><td>—</td></tr>
-                <tr><td>0</td><td>0</td><td>6</td><td>0</td><td>0</td><td>—</td></tr>
-                <tr><td>2</td><td>0</td><td>3</td><td>4</td><td>1</td><td>Canva</td></tr>
-            </tbody>
-        </table>
+        <div class="logs-table-wrap">
+            @if($recentLogs->count())
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Attendance</th>
+                        <th style="text-align: center;">New SKU</th>
+                        <th style="text-align: center;">Var. SKU</th>
+                        <th style="text-align: center;">Data Gather</th>
+                        <th style="text-align: center;">Update</th>
+                        <th style="text-align: center;">Other</th>
+                        <th>Remarks</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($recentLogs as $log)
+                    <tr>
+                        <td style="font-weight: 700;">{{ $log->date->format('M d, Y') }}</td>
+                        <td>
+                            @if($log->attendance)
+                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 700; background: #FEF3C7; color: #92400E;">{{ $log->attendance }}</span>
+                            @else
+                            <span style="color: var(--gray-300);">—</span>
+                            @endif
+                        </td>
+                        <td class="num">{{ $log->new_sku }}</td>
+                        <td class="num">{{ $log->variation_sku }}</td>
+                        <td class="num">{{ $log->advance_data_gathering }}</td>
+                        <td class="num">{{ $log->update_listings }}</td>
+                        <td class="num">{{ $log->other_tasks }}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); font-size: 0.8rem;">{{ $log->remarks ?: '—' }}</td>
+                        <td>
+                            @if($log->date->toDateString() === now()->toDateString())
+                            <div class="action-btns">
+                                <form method="POST" action="{{ route('daily-logs.destroy', $log) }}" onsubmit="return confirm('Delete this log?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-btn-sm btn-danger" title="Delete">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <div class="empty-logs">
+                <i class="fas fa-clipboard-list"></i>
+                No logs yet. Start by filling in today's tasks above.
+            </div>
+            @endif
+        </div>
     </div>
+</div>
 
-    <!-- Quick Reference -->
-    <div class="ref-card anim-up d5">
-        <div class="ex-table-head">
-            <div class="t-icon" style="background: var(--secondary);"><i class="fas fa-star"></i></div>
-            Quick Reference — Column by Column
-        </div>
-        <div class="ref-grid">
-            <div class="ref-item">
-                <strong>New SKU</strong>
-                <p>Parent/Single = 1 each</p>
+<!-- Tutorial Modal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-weight: 700; font-size: 1rem;">
+                    <i class="fas fa-circle-info" style="color: var(--primary); margin-right: 0.5rem;"></i>How to Fill Your EOD Report
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="ref-item">
-                <strong>Variation SKU</strong>
-                <p>Child/Variant = 1 each</p>
+            <div class="modal-body" style="padding: 1.5rem;">
+
+                <!-- Column Overview -->
+                <h6 style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 0.75rem;">Column Overview</h6>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem;">
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">New SKU</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Variation SKU</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Adv. Data Gathering</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Update Listings</div>
+                    <div style="padding: 0.75rem; text-align: center; background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Other</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Parent/Single</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">New product posted</span></div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Child/Variant</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Variation posted</span></div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Data Gathered</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Research completed</span></div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Updated Listings</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Old SKUs updated</span></div>
+                    <div style="padding: 0.75rem; text-align: center; border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Extra Tasks</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Canva, etc.</span></div>
+                </div>
+
+                <!-- Rules Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 1.5rem; border: 2px solid var(--border); border-radius: 8px; overflow: hidden;">
+                    <!-- New SKU & Variation -->
+                    <div style="padding: 1rem; border-right: 2px solid var(--border); border-bottom: 2px solid var(--border);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-box"></i></div>
+                            <strong style="font-size: 0.7rem; text-transform: uppercase;">New SKU & Variation SKU</strong>
+                        </div>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> <strong>New SKU (Parent/Single)</strong> — Each parent or single SKU = 1</li>
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> <strong>Variation SKU (Child)</strong> — Each variant = 1</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding: 0.375rem 0.625rem; background: var(--muted); border: 1px solid var(--border); border-radius: 4px; font-size: 0.65rem; font-weight: 600;">Example: 1 parent + 4 children = 1 NEW SKU, 4 VARIATION SKU</div>
+                    </div>
+
+                    <!-- Advance Data Gathering -->
+                    <div style="padding: 1rem; border-bottom: 2px solid var(--border);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-magnifying-glass"></i></div>
+                            <strong style="font-size: 0.7rem; text-transform: uppercase;">Advance Data Gathering</strong>
+                        </div>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> Count how many SKUs you data gathered</li>
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> Includes product research, specs, images</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding: 0.375rem 0.625rem; background: var(--muted); border: 1px solid var(--border); border-radius: 4px; font-size: 0.65rem; font-weight: 600;">Example: Data gathered 5 SKUs = 5</div>
+                    </div>
+
+                    <!-- Update Listings -->
+                    <div style="padding: 1rem; border-right: 2px solid var(--border);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-pencil"></i></div>
+                            <strong style="font-size: 0.7rem; text-transform: uppercase;">Update Listings</strong>
+                        </div>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> Updated Photos, Text, Long Description, Wrong SKU</li>
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> Count depends on how many you updated</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding: 0.375rem 0.625rem; background: var(--muted); border: 1px solid var(--border); border-radius: 4px; font-size: 0.65rem; font-weight: 600;">Example: Updated photos for 2 + corrected SKU for 1 = 3</div>
+                    </div>
+
+                    <!-- Other & Remarks -->
+                    <div style="padding: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-list-check"></i></div>
+                            <strong style="font-size: 0.7rem; text-transform: uppercase;">Other & Remarks</strong>
+                        </div>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> <strong>Canva Usage</strong> — OTHER = 1, Remarks: "Canva"</li>
+                            <li style="padding: 0.25rem 0; display: flex; gap: 0.5rem;"><span style="color: #059669;">✓</span> <strong>Post Pending SKU</strong> — Remarks: "Post Pending SKU: #"</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding: 0.375rem 0.625rem; background: var(--muted); border: 1px solid var(--border); border-radius: 4px; font-size: 0.65rem; font-weight: 600;">Example: Canva → OTHER = 1, REMARKS = "Canva"</div>
+                    </div>
+                </div>
+
+                <!-- Example Table -->
+                <h6 style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 0.75rem;">Example EOD Report</h6>
+                <div style="border: 2px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">New SKU</th>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Var. SKU</th>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Data Gather</th>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Update</th>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Other</th>
+                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">2</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">5</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">1</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted); color: var(--gray-500);">Canva</td></tr>
+                            <tr><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">1</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">3</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">4</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">3</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted); color: var(--gray-500);">Post Pending SKU: 3</td></tr>
+                            <tr><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">4</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">8</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">2</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted); color: var(--gray-400);">—</td></tr>
+                            <tr><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">6</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted); color: var(--gray-400);">—</td></tr>
+                            <tr><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">2</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">0</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">3</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">4</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted);">1</td><td style="padding: 0.5rem; border-top: 1px solid var(--muted); color: var(--gray-500);">Canva</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quick Reference -->
+                <h6 style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 0.75rem;">Quick Reference</h6>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 2px solid var(--border); border-radius: 8px; overflow: hidden;">
+                    <div style="padding: 0.75rem; border-right: 2px solid var(--border); border-bottom: 2px solid var(--border);"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">New SKU</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Parent/Single = 1 each</p></div>
+                    <div style="padding: 0.75rem; border-right: 2px solid var(--border); border-bottom: 2px solid var(--border);"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">Variation SKU</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Child/Variant = 1 each</p></div>
+                    <div style="padding: 0.75rem; border-bottom: 2px solid var(--border);"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">Data Gathering</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Count SKUs gathered</p></div>
+                    <div style="padding: 0.75rem; border-right: 2px solid var(--border);"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">Update Listings</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Count updated SKUs</p></div>
+                    <div style="padding: 0.75rem; border-right: 2px solid var(--border);"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">Other</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Canva = 1<br>Pending = # of SKUs</p></div>
+                    <div style="padding: 0.75rem;"><strong style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase;">Remarks</strong><p style="font-size: 0.75rem; margin: 0.25rem 0 0; color: var(--gray-600);">Describe what you did in OTHER</p></div>
+                </div>
             </div>
-            <div class="ref-item">
-                <strong>Adv. Data Gathering</strong>
-                <p>Count SKUs gathered</p>
-            </div>
-            <div class="ref-item">
-                <strong>Update Listings</strong>
-                <p>Count updated SKUs</p>
-            </div>
-            <div class="ref-item">
-                <strong>Other</strong>
-                <p>Canva = 1<br>Post Pending = # of SKUs</p>
-            </div>
-            <div class="ref-item">
-                <strong>Remarks</strong>
-                <p>Describe what you did in OTHER</p>
+            <div class="modal-footer">
+                <button type="button" class="btn-flat-primary" data-bs-dismiss="modal" style="height: 40px; font-size: 0.85rem;">Got it!</button>
             </div>
         </div>
     </div>

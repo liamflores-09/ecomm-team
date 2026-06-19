@@ -35,6 +35,7 @@
         display: flex;
         gap: 1rem;
         margin-top: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .th-stat {
@@ -147,7 +148,8 @@
         flex-shrink: 0;
     }
 
-    .lc-badge {
+    /* Role Badge */
+    .role-badge {
         display: inline-block;
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
@@ -156,6 +158,13 @@
         text-transform: uppercase;
         letter-spacing: 0.06em;
     }
+
+    .role-badge.manager { background: rgba(255,255,255,0.2); color: white; }
+    .role-badge.lead { background: #FCE7F3; color: #DB2777; }
+    .role-badge.content { background: #D1FAE5; color: #059669; }
+    .role-badge.graphics { background: #DBEAFE; color: #2563EB; }
+    .role-badge.backend { background: #EDE9FE; color: #7C3AED; }
+    .role-badge.researcher { background: #FEF3C7; color: #92400E; }
 
     /* Member grid */
     .member-grid {
@@ -231,30 +240,6 @@
     .dc-name { font-weight: 800; font-size: 1rem; }
     .dc-role { font-size: 0.75rem; font-weight: 500; color: var(--gray-400); }
 
-    .prio-label {
-        font-weight: 700;
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--gray-400);
-        margin-bottom: 0.5rem;
-    }
-
-    .prio-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-
-    .prio-tag {
-        padding: 0.25rem 0.625rem;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        font-weight: 700;
-    }
-
-    .prio-tag.pt-blue { background: #DBEAFE; color: #2563EB; }
-    .prio-tag.pt-green { background: #D1FAE5; color: #059669; }
-    .prio-tag.pt-amber { background: #FEF3C7; color: #D97706; }
-    .prio-tag.pt-purple { background: #EDE9FE; color: #7C3AED; }
-    .prio-tag.pt-red { background: #FEE2E2; color: #DC2626; }
-
     @media (max-width: 768px) {
         .leader-row { grid-template-columns: 1fr; }
         .member-grid { grid-template-columns: 1fr 1fr; }
@@ -281,9 +266,11 @@
 
     <ul class="sidebar-nav">
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
+        @if(Auth::user()->role === 'content')
         <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
         <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
         <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
+        @endif
         <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
         <li><a href="{{ route('end-of-day') }}"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
         <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>
@@ -309,7 +296,7 @@
     </div>
 
     @php
-        $total = $managers->count() + $leads->count() + $content->count() + $graphics->count();
+        $total = $managers->count() + $leads->count() + $researchers->count() + $content->count() + $graphics->count() + $backend->count();
     @endphp
 
     <!-- Hero Card -->
@@ -317,10 +304,12 @@
         <div class="th-icon"><i class="fas fa-users"></i></div>
         <div>
             <h3>Ecomm Department</h3>
-            <p>Content and Design teams working together across e-commerce platforms</p>
+            <p>Content, PR, Design, and Backend teams working together across e-commerce platforms</p>
             <div class="th-stats">
                 <div class="th-stat"><div class="dot" style="background: var(--secondary);"></div> Content — {{ $content->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #92400E;"></div> Research — {{ $researchers->count() }}</div>
                 <div class="th-stat"><div class="dot" style="background: var(--accent);"></div> Graphics — {{ $graphics->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #8B5CF6;"></div> Backend — {{ $backend->count() }}</div>
                 <div class="th-stat"><div class="dot" style="background: #EC4899;"></div> Lead — {{ $leads->count() }}</div>
                 <div class="th-stat"><div class="dot" style="background: var(--primary);"></div> Manager — {{ $managers->count() }}</div>
             </div>
@@ -347,8 +336,7 @@
                     <a href="viber://chat?number={{ $m->mobile_number }}">{{ $m->mobile_number }}</a>
                 </div>
                 @endif
-                <div class="lc-role">{{ $m->role }}</div>
-                <span class="lc-badge">Manager</span>
+                <span class="role-badge manager">Manager</span>
             </div>
         </div>
         @endforeach
@@ -375,8 +363,34 @@
                     <a href="viber://chat?number={{ $l->mobile_number }}">{{ $l->mobile_number }}</a>
                 </div>
                 @endif
-                <div class="lc-role">{{ $l->role }}</div>
-                <span class="lc-badge">Lead</span>
+                <span class="role-badge lead">Content / PR Lead</span>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @endif
+
+    <!-- Product Researcher -->
+    @if($researchers->count())
+    <div class="team-divider anim-up d3b">
+        <div class="td-icon" style="background: #92400E;"><i class="fas fa-magnifying-glass"></i></div>
+        <h3>Product Researcher</h3>
+        <span class="td-count">{{ $researchers->count() }}</span>
+        <div class="td-line"></div>
+    </div>
+    <div class="member-grid anim-up d3b">
+        @foreach($researchers as $r)
+        <div class="member-card">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $r->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $r->username }}">
+            <div style="flex: 1; min-width: 0;">
+                <div class="member-name">{{ $r->first_name }} {{ $r->last_name }}</div>
+                <span class="role-badge researcher">Researcher</span>
+                @if($r->mobile_number)
+                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#92400E"/></svg>
+                    <a href="viber://chat?number={{ $r->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $r->mobile_number }}</a>
+                </div>
+                @endif
             </div>
         </div>
         @endforeach
@@ -398,9 +412,9 @@
             <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $c->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $c->username }}">
             <div style="flex: 1; min-width: 0;">
                 <div class="member-name">{{ $c->first_name }} {{ $c->last_name }}</div>
-                <div class="member-role">Content Associate</div>
+                <span class="role-badge content">Content</span>
                 @if($c->mobile_number)
-                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; font-size: 0.7rem; color: var(--gray-400);">
+                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
                     <a href="viber://chat?number={{ $c->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $c->mobile_number }}</a>
                 </div>
@@ -412,7 +426,7 @@
     @else
     <div class="empty-state anim-up d4">
         <i class="fas fa-users"></i>
-        No content team members yet. Add them in the Admin Panel.
+        No content team members yet.
     </div>
     @endif
 
@@ -432,9 +446,9 @@
                 <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $g->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="{{ $g->username }}">
                 <div>
                     <div class="dc-name">{{ $g->first_name }} {{ $g->last_name }}</div>
-                    <div class="dc-role">Graphic Designer</div>
+                    <span class="role-badge graphics">Graphics</span>
                     @if($g->mobile_number)
-                    <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; font-size: 0.7rem; color: var(--gray-400);">
+                    <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
                         <a href="viber://chat?number={{ $g->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $g->mobile_number }}</a>
                     </div>
@@ -447,7 +461,40 @@
     @else
     <div class="empty-state anim-up d5">
         <i class="fas fa-palette"></i>
-        No graphics team members yet. Add them in the Admin Panel.
+        No graphics team members yet.
+    </div>
+    @endif
+
+    <!-- Backend Team -->
+    <div class="team-divider anim-up d6">
+        <div class="td-icon" style="background: #8B5CF6;"><i class="fas fa-server"></i></div>
+        <h3>Backend Team</h3>
+        <span class="td-count">{{ $backend->count() }}</span>
+        <div class="td-line"></div>
+    </div>
+
+    @if($backend->count())
+    <div class="member-grid anim-up d6">
+        @foreach($backend as $b)
+        <div class="member-card">
+            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $b->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $b->username }}">
+            <div style="flex: 1; min-width: 0;">
+                <div class="member-name">{{ $b->first_name }} {{ $b->last_name }}</div>
+                <span class="role-badge backend">Backend</span>
+                @if($b->mobile_number)
+                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
+                    <a href="viber://chat?number={{ $b->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $b->mobile_number }}</a>
+                </div>
+                @endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @else
+    <div class="empty-state anim-up d6">
+        <i class="fas fa-server"></i>
+        No backend team members yet.
     </div>
     @endif
 </div>
