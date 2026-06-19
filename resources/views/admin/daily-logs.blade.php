@@ -351,11 +351,11 @@
                     <tr>
                         <th>User</th>
                         <th>Role</th>
-                        <th style="text-align: center;">{{ $currentLabels['col1'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['col2'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['col3'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['col4'] }}</th>
-                        <th style="text-align: center;">{{ $currentLabels['col5'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['task_1'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['task_2'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['task_3'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['task_4'] }}</th>
+                        <th style="text-align: center;">{{ $currentLabels['task_5'] }}</th>
                         <th>Status</th>
                         <th>Remarks</th>
                     </tr>
@@ -534,11 +534,11 @@
                 <tr>
                     <th>Date</th>
                     <th style="text-align: center;">Members</th>
-                    <th style="text-align: center;">{{ $currentLabels['col1'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['col2'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['col3'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['col4'] }}</th>
-                    <th style="text-align: center;">{{ $currentLabels['col5'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['task_1'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['task_2'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['task_3'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['task_4'] }}</th>
+                    <th style="text-align: center;">{{ $currentLabels['task_5'] }}</th>
                     <th style="text-align: center;">Total</th>
                 </tr>
             </thead>
