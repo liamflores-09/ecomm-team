@@ -228,13 +228,26 @@ class AdminController extends Controller
         $prodLabels = $userProductivity->pluck('username')->toArray();
         $prodData = $userProductivity->pluck('total_tasks')->toArray();
 
-        $todayLogs = DailyLog::where('daily_logs.date', now()->toDateString())
-            ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->select('daily_logs.*', 'users.username', 'users.role');
+        $todayLogs = User::where('role', '!=', 'manager');
         if ($roleFilter) {
-            $todayLogs->where('users.role', $roleFilter);
+            $todayLogs->where('role', $roleFilter);
         }
-        $todayLogs = $todayLogs->get();
+        $todayLogs = $todayLogs->leftJoin('daily_logs', function ($join) {
+            $join->on('users.id', '=', 'daily_logs.user_id')
+                 ->where('daily_logs.date', '=', now()->toDateString());
+        })
+        ->select('users.id', 'users.username', 'users.role',
+            DB::raw('COALESCE(daily_logs.new_sku, 0) as new_sku'),
+            DB::raw('COALESCE(daily_logs.variation_sku, 0) as variation_sku'),
+            DB::raw('COALESCE(daily_logs.advance_data_gathering, 0) as advance_data_gathering'),
+            DB::raw('COALESCE(daily_logs.update_listings, 0) as update_listings'),
+            DB::raw('COALESCE(daily_logs.other_tasks, 0) as other_tasks'),
+            'daily_logs.remarks',
+            DB::raw('CASE WHEN daily_logs.id IS NULL THEN 0 ELSE 1 END as has_logged')
+        )
+        ->orderBy('has_logged', 'desc')
+        ->orderBy('users.first_name')
+        ->get();
 
         $allLogs = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select('daily_logs.*', 'users.username', 'users.role')
