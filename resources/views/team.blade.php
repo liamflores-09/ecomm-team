@@ -218,9 +218,6 @@
         display: flex;
         align-items: center;
         gap: 0.875rem;
-        margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid var(--muted);
     }
 
     .dc-avatar {
