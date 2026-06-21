@@ -52,12 +52,34 @@
     .health-avatars { display: flex; align-items: center; gap: 0; }
     .health-avatar {
         width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--white);
-        margin-left: -10px; position: relative; transition: transform 0.2s;
+        display: block; transition: transform 0.2s;
     }
-    .health-avatar:first-child { margin-left: 0; }
-    .health-avatar:hover { transform: translateY(-2px); z-index: 1; }
     .health-avatar.logged  { border-color: var(--emerald); }
     .health-avatar.pending { border-color: var(--rose); opacity: 0.5; }
+
+    .avatar-tip-wrap { position: relative; display: inline-flex; margin-left: -10px; }
+    .avatar-tip-wrap:first-child { margin-left: 0; }
+    .avatar-tip-wrap:hover { z-index: 10; }
+    .avatar-tip-wrap:hover .health-avatar { transform: translateY(-2px); }
+    .avatar-tip-wrap::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1e293b;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s;
+        z-index: 10;
+    }
+    .avatar-tip-wrap:hover::after { opacity: 1; }
     .health-legend { display: flex; gap: 1.25rem; margin-left: auto; }
     .health-legend span { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: var(--gray-500); }
     .health-legend .dot { width: 7px; height: 7px; border-radius: 50%; }
@@ -240,9 +262,11 @@
             <div class="health-avatars">
                 @foreach($allMembers as $m)
                     @php $isLogged = in_array($m->id, $loggedUserIds); @endphp
-                    <img class="health-avatar {{ $isLogged ? 'logged' : 'pending' }}"
-                         src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($m->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $m->username . 'Female' : $m->username }}"
-                         alt="{{ $m->first_name }}" title="{{ $m->first_name }} — {{ $isLogged ? 'Logged' : 'Pending' }}">
+                    <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $isLogged ? 'Logged' : 'Pending' }}">
+                        <img class="health-avatar {{ $isLogged ? 'logged' : 'pending' }}"
+                             src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $m->gender === 'female' ? $m->username . 'Female' : $m->username }}"
+                             alt="{{ $m->first_name }}">
+                    </span>
                 @endforeach
             </div>
             <div class="health-legend">
