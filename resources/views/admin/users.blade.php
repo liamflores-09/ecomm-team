@@ -179,7 +179,7 @@
                         <div class="user-cell">
                             <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($u->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $u->username . 'Female' : $u->username }}" class="avatar" alt="">
                             <div class="info">
-                                <div class="name">{{ $u->username }}</div>
+                                <div class="name">{{ $u->first_name }}</div>
                             </div>
                         </div>
                     </td>

@@ -47,8 +47,8 @@ class AdminController extends Controller
         $topContributor = DailyLog::whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->select('users.username', DB::raw('SUM(task_1 + task_2 + task_3 + task_4 + task_5) as total'))
-            ->groupBy('users.username')
+            ->select('users.username', 'users.first_name', DB::raw('SUM(task_1 + task_2 + task_3 + task_4 + task_5) as total'))
+            ->groupBy('users.username', 'users.first_name')
             ->orderByDesc('total')
             ->first();
 
@@ -76,9 +76,10 @@ class AdminController extends Controller
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select(
                 'users.username',
+                'users.first_name',
                 DB::raw('SUM(task_1 + task_2 + task_3 + task_4 + task_5) as total_tasks')
             )
-            ->groupBy('users.username')
+            ->groupBy('users.username', 'users.first_name')
             ->orderByDesc('total_tasks')
             ->take(8)
             ->get();
@@ -93,7 +94,7 @@ class AdminController extends Controller
 
         $todayLogs = DailyLog::where('date', now()->toDateString())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->select('daily_logs.*', 'users.username', 'users.role')
+            ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.role')
             ->get();
 
         return view('admin.dashboard', compact(
@@ -422,7 +423,7 @@ class AdminController extends Controller
         }
         $weeklyLogs = $weeklyLogs
             ->select(
-                'users.username', 'users.role', 'daily_logs.date',
+                'users.username', 'users.first_name', 'users.role', 'daily_logs.date',
                 DB::raw('WEEK(daily_logs.date, 1) as week_num'),
                 'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
                 'daily_logs.task_4', 'daily_logs.task_5'
@@ -440,6 +441,7 @@ class AdminController extends Controller
                         'date' => $date,
                         'members' => $dayLogs->map(fn($l) => [
                             'username' => $l->username,
+                            'first_name' => $l->first_name,
                             'role' => $l->role,
                             'task_1' => $l->task_1,
                             'task_2' => $l->task_2,
@@ -534,6 +536,7 @@ class AdminController extends Controller
         $memberMonthlyRaw = $memberMonthlyQuery
             ->select(
                 'users.username',
+                'users.first_name',
                 DB::raw("DATE_FORMAT(daily_logs.date, '%Y-%m') as month_key"),
                 DB::raw('SUM(task_1) as t1'),
                 DB::raw('SUM(task_2) as t2'),
@@ -552,6 +555,7 @@ class AdminController extends Controller
                 $total = $r->t1 + $r->t2 + $r->t3 + $r->t4 + $r->t5;
                 return [
                     'username' => $r->username,
+                    'first_name' => $r->first_name,
                     't1' => $r->t1, 't2' => $r->t2, 't3' => $r->t3,
                     't4' => $r->t4, 't5' => $r->t5,
                     'total' => $total,

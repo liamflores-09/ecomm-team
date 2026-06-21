@@ -244,7 +244,7 @@
                         <td>
                             <div class="user-cell">
                                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" alt="">
-                                <span class="name">{{ $log->username }}</span>
+                                <span class="name">{{ $log->first_name ?? $log->username }}</span>
                             </div>
                         </td>
                         <td><span class="role-badge {{ $log->role }}">{{ $log->role }}</span></td>
@@ -310,7 +310,7 @@
                 <div class="day-item">
                     <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted);" alt="">
                     <div style="flex: 1; min-width: 0;">
-                        <span style="font-weight: 600; font-size: 0.8rem;">{{ $log->username }}</span>
+                        <span style="font-weight: 600; font-size: 0.8rem;">{{ $log->first_name ?? $log->username }}</span>
                         <span class="role-badge {{ $log->role }}" style="margin-left: 4px;">{{ $log->role }}</span>
                     </div>
                     <div class="task-pip">

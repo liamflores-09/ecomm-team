@@ -110,6 +110,16 @@
     .user-cell img { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; }
     .user-cell .name { font-weight: 600; }
 
+    .role-badge {
+        display: inline-block; padding: 0.1rem 0.3rem; border-radius: 3px;
+        font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .role-badge.lead { background: #6366f1; color: #ffffff; }
+    .role-badge.content { background: #0ea5e9; color: #ffffff; }
+    .role-badge.researcher { background: #10b981; color: #ffffff; }
+    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
+    .role-badge.backend { background: #f43f5e; color: #ffffff; }
+
     .empty-state { text-align: center; padding: 3rem; color: var(--gray-300); font-size: 0.85rem; }
     .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200); }
 
@@ -164,6 +174,15 @@
 <div class="main-content">
     @php
         $taskLabels = \App\Support\TaskLabels::get($roleFilter ?: 'content');
+        $isAllRoles = !$roleFilter;
+        // When viewing All Roles, use generic labels since columns mean different things per role
+        if ($isAllRoles) {
+            $tableLabels = ['task_1' => 'Task 1', 'task_2' => 'Task 2', 'task_3' => 'Task 3', 'task_4' => 'Task 4', 'task_5' => 'Task 5'];
+        } else {
+            $tableLabels = $taskLabels;
+        }
+        $roleColors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
+        $roleNames = ['lead' => 'Lead', 'researcher' => 'Researcher', 'content' => 'Content', 'graphics' => 'Graphics', 'backend' => 'Backend'];
         $taskColors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
 
         $grandTotal = $monthTotal['t1'] + $monthTotal['t2'] + $monthTotal['t3'] + $monthTotal['t4'] + $monthTotal['t5'];
@@ -186,11 +205,11 @@
 
         // Most common task
         $taskTotals = [
-            ['key' => 't1', 'label' => $taskLabels['task_1'], 'val' => $monthTotal['t1']],
-            ['key' => 't2', 'label' => $taskLabels['task_2'], 'val' => $monthTotal['t2']],
-            ['key' => 't3', 'label' => $taskLabels['task_3'], 'val' => $monthTotal['t3']],
-            ['key' => 't4', 'label' => $taskLabels['task_4'], 'val' => $monthTotal['t4']],
-            ['key' => 't5', 'label' => $taskLabels['task_5'], 'val' => $monthTotal['t5']],
+            ['key' => 't1', 'label' => $tableLabels['task_1'], 'val' => $monthTotal['t1']],
+            ['key' => 't2', 'label' => $tableLabels['task_2'], 'val' => $monthTotal['t2']],
+            ['key' => 't3', 'label' => $tableLabels['task_3'], 'val' => $monthTotal['t3']],
+            ['key' => 't4', 'label' => $tableLabels['task_4'], 'val' => $monthTotal['t4']],
+            ['key' => 't5', 'label' => $tableLabels['task_5'], 'val' => $monthTotal['t5']],
         ];
         $topTask = collect($taskTotals)->sortByDesc('val')->first();
 
@@ -228,7 +247,7 @@
                     <div class="kpi-icon" style="background: #6366f1;"><i class="fas fa-list-check"></i></div>
                 </div>
                 <div class="kpi-value">{{ number_format($grandTotal) }}</div>
-                <div class="kpi-sub">{{ $taskLabels['task_1'] }}: {{ $monthTotal['t1'] }} · {{ $taskLabels['task_2'] }}: {{ $monthTotal['t2'] }}</div>
+                <div class="kpi-sub">{{ $tableLabels['task_1'] }}: {{ $monthTotal['t1'] }} · {{ $tableLabels['task_2'] }}: {{ $monthTotal['t2'] }}</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-top">
@@ -294,7 +313,7 @@
                     <tr>
                         <th></th>
                         @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                        <th class="num">{{ $taskLabels[$tk] }}</th>
+                        <th class="num">{{ $tableLabels[$tk] }}</th>
                         @endforeach
                     </tr>
                 </thead>
@@ -341,32 +360,46 @@
                         <th style="width: 40px;">#</th>
                         <th>Date</th>
                         <th>Member</th>
-                        <th class="num">{{ $taskLabels['task_1'] }}</th>
-                        <th class="num">{{ $taskLabels['task_2'] }}</th>
-                        <th class="num">{{ $taskLabels['task_3'] }}</th>
-                        <th class="num">{{ $taskLabels['task_4'] }}</th>
-                        <th class="num">{{ $taskLabels['task_5'] }}</th>
+                        @if($isAllRoles)
+                        <th>Role</th>
+                        @endif
+                        <th class="num">{{ $tableLabels['task_1'] }}</th>
+                        <th class="num">{{ $tableLabels['task_2'] }}</th>
+                        <th class="num">{{ $tableLabels['task_3'] }}</th>
+                        <th class="num">{{ $tableLabels['task_4'] }}</th>
+                        <th class="num">{{ $tableLabels['task_5'] }}</th>
                         <th class="num" style="border-left: 2px solid var(--border);">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php $rowNum = 0; @endphp
                     @foreach($weeks as $week)
+                    @php $colspan = $isAllRoles ? 10 : 9; @endphp
                     <tr class="week-sep">
-                        <td colspan="9">Week {{ $week['week_num'] }}</td>
+                        <td colspan="{{ $colspan }}">Week {{ $week['week_num'] }}</td>
                     </tr>
                     @foreach($week['days'] as $day)
+                    @php $dayMemberCount = count($day['members']); @endphp
                     @foreach($day['members'] as $m)
-                    @php $rowNum++; $rowTotal = $m['task_1'] + $m['task_2'] + $m['task_3'] + $m['task_4'] + $m['task_5']; @endphp
+                    @php
+                        $rowNum++;
+                        $rowTotal = $m['task_1'] + $m['task_2'] + $m['task_3'] + $m['task_4'] + $m['task_5'];
+                        $mRole = $m['role'] ?? 'content';
+                    @endphp
                     <tr>
                         <td style="color: var(--gray-300); font-size: 0.75rem;">{{ $rowNum }}</td>
-                        <td style="white-space: nowrap; font-weight: 500;">{{ \Carbon\Carbon::parse($day['date'])->format('M d') }}</td>
+                        @if($loop->first)
+                        <td rowspan="{{ $dayMemberCount }}" style="white-space: nowrap; font-weight: 600; font-size: 0.8rem; vertical-align: middle; border-bottom: 2px solid var(--border);">{{ \Carbon\Carbon::parse($day['date'])->format('D, M d') }}</td>
+                        @endif
                         <td>
                             <div class="user-cell">
                                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($m['username'], ['jamie', 'em', 'ange', 'czein', 'well']) ? $m['username'] . 'Female' : $m['username'] }}" alt="">
-                                <span class="name">{{ $m['username'] }}</span>
+                                <span class="name">{{ $m['first_name'] }}</span>
                             </div>
                         </td>
+                        @if($isAllRoles)
+                        <td><span class="role-badge {{ $mRole }}" style="font-size: 0.55rem; padding: 0.1rem 0.35rem;">{{ $roleNames[$mRole] ?? ucfirst($mRole) }}</span></td>
+                        @endif
                         <td class="num">{{ $m['task_1'] ?: '—' }}</td>
                         <td class="num">{{ $m['task_2'] ?: '—' }}</td>
                         <td class="num">{{ $m['task_3'] ?: '—' }}</td>
@@ -377,7 +410,7 @@
                     @endforeach
                     @endforeach
                     <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">Week {{ $week['week_num'] }} Total</td>
+                        <td colspan="{{ $isAllRoles ? 4 : 3 }}" style="text-align: right;">Week {{ $week['week_num'] }} Total</td>
                         <td class="num">{{ $week['total_t1'] }}</td>
                         <td class="num">{{ $week['total_t2'] }}</td>
                         <td class="num">{{ $week['total_t3'] }}</td>
@@ -387,7 +420,7 @@
                     </tr>
                     @endforeach
                     <tr class="month-total">
-                        <td colspan="3" style="text-align: right;">{{ \Carbon\Carbon::parse($month)->format('F') }} Total</td>
+                        <td colspan="{{ $isAllRoles ? 4 : 3 }}" style="text-align: right;">{{ \Carbon\Carbon::parse($month)->format('F') }} Total</td>
                         <td class="num">{{ $monthTotal['t1'] }}</td>
                         <td class="num">{{ $monthTotal['t2'] }}</td>
                         <td class="num">{{ $monthTotal['t3'] }}</td>
@@ -400,8 +433,37 @@
             </div>
         </div>
 
-        <!-- 5. Deep-dive — Contribution Analysis -->
+        <!-- 5. Contribution % per Task -->
         @if($shareData->count() && count($memberNames))
+        @php
+            // Compute average contribution % per member per task type across all weeks
+            $contribData = $shareData->map(function ($tg) use ($memberNames) {
+                $avgShares = collect($memberNames)->mapWithKeys(function ($name) use ($tg) {
+                    $avg = $tg['weeks']->avg(fn($wk) => $wk['members'][$name]['share'] ?? 0);
+                    return [$name => round($avg, 1)];
+                });
+                return ['task' => $tg['task_name'], 'shares' => $avgShares];
+            });
+            // Pre-compute chart series for JavaScript
+            $contribLabels = $contribData->pluck('task')->toArray();
+            $contribSeries = collect($memberNames)->map(function ($name) use ($contribData) {
+                return [
+                    'name' => $name,
+                    'data' => $contribData->pluck('shares')->map(fn($s) => $s[$name] ?? 0)->toArray(),
+                ];
+            })->values()->toArray();
+        @endphp
+        <div class="chart-card anim-up d5" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="chart-card-header">
+                <div class="cc-icon" style="background: #f59e0b;"><i class="fas fa-chart-bar"></i></div>
+                <h4>Avg Contribution % by Task</h4>
+            </div>
+            <div class="chart-card-body">
+                <div id="contribChart" style="height: 300px;"></div>
+            </div>
+        </div>
+
+        <!-- 6. Deep-dive — Contribution Analysis -->
         <div class="section-header anim-up d5" style="margin-top: 1.5rem;">
             <div class="sh-icon" style="background: #6366f1;"><i class="fas fa-chart-pie"></i></div>
             <h3>Contribution Analysis</h3>
@@ -552,7 +614,7 @@
                 <div class="mpc-top">
                     <img class="mpc-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($mp['username'], ['jamie', 'em', 'ange', 'czein', 'well']) ? $mp['username'] . 'Female' : $mp['username'] }}" alt="">
                     <div class="mpc-info">
-                        <div class="mpc-name">{{ $mp['username'] }}</div>
+                        <div class="mpc-name">{{ $mp['first_name'] }}</div>
                         <div class="mpc-total">{{ number_format($mpTotal) }} tasks</div>
                     </div>
                     <div class="mpc-share">
@@ -566,7 +628,7 @@
                     @php $tv = $mp[$tk]; $tBar = $taskMaxVal > 0 ? round($tv / $taskMaxVal * 100) : 0; @endphp
                     <div class="mpc-task">
                         <div class="mpc-task-dot" style="background: {{ $taskColors[$i] }};"></div>
-                        <span class="mpc-task-label">{{ $taskLabels['task_' . ($i + 1)] }}</span>
+                        <span class="mpc-task-label">{{ $tableLabels['task_' . ($i + 1)] }}</span>
                         <div class="mpc-task-bar-wrap">
                             <div class="mpc-task-bar" style="width: {{ $tBar }}%; background: {{ $taskColors[$i] }};"></div>
                         </div>
@@ -591,11 +653,11 @@
                 <thead>
                     <tr>
                         <th>Month</th>
-                        <th class="num">{{ $taskLabels['task_1'] }}</th>
-                        <th class="num">{{ $taskLabels['task_2'] }}</th>
-                        <th class="num">{{ $taskLabels['task_3'] }}</th>
-                        <th class="num">{{ $taskLabels['task_4'] }}</th>
-                        <th class="num">{{ $taskLabels['task_5'] }}</th>
+                        <th class="num">{{ $tableLabels['task_1'] }}</th>
+                        <th class="num">{{ $tableLabels['task_2'] }}</th>
+                        <th class="num">{{ $tableLabels['task_3'] }}</th>
+                        <th class="num">{{ $tableLabels['task_4'] }}</th>
+                        <th class="num">{{ $tableLabels['task_5'] }}</th>
                         <th class="num" style="border-left: 2px solid var(--border);">Total</th>
                     </tr>
                 </thead>
@@ -645,11 +707,11 @@
                     <tr>
                         <th>Month</th>
                         <th>Name</th>
-                        <th class="num">{{ $taskLabels['task_1'] }}</th>
-                        <th class="num">{{ $taskLabels['task_2'] }}</th>
-                        <th class="num">{{ $taskLabels['task_3'] }}</th>
-                        <th class="num">{{ $taskLabels['task_4'] }}</th>
-                        <th class="num">{{ $taskLabels['task_5'] }}</th>
+                        <th class="num">{{ $tableLabels['task_1'] }}</th>
+                        <th class="num">{{ $tableLabels['task_2'] }}</th>
+                        <th class="num">{{ $tableLabels['task_3'] }}</th>
+                        <th class="num">{{ $tableLabels['task_4'] }}</th>
+                        <th class="num">{{ $tableLabels['task_5'] }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -666,11 +728,13 @@
                     @endphp
                     @foreach($mRows as $row)
                     <tr>
-                        <td style="font-weight: 600; white-space: nowrap;">{{ $m['label'] }}</td>
+                        @if($loop->first)
+                        <td rowspan="{{ $mRows->count() + 1 }}" style="font-weight: 700; white-space: nowrap; vertical-align: middle; border-bottom: 2px solid var(--border); font-size: 0.85rem;">{{ $m['label'] }}</td>
+                        @endif
                         <td>
                             <div class="user-cell">
                                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($row['username'], ['jamie', 'em', 'ange', 'czein', 'well']) ? $row['username'] . 'Female' : $row['username'] }}" alt="">
-                                <span class="name">{{ $row['username'] }}</span>
+                                <span class="name">{{ $row['first_name'] }}</span>
                             </div>
                         </td>
                         <td class="num">{{ $row['t1'] }}</td>
@@ -682,7 +746,7 @@
                     @endforeach
                     <!-- Month Total -->
                     <tr class="total-row">
-                        <td colspan="2" style="text-align: right;">{{ $m['label'] }} Total</td>
+                        <td style="text-align: right;">{{ $m['label'] }} Total</td>
                         <td class="num">{{ $mt1 }}</td>
                         <td class="num">{{ $mt2 }}</td>
                         <td class="num">{{ $mt3 }}</td>
@@ -812,7 +876,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var cT3 = {!! json_encode($allMonths->pluck('t3')->toArray()) !!};
         var cT4 = {!! json_encode($allMonths->pluck('t4')->toArray()) !!};
         var cT5 = {!! json_encode($allMonths->pluck('t5')->toArray()) !!};
-        var cNames = {!! json_encode([$taskLabels['task_1'], $taskLabels['task_2'], $taskLabels['task_3'], $taskLabels['task_4'], $taskLabels['task_5']]) !!};
+        var cNames = {!! json_encode([$tableLabels['task_1'], $tableLabels['task_2'], $tableLabels['task_3'], $tableLabels['task_4'], $tableLabels['task_5']]) !!};
 
         if (cLabels.length > 0) {
             new ApexCharts(compEl, {
@@ -835,6 +899,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }).render();
         } else {
             compEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:280px;color:#94a3b8;font-size:14px;font-weight:500;">No data yet</div>';
+        }
+    }
+
+    // Contribution % per Task (Grouped Bar)
+    var contribEl = document.getElementById('contribChart');
+    if (contribEl) {
+        var cLabels = {!! json_encode($contribLabels) !!};
+        var cSeries = {!! json_encode($contribSeries) !!};
+        var cColors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#ec4899', '#14b8a6'];
+
+        if (cLabels.length > 0 && cSeries.length > 0) {
+            new ApexCharts(contribEl, {
+                chart: { type: 'bar', height: 300, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#64748b' },
+                series: cSeries,
+                colors: cColors,
+                plotOptions: { bar: { borderRadius: 4, columnWidth: '70%' } },
+                xaxis: { categories: cLabels, labels: { style: { fontWeight: 600, fontSize: '11px', colors: '#94a3b8' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { fontWeight: 500, fontSize: '11px', colors: '#94a3b8' }, formatter: function(val) { return val + '%'; }, max: 100 }, tickAmount: 5 },
+                grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
+                legend: { position: 'bottom', labels: { colors: '#64748b', useSeriesColors: true, fontWeight: 600, fontSize: '11px', padding: 12 }, markers: { width: 10, height: 10, radius: 3, strokeWidth: 0 }, itemMargin: { horizontal: 6, vertical: 2 } },
+                tooltip: { theme: 'light', style: { fontSize: '13px', fontFamily: 'Inter' }, y: { formatter: function(val) { return val + '%'; } } },
+                dataLabels: { enabled: false }
+            }).render();
         }
     }
 });

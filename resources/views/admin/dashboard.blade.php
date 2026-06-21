@@ -198,7 +198,7 @@
                 <span class="kpi-label">Top Performer</span>
                 <div class="kpi-icon" style="background: #f59e0b;"><i class="fas fa-trophy"></i></div>
             </div>
-            <div class="kpi-value" style="font-size: 1.15rem;">{{ $topContributor->username ?? '—' }}</div>
+            <div class="kpi-value" style="font-size: 1.15rem;">{{ $topContributor->first_name ?? '—' }}</div>
             <div class="kpi-bottom">
                 <span class="kpi-sub">{{ $topContributor ? number_format($topContributor->total) . ' tasks' : 'No data' }}</span>
             </div>
