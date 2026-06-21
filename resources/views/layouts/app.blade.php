@@ -7,7 +7,6 @@
     @yield('favicon')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js"></script>
     <style>
         /* Cleopatra Theme Tokens */
@@ -42,6 +41,14 @@
             --success: #22c55e;
             --warning: #f59e0b;
             --info: #3b82f6;
+
+            /* Accent palette */
+            --indigo: #6366f1;
+            --emerald: #10b981;
+            --sky: #0ea5e9;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+            --violet: #8b5cf6;
 
             /* Legacy aliases for existing views */
             --white: var(--background);
@@ -321,10 +328,44 @@
 
         .label-flat { display: block; font-weight: 500; font-size: 14px; color: var(--foreground); margin-bottom: 6px; }
 
-        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
-        .modal-header { border-bottom: 1px solid var(--border); padding: 16px 20px; }
+        /* Confirm Dialog */
+        .confirm-icon-wrap { display: flex; justify-content: center; padding: 1.75rem 1.5rem 1rem; }
+        .confirm-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: #fef2f2; display: flex; align-items: center; justify-content: center;
+            color: var(--destructive); font-size: 1.35rem;
+        }
+        .btn-destructive {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 10px 20px; background: var(--destructive); color: var(--destructive-foreground);
+            border: none; border-radius: var(--radius);
+            font-family: var(--p-font-family-sans); font-weight: 500; font-size: 14px;
+            cursor: pointer; transition: opacity 0.15s;
+        }
+        .btn-destructive:hover { opacity: 0.88; }
+
+        /* Custom Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); z-index: 9000;
+            align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+            animation: fadeInUp 0.2s ease-out;
+        }
+        .modal-header { border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .modal-header h5 { font-weight: 700; font-size: 1rem; margin: 0; }
         .modal-body { padding: 20px; }
-        .modal-footer { border-top: 1px solid var(--border); padding: 12px 20px; }
+        .modal-footer { border-top: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: flex-end; gap: 8px; }
+        .modal-close {
+            width: 28px; height: 28px; border: none; background: transparent;
+            border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: var(--muted-foreground); font-size: 13px; transition: all 0.15s; flex-shrink: 0;
+        }
+        .modal-close:hover { background: var(--secondary); color: var(--foreground); }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -343,6 +384,39 @@
         .anim-fade { animation: fadeIn 0.25s ease-out both; }
         .d1 { animation-delay: 0.03s; } .d2 { animation-delay: 0.06s; } .d3 { animation-delay: 0.09s; }
         .d4 { animation-delay: 0.12s; } .d5 { animation-delay: 0.15s; }
+
+        /* Shared: Role Badges */
+        .role-badge {
+            display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
+            font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .role-badge.manager { background: var(--primary); color: var(--primary-foreground); }
+        .role-badge.lead    { background: var(--indigo);  color: #fff; }
+        .role-badge.content { background: var(--sky);     color: #fff; }
+        .role-badge.graphics   { background: var(--amber); color: #fff; }
+        .role-badge.backend    { background: var(--rose);  color: #fff; }
+        .role-badge.researcher { background: var(--emerald); color: #fff; }
+
+        /* Shared: User Cell */
+        .user-cell { display: flex; align-items: center; gap: 0.625rem; }
+        .user-cell img { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; }
+        .user-cell .name   { font-weight: 600; font-size: 0.85rem; }
+        .user-cell .handle { font-size: 0.75rem; color: var(--muted-foreground); }
+
+        /* Shared: Empty State */
+        .empty-state { text-align: center; padding: 3rem; color: var(--muted-foreground); font-size: 0.85rem; }
+        .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border-strong); }
+
+        /* Shared: Filter Pills */
+        .filter-pills { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+        .filter-pill {
+            padding: 0.25rem 0.625rem; border-radius: 5px;
+            font-family: var(--p-font-family-sans); font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; transition: all 0.15s; border: 1.5px solid var(--border);
+            background: transparent; color: var(--muted-foreground);
+        }
+        .filter-pill:hover  { border-color: var(--border-strong); color: var(--foreground); }
+        .filter-pill.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
 
         /* Command Palette */
         .cmd-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: flex-start; justify-content: center; padding-top: 15vh; }
@@ -544,7 +618,53 @@
     })();
     </script>
 
+    <script>
+    function openModal(id) {
+        var el = document.getElementById(id);
+        if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal(id) {
+        var el = document.getElementById(id);
+        if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
+    }
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(overlay.id); });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m) { closeModal(m.id); });
+    });
+
+    var _confirmCb = null;
+    function showConfirm(title, message, label, onConfirm) {
+        document.getElementById('confirmTitle').textContent   = title;
+        document.getElementById('confirmMessage').textContent = message;
+        document.getElementById('confirmActionBtn').textContent = label || 'Confirm';
+        _confirmCb = onConfirm;
+        openModal('confirmModal');
+    }
+    document.getElementById('confirmActionBtn').addEventListener('click', function() {
+        closeModal('confirmModal');
+        if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+    });
+    </script>
+
+    <!-- Global Confirm Dialog -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box" style="max-width: 380px;">
+            <div class="confirm-icon-wrap">
+                <div class="confirm-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            </div>
+            <div class="modal-body" style="text-align: center; padding-top: 0.25rem;">
+                <div id="confirmTitle" style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;"></div>
+                <div id="confirmMessage" style="font-size: 0.85rem; color: var(--muted-foreground); line-height: 1.55;"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: center; gap: 0.5rem; padding-top: 1.25rem;">
+                <button class="btn-flat-secondary" onclick="closeModal('confirmModal')" style="height: 38px; min-width: 90px; font-size: 0.85rem;">Cancel</button>
+                <button id="confirmActionBtn" class="btn-destructive" style="height: 38px; min-width: 90px;">Delete</button>
+            </div>
+        </div>
+    </div>
+
     @yield('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

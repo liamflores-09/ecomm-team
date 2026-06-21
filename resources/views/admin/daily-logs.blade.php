@@ -43,15 +43,6 @@
         background: var(--muted); border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-500);
     }
 
-    .filter-pills { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-    .filter-pill {
-        padding: 0.25rem 0.625rem; border-radius: 5px; font-size: 0.7rem; font-weight: 700;
-        cursor: pointer; transition: all 0.15s; border: 1.5px solid var(--border);
-        background: var(--white); color: var(--gray-400); text-transform: capitalize;
-    }
-    .filter-pill:hover { border-color: var(--border-strong); color: var(--fg); }
-    .filter-pill.active { background: var(--primary); border-color: var(--primary); color: white; }
-
     .ut { width: 100%; border-collapse: collapse; }
     .ut thead th {
         padding: 0.625rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);
@@ -62,21 +53,6 @@
     .ut tbody tr:last-child td { border-bottom: none; }
     .ut tbody tr:hover td { background: #FAFAFA; }
     .ut .num { text-align: center; font-variant-numeric: tabular-nums; font-weight: 700; }
-
-    .user-cell { display: flex; align-items: center; gap: 0.5rem; }
-    .user-cell img { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; }
-    .user-cell .name { font-weight: 600; }
-
-    .role-badge {
-        display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px;
-        font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .role-badge.manager { background: #171717; color: #ffffff; }
-    .role-badge.lead { background: #6366f1; color: #ffffff; }
-    .role-badge.content { background: #0ea5e9; color: #ffffff; }
-    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
-    .role-badge.backend { background: #f43f5e; color: #ffffff; }
-    .role-badge.researcher { background: #10b981; color: #ffffff; }
 
     .status-pill {
         display: inline-flex; align-items: center; gap: 4px;
@@ -93,9 +69,6 @@
         min-width: 22px; text-align: center; padding: 2px 4px; background: var(--muted);
         border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-variant-numeric: tabular-nums;
     }
-
-    .empty-state { text-align: center; padding: 3rem; color: var(--gray-300); font-size: 0.85rem; }
-    .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200); }
 
     /* === Calendar === */
     .cal-layout { display: grid; grid-template-columns: 280px 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }

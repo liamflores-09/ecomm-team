@@ -102,26 +102,9 @@
         text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.75rem;
     }
     .wt .month-total td {
-        background: #6366f1; color: white; font-weight: 800; font-size: 0.75rem;
+        background: var(--indigo); color: white; font-weight: 800; font-size: 0.75rem;
         text-transform: uppercase; letter-spacing: 0.04em; padding: 0.625rem 0.75rem;
     }
-
-    .user-cell { display: flex; align-items: center; gap: 0.5rem; }
-    .user-cell img { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; }
-    .user-cell .name { font-weight: 600; }
-
-    .role-badge {
-        display: inline-block; padding: 0.1rem 0.3rem; border-radius: 3px;
-        font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .role-badge.lead { background: #6366f1; color: #ffffff; }
-    .role-badge.content { background: #0ea5e9; color: #ffffff; }
-    .role-badge.researcher { background: #10b981; color: #ffffff; }
-    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
-    .role-badge.backend { background: #f43f5e; color: #ffffff; }
-
-    .empty-state { text-align: center; padding: 3rem; color: var(--gray-300); font-size: 0.85rem; }
-    .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200); }
 
     /* Member Performance Cards */
     .member-perf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
@@ -129,13 +112,13 @@
         background: var(--white); border-radius: 12px; border: 1px solid var(--border);
         padding: 1.25rem; transition: all 0.2s;
     }
-    .member-perf-card:hover { border-color: #c7d2fe; box-shadow: 0 4px 16px rgba(99,102,241,0.1); transform: translateY(-1px); }
+    .member-perf-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
     .mpc-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
     .mpc-avatar {
         width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid var(--muted);
         flex-shrink: 0; transition: border-color 0.2s;
     }
-    .member-perf-card:hover .mpc-avatar { border-color: #c7d2fe; }
+    .member-perf-card:hover .mpc-avatar { border-color: var(--border-strong); }
     .mpc-info { flex: 1; min-width: 0; }
     .mpc-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.125rem; }
     .mpc-total { font-size: 0.75rem; color: var(--gray-400); font-weight: 500; }
@@ -144,7 +127,7 @@
         background: var(--muted); border-radius: 10px; padding: 0.5rem 0.75rem;
         min-width: 60px;
     }
-    .mpc-share-val { font-size: 1.15rem; font-weight: 800; color: #6366f1; line-height: 1; }
+    .mpc-share-val { font-size: 1.15rem; font-weight: 800; color: var(--indigo); line-height: 1; }
     .mpc-share-label { font-size: 0.55rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
     .mpc-divider { height: 1px; background: var(--border); margin-bottom: 0.75rem; }
     .mpc-tasks { display: flex; flex-direction: column; gap: 0.5rem; }

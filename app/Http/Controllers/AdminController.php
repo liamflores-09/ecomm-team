@@ -97,6 +97,28 @@ class AdminController extends Controller
             ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.role')
             ->get();
 
+        // Derived values — kept out of the view
+        $nonManagerCount  = $totalUsers - $managers;
+        $taskChange       = $lastMonthTasks > 0
+            ? round(($thisMonthTasks - $lastMonthTasks) / $lastMonthTasks * 100)
+            : null;
+        $healthPct        = $nonManagerCount > 0 ? round($todayLogged / $nonManagerCount * 100) : 0;
+        $healthColor      = $healthPct >= 80 ? 'var(--emerald)' : ($healthPct >= 50 ? 'var(--amber)' : 'var(--rose)');
+        $avgTasksPerson   = $nonManagerCount > 0 ? round($thisMonthTasks / $nonManagerCount) : 0;
+        $allMembers       = User::where('role', '!=', 'manager')->get();
+        $loggedUserIds    = $todayLogs->pluck('user_id')->toArray();
+
+        // Sparkline — derived from $dailyTotals already in memory, no extra queries
+        $sparkMap  = $dailyTotals->keyBy(fn($d) => $d->date->format('Y-m-d'));
+        $sparkData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dateStr     = now()->subDays($i)->format('Y-m-d');
+            $day         = $sparkMap->get($dateStr);
+            $sparkData[] = $day
+                ? ($day->total_task_1 + $day->total_task_2 + $day->total_task_3 + $day->total_task_4 + $day->total_task_5)
+                : 0;
+        }
+
         return view('admin.dashboard', compact(
             'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend',
             'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
@@ -104,14 +126,22 @@ class AdminController extends Controller
             'recentActivity',
             'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
             'prodLabels', 'prodData',
-            'todayLogs'
+            'todayLogs',
+            'nonManagerCount', 'taskChange', 'healthPct', 'healthColor',
+            'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData'
         ));
     }
 
     public function users()
     {
-        $users = User::all();
-        return view('admin.users', compact('users'))->with('user', Auth::user());
+        $users        = User::all();
+        $totalCount   = $users->count();
+        $memberCount  = $users->where('role', '!=', 'manager')->count();
+        $managerCount = $users->where('role', 'manager')->count();
+        $roleCount    = $users->pluck('role')->unique()->count();
+
+        return view('admin.users', compact('users', 'totalCount', 'memberCount', 'managerCount', 'roleCount'))
+            ->with('user', Auth::user());
     }
 
     public function storeUser(Request $request)
@@ -120,6 +150,7 @@ class AdminController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile_number' => 'nullable|string|max:20',
+            'gender' => 'required|in:male,female',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
             'role' => 'required|in:manager,lead,content,graphics,backend,researcher',
@@ -129,6 +160,7 @@ class AdminController extends Controller
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'mobile_number' => $validated['mobile_number'] ?? null,
+            'gender' => $validated['gender'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -149,13 +181,16 @@ class AdminController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile_number' => 'nullable|string|max:20',
+            'gender' => 'required|in:male,female',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'role' => 'required|in:manager,lead,content,graphics,backend,researcher',
+            'password' => 'nullable|string|min:6',
         ]);
 
         $user->first_name = $validated['first_name'];
         $user->last_name = $validated['last_name'];
         $user->mobile_number = $validated['mobile_number'] ?? null;
+        $user->gender = $validated['gender'];
         $user->username = $validated['username'];
         $user->role = $validated['role'];
 
@@ -544,7 +579,7 @@ class AdminController extends Controller
                 DB::raw('SUM(task_4) as t4'),
                 DB::raw('SUM(task_5) as t5')
             )
-            ->groupBy('users.username', 'month_key')
+            ->groupBy('users.username', 'users.first_name', 'month_key')
             ->orderBy('month_key')
             ->orderBy('users.username')
             ->get();
