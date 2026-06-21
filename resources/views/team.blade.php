@@ -5,251 +5,136 @@
 
 @section('styles')
 <style>
-    .team-hero {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
+    /* ── Role palette ────────────────────────────────────────────── */
+    :root {
+        --rc-manager:    #1e293b;
+        --rc-lead:       #6366f1;
+        --rc-researcher: #10b981;
+        --rc-content:    #0ea5e9;
+        --rc-graphics:   #f59e0b;
+        --rc-backend:    #f43f5e;
     }
 
-    .team-hero .th-icon {
-        width: 64px;
-        height: 64px;
-        background: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-        flex-shrink: 0;
+    /* ── Hero stat bar ───────────────────────────────────────────── */
+    .tm-hero {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+        padding: 0.875rem 1.25rem; margin-bottom: 2rem;
+        background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+    }
+    .tm-hero-label {
+        font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--gray-400); margin-right: 0.25rem;
+    }
+    .tm-hero-pill {
+        display: inline-flex; align-items: center; gap: 0.35rem;
+        padding: 0.28rem 0.7rem; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 600;
+        background: var(--muted); color: var(--fg);
+    }
+    .tm-hero-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Section header ──────────────────────────────────────────── */
+    .tm-hd {
+        display: flex; align-items: center; gap: 0.625rem;
+        margin: 2rem 0 1rem;
+    }
+    .tm-hd-icon {
+        width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; color: white;
+    }
+    .tm-hd h3 { font-weight: 800; font-size: 1rem; margin: 0; }
+    .tm-hd-count {
+        font-size: 0.65rem; font-weight: 700; background: var(--muted);
+        color: var(--gray-400); padding: 0.15rem 0.45rem; border-radius: 4px;
+    }
+    .tm-hd-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Leader grid (managers & leads — 2-col) ──────────────────── */
+    .tm-leaders {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
     }
 
-    .team-hero h3 { font-weight: 800; font-size: 1.25rem; margin-bottom: 0.25rem; }
-    .team-hero p { color: var(--gray-500); font-weight: 500; font-size: 0.9rem; margin: 0; }
+    /* Leader card: gradient strip + overlapping avatar */
+    .tm-lcard {
+        background: var(--white); border-radius: 14px;
+        border: 1px solid var(--border); overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .tm-lcard:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
 
-    .team-hero .th-stats {
-        display: flex;
-        gap: 1rem;
-        margin-top: 0.75rem;
-        flex-wrap: wrap;
+    .tm-lcard-strip { height: 72px; }
+
+    .tm-lcard-body { text-align: center; padding: 0 1.5rem 1.5rem; margin-top: -38px; }
+
+    .tm-lcard-avatar {
+        width: 80px; height: 80px; border-radius: 50%;
+        border: 4px solid var(--white); display: block; margin: 0 auto 0.75rem;
+        background: var(--muted); object-fit: cover;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+    .tm-lcard-name { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.2rem; line-height: 1.2; }
+    .tm-lcard-sub  { font-size: 0.73rem; color: var(--gray-400); font-weight: 500; margin-bottom: 0.5rem; }
+
+    .tm-viber-link {
+        display: inline-flex; align-items: center; gap: 0.35rem;
+        font-size: 0.73rem; font-weight: 600; color: var(--gray-400);
+        text-decoration: none; margin-top: 0.5rem; transition: color 0.15s;
+    }
+    .tm-viber-link:hover { color: var(--fg); }
+
+    /* ── Member grid (3-col) ─────────────────────────────────────── */
+    .tm-members {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.875rem;
     }
 
-    .th-stat {
-        display: flex;
-        align-items: center;
-        gap: 0.375rem;
-        font-size: 0.8rem;
-        font-weight: 600;
+    /* Member card: centered portrait style */
+    .tm-card {
+        background: var(--white); border-radius: 14px;
+        border: 1px solid var(--border); border-top-width: 3px;
+        padding: 1.5rem 1rem 1.25rem; text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
+    .tm-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
 
-    .th-stat .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-    /* Section divider */
-    .team-divider {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin: 2rem 0 1.25rem;
+    .tm-avatar {
+        width: 68px; height: 68px; border-radius: 50%;
+        border: 3px solid var(--border); display: block;
+        margin: 0 auto 0.75rem; object-fit: cover;
+        background: var(--muted); transition: border-color 0.2s;
     }
+    .tm-card:hover .tm-avatar { border-color: var(--tm-role-color, var(--border)); }
 
-    .team-divider .td-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.9rem;
-        flex-shrink: 0;
-    }
+    .tm-name { font-weight: 800; font-size: 0.9rem; line-height: 1.25; margin-bottom: 0.35rem; }
+    .tm-username { font-size: 0.7rem; color: var(--gray-400); font-weight: 500; margin-bottom: 0.45rem; }
 
-    .team-divider h3 { font-weight: 800; font-size: 1.1rem; margin: 0; }
-
-    .team-divider .td-count {
-        background: var(--muted);
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--gray-400);
-    }
-
-    .team-divider .td-line { flex: 1; height: 2px; background: var(--muted); }
-
-    /* Leadership cards */
-    .leader-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .leader-card {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.75rem;
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        transition: all 0.2s;
-    }
-
-    .leader-card:hover { transform: scale(1.01); }
-
-    .leader-card.manager { background: var(--primary); }
-    .leader-card.manager * { color: white !important; }
-    .leader-card.manager .lc-role { color: rgba(255,255,255,0.75) !important; }
-    .leader-card.manager .lc-badge { background: rgba(255,255,255,0.2); color: white !important; }
-
-    .leader-card.lead { border: 2px solid #6366f1; }
-    .leader-card.lead .lc-badge { background: #6366f1; color: #ffffff; }
-
-    .lc-avatar {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        border: 3px solid var(--muted);
-        object-fit: cover;
-    }
-
-    .leader-card.manager .lc-avatar { border-color: rgba(255,255,255,0.3); }
-
-    .lc-info { flex: 1; }
-
-    .lc-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.125rem; }
-    .lc-role { font-size: 0.8rem; font-weight: 500; color: var(--gray-400); margin-bottom: 0.5rem; }
-
-    .lc-mobile {
-        display: flex;
-        align-items: center;
-        gap: 0.375rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-
-    .lc-mobile a {
-        color: inherit;
-        text-decoration: none;
-        transition: opacity 0.15s;
-    }
-
-    .lc-mobile a:hover { opacity: 0.7; }
-
-    .viber-icon {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-    }
-
-    /* Role Badge — Cleopatra monochrome gradient */
+    /* ── Role badges ─────────────────────────────────────────────── */
     .role-badge {
-        display: inline-block;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.6rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
+        display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px;
+        font-size: 0.59rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
     }
+    .role-badge.manager    { background: #1e293b; color: #fff; }
+    .role-badge.lead       { background: #6366f1; color: #fff; }
+    .role-badge.content    { background: #0ea5e9; color: #fff; }
+    .role-badge.graphics   { background: #f59e0b; color: #fff; }
+    .role-badge.backend    { background: #f43f5e; color: #fff; }
+    .role-badge.researcher { background: #10b981; color: #fff; }
 
-    .role-badge.manager { background: #171717; color: #ffffff; }
-    .role-badge.lead { background: #6366f1; color: #ffffff; }
-    .role-badge.content { background: #0ea5e9; color: #ffffff; }
-    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
-    .role-badge.backend { background: #f43f5e; color: #ffffff; }
-    .role-badge.researcher { background: #10b981; color: #ffffff; }
-
-    /* Member grid */
-    .member-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
+    /* ── Empty state ─────────────────────────────────────────────── */
+    .tm-empty {
+        text-align: center; padding: 2.5rem; background: var(--white);
+        border-radius: 12px; border: 1px dashed var(--border);
+        color: var(--gray-400); font-size: 0.85rem; font-weight: 500;
     }
+    .tm-empty i { font-size: 1.75rem; display: block; margin-bottom: 0.625rem; opacity: 0.35; }
 
-    .member-card {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        transition: all 0.2s;
+    /* ── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+        .tm-leaders { grid-template-columns: 1fr; }
+        .tm-members { grid-template-columns: repeat(2, 1fr); }
     }
-
-    .member-card:hover { transform: scale(1.02); }
-
-    .member-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        object-fit: cover;
-    }
-
-    .member-name { font-weight: 700; font-size: 0.85rem; }
-    .member-role { font-size: 0.7rem; font-weight: 500; color: var(--gray-400); }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: var(--gray-400);
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-
-    .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-300); }
-
-    /* Design team */
-    .design-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-
-    .design-card {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.5rem;
-        transition: all 0.2s;
-    }
-
-    .design-card:hover { transform: scale(1.01); }
-
-    .design-card-header {
-        display: flex;
-        align-items: center;
-        gap: 0.875rem;
-    }
-
-    .dc-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        object-fit: cover;
-    }
-
-    .dc-name { font-weight: 800; font-size: 1rem; }
-    .dc-role { font-size: 0.75rem; font-weight: 500; color: var(--gray-400); }
-
-    @media (max-width: 768px) {
-        .leader-row { grid-template-columns: 1fr; }
-        .member-grid { grid-template-columns: 1fr 1fr; }
-        .design-grid { grid-template-columns: 1fr; }
-        .team-hero { flex-direction: column; text-align: center; }
-        .team-hero .th-stats { justify-content: center; }
-    }
-
-    @media (max-width: 480px) {
-        .member-grid { grid-template-columns: 1fr; }
+    @media (max-width: 540px) {
+        .tm-members { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
@@ -258,216 +143,190 @@
 <x-sidebar active="team" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Dashboard</a>
 
-    <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
+    @php
+        $avatarSeed = fn($u) => ($u->gender === 'female') ? $u->username . 'Female' : $u->username;
+        $total      = $managers->count() + $leads->count() + $researchers->count()
+                    + $content->count() + $graphics->count() + $backend->count();
+        $viber = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" style="flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>';
+    @endphp
+
+    <div class="top-bar anim-up" style="margin-bottom: 1.25rem;">
         <div>
             <h2>The <span class="highlight">Team</span></h2>
             <p>Meet the people behind Ecomm Dept</p>
         </div>
     </div>
 
-    @php
-        $total = $managers->count() + $leads->count() + $researchers->count() + $content->count() + $graphics->count() + $backend->count();
-    @endphp
-
-    <!-- Hero Card -->
-    <div class="team-hero anim-up d1">
-        <div class="th-icon"><i class="fas fa-users"></i></div>
-        <div>
-            <h3>Ecomm Department</h3>
-            <p>Content, PR, Design, and Backend teams working together across e-commerce platforms</p>
-            <div class="th-stats">
-                <div class="th-stat"><div class="dot" style="background: #0ea5e9;"></div> Content — {{ $content->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #10b981;"></div> Research — {{ $researchers->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #f59e0b;"></div> Graphics — {{ $graphics->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #f43f5e;"></div> Backend — {{ $backend->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #6366f1;"></div> Lead — {{ $leads->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #171717;"></div> Manager — {{ $managers->count() }}</div>
-            </div>
-        </div>
+    {{-- Hero stat pills --}}
+    <div class="tm-hero anim-up d1">
+        <span class="tm-hero-label">{{ $total }} members</span>
+        @if($managers->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#1e293b;"></span> Manager <strong style="margin-left:2px;">{{ $managers->count() }}</strong></span>
+        @endif
+        @if($leads->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#6366f1;"></span> Lead <strong style="margin-left:2px;">{{ $leads->count() }}</strong></span>
+        @endif
+        @if($researchers->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#10b981;"></span> Research <strong style="margin-left:2px;">{{ $researchers->count() }}</strong></span>
+        @endif
+        @if($content->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#0ea5e9;"></span> Content <strong style="margin-left:2px;">{{ $content->count() }}</strong></span>
+        @endif
+        @if($graphics->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#f59e0b;"></span> Graphics <strong style="margin-left:2px;">{{ $graphics->count() }}</strong></span>
+        @endif
+        @if($backend->count())
+        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#f43f5e;"></span> Backend <strong style="margin-left:2px;">{{ $backend->count() }}</strong></span>
+        @endif
     </div>
 
-    <!-- Manager -->
+    {{-- ════ MANAGER ════ --}}
     @if($managers->count())
-    <div class="team-divider anim-up d2">
-        <div class="td-icon" style="background: var(--primary);"><i class="fas fa-crown"></i></div>
+    <div class="tm-hd anim-up d2">
+        <div class="tm-hd-icon" style="background:#1e293b;"><i class="fas fa-crown"></i></div>
         <h3>Manager</h3>
-        <span class="td-count">{{ $managers->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $managers->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-    <div class="leader-row anim-up d2">
-        @foreach($managers as $m)
-        <div class="leader-card manager">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($m->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $m->username . 'Female' : $m->username }}" class="lc-avatar" alt="{{ $m->username }}">
-            <div class="lc-info">
-                <div class="lc-name">{{ $m->first_name }} {{ $m->last_name }}</div>
-                @if($m->mobile_number)
-                <div class="lc-mobile">
-                    <svg class="viber-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="white"/></svg>
-                    <a href="viber://chat?number={{ $m->mobile_number }}">{{ $m->mobile_number }}</a>
-                </div>
-                @endif
+    <div class="tm-leaders anim-up d2">
+        @foreach($managers as $u)
+        <div class="tm-lcard">
+            <div class="tm-lcard-strip" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);"></div>
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Ecomm Department</div>
                 <span class="role-badge manager">Manager</span>
+                @if($u->mobile_number)
+                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+                @endif
             </div>
         </div>
         @endforeach
     </div>
     @endif
 
-    <!-- Lead -->
+    {{-- ════ LEAD ════ --}}
     @if($leads->count())
-    <div class="team-divider anim-up d3">
-        <div class="td-icon" style="background: #6366f1;"><i class="fas fa-star"></i></div>
+    <div class="tm-hd anim-up d3">
+        <div class="tm-hd-icon" style="background:#6366f1;"><i class="fas fa-star"></i></div>
         <h3>Lead</h3>
-        <span class="td-count">{{ $leads->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $leads->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-    <div class="leader-row anim-up d3">
-        @foreach($leads as $l)
-        <div class="leader-card lead">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($l->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $l->username . 'Female' : $l->username }}" class="lc-avatar" alt="{{ $l->username }}">
-            <div class="lc-info">
-                <div class="lc-name">{{ $l->first_name }} {{ $l->last_name }}</div>
-                @if($l->mobile_number)
-                <div class="lc-mobile">
-                    <svg class="viber-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>
-                    <a href="viber://chat?number={{ $l->mobile_number }}">{{ $l->mobile_number }}</a>
-                </div>
+    <div class="tm-leaders anim-up d3">
+        @foreach($leads as $u)
+        <div class="tm-lcard">
+            <div class="tm-lcard-strip" style="background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);"></div>
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Content &amp; PR Lead</div>
+                <span class="role-badge lead">Lead</span>
+                @if($u->mobile_number)
+                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
                 @endif
-                <span class="role-badge lead">Content / PR Lead</span>
             </div>
         </div>
         @endforeach
     </div>
     @endif
 
-    <!-- Product Researcher -->
+    {{-- ════ RESEARCHER ════ --}}
     @if($researchers->count())
-    <div class="team-divider anim-up d3b">
-        <div class="td-icon" style="background: #10b981;"><i class="fas fa-magnifying-glass"></i></div>
+    <div class="tm-hd anim-up d4">
+        <div class="tm-hd-icon" style="background:#10b981;"><i class="fas fa-magnifying-glass"></i></div>
         <h3>Product Researcher</h3>
-        <span class="td-count">{{ $researchers->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $researchers->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-    <div class="member-grid anim-up d3b">
-        @foreach($researchers as $r)
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($r->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $r->username . 'Female' : $r->username }}" class="member-avatar" alt="{{ $r->username }}">
-            <div style="flex: 1; min-width: 0;">
-                <div class="member-name">{{ $r->first_name }} {{ $r->last_name }}</div>
-                <span class="role-badge researcher">Researcher</span>
-                @if($r->mobile_number)
-                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#92400E"/></svg>
-                    <a href="viber://chat?number={{ $r->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $r->mobile_number }}</a>
-                </div>
-                @endif
-            </div>
+    <div class="tm-members anim-up d4">
+        @foreach($researchers as $u)
+        <div class="tm-card" style="border-top-color:#10b981; --tm-role-color:#10b981;">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#10b981;" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge researcher">Researcher</span>
+            @if($u->mobile_number)
+            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+            @endif
         </div>
         @endforeach
     </div>
     @endif
 
-    <!-- Content Team -->
-    <div class="team-divider anim-up d4">
-        <div class="td-icon" style="background: var(--secondary);"><i class="fas fa-pen-nib"></i></div>
+    {{-- ════ CONTENT ════ --}}
+    <div class="tm-hd anim-up d4">
+        <div class="tm-hd-icon" style="background:#0ea5e9;"><i class="fas fa-pen-nib"></i></div>
         <h3>Content Team</h3>
-        <span class="td-count">{{ $content->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $content->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-
     @if($content->count())
-    <div class="member-grid anim-up d4">
-        @foreach($content as $c)
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($c->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $c->username . 'Female' : $c->username }}" class="member-avatar" alt="{{ $c->username }}">
-            <div style="flex: 1; min-width: 0;">
-                <div class="member-name">{{ $c->first_name }} {{ $c->last_name }}</div>
-                <span class="role-badge content">Content</span>
-                @if($c->mobile_number)
-                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
-                    <a href="viber://chat?number={{ $c->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $c->mobile_number }}</a>
-                </div>
-                @endif
-            </div>
+    <div class="tm-members anim-up d4">
+        @foreach($content as $u)
+        <div class="tm-card" style="border-top-color:#0ea5e9; --tm-role-color:#0ea5e9;">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#0ea5e9;" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge content">Content</span>
+            @if($u->mobile_number)
+            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+            @endif
         </div>
         @endforeach
     </div>
     @else
-    <div class="empty-state anim-up d4">
-        <i class="fas fa-users"></i>
-        No content team members yet.
-    </div>
+    <div class="tm-empty anim-up d4"><i class="fas fa-users"></i> No content members yet.</div>
     @endif
 
-    <!-- Design Team -->
-    <div class="team-divider anim-up d5">
-        <div class="td-icon" style="background: var(--accent);"><i class="fas fa-palette"></i></div>
+    {{-- ════ GRAPHICS ════ --}}
+    <div class="tm-hd anim-up d5">
+        <div class="tm-hd-icon" style="background:#f59e0b;"><i class="fas fa-palette"></i></div>
         <h3>Design Team</h3>
-        <span class="td-count">{{ $graphics->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $graphics->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-
     @if($graphics->count())
-    <div class="design-grid anim-up d5">
-        @foreach($graphics as $g)
-        <div class="design-card">
-            <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($g->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $g->username . 'Female' : $g->username }}" class="dc-avatar" alt="{{ $g->username }}">
-                <div>
-                    <div class="dc-name">{{ $g->first_name }} {{ $g->last_name }}</div>
-                    <span class="role-badge graphics">Graphics</span>
-                    @if($g->mobile_number)
-                    <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
-                        <a href="viber://chat?number={{ $g->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $g->mobile_number }}</a>
-                    </div>
-                    @endif
-                </div>
-            </div>
+    <div class="tm-members anim-up d5">
+        @foreach($graphics as $u)
+        <div class="tm-card" style="border-top-color:#f59e0b; --tm-role-color:#f59e0b;">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#f59e0b;" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge graphics">Graphics</span>
+            @if($u->mobile_number)
+            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+            @endif
         </div>
         @endforeach
     </div>
     @else
-    <div class="empty-state anim-up d5">
-        <i class="fas fa-palette"></i>
-        No graphics team members yet.
-    </div>
+    <div class="tm-empty anim-up d5"><i class="fas fa-palette"></i> No graphics members yet.</div>
     @endif
 
-    <!-- Backend Team -->
-    <div class="team-divider anim-up d6">
-        <div class="td-icon" style="background: #f43f5e;"><i class="fas fa-server"></i></div>
+    {{-- ════ BACKEND ════ --}}
+    <div class="tm-hd anim-up d5">
+        <div class="tm-hd-icon" style="background:#f43f5e;"><i class="fas fa-server"></i></div>
         <h3>Backend Team</h3>
-        <span class="td-count">{{ $backend->count() }}</span>
-        <div class="td-line"></div>
+        <span class="tm-hd-count">{{ $backend->count() }}</span>
+        <div class="tm-hd-line"></div>
     </div>
-
     @if($backend->count())
-    <div class="member-grid anim-up d6">
-        @foreach($backend as $b)
-        <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($b->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $b->username . 'Female' : $b->username }}" class="member-avatar" alt="{{ $b->username }}">
-            <div style="flex: 1; min-width: 0;">
-                <div class="member-name">{{ $b->first_name }} {{ $b->last_name }}</div>
-                <span class="role-badge backend">Backend</span>
-                @if($b->mobile_number)
-                <div style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.7rem; color: var(--gray-400);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="#7360F2"/></svg>
-                    <a href="viber://chat?number={{ $b->mobile_number }}" style="color: var(--gray-400); text-decoration: none;">{{ $b->mobile_number }}</a>
-                </div>
-                @endif
-            </div>
+    <div class="tm-members anim-up d5">
+        @foreach($backend as $u)
+        <div class="tm-card" style="border-top-color:#f43f5e; --tm-role-color:#f43f5e;">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#f43f5e;" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge backend">Backend</span>
+            @if($u->mobile_number)
+            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+            @endif
         </div>
         @endforeach
     </div>
     @else
-    <div class="empty-state anim-up d6">
-        <i class="fas fa-server"></i>
-        No backend team members yet.
-    </div>
+    <div class="tm-empty anim-up d5"><i class="fas fa-server"></i> No backend members yet.</div>
     @endif
+
 </div>
 @endsection

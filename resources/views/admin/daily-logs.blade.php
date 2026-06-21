@@ -9,70 +9,105 @@
 
 @section('styles')
 <style>
-    /* === Stat Row === */
-    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
-    .stat-card {
-        background: var(--white); border-radius: 12px; padding: 1.25rem;
-        display: flex; align-items: center; gap: 1rem; transition: all 0.2s;
-        border: 2px solid transparent;
+    .back-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 0.78rem; font-weight: 700; color: var(--muted-foreground);
+        text-decoration: none; margin-bottom: 0.5rem; transition: color 0.15s;
     }
-    .stat-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-    .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; flex-shrink: 0; }
-    .stat-count { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-    .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--gray-400); margin-top: 0.125rem; }
+    .back-link:hover { color: var(--foreground); }
 
-    /* === Charts === */
-    .charts-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
-    .chart-card { background: var(--white); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--border); }
-    .chart-card #weeklyChart, .chart-card #productivityChart { width: 100% !important; }
-    .chart-title { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
-    .chart-title .ct-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; flex-shrink: 0; }
-    .chart-title h4 { font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
+    /* KPIs */
+    .dl-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+    .dl-kpi-card {
+        background: var(--white); border-radius: 12px; padding: 1.25rem 1.5rem;
+        border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;
+        transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .dl-kpi-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+    .dl-kpi-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; flex-shrink: 0; }
+    .dl-kpi-val  { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+    .dl-kpi-lbl  { font-size: 0.73rem; font-weight: 600; color: var(--gray-400); margin-top: 3px; }
 
-    /* === Unified Table === */
-    .table-card { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; margin-bottom: 1.5rem; }
+    /* Section header */
+    .dl-section { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.875rem; }
+    .dl-section h4 { font-size: 0.9rem; font-weight: 700; margin: 0 0 2px; }
+    .dl-section p  { font-size: 0.75rem; color: var(--muted-foreground); margin: 0; }
+    .dl-section a  { font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; white-space: nowrap; }
+
+    /* Role overview grid (shared with dashboard) */
+    .dl-role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin-bottom: 1.75rem; }
+    .dl-role-grid--single { grid-template-columns: 1fr; }
+    .dl-role-card {
+        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
+        padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
+        transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .dl-role-grid--single .dl-role-card { padding: 1.5rem 1.75rem; gap: 1rem; }
+    .dl-role-grid--single .contrib-list { gap: 0.85rem; }
+    .dl-role-grid--single .contrib-avatar { width: 30px; height: 30px; }
+    .dl-role-grid--single .contrib-name { font-size: 0.85rem; }
+    .dl-role-grid--single .contrib-bar-wrap { height: 7px; }
+    .dl-role-grid--single .contrib-total { font-size: 0.8rem; min-width: 34px; }
+    .dl-role-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .dl-role-header { display: flex; align-items: center; justify-content: space-between; }
+    .dl-role-sub    { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; margin: 0; line-height: 1.4; }
+    .dl-role-link   { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
+    .dl-role-link:hover { gap: 7px; }
+
+    /* Contributor list */
+    .contrib-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .contrib-item { display: flex; align-items: center; gap: 0.5rem; }
+    .contrib-rank { font-size: 0.65rem; font-weight: 800; color: var(--gray-300); width: 14px; flex-shrink: 0; }
+    .contrib-avatar { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+    .contrib-name { font-size: 0.78rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+    .contrib-bar-wrap { flex: 1.5; height: 5px; background: var(--muted); border-radius: 3px; overflow: hidden; }
+    .contrib-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .contrib-total { font-size: 0.73rem; font-weight: 800; color: var(--gray-500); min-width: 28px; text-align: right; }
+
+    /* Table cards */
+    .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.75rem; }
     .table-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0.875rem 1.25rem; border-bottom: 2px solid var(--muted);
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+        padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border);
     }
-    .table-header .th-left { display: flex; align-items: center; gap: 0.5rem; }
-    .table-header .th-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; flex-shrink: 0; }
-    .table-header h4 { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
-    .table-header .badge {
+    .th-left { display: flex; align-items: center; gap: 0.5rem; }
+    .th-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; }
+    .th-title { font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
+    .th-badge {
         display: inline-flex; align-items: center; padding: 2px 8px;
         background: var(--muted); border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-500);
     }
 
     .ut { width: 100%; border-collapse: collapse; }
     .ut thead th {
-        padding: 0.625rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);
-        background: var(--muted); border-bottom: 1px solid var(--border); text-align: left;
-        text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+        padding: 0.6rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);
+        background: var(--muted); border-bottom: 1px solid var(--border);
+        text-align: left; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
     }
-    .ut tbody td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .ut tbody td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
     .ut tbody tr:last-child td { border-bottom: none; }
-    .ut tbody tr:hover td { background: #FAFAFA; }
+    .ut tbody tr:hover td { background: var(--secondary); }
     .ut .num { text-align: center; font-variant-numeric: tabular-nums; font-weight: 700; }
 
-    .status-pill {
-        display: inline-flex; align-items: center; gap: 4px;
-        padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700;
+    /* Role subheader row in table */
+    .role-divider-row td {
+        padding: 0.45rem 1rem; background: var(--muted);
+        border-bottom: 1px solid var(--border); border-top: 2px solid var(--border);
     }
-    .status-pill.logged { background: #F0FDF4; color: #166534; }
-    .status-pill.pending { background: #FEF2F2; color: #991B1B; }
+    .role-divider-row:first-child td { border-top: none; }
+    .role-divider-row td span.rd-count { font-size: 0.72rem; font-weight: 600; color: var(--gray-400); margin-left: 6px; }
 
-    .cell-muted { color: var(--gray-400); font-size: 0.8rem; }
-    .cell-remark { color: var(--gray-400); font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
+    .status-pill.logged  { background: #f0fdf4; color: #166534; }
+    .status-pill.pending { background: #fef2f2; color: #991b1b; }
+    .status-pill.rdo     { background: #fef9ec; color: #92400e; }
 
     .task-pip { display: inline-flex; gap: 3px; }
-    .task-pip span {
-        min-width: 22px; text-align: center; padding: 2px 4px; background: var(--muted);
-        border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-variant-numeric: tabular-nums;
-    }
+    .task-pip span { min-width: 22px; text-align: center; padding: 2px 4px; background: var(--muted); border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-    /* === Calendar === */
-    .cal-layout { display: grid; grid-template-columns: 280px 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
-    .cal-card { background: var(--white); border-radius: 12px; border: 2px solid var(--border); padding: 1rem; }
+    /* Calendar */
+    .cal-layout { display: grid; grid-template-columns: 290px 1fr; gap: 1rem; margin-bottom: 1.75rem; }
+    .cal-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 1rem; }
     .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
     .cal-nav span { font-weight: 700; font-size: 0.85rem; }
     .cal-nav button {
@@ -83,45 +118,45 @@
     .cal-nav button:hover { border-color: var(--border-strong); color: var(--fg); }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
     .cal-day-label { text-align: center; font-size: 0.6rem; font-weight: 700; color: var(--gray-300); padding: 2px 0; }
+    .cal-day-label.sun { color: #ef4444; }
     .cal-day {
         display: flex; align-items: center; justify-content: center; height: 32px;
         border-radius: 6px; font-size: 0.75rem; font-weight: 500; color: var(--gray-400);
-        text-decoration: none; transition: all 0.1s; position: relative;
+        cursor: pointer; transition: all 0.1s; position: relative; border: none; background: transparent;
+        font-family: inherit; width: 100%;
     }
-    .cal-day:hover { background: var(--hover); }
-    .cal-day.today { background: var(--fg); color: white; }
+    .cal-day:hover { background: var(--secondary); }
+    .cal-day.today { background: #dbeafe; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6; }
     .cal-day.has-logs { color: var(--fg); font-weight: 700; }
-    .cal-day.selected { background: var(--fg); color: white; }
+    .cal-day.selected { background: var(--primary); color: white; border-color: transparent; }
+    .cal-day.is-rdo   { color: #ef4444; font-weight: 600; }
+    .cal-day.is-rdo.today { background: #dbeafe; color: #1e40af; border: 2px solid #3b82f6; }
+    .cal-day.is-rdo.selected { background: var(--primary); color: white; border-color: transparent; }
     .cal-day .dot { position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: var(--fg); }
-
-    .cal-legend { display: flex; gap: 0.75rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); font-size: 0.6rem; color: var(--gray-300); }
+    .cal-day.selected .dot { background: rgba(255,255,255,0.6); }
+    .cal-day.today .dot { background: #1e40af; }
+    .cal-legend { display: flex; gap: 0.75rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); font-size: 0.6rem; color: var(--gray-400); flex-wrap: wrap; }
     .cal-legend span { display: flex; align-items: center; gap: 3px; }
-    .cal-legend .dot { width: 6px; height: 6px; border-radius: 2px; }
+    .cal-legend .cl-dot { width: 6px; height: 6px; border-radius: 2px; }
+    .cal-rdo-label { font-size: 0.55rem; font-weight: 700; color: #ef4444; position: absolute; bottom: 1px; line-height: 1; }
 
-    .day-panel { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; }
-    .day-panel-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0.75rem 1rem; border-bottom: 2px solid var(--muted);
-    }
-    .day-panel-header h4 { font-size: 0.8rem; font-weight: 800; margin: 0; }
-    .day-panel-header a { font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600; }
-    .day-panel-header a:hover { text-decoration: underline; }
-    .day-item {
-        display: flex; align-items: center; gap: 0.625rem;
-        padding: 0.625rem 1rem; border-bottom: 1px solid var(--border);
-    }
+    .day-panel { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
+    .day-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .day-panel-header h4 { font-size: 0.82rem; font-weight: 800; margin: 0; }
+    .day-panel-body { flex: 1; overflow-y: auto; max-height: 380px; }
+    .day-role-header { display: flex; align-items: center; gap: 6px; padding: 0.4rem 1rem; background: var(--muted); border-bottom: 1px solid var(--border); position: sticky; top: 0; }
+    .day-item { display: flex; align-items: center; gap: 0.625rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); }
     .day-item:last-child { border-bottom: none; }
-    .day-item:hover { background: #FAFAFA; }
+    .day-item:hover { background: var(--secondary); }
 
     @media (max-width: 1024px) {
-        .charts-row { grid-template-columns: 1fr; }
-        .cal-layout { grid-template-columns: 1fr; }
+        .dl-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        .dl-role-grid { grid-template-columns: repeat(2, 1fr); }
+        .cal-layout   { grid-template-columns: 1fr; }
     }
-    @media (max-width: 768px) {
-        .stat-row { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
-        .stat-row { grid-template-columns: 1fr; }
+    @media (max-width: 640px) {
+        .dl-kpi-grid { grid-template-columns: 1fr; }
+        .dl-role-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
@@ -130,378 +165,516 @@
 <x-sidebar active="admin.daily-logs" :isAdmin="true" />
 
 <div class="main-content">
-    <div class="anim-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem;">Daily Logs</h2>
-            <p style="color: var(--gray-400); font-size: 0.9rem; font-weight: 500; margin: 0;">View and track team daily activity</p>
-        </div>
-    </div>
-
     @php
-        $roleNames = ['content' => 'Content', 'lead' => 'Lead', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend'];
+        $roleColors = ['lead'=>'var(--indigo)','content'=>'var(--sky)','graphics'=>'var(--amber)','backend'=>'var(--rose)','researcher'=>'var(--emerald)'];
+        $roleNames  = ['lead'=>'Lead','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher'];
+        $todayStr   = now()->format('Y-m-d');
+        $todayFmt   = now()->format('l, M d, Y');
     @endphp
 
+    <!-- Header -->
+    <div class="anim-up" style="margin-bottom: 1.5rem;">
+        <a href="{{ route('admin.dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+                <h2 style="font-size:1.5rem;font-weight:800;margin:0 0 0.25rem;">Daily Logs</h2>
+                <p style="color:var(--gray-400);font-size:0.9rem;font-weight:500;margin:0;">{{ $todayFmt }}</p>
+            </div>
+            @if($isSunday)
+            <div style="display:flex;align-items:center;gap:0.625rem;padding:0.6rem 1rem;background:#fef9ec;border:1px solid #fde68a;border-radius:10px;color:#92400e;font-size:0.82rem;font-weight:600;">
+                <i class="fas fa-umbrella-beach"></i> Today is Sunday — Rest Day (RDO)
+            </div>
+            @endif
+        </div>
+    </div>
+
     <!-- KPIs -->
-    <div class="stat-row anim-up d1">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-clipboard-list"></i></div>
-            <div><div class="stat-count">{{ $totalLogs }}</div><div class="stat-label">Total Logs</div></div>
+    <div class="dl-kpi-grid anim-up d1">
+        <div class="dl-kpi-card">
+            <div class="dl-kpi-icon" style="background:var(--primary);"><i class="fas fa-clipboard-list"></i></div>
+            <div><div class="dl-kpi-val">{{ $totalLogs }}</div><div class="dl-kpi-lbl">Total Logs</div></div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--gray-500);"><i class="fas fa-chart-line"></i></div>
-            <div><div class="stat-count">{{ $thisMonthLogs }}</div><div class="stat-label">This Month</div></div>
+        <div class="dl-kpi-card">
+            <div class="dl-kpi-icon" style="background:var(--indigo);"><i class="fas fa-chart-line"></i></div>
+            <div><div class="dl-kpi-val">{{ $thisMonthLogs }}</div><div class="dl-kpi-lbl">This Month</div></div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-calendar-check"></i></div>
-            <div><div class="stat-count">{{ $todayLogCount }}</div><div class="stat-label">Logged Today</div></div>
+        <div class="dl-kpi-card">
+            <div class="dl-kpi-icon" style="background:{{ $isSunday ? '#d97706' : 'var(--emerald)' }};"><i class="fas {{ $isSunday ? 'fa-umbrella-beach' : 'fa-calendar-check' }}"></i></div>
+            <div>
+                @if($isSunday)
+                <div class="dl-kpi-val" style="font-size:1.1rem;">Rest Day</div>
+                <div class="dl-kpi-lbl">No log expected today</div>
+                @else
+                <div class="dl-kpi-val">{{ $todayLogCount }}</div>
+                <div class="dl-kpi-lbl">Logged Today</div>
+                @endif
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: {{ $missingLogs->count() ? '#991B1B' : 'var(--primary)' }};"><i class="fas fa-user-clock"></i></div>
-            <div><div class="stat-count" style="color: {{ $missingLogs->count() ? '#991B1B' : 'var(--fg)' }};">{{ $missingLogs->count() }}</div><div class="stat-label">Missing</div></div>
+        <div class="dl-kpi-card">
+            <div class="dl-kpi-icon" style="background:{{ ($isSunday || $missingLogs->isEmpty()) ? 'var(--gray-400)' : 'var(--rose)' }};"><i class="fas fa-user-clock"></i></div>
+            <div>
+                @if($isSunday)
+                <div class="dl-kpi-val" style="font-size:1.1rem;color:#d97706;">RDO</div>
+                <div class="dl-kpi-lbl">Sunday — Rest Day</div>
+                @else
+                <div class="dl-kpi-val" style="color:{{ $missingLogs->isNotEmpty() ? 'var(--rose)' : 'var(--fg)' }};">{{ $missingLogs->count() }}</div>
+                <div class="dl-kpi-lbl">Missing Today</div>
+                @endif
+            </div>
         </div>
     </div>
 
-    <!-- Charts -->
-    <div class="charts-row anim-up d2">
-        <div class="chart-card">
-            <div class="chart-title">
-                <div class="ct-icon" style="background: var(--primary);"><i class="fas fa-chart-bar"></i></div>
-                <h4>Weekly Task Breakdown</h4>
-            </div>
-            <div id="weeklyChart"></div>
-        </div>
-        <div class="chart-card">
-            <div class="chart-title">
-                <div class="ct-icon" style="background: var(--gray-500);"><i class="fas fa-trophy"></i></div>
-                <h4>Top Contributors</h4>
-            </div>
-            <div id="productivityChart"></div>
+    <!-- Weekly Activity Overview -->
+    <div class="dl-section anim-up d2">
+        <div>
+            <h4>Weekly Activity — Last 7 Days</h4>
+            <p>Daily task output per role. <span style="color:var(--rose);font-weight:600;">Sunday = RDO</span> — no output expected.</p>
         </div>
     </div>
-
-    <!-- Today's Logs — Unified Table -->
-    <div class="table-card anim-up d3">
-        <div class="table-header">
-            <div class="th-left">
-                <div class="th-icon" style="background: var(--primary);"><i class="fas fa-clipboard-check"></i></div>
-                <h4>Today's Logs</h4>
-                <span class="badge">{{ now()->format('M d, Y') }}</span>
+    <div class="dl-role-grid{{ $roleFilter ? ' dl-role-grid--single' : '' }} anim-up d2">
+        @foreach($dlRoleBreakdown as $r)
+        @php $color = $roleColors[$r['role']] ?? 'var(--gray-400)'; @endphp
+        <div class="dl-role-card" style="border-top:3px solid {{ $color }};">
+            <div class="dl-role-header">
+                <span class="role-badge {{ $r['role'] }}">{{ ucfirst($r['role']) }}</span>
+                <span style="font-size:0.75rem;font-weight:600;color:var(--muted-foreground);">{{ $r['members'] }} {{ $r['members']===1?'member':'members' }}</span>
             </div>
-            <div class="filter-pills" id="todayFilter">
-                <button class="filter-pill active" onclick="filterToday('all', this)">All</button>
-                @foreach($rolesWithData as $r)
-                <button class="filter-pill" onclick="filterToday('{{ $r }}', this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
+            <p class="dl-role-sub">Daily task output (all fields) &mdash; last 7 days</p>
+            <div id="dlChart-{{ $r['role'] }}" style="height:{{ $roleFilter ? '180px' : '90px' }};margin:0 -0.25rem;"></div>
+            <a href="{{ route('admin.reports') }}?role={{ $r['role'] }}" class="dl-role-link">
+                View Reports <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i>
+            </a>
+        </div>
+        @endforeach
+    </div>
+
+    <!-- Top Contributors -->
+    <div class="dl-section anim-up d3">
+        <div>
+            <h4>Top Contributors — Last 7 Days</h4>
+            <p>Highest task output per role. Click View Reports for full breakdowns.</p>
+        </div>
+    </div>
+    <div class="dl-role-grid{{ $roleFilter ? ' dl-role-grid--single' : '' }} anim-up d3">
+        @foreach($dlRoleTopContributors->sortKeys() as $role => $contribs)
+        @php
+            $color  = $roleColors[$role] ?? 'var(--gray-400)';
+            $maxVal = $contribs->max('total') ?: 1;
+        @endphp
+        <div class="dl-role-card" style="border-top:3px solid {{ $color }};">
+            <div class="dl-role-header">
+                <span class="role-badge {{ $role }}">{{ ucfirst($role) }}</span>
+                <span style="font-size:0.7rem;font-weight:600;color:var(--muted-foreground);">Top {{ $contribs->count() }}</span>
+            </div>
+            <div class="contrib-list">
+                @foreach($contribs as $i => $c)
+                <div class="contrib-item">
+                    <span class="contrib-rank">#{{ $i+1 }}</span>
+                    <img class="contrib-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $c->gender === 'female' ? $c->username.'Female' : $c->username }}" alt="">
+                    <div style="flex:1;min-width:0;">
+                        <span class="contrib-name">{{ $c->first_name }}</span>
+                        @if($c->badge)<span style="display:block;font-size:0.55rem;font-weight:700;color:#0369a1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $c->badge }}</span>@endif
+                    </div>
+                    <div class="contrib-bar-wrap">
+                        <div class="contrib-bar" style="width:{{ round(($c->total/$maxVal)*100) }}%;background:{{ $color }};"></div>
+                    </div>
+                    <span class="contrib-total">{{ $c->total }}</span>
+                </div>
                 @endforeach
             </div>
+            <a href="{{ route('admin.reports') }}?role={{ $role }}" class="dl-role-link">
+                View Reports <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i>
+            </a>
         </div>
-        <div style="overflow-x: auto;">
+        @endforeach
+    </div>
+
+    <!-- Today's Logs -->
+    <div class="table-card anim-up d4">
+        <div class="table-header">
+            <div class="th-left">
+                <div class="th-icon" style="background:var(--primary);"><i class="fas fa-clipboard-check"></i></div>
+                <h4 class="th-title">Today's Logs</h4>
+                <span class="th-badge">{{ now()->format('M d, Y') }}</span>
+                @if($isSunday)<span class="th-badge" style="background:#fef3c7;color:#d97706;margin-left:4px;"><i class="fas fa-moon" style="margin-right:3px;"></i>RDO</span>@endif
+            </div>
+            @if(!$isSunday && !$roleFilter)
+            <div class="filter-pills" id="todayFilter">
+                <button class="filter-pill active" onclick="filterTable('todayTable','todayFilter','all',this)">All</button>
+                @foreach($todayLogsByRole->sortKeys()->keys() as $r)
+                <button class="filter-pill" onclick="filterTable('todayTable','todayFilter','{{ $r }}',this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
+                @endforeach
+            </div>
+            @endif
+        </div>
+
+        @if($isSunday)
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;padding:2rem;text-align:center;">
+            <i class="fas fa-umbrella-beach" style="font-size:1.75rem;color:#d97706;"></i>
+            <div>
+                <p style="font-weight:700;margin:0 0 4px;font-size:0.95rem;">Rest Day (RDO)</p>
+                <p style="color:var(--muted-foreground);font-size:0.8rem;margin:0;">No EOD submissions expected on Sundays.</p>
+            </div>
+        </div>
+        @else
+        <div style="overflow-x:auto;">
             <table class="ut" id="todayTable">
                 <thead>
                     <tr>
                         <th>Member</th>
                         <th>Role</th>
-                        <th class="th-pip" style="text-align: center;">Tasks</th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_1"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_2"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_3"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_4"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_5"></th>
-                        <th style="text-align: center;">Status</th>
+                        <th style="text-align:center;">Tasks</th>
+                        <th style="text-align:center;">Status</th>
                         <th>Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php $lastRole = null; @endphp
                     @forelse($todayLogs as $log)
                     @php $logLabels = \App\Support\TaskLabels::get($log->role); @endphp
+                    @if(!$roleFilter && $lastRole !== $log->role)
+                    <tr class="role-divider-row" data-role-header="{{ $log->role }}">
+                        <td colspan="5">
+                            <span class="role-badge {{ $log->role }}">{{ $roleNames[$log->role] ?? ucfirst($log->role) }}</span>
+                            <span class="rd-count">{{ $todayLogsByRole[$log->role]->count() }} members</span>
+                        </td>
+                    </tr>
+                    @endif
+                    @php $lastRole = $log->role; @endphp
                     <tr data-role="{{ $log->role }}">
                         <td>
                             <div class="user-cell">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" alt="">
-                                <span class="name">{{ $log->first_name ?? $log->username }}</span>
+                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $log->gender === 'female' ? $log->username.'Female' : $log->username }}" alt="">
+                                <div>
+                                    <span class="name">{{ $log->first_name ?? $log->username }}</span>
+                                    @if($log->badge)<span style="display:block;font-size:0.6rem;font-weight:700;color:#0369a1;margin-top:1px;">{{ $log->badge }}</span>@endif
+                                </div>
                             </div>
                         </td>
                         <td><span class="role-badge {{ $log->role }}">{{ $log->role }}</span></td>
-                        <td class="td-pips" style="text-align: center;">
+                        <td style="text-align:center;">
                             <div class="task-pip">
                                 @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
                                 <span title="{{ $logLabels[$tk] }}">{{ $log->$tk }}</span>
                                 @endforeach
                             </div>
                         </td>
-                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                        <td class="td-cols num" style="display: none;" data-label="{{ $logLabels[$tk] }}">{{ $log->$tk ?: '—' }}</td>
-                        @endforeach
-                        <td style="text-align: center;">@if($log->has_logged)<span class="status-pill logged">Logged</span>@else<span class="status-pill pending">Pending</span>@endif</td>
-                        <td class="cell-remark">{{ $log->remarks ?: '—' }}</td>
+                        <td style="text-align:center;">
+                            @if($log->has_logged)<span class="status-pill logged"><i class="fas fa-check" style="font-size:0.55rem;"></i> Logged</span>
+                            @else<span class="status-pill pending"><i class="fas fa-clock" style="font-size:0.55rem;"></i> Pending</span>@endif
+                        </td>
+                        <td style="color:var(--gray-400);font-size:0.8rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $log->remarks ?: '—' }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="empty-state"><i class="fas fa-clipboard-list"></i>No logs today</td></tr>
+                    <tr><td colspan="5" class="empty-state">No logs today</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        @endif
     </div>
 
-    <!-- Calendar + Day Detail -->
-    <div class="cal-layout anim-up d4">
+    <!-- Calendar + Day Panel -->
+    <div class="cal-layout anim-up d5">
+        @php
+            $firstDay     = $calendarMonth->copy()->startOfMonth();
+            $startOffset  = $firstDay->dayOfWeek;
+            $daysInMonth  = $calendarMonth->daysInMonth;
+            $calMonthStr  = $calendarMonth->format('Y-m');
+        @endphp
         <div class="cal-card">
             <div class="cal-nav">
-                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}'"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->except('day'), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}'">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
                 <span>{{ $calendarMonth->format('F Y') }}</span>
-                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}'"><i class="fas fa-chevron-right"></i></button>
+                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->except('day'), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}'">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
             <div class="cal-grid">
-                @foreach(['S','M','T','W','T','F','S'] as $d)
-                <div class="cal-day-label">{{ $d }}</div>
+                @foreach(['S','M','T','W','T','F','S'] as $di => $d)
+                <div class="cal-day-label {{ $di===0||$di===6 ? 'sun' : '' }}">{{ $d }}</div>
                 @endforeach
-                @php $firstDay = $calendarMonth->copy()->startOfMonth(); $startOffset = $firstDay->dayOfWeek; $daysInMonth = $calendarMonth->daysInMonth; @endphp
-                @for($i = 0; $i < $startOffset; $i++) <div></div> @endfor
+                @for($i = 0; $i < $startOffset; $i++)<div></div>@endfor
                 @for($day = 1; $day <= $daysInMonth; $day++)
-                    @php $dateStr = $calendarMonth->copy()->day($day)->format('Y-m-d'); $hasLogs = in_array($dateStr, $calendarDays); $isToday = $dateStr === now()->format('Y-m-d'); $isSelected = $dateStr === $selectedDay; @endphp
-                    <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $dateStr])) }}" class="cal-day @if($isToday) today @endif @if($hasLogs) has-logs @endif @if($isSelected) selected @endif">
+                    @php
+                        $dateStr   = $calendarMonth->copy()->day($day)->format('Y-m-d');
+                        $hasLogs   = in_array($dateStr, $calendarDays);
+                        $isToday   = $dateStr === $todayStr;
+                        $isSun     = $calendarMonth->copy()->day($day)->dayOfWeek === 0;
+                    @endphp
+                    <button
+                        class="cal-day{{ $isToday?' today':'' }}{{ $hasLogs?' has-logs':'' }}{{ $isSun?' is-rdo':'' }}"
+                        data-date="{{ $dateStr }}"
+                        onclick="selectDay('{{ $dateStr }}', this)"
+                        title="{{ $isSun ? 'Sunday — RDO' : $dateStr }}">
                         {{ $day }}
-                        @if($hasLogs && !$isSelected) <span class="dot"></span> @endif
-                    </a>
+                        @if($hasLogs)<span class="dot"></span>@endif
+                        @if($isSun && !$hasLogs)<span class="cal-rdo-label">RDO</span>@endif
+                    </button>
                 @endfor
             </div>
             <div class="cal-legend">
-                <span><span class="dot" style="background: var(--fg);"></span> Today</span>
-                <span><span class="dot" style="background: var(--gray-300);"></span> Has logs</span>
+                <span><span class="cl-dot" style="background:#dbeafe;border:1.5px solid #3b82f6;border-radius:50%;"></span> Today</span>
+                <span><span class="cl-dot" style="background:var(--primary);border-radius:50%;"></span> Selected</span>
+                <span><span class="cl-dot" style="background:var(--fg);"></span> Has logs</span>
+                <span style="color:#ef4444;"><i class="fas fa-circle" style="font-size:5px;"></i> RDO (Sunday)</span>
             </div>
         </div>
 
-        <div class="day-panel">
-            @if($selectedDay)
-            <div class="day-panel-header">
-                <h4>{{ \Carbon\Carbon::parse($selectedDay)->format('l, F j') }} <span style="font-weight: 400; color: var(--gray-400);">— {{ $selectedDayLogs->count() }}</span></h4>
-                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->format('Y-m')])) }}">Clear</a>
+        <div class="day-panel" id="dayPanel">
+            <div class="day-panel-header" id="dayPanelHeader">
+                <h4 id="dayPanelTitle" style="color:var(--gray-300);">Select a date</h4>
+                <button onclick="clearDaySelection()" style="display:none;font-size:0.75rem;font-weight:600;color:var(--muted-foreground);background:none;border:none;cursor:pointer;" id="dayPanelClear">Clear</button>
             </div>
-            @if($selectedDayLogs->count())
-            <div style="max-height: 400px; overflow-y: auto;">
-                @foreach($selectedDayLogs as $log)
-                @php $logLabels = \App\Support\TaskLabels::get($log->role); @endphp
-                <div class="day-item">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted);" alt="">
-                    <div style="flex: 1; min-width: 0;">
-                        <span style="font-weight: 600; font-size: 0.8rem;">{{ $log->first_name ?? $log->username }}</span>
-                        <span class="role-badge {{ $log->role }}" style="margin-left: 4px;">{{ $log->role }}</span>
-                    </div>
-                    <div class="task-pip">
-                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                        <span title="{{ $logLabels[$tk] }}">{{ $log->$tk }}</span>
-                        @endforeach
-                    </div>
+            <div class="day-panel-body" id="dayPanelBody">
+                <div class="empty-state" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                    <i class="fas fa-calendar-day" style="font-size:1.5rem;margin-bottom:0.5rem;color:var(--gray-200);"></i>
+                    Click a date to view logs
                 </div>
-                @endforeach
             </div>
-            @else
-            <div class="empty-state">No logs on this day</div>
-            @endif
-            @else
-            <div class="empty-state" style="min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <i class="fas fa-calendar-day" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
-                Select a date
-            </div>
-            @endif
         </div>
     </div>
 
-    <!-- History — Unified Table -->
-    <div class="table-card anim-up d5">
+    <!-- History -->
+    <div class="table-card anim-up" style="animation-delay:0.18s;">
         <div class="table-header">
             <div class="th-left">
-                <div class="th-icon" style="background: var(--gray-500);"><i class="fas fa-clock-rotate-left"></i></div>
-                <h4>History</h4>
-                <span class="badge">Last 14 Days</span>
+                <div class="th-icon" style="background:var(--gray-500);"><i class="fas fa-clock-rotate-left"></i></div>
+                <h4 class="th-title">History</h4>
+                <span class="th-badge">Last 14 Days</span>
             </div>
+            @if(!$roleFilter)
             <div class="filter-pills" id="historyFilter">
-                <button class="filter-pill active" onclick="filterHistory('all', this)">All</button>
-                @foreach($rolesWithData as $r)
-                <button class="filter-pill" onclick="filterHistory('{{ $r }}', this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
+                <button class="filter-pill active" onclick="filterHistory('all',this)">All</button>
+                @foreach($historyByRole->sortKeys()->keys() as $r)
+                <button class="filter-pill" onclick="filterHistory('{{ $r }}',this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
                 @endforeach
             </div>
+            @endif
         </div>
-        <div style="overflow-x: auto;">
+        <div style="overflow-x:auto;">
             <table class="ut" id="historyTable">
                 <thead>
                     <tr>
                         <th>Date</th>
                         <th>Role</th>
-                        <th style="text-align: center;">Members</th>
-                        <th class="th-pip" style="text-align: center;">Tasks</th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_1"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_2"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_3"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_4"></th>
-                        <th class="th-col" style="text-align: center; display: none;" data-col="task_5"></th>
-                        <th style="text-align: center;">Total</th>
+                        <th style="text-align:center;">Members</th>
+                        <th style="text-align:center;">Tasks (combined)</th>
+                        <th style="text-align:center;">Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($historyDays as $hd)
-                    @php $hLabels = \App\Support\TaskLabels::get($hd->role); @endphp
-                    <tr data-role="{{ $hd->role }}" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" style="cursor: pointer;">
-                        <td style="font-weight: 600;">{{ $hd->date->format('M d, Y') }}</td>
-                        <td><span class="role-badge {{ $hd->role }}">{{ $roleNames[$hd->role] ?? ucfirst($hd->role) }}</span></td>
+                    @forelse($historyByRole->sortKeys() as $role => $dateRows)
+                    @if(!$roleFilter)
+                    <tr class="role-divider-row hist-role-row" data-role-header="{{ $role }}">
+                        <td colspan="5">
+                            <span class="role-badge {{ $role }}">{{ $roleNames[$role] ?? ucfirst($role) }}</span>
+                            <span class="rd-count">{{ $dateRows->count() }} entries</span>
+                        </td>
+                    </tr>
+                    @endif
+                    @foreach($dateRows->sortByDesc('date') as $hd)
+                    @php
+                        $hLabels  = \App\Support\TaskLabels::get($hd->role);
+                        $hTotal   = $hd->total_task_1+$hd->total_task_2+$hd->total_task_3+$hd->total_task_4+$hd->total_task_5;
+                        $isHdSun  = \Carbon\Carbon::parse($hd->date)->dayOfWeek === 0;
+                    @endphp
+                    <tr data-role="{{ $role }}" onclick="selectDay('{{ $hd->date->format('Y-m-d') }}',null)" style="cursor:pointer;">
+                        <td style="font-weight:600;">
+                            {{ $hd->date->format('M d, Y') }}
+                            @if($isHdSun)<span class="th-badge" style="background:#fef3c7;color:#d97706;margin-left:6px;font-size:0.6rem;">RDO</span>@endif
+                        </td>
+                        <td><span class="role-badge {{ $role }}">{{ $roleNames[$role] ?? ucfirst($role) }}</span></td>
                         <td class="num">{{ $hd->user_count }}</td>
-                        <td class="td-pips" style="text-align: center;">
+                        <td style="text-align:center;">
                             <div class="task-pip">
                                 @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $i => $tk)
-                                <span title="{{ $hLabels['task_' . ($i+1)] }}">{{ $hd->$tk ?: '—' }}</span>
+                                <span title="{{ $hLabels['task_'.($i+1)] }}">{{ $hd->$tk ?: '—' }}</span>
                                 @endforeach
                             </div>
                         </td>
-                        @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $i => $tk)
-                        <td class="td-cols num" style="display: none;" data-label="{{ $hLabels['task_' . ($i+1)] }}">{{ $hd->$tk ?: '—' }}</td>
-                        @endforeach
-                        <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                        <td class="num" style="font-weight:800;">{{ $hTotal }}</td>
                     </tr>
+                    @endforeach
                     @empty
-                    <tr><td colspan="5" class="empty-state"><i class="fas fa-clock-rotate-left"></i>No history</td></tr>
+                    <tr><td colspan="5" class="empty-state">No history</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
-// === Role task labels for column headers ===
-var roleLabels = {};
-@foreach($rolesWithData as $r)
-    @php $rL = \App\Support\TaskLabels::get($r); @endphp
-    roleLabels['{{ $r }}'] = ['{{ $rL['task_1'] }}', '{{ $rL['task_2'] }}', '{{ $rL['task_3'] }}', '{{ $rL['task_4'] }}', '{{ $rL['task_5'] }}'];
-@endforeach
+// ── Pre-loaded calendar data ──────────────────────────────────────────────────
+var calendarLogs  = {!! json_encode($calendarLogsJson) !!};
+var roleColors    = { lead:'var(--indigo)',content:'var(--sky)',graphics:'var(--amber)',backend:'var(--rose)',researcher:'var(--emerald)' };
+var roleNames     = { lead:'Lead',content:'Content',graphics:'Graphics',backend:'Backend',researcher:'Researcher' };
+var activeDay     = null;
 
-// === Filter: Today's Logs ===
-function filterToday(role, btn) {
-    btn.closest('.filter-pills').querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
+// ── Today's Logs table filter ─────────────────────────────────────────────────
+function filterTable(tableId, filterId, role, btn) {
+    document.getElementById(filterId).querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
 
-    var thead = document.querySelector('#todayTable thead tr');
-    var thPip = thead.querySelector('.th-pip');
-    var thCols = thead.querySelectorAll('.th-col');
-    var allPips = document.querySelectorAll('#todayTable .td-pips');
-    var allCols = document.querySelectorAll('#todayTable .td-cols');
-
-    if (role === 'all') {
-        thPip.style.display = '';
-        thCols.forEach(function(el) { el.style.display = 'none'; el.textContent = ''; });
-        allPips.forEach(function(el) { el.style.display = ''; });
-        allCols.forEach(function(el) { el.style.display = 'none'; });
-    } else {
-        var labels = roleLabels[role] || [];
-        thPip.style.display = 'none';
-        thCols.forEach(function(el, i) { el.style.display = ''; el.textContent = labels[i] || ''; });
-        allPips.forEach(function(el) { el.style.display = 'none'; });
-        allCols.forEach(function(el) { el.style.display = ''; });
-    }
-
-    document.querySelectorAll('#todayTable tbody tr[data-role]').forEach(function(row) {
+    var table = document.getElementById(tableId);
+    table.querySelectorAll('tr[data-role]').forEach(function(row) {
         row.style.display = (role === 'all' || row.getAttribute('data-role') === role) ? '' : 'none';
+    });
+    table.querySelectorAll('tr[data-role-header]').forEach(function(row) {
+        row.style.display = (role === 'all') ? '' : 'none';
     });
 }
 
-// === Filter: History ===
+// ── History table filter ──────────────────────────────────────────────────────
 function filterHistory(role, btn) {
-    btn.closest('.filter-pills').querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('historyFilter').querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
-
-    var thead = document.querySelector('#historyTable thead tr');
-    var thPip = thead.querySelector('.th-pip');
-    var thCols = thead.querySelectorAll('.th-col');
-    var allPips = document.querySelectorAll('#historyTable .td-pips');
-    var allCols = document.querySelectorAll('#historyTable .td-cols');
-
-    if (role === 'all') {
-        thPip.style.display = '';
-        thCols.forEach(function(el) { el.style.display = 'none'; el.textContent = ''; });
-        allPips.forEach(function(el) { el.style.display = ''; });
-        allCols.forEach(function(el) { el.style.display = 'none'; });
-    } else {
-        var labels = roleLabels[role] || [];
-        thPip.style.display = 'none';
-        thCols.forEach(function(el, i) { el.style.display = ''; el.textContent = labels[i] || ''; });
-        allPips.forEach(function(el) { el.style.display = 'none'; });
-        allCols.forEach(function(el) { el.style.display = ''; });
-    }
-
-    document.querySelectorAll('#historyTable tbody tr[data-role]').forEach(function(row) {
+    document.querySelectorAll('#historyTable tr[data-role]').forEach(function(row) {
         row.style.display = (role === 'all' || row.getAttribute('data-role') === role) ? '' : 'none';
+    });
+    document.querySelectorAll('#historyTable tr.hist-role-row').forEach(function(row) {
+        row.style.display = (role === 'all') ? '' : 'none';
     });
 }
 
-// === Charts ===
+// ── Calendar day selection (no page reload) ───────────────────────────────────
+function selectDay(dateStr, btn) {
+    activeDay = dateStr;
+
+    // Update visual selection
+    document.querySelectorAll('.cal-day').forEach(function(d) { d.classList.remove('selected'); });
+    if (btn) btn.classList.add('selected');
+
+    // Show clear button
+    var clearBtn = document.getElementById('dayPanelClear');
+    if (clearBtn) clearBtn.style.display = '';
+
+    // Parse date for display
+    var parts = dateStr.split('-');
+    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    var dayNames  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var monNames  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var isSunday  = d.getDay() === 0;
+    var dayLabel  = dayNames[d.getDay()] + ', ' + monNames[d.getMonth()] + ' ' + d.getDate();
+
+    document.getElementById('dayPanelTitle').textContent = dayLabel;
+
+    var data    = calendarLogs[dateStr] || {};
+    var roles   = Object.keys(data).sort();
+    var body    = document.getElementById('dayPanelBody');
+
+    if (isSunday && roles.length === 0) {
+        body.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.625rem;padding:2rem;text-align:center;">'
+            + '<i class="fas fa-umbrella-beach" style="font-size:1.5rem;color:#d97706;"></i>'
+            + '<p style="margin:0;font-size:0.85rem;font-weight:700;color:#92400e;">Rest Day (RDO)</p>'
+            + '<p style="margin:0;font-size:0.78rem;color:var(--muted-foreground);">No submissions expected on Sunday.</p>'
+            + '</div>';
+        return;
+    }
+
+    if (roles.length === 0) {
+        body.innerHTML = '<div class="empty-state" style="min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">'
+            + '<i class="fas fa-inbox" style="font-size:1.25rem;margin-bottom:6px;color:var(--gray-200);"></i>No logs on this day</div>';
+        return;
+    }
+
+    var html = '';
+    roles.forEach(function(role) {
+        var members = data[role];
+        var rc = roleColors[role] || '#64748b';
+        var rn = roleNames[role]  || role;
+        html += '<div class="day-role-header">'
+            + '<span class="role-badge ' + role + '">' + rn + '</span>'
+            + '<span style="font-size:0.7rem;color:var(--gray-400);margin-left:4px;">' + members.length + ' member' + (members.length > 1 ? 's' : '') + '</span>'
+            + (isSunday ? '<span style="font-size:0.65rem;font-weight:700;color:#ef4444;margin-left:auto;">RDO</span>' : '')
+            + '</div>';
+        members.forEach(function(m) {
+            var seed = m.gender === 'female' ? m.username + 'Female' : m.username;
+            var total = m.tasks.reduce(function(a,b){ return a+b; }, 0);
+            html += '<div class="day-item">'
+                + '<img src="https://api.dicebear.com/7.x/notionists/svg?seed=' + seed + '" style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);" alt="">'
+                + '<div style="flex:1;min-width:0;">'
+                +   '<span style="font-weight:600;font-size:0.8rem;">' + (m.first_name || m.username) + ' ' + (m.last_name || '') + '</span>'
+                +   (m.badge ? '<span style="display:block;font-size:0.6rem;font-weight:700;color:#0369a1;">' + m.badge + '</span>' : '')
+                + '</div>'
+                + '<div class="task-pip">';
+            m.tasks.forEach(function(t) {
+                html += '<span>' + t + '</span>';
+            });
+            html += '</div>'
+                + '<span style="font-size:0.75rem;font-weight:800;color:var(--gray-500);margin-left:6px;">' + total + '</span>'
+                + '</div>';
+        });
+    });
+    body.innerHTML = html;
+}
+
+function clearDaySelection() {
+    activeDay = null;
+    document.querySelectorAll('.cal-day').forEach(function(d) { d.classList.remove('selected'); });
+    document.getElementById('dayPanelTitle').textContent = 'Select a date';
+    document.getElementById('dayPanelClear').style.display = 'none';
+    document.getElementById('dayPanelBody').innerHTML = '<div class="empty-state" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;">'
+        + '<i class="fas fa-calendar-day" style="font-size:1.5rem;margin-bottom:0.5rem;color:var(--gray-200);"></i>Click a date to view logs</div>';
+}
+
+// ── ApexCharts ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-    var weeklyEl = document.getElementById('weeklyChart');
-    if (weeklyEl) {
-        new ApexCharts(weeklyEl, {
-            chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter', stacked: true, foreColor: '#64748b' },
-            series: [
-                { name: 'New SKU', data: {!! json_encode($chartNewSku) !!} },
-                { name: 'Var. SKU', data: {!! json_encode($chartVariationSku) !!} },
-                { name: 'Data Gather', data: {!! json_encode($chartDataGathering) !!} },
-                { name: 'Update', data: {!! json_encode($chartUpdateListings) !!} },
-                { name: 'Other', data: {!! json_encode($chartOtherTasks) !!} }
-            ],
-            colors: ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'],
-            plotOptions: { bar: { columnWidth: '55%', borderRadius: { topLeft: 4, topRight: 4 } } },
+    var style    = getComputedStyle(document.documentElement);
+    var colorMap = {
+        lead:       style.getPropertyValue('--indigo').trim(),
+        content:    style.getPropertyValue('--sky').trim(),
+        graphics:   style.getPropertyValue('--amber').trim(),
+        backend:    style.getPropertyValue('--rose').trim(),
+        researcher: style.getPropertyValue('--emerald').trim(),
+    };
+
+    var weekLabels    = {!! json_encode($dlWeekLabels) !!};
+    var sundayIndices = {!! json_encode($dlWeekSundayIndices) !!};
+    var labelColors   = weekLabels.map(function(_, i) {
+        return sundayIndices.indexOf(i) !== -1 ? '#ef4444' : '#94a3b8';
+    });
+
+    var roleBreakdown = {!! json_encode($dlRoleBreakdown->map(fn($r) => ['role'=>$r['role'],'series'=>$r['series']])) !!};
+    roleBreakdown.forEach(function(r) {
+        var el = document.getElementById('dlChart-' + r.role);
+        if (!el) return;
+        var c = colorMap[r.role] || '#6366f1';
+        new ApexCharts(el, {
+            chart: { type:'bar', height: el.style.height === '180px' ? 180 : 90, toolbar:{show:false}, fontFamily:'Inter', foreColor:'#94a3b8' },
+            series: [{ name:'Tasks', data:r.series }],
+            colors: [c],
+            plotOptions: { bar: { columnWidth:'65%', borderRadius:3, borderRadiusApplication:'end' } },
             xaxis: {
-                categories: {!! json_encode($chartLabels) !!},
-                labels: { style: { fontWeight: 600, fontSize: '11px', colors: '#94a3b8' } },
-                axisBorder: { show: false }, axisTicks: { show: false }
+                categories: weekLabels,
+                labels: { style:{ fontSize:'9px', fontWeight:600, colors:labelColors } },
+                axisBorder:{show:false}, axisTicks:{show:false}
             },
-            yaxis: {
-                labels: { style: { fontWeight: 500, fontSize: '11px', colors: '#94a3b8' }, padding: 4 },
-                tickAmount: 4
-            },
-            grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
+            yaxis: { show:false, min:0 },
+            grid:  { show:false, padding:{ left:2,right:2,top:0,bottom:0 } },
+            dataLabels: { enabled:false },
             tooltip: {
-                theme: 'light',
-                style: { fontSize: '13px', fontFamily: 'Inter' },
-                y: { formatter: function(val) { return val + ' tasks'; } }
-            },
-            legend: {
-                position: 'bottom',
-                labels: { colors: '#64748b', useSeriesColors: true, fontWeight: 600, fontSize: '11px' },
-                markers: { width: 10, height: 10, radius: 3, strokeWidth: 0 },
-                itemMargin: { horizontal: 8 }
+                theme:'light', style:{fontSize:'12px',fontFamily:'Inter'},
+                x:{ formatter:function(val,opts) {
+                    var i = opts.dataPointIndex;
+                    return sundayIndices.indexOf(i) !== -1 ? weekLabels[i]+' (RDO)' : weekLabels[i];
+                }},
+                y:{ formatter:function(v){ return v+' tasks'; } }
             }
         }).render();
-    }
+    });
 
-    var prodEl = document.getElementById('productivityChart');
-    if (prodEl) {
-        var prodData = {!! json_encode($prodData) !!};
-        var prodColors = prodData.map(function(v, i) {
-            var palette = ['#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#ddd6fe', '#e0e7ff', '#4f46e5', '#4338ca'];
-            return palette[i % palette.length];
-        });
-        new ApexCharts(prodEl, {
-            chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#64748b' },
-            series: [{ name: 'Tasks', data: prodData }],
-            colors: prodColors,
-            plotOptions: {
-                bar: { borderRadius: 8, columnWidth: '55%', distributed: true }
-            },
-            xaxis: {
-                categories: {!! json_encode($prodLabels) !!},
-                labels: { style: { fontWeight: 600, fontSize: '11px', colors: '#94a3b8' } },
-                axisBorder: { show: false }, axisTicks: { show: false }
-            },
-            yaxis: {
-                labels: { style: { fontWeight: 500, fontSize: '11px', colors: '#94a3b8' }, padding: 4 },
-                tickAmount: 4
-            },
-            grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
-            tooltip: {
-                theme: 'light',
-                style: { fontSize: '13px', fontFamily: 'Inter' },
-                marker: { show: false },
-                y: { formatter: function(val) { return val + ' tasks'; } }
-            },
-            legend: { show: false }
-        }).render();
+    // ── Restore selected day from URL (on initial load) ───────────────────────
+    var urlParams  = new URLSearchParams(window.location.search);
+    var initialDay = urlParams.get('day') || '{{ $selectedDay ?? '' }}';
+    if (initialDay) {
+        var btn = document.querySelector('.cal-day[data-date="' + initialDay + '"]');
+        selectDay(initialDay, btn);
     }
 });
 </script>

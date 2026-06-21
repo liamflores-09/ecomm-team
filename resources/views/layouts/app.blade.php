@@ -377,6 +377,39 @@
         .user-badge .user-name { font-weight: 500; font-size: 13px; }
         .user-badge .role-tag { font-size: 11px; font-weight: 500; color: var(--muted-foreground); }
 
+        /* Nav User Badge */
+        .nav-user-badge { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: var(--radius); }
+        .nav-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; }
+        .nav-user-info { display: flex; flex-direction: column; line-height: 1.2; }
+        .nav-user-name { font-size: 13px; font-weight: 600; color: var(--foreground); }
+        .nav-user-role { font-size: 11px; font-weight: 500; color: var(--muted-foreground); }
+        @media (max-width: 768px) { .nav-user-info { display: none; } }
+
+        /* Custom Select */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: var(--white);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 36px 8px 12px;
+            font-family: var(--p-font-family-sans);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--foreground);
+            cursor: pointer;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            width: 100%;
+            line-height: 1.5;
+        }
+        select:hover  { border-color: var(--border-strong); }
+        select:focus  { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+        select option { padding: 8px 12px; font-weight: 500; }
+
         /* Animations */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -455,12 +488,15 @@
 
         <div class="actions">
             <button onclick="openCmdPalette()" title="Search (Ctrl+K)"><i class="fas fa-search"></i></button>
-            <button><i class="fas fa-bell"></i></button>
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ Auth::check() ? (in_array(Auth::user()->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? Auth::user()->username . 'Female' : Auth::user()->username) : 'guest' }}" alt="" class="w-8 h-8 rounded-full border border-border">
-                </button>
+            @if(Auth::check())
+            <div class="nav-user-badge">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ Auth::user()->gender === 'female' ? Auth::user()->username . 'Female' : Auth::user()->username }}" alt="" class="nav-avatar">
+                <div class="nav-user-info">
+                    <span class="nav-user-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
+                    <span class="nav-user-role">{{ ucfirst(Auth::user()->role) }}</span>
+                </div>
             </div>
+            @endif
         </div>
     </header>
 
@@ -489,7 +525,10 @@
     function openCmdPalette() {
         var overlay = document.getElementById('cmdOverlay');
         overlay.classList.add('open');
-        document.getElementById('cmdInput').focus();
+        var inp = document.getElementById('cmdInput');
+        inp.value = '';
+        if (window._cmdRender) window._cmdRender('');
+        inp.focus();
     }
 
     (function() {
@@ -574,6 +613,7 @@
             });
             results.innerHTML = html;
         }
+        window._cmdRender = render;
 
         function closePalette() { overlay.classList.remove('open'); input.value = ''; }
 
@@ -604,7 +644,7 @@
             var brand = sb.querySelector('.sidebar-brand');
             if (brand) {
                 var trigger = document.createElement('div');
-                trigger.style.cssText = 'padding: 0 8px; margin-bottom: 4px;';
+                trigger.style.cssText = 'padding: 8px 8px 4px;';
                 var btn = document.createElement('button');
                 btn.style.cssText = 'display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--muted-foreground);font-family:Inter,sans-serif;font-weight:500;font-size:14px;cursor:pointer;transition:all 0.15s;';
                 btn.innerHTML = '<i class="fas fa-search" style="font-size:12px;"></i> Search <kbd style="margin-left:auto;background:var(--muted);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace;">Ctrl+K</kbd>';

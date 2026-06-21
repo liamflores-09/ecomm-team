@@ -35,7 +35,6 @@
         <ul class="dropdown-nav">
             <li><a href="{{ route('admin.reports') }}" class="{{ !request()->query('role') ? 'active' : '' }}">All Roles</a></li>
             <li><a href="{{ route('admin.reports', ['role' => 'content']) }}" class="{{ request()->query('role') === 'content' ? 'active' : '' }}">Content</a></li>
-            <li><a href="{{ route('admin.reports', ['role' => 'lead']) }}" class="{{ request()->query('role') === 'lead' ? 'active' : '' }}">Lead</a></li>
             <li><a href="{{ route('admin.reports', ['role' => 'researcher']) }}" class="{{ request()->query('role') === 'researcher' ? 'active' : '' }}">Researcher</a></li>
             <li><a href="{{ route('admin.reports', ['role' => 'graphics']) }}" class="{{ request()->query('role') === 'graphics' ? 'active' : '' }}">Graphics</a></li>
             <li><a href="{{ route('admin.reports', ['role' => 'backend']) }}" class="{{ request()->query('role') === 'backend' ? 'active' : '' }}">Backend</a></li>
@@ -49,7 +48,6 @@
         <ul class="dropdown-nav">
             <li><a href="{{ route('admin.daily-logs') }}" class="{{ !request()->query('role') ? 'active' : '' }}">All Roles</a></li>
             <li><a href="{{ route('admin.daily-logs', ['role' => 'content']) }}" class="{{ request()->query('role') === 'content' ? 'active' : '' }}">Content</a></li>
-            <li><a href="{{ route('admin.daily-logs', ['role' => 'lead']) }}" class="{{ request()->query('role') === 'lead' ? 'active' : '' }}">Lead</a></li>
             <li><a href="{{ route('admin.daily-logs', ['role' => 'researcher']) }}" class="{{ request()->query('role') === 'researcher' ? 'active' : '' }}">Researcher</a></li>
             <li><a href="{{ route('admin.daily-logs', ['role' => 'graphics']) }}" class="{{ request()->query('role') === 'graphics' ? 'active' : '' }}">Graphics</a></li>
             <li><a href="{{ route('admin.daily-logs', ['role' => 'backend']) }}" class="{{ request()->query('role') === 'backend' ? 'active' : '' }}">Backend</a></li>

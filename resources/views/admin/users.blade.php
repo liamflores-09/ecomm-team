@@ -210,7 +210,12 @@
                         </div>
                     </td>
                     <td class="cell-muted">{{ $u->mobile_number ?: '—' }}</td>
-                    <td><span class="role-badge {{ $u->role }}">{{ ucfirst($u->role) }}</span></td>
+                    <td>
+                        <span class="role-badge {{ $u->role }}">{{ ucfirst($u->role) }}</span>
+                        @if($u->badge)
+                        <span style="display:inline-flex;align-items:center;margin-left:5px;padding:2px 7px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:4px;font-size:0.6rem;font-weight:700;color:#0369a1;white-space:nowrap;">{{ $u->badge }}</span>
+                        @endif
+                    </td>
                     <td class="cell-time">{{ $u->created_at->diffForHumans() }}</td>
                     <td>
                         <div class="row-actions">
@@ -222,6 +227,7 @@
                                 data-role="{{ $u->role }}"
                                 data-gender="{{ $u->gender }}"
                                 data-mobile="{{ $u->mobile_number }}"
+                                data-badge="{{ $u->badge }}"
                                 onclick="openEditModal(this)">
                                 <i class="fas fa-pen"></i>
                             </button>
@@ -276,7 +282,7 @@
                     <img id="addAvatarPreview" class="avatar-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=male" alt="Avatar">
                     <div>
                         <div class="avatar-preview-name" id="addAvatarName">New Member</div>
-                        <div class="avatar-preview-hint">Avatar is auto-generated from the username and gender</div>
+                        <div class="avatar-preview-hint">Avatar is auto-generated</div>
                     </div>
                 </div>
 
@@ -326,12 +332,17 @@
                         <select name="role" class="role-select" required>
                             <option value="content">Content</option>
                             <option value="graphics">Graphics</option>
-                            <option value="lead">Lead</option>
-                            <option value="manager">Manager</option>
                             <option value="backend">Backend</option>
                             <option value="researcher">Researcher</option>
+                            <option value="manager">Manager</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-field" style="margin-top:0.75rem;">
+                    <label class="label-flat">
+                        Badge <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--muted-foreground);">(optional — e.g. Content/PR Lead)</span>
+                    </label>
+                    <input type="text" name="badge" class="input-flat" placeholder="e.g. Content/PR Lead">
                 </div>
 
             </div>
@@ -363,7 +374,7 @@
                     <img id="editAvatarPreview" class="avatar-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=default" alt="Avatar">
                     <div>
                         <div class="avatar-preview-name" id="editAvatarName"></div>
-                        <div class="avatar-preview-hint">Avatar is auto-generated from the username and gender</div>
+                        <div class="avatar-preview-hint">Avatar is auto-generated</div>
                     </div>
                 </div>
 
@@ -403,12 +414,17 @@
                         <select name="role" id="editRoleSelect" class="role-select" required>
                             <option value="content">Content</option>
                             <option value="graphics">Graphics</option>
-                            <option value="lead">Lead</option>
-                            <option value="manager">Manager</option>
                             <option value="backend">Backend</option>
                             <option value="researcher">Researcher</option>
+                            <option value="manager">Manager</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-field" style="margin-bottom:0.75rem;">
+                    <label class="label-flat">
+                        Badge <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--muted-foreground);">(optional)</span>
+                    </label>
+                    <input type="text" name="badge" id="editBadge" class="input-flat" placeholder="e.g. Content/PR Lead">
                 </div>
                 <div class="form-field">
                     <label class="label-flat">
@@ -502,6 +518,7 @@ function openEditModal(btn) {
     document.getElementById('editMobile').value      = d.mobile || '';
     document.getElementById('editRoleSelect').value  = d.role;
     document.getElementById('editGender').value      = d.gender || 'male';
+    document.getElementById('editBadge').value       = d.badge || '';
     document.getElementById('editAvatarPreview').src = avatarUrl(d.username, d.gender || 'male');
     document.getElementById('editAvatarName').textContent = d.first + ' ' + d.last;
     openModal('editUserModal');

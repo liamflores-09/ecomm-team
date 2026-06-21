@@ -119,6 +119,55 @@ class AdminController extends Controller
                 : 0;
         }
 
+        // Per-role breakdown
+        $roleMemberCounts = User::where('role', '!=', 'manager')
+            ->select('role', DB::raw('COUNT(*) as count'))
+            ->groupBy('role')
+            ->get()->keyBy('role');
+
+        // Per-role daily totals for last 7 days (one query, grouped by role + date)
+        $roleWeeklyRaw = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->where('users.role', '!=', 'manager')
+            ->select(
+                'users.role',
+                'daily_logs.date',
+                DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total')
+            )
+            ->groupBy('users.role', 'daily_logs.date')
+            ->get()
+            ->groupBy('role')
+            ->map(fn($rows) => $rows->keyBy(fn($r) => $r->date->format('Y-m-d')));
+
+        $weekLabels        = [];
+        $weekSundayIndices = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date        = now()->subDays($i);
+            $weekLabels[]= $date->format('D');
+            if ($date->dayOfWeek === 0) {
+                $weekSundayIndices[] = 6 - $i;
+            }
+        }
+
+        $roleBreakdown = collect(['lead', 'content', 'graphics', 'backend', 'researcher'])
+            ->map(function ($role) use ($roleMemberCounts, $roleWeeklyRaw, $weekLabels) {
+                $members  = (int) ($roleMemberCounts->get($role)->count ?? 0);
+                $roleData = $roleWeeklyRaw->get($role) ?? collect();
+
+                $series = [];
+                for ($i = 6; $i >= 0; $i--) {
+                    $series[] = (int) ($roleData->get(now()->subDays($i)->format('Y-m-d'))->total ?? 0);
+                }
+
+                return [
+                    'role'    => $role,
+                    'members' => $members,
+                    'series'  => $series,
+                ];
+            })
+            ->filter(fn($r) => $r['members'] > 0)
+            ->values();
+
         return view('admin.dashboard', compact(
             'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend',
             'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
@@ -128,7 +177,8 @@ class AdminController extends Controller
             'prodLabels', 'prodData',
             'todayLogs',
             'nonManagerCount', 'taskChange', 'healthPct', 'healthColor',
-            'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData'
+            'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData',
+            'roleBreakdown', 'weekLabels', 'weekSundayIndices'
         ));
     }
 
@@ -147,23 +197,25 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name'    => 'required|string|max:255',
+            'last_name'     => 'required|string|max:255',
             'mobile_number' => 'nullable|string|max:20',
-            'gender' => 'required|in:male,female',
-            'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:manager,lead,content,graphics,backend,researcher',
+            'gender'        => 'required|in:male,female',
+            'badge'         => 'nullable|string|max:50',
+            'username'      => 'required|string|max:255|unique:users',
+            'password'      => 'required|string|min:6',
+            'role'          => 'required|in:manager,content,graphics,backend,researcher',
         ]);
 
         User::create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
+            'first_name'    => $validated['first_name'],
+            'last_name'     => $validated['last_name'],
             'mobile_number' => $validated['mobile_number'] ?? null,
-            'gender' => $validated['gender'],
-            'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
+            'gender'        => $validated['gender'],
+            'badge'         => $validated['badge'] ?? null,
+            'username'      => $validated['username'],
+            'password'      => Hash::make($validated['password']),
+            'role'          => $validated['role'],
         ]);
 
         ActivityLog::create([
@@ -178,21 +230,23 @@ class AdminController extends Controller
     public function updateUser(Request $request, User $user)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name'    => 'required|string|max:255',
+            'last_name'     => 'required|string|max:255',
             'mobile_number' => 'nullable|string|max:20',
-            'gender' => 'required|in:male,female',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'role' => 'required|in:manager,lead,content,graphics,backend,researcher',
-            'password' => 'nullable|string|min:6',
+            'gender'        => 'required|in:male,female',
+            'badge'         => 'nullable|string|max:50',
+            'username'      => 'required|string|max:255|unique:users,username,' . $user->id,
+            'role'          => 'required|in:manager,content,graphics,backend,researcher',
+            'password'      => 'nullable|string|min:6',
         ]);
 
-        $user->first_name = $validated['first_name'];
-        $user->last_name = $validated['last_name'];
+        $user->first_name    = $validated['first_name'];
+        $user->last_name     = $validated['last_name'];
         $user->mobile_number = $validated['mobile_number'] ?? null;
-        $user->gender = $validated['gender'];
-        $user->username = $validated['username'];
-        $user->role = $validated['role'];
+        $user->gender        = $validated['gender'];
+        $user->badge         = $validated['badge'] ?? null;
+        $user->username      = $validated['username'];
+        $user->role          = $validated['role'];
 
         if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
@@ -298,7 +352,7 @@ class AdminController extends Controller
             $join->on('users.id', '=', 'daily_logs.user_id')
                  ->where('daily_logs.date', '=', now()->toDateString());
         })
-        ->select('users.id', 'users.username', 'users.role',
+        ->select('users.id', 'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge',
             DB::raw('COALESCE(daily_logs.task_1, 0) as task_1'),
             DB::raw('COALESCE(daily_logs.task_2, 0) as task_2'),
             DB::raw('COALESCE(daily_logs.task_3, 0) as task_3'),
@@ -307,6 +361,7 @@ class AdminController extends Controller
             'daily_logs.remarks',
             DB::raw('CASE WHEN daily_logs.id IS NULL THEN 0 ELSE 1 END as has_logged')
         )
+        ->orderBy('users.role')
         ->orderBy('has_logged', 'desc')
         ->orderBy('users.first_name')
         ->get();
@@ -378,7 +433,8 @@ class AdminController extends Controller
         if ($selectedDay) {
             $selectedDayLogs = DailyLog::where('daily_logs.date', $selectedDay)
                 ->join('users', 'daily_logs.user_id', '=', 'users.id')
-                ->select('daily_logs.*', 'users.username', 'users.role');
+                ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+                ->orderBy('users.role')->orderBy('users.first_name');
             if ($roleFilter) {
                 $selectedDayLogs->where('users.role', $roleFilter);
             }
@@ -411,14 +467,93 @@ class AdminController extends Controller
         // Roles present in data
         $rolesWithData = $todayLogsByRole->keys()->merge($historyByRole->keys())->unique()->sort()->values();
 
+        // ── Per-role 7-day activity (for mini charts) ──────────────────────────
+        $dlWeekLabels        = [];
+        $dlWeekSundayIndices = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $d = now()->subDays($i);
+            $dlWeekLabels[]      = $d->format('D');
+            if ($d->dayOfWeek === 0) $dlWeekSundayIndices[] = 6 - $i;
+        }
+
+        $dlRoleWeeklyRaw = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->where('users.role', '!=', 'manager')
+            ->select('users.role', 'daily_logs.date',
+                DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
+            ->groupBy('users.role', 'daily_logs.date')
+            ->get()->groupBy('role')
+            ->map(fn($rows) => $rows->keyBy(fn($r) => $r->date->format('Y-m-d')));
+
+        $dlRoleMemberCounts = User::where('role', '!=', 'manager')
+            ->select('role', DB::raw('COUNT(*) as count'))->groupBy('role')
+            ->get()->keyBy('role');
+
+        $rolesToShow     = $roleFilter ? [$roleFilter] : ['content', 'graphics', 'backend', 'researcher'];
+
+        $dlRoleBreakdown = collect($rolesToShow)
+            ->map(function ($role) use ($dlRoleWeeklyRaw, $dlRoleMemberCounts) {
+                $roleData = $dlRoleWeeklyRaw->get($role) ?? collect();
+                $series   = [];
+                for ($i = 6; $i >= 0; $i--) {
+                    $series[] = (int) ($roleData->get(now()->subDays($i)->format('Y-m-d'))->total ?? 0);
+                }
+                return [
+                    'role'    => $role,
+                    'members' => (int) ($dlRoleMemberCounts->get($role)->count ?? 0),
+                    'series'  => $series,
+                ];
+            })
+            ->filter(fn($r) => $r['members'] > 0)->values();
+
+        // ── Per-role top contributors (last 7 days) ────────────────────────────
+        $dlRoleTopContributors = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->where('users.role', '!=', 'manager')
+            ->when($roleFilter, fn($q) => $q->where('users.role', $roleFilter))
+            ->select('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge',
+                DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
+            ->groupBy('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+            ->orderByDesc('total')
+            ->get()
+            ->groupBy('role')
+            ->map(fn($members) => $members->take(5)->values());
+
+        // ── Calendar month logs pre-loaded for client-side rendering ───────────
+        $monthLogsFull = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereMonth('daily_logs.date', $calendarMonth->month)
+            ->whereYear('daily_logs.date', $calendarMonth->year)
+            ->select('daily_logs.date', 'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
+                'daily_logs.task_4', 'daily_logs.task_5', 'daily_logs.remarks',
+                'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+            ->orderBy('users.role')->orderBy('users.first_name')
+            ->get()
+            ->groupBy(fn($l) => $l->date->format('Y-m-d'));
+
+        $calendarLogsJson = [];
+        foreach ($monthLogsFull as $dateStr => $logs) {
+            foreach ($logs->groupBy('role') as $role => $roleLogs) {
+                $calendarLogsJson[$dateStr][$role] = $roleLogs->map(fn($l) => [
+                    'first_name' => $l->first_name,
+                    'last_name'  => $l->last_name,
+                    'username'   => $l->username,
+                    'gender'     => $l->gender,
+                    'badge'      => $l->badge,
+                    'tasks'      => [(int)$l->task_1,(int)$l->task_2,(int)$l->task_3,(int)$l->task_4,(int)$l->task_5],
+                    'remarks'    => $l->remarks,
+                ])->values()->toArray();
+            }
+        }
+
+        $isSunday = now()->dayOfWeek === 0;
+
         return view('admin.daily-logs', compact(
             'user', 'totalLogs', 'thisMonthLogs', 'todayLogCount', 'avgDailyTasks',
-            'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
-            'prodLabels', 'prodData',
-            'todayLogs', 'todayLogsByRole', 'allLogs', 'missingLogs', 'missingLogsByRole',
-            'memberLogStatus', 'roleFilter',
-            'calendarMonth', 'calendarDays', 'selectedDay', 'selectedDayLogs',
-            'historyDays', 'historyByRole', 'rolesWithData'
+            'todayLogs', 'todayLogsByRole', 'missingLogs',
+            'roleFilter',
+            'dlWeekLabels', 'dlWeekSundayIndices', 'dlRoleBreakdown', 'dlRoleTopContributors',
+            'calendarMonth', 'calendarDays', 'selectedDay', 'selectedDayLogs', 'calendarLogsJson',
+            'historyDays', 'historyByRole', 'rolesWithData', 'isSunday'
         ));
     }
 
@@ -458,12 +593,13 @@ class AdminController extends Controller
         }
         $weeklyLogs = $weeklyLogs
             ->select(
-                'users.username', 'users.first_name', 'users.role', 'daily_logs.date',
+                'users.username', 'users.first_name', 'users.role', 'users.gender', 'daily_logs.date',
                 DB::raw('WEEK(daily_logs.date, 1) as week_num'),
                 'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
                 'daily_logs.task_4', 'daily_logs.task_5'
             )
             ->orderBy('daily_logs.date')
+            ->orderBy('users.role')
             ->orderBy('users.username')
             ->get();
 
@@ -475,14 +611,15 @@ class AdminController extends Controller
                     return [
                         'date' => $date,
                         'members' => $dayLogs->map(fn($l) => [
-                            'username' => $l->username,
+                            'username'   => $l->username,
                             'first_name' => $l->first_name,
-                            'role' => $l->role,
-                            'task_1' => $l->task_1,
-                            'task_2' => $l->task_2,
-                            'task_3' => $l->task_3,
-                            'task_4' => $l->task_4,
-                            'task_5' => $l->task_5,
+                            'role'       => $l->role,
+                            'gender'     => $l->gender,
+                            'task_1'     => $l->task_1,
+                            'task_2'     => $l->task_2,
+                            'task_3'     => $l->task_3,
+                            'task_4'     => $l->task_4,
+                            'task_5'     => $l->task_5,
                         ])->values(),
                     ];
                 })->values(),
@@ -572,6 +709,8 @@ class AdminController extends Controller
             ->select(
                 'users.username',
                 'users.first_name',
+                'users.role',
+                'users.gender',
                 DB::raw("DATE_FORMAT(daily_logs.date, '%Y-%m') as month_key"),
                 DB::raw('SUM(task_1) as t1'),
                 DB::raw('SUM(task_2) as t2'),
@@ -579,7 +718,7 @@ class AdminController extends Controller
                 DB::raw('SUM(task_4) as t4'),
                 DB::raw('SUM(task_5) as t5')
             )
-            ->groupBy('users.username', 'users.first_name', 'month_key')
+            ->groupBy('users.username', 'users.first_name', 'users.role', 'users.gender', 'month_key')
             ->orderBy('month_key')
             ->orderBy('users.username')
             ->get();
@@ -589,14 +728,110 @@ class AdminController extends Controller
             return $rows->map(function ($r) {
                 $total = $r->t1 + $r->t2 + $r->t3 + $r->t4 + $r->t5;
                 return [
-                    'username' => $r->username,
+                    'username'   => $r->username,
                     'first_name' => $r->first_name,
+                    'role'       => $r->role,
+                    'gender'     => $r->gender,
                     't1' => $r->t1, 't2' => $r->t2, 't3' => $r->t3,
                     't4' => $r->t4, 't5' => $r->t5,
                     'total' => $total,
                 ];
             })->values();
         });
+
+        // Per-role grouped data for All Roles view
+        $roleColorMap = ['lead'=>'#6366f1','researcher'=>'#10b981','content'=>'#0ea5e9','graphics'=>'#f59e0b','backend'=>'#f43f5e'];
+        $roleNameMap  = ['lead'=>'Lead','researcher'=>'Researcher','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend'];
+
+        $roleGroupedData = collect();
+        if (!$roleFilter) {
+            $availableRoles = $weeklyLogs->pluck('role')->unique()->sort()->values();
+            foreach ($availableRoles as $role) {
+                $rLogs = $weeklyLogs->where('role', $role)->values();
+                if ($rLogs->isEmpty()) continue;
+
+                $rTaskLabels  = \App\Support\TaskLabels::get($role);
+                $rMemberNames = $rLogs->pluck('username')->unique()->sort()->values()->toArray();
+
+                $rWeeks = $rLogs->groupBy('week_num')->map(function ($logs, $weekNum) {
+                    return [
+                        'week_num'  => $weekNum,
+                        'days'      => $logs->groupBy('date')->map(fn($dl, $date) => [
+                            'date'    => $date,
+                            'members' => $dl->map(fn($l) => [
+                                'username'   => $l->username, 'first_name' => $l->first_name,
+                                'role'       => $l->role,    'gender'     => $l->gender,
+                                'task_1' => $l->task_1, 'task_2' => $l->task_2, 'task_3' => $l->task_3,
+                                'task_4' => $l->task_4, 'task_5' => $l->task_5,
+                            ])->values(),
+                        ])->values(),
+                        'total_t1'  => $logs->sum('task_1'), 'total_t2' => $logs->sum('task_2'),
+                        'total_t3'  => $logs->sum('task_3'), 'total_t4' => $logs->sum('task_4'),
+                        'total_t5'  => $logs->sum('task_5'),
+                    ];
+                })->values();
+
+                $rMonthTotal = [
+                    't1' => $rLogs->sum('task_1'), 't2' => $rLogs->sum('task_2'),
+                    't3' => $rLogs->sum('task_3'), 't4' => $rLogs->sum('task_4'),
+                    't5' => $rLogs->sum('task_5'),
+                ];
+
+                $rShareData = collect(['task_1','task_2','task_3','task_4','task_5'])
+                    ->map(function ($tk) use ($rLogs, $rTaskLabels, $rMemberNames) {
+                        $weekData = $rLogs->groupBy('week_num')->map(function ($wl, $wk) use ($tk, $rMemberNames) {
+                            $wTotal  = $wl->sum($tk);
+                            $members = collect($rMemberNames)->mapWithKeys(function ($name) use ($wl, $tk, $wTotal) {
+                                $val = $wl->where('username', $name)->sum($tk);
+                                return [$name => ['tasks' => $val, 'share' => $wTotal > 0 ? round($val/$wTotal*100, 2) : 0]];
+                            });
+                            return ['week_num' => $wk, 'total' => $wTotal, 'members' => $members];
+                        })->values();
+                        return ['task_key' => $tk, 'task_name' => $rTaskLabels[$tk] ?? $tk, 'weeks' => $weekData];
+                    });
+
+                $rMemberMonthly = $memberMonthlyRaw->where('role', $role)
+                    ->groupBy('month_key')
+                    ->map(fn($rows) => $rows->map(fn($r) => [
+                        'username' => $r->username, 'first_name' => $r->first_name, 'gender' => $r->gender,
+                        't1' => $r->t1, 't2' => $r->t2, 't3' => $r->t3, 't4' => $r->t4, 't5' => $r->t5,
+                        'total' => $r->t1 + $r->t2 + $r->t3 + $r->t4 + $r->t5,
+                    ])->values());
+
+                $rAllMonths = collect($availableMonths)->map(function ($m) use ($role, $memberMonthlyRaw) {
+                    $mRows = $memberMonthlyRaw->where('role', $role)->where('month_key', $m);
+                    $t1=$mRows->sum('t1'); $t2=$mRows->sum('t2'); $t3=$mRows->sum('t3');
+                    $t4=$mRows->sum('t4'); $t5=$mRows->sum('t5');
+                    return [
+                        'month' => $m, 'label' => \Carbon\Carbon::parse($m)->format('F'),
+                        'short' => \Carbon\Carbon::parse($m)->format('M'),
+                        't1'=>$t1,'t2'=>$t2,'t3'=>$t3,'t4'=>$t4,'t5'=>$t5,
+                        'total' => $t1+$t2+$t3+$t4+$t5,
+                    ];
+                })->filter(fn($m) => $m['total'] > 0)->sortBy('month')->values();
+
+                $roleGroupedData[$role] = [
+                    'role'          => $role,
+                    'label'         => $roleNameMap[$role]  ?? ucfirst($role),
+                    'color'         => $roleColorMap[$role] ?? '#94a3b8',
+                    'taskLabels'    => $rTaskLabels,
+                    'weeks'         => $rWeeks,
+                    'monthTotal'    => $rMonthTotal,
+                    'memberNames'   => $rMemberNames,
+                    'shareData'     => $rShareData,
+                    'memberMonthly' => $rMemberMonthly,
+                    'allMonths'     => $rAllMonths,
+                ];
+            }
+        }
+
+        // Per-role monthly totals (legacy, kept for compatibility)
+        $roleMonthTotals = $roleGroupedData->mapWithKeys(fn($rd, $role) => [
+            $role => array_merge($rd['monthTotal'], [
+                'total'   => array_sum($rd['monthTotal']),
+                'members' => count($rd['memberNames']),
+            ])
+        ])->filter(fn($r) => $r['total'] > 0);
 
         // Full 12-month year overview for selected year
         $selectedYear = \Carbon\Carbon::parse($month)->year;
@@ -633,8 +868,8 @@ class AdminController extends Controller
 
         return view('admin.reports', compact(
             'user', 'roleFilter', 'rolesWithData',
-            'month', 'availableMonths', 'weeks', 'monthTotal', 'allMonths', 'memberMonthly', 'yearOverview', 'selectedYear',
-            'shareData', 'memberNames'
+            'month', 'availableMonths', 'weeks', 'monthTotal', 'roleMonthTotals', 'allMonths', 'memberMonthly', 'yearOverview', 'selectedYear',
+            'shareData', 'memberNames', 'roleGroupedData', 'roleColorMap', 'roleNameMap'
         ));
     }
 }
