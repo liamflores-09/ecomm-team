@@ -39,7 +39,7 @@
         left: -80px;
         width: 280px;
         height: 280px;
-        background: var(--accent);
+        background: var(--secondary);
         border-radius: 50%;
         opacity: 0.06;
     }
@@ -47,7 +47,7 @@
     .login-card {
         width: 100%;
         max-width: 440px;
-        background: var(--white);
+        background: var(--bg-card);
         border-radius: 8px;
         padding: 3rem 2.5rem;
         position: relative;
@@ -74,19 +74,19 @@
     }
 
     .login-brand h3 {
-        font-size: 1.5rem;
+        font-size: 24px;
         font-weight: 800;
-        margin-bottom: 0.25rem;
+        margin-bottom: 4px;
     }
 
     .login-brand p {
         color: var(--gray-500);
         font-weight: 500;
-        font-size: 0.875rem;
+        font-size: 14px;
     }
 
     .login-form .field {
-        margin-bottom: 1.25rem;
+        margin-bottom: 20px;
     }
 
     .login-form .input-icon-wrap {
@@ -95,47 +95,47 @@
 
     .login-form .input-icon-wrap .icon-pos {
         position: absolute;
-        left: 1rem;
+        left: 16px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--gray-300);
-        font-size: 1rem;
+        font-size: 16px;
         pointer-events: none;
     }
 
     .login-form .input-icon-wrap .input-flat {
-        padding-left: 2.75rem;
+        padding-left: 44px;
     }
 
     .login-form .btn-submit {
         width: 100%;
         height: 56px;
-        margin-top: 0.5rem;
+        margin-top: 8px;
     }
 
     .login-footer {
         text-align: center;
-        margin-top: 2rem;
+        margin-top: 32px;
         color: var(--gray-300);
-        font-size: 0.8rem;
+        font-size: 12px;
         font-weight: 500;
     }
 
     .login-footer i {
-        margin-right: 0.25rem;
+        margin-right: 4px;
     }
 
     .error-msg {
         background: #FEE2E2;
         color: #991B1B;
-        padding: 0.75rem 1rem;
+        padding: 12px 16px;
         border-radius: 6px;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 13px;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1.25rem;
+        gap: 8px;
+        margin-bottom: 20px;
     }
 </style>
 @endsection

@@ -9,260 +9,126 @@
 
 @section('styles')
 <style>
-    .admin-stat-row {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
+    .users-toolbar {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 1rem 1.25rem; background: var(--white); border-radius: 12px;
+        border: 2px solid var(--border); margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .users-toolbar .search-box {
+        display: flex; align-items: center; gap: 0.5rem;
+        background: var(--muted); border: 2px solid transparent; border-radius: 8px;
+        padding: 0 0.75rem; height: 40px; flex: 1; min-width: 200px;
+        transition: border-color 0.15s;
+    }
+    .users-toolbar .search-box:focus-within { border-color: var(--primary); background: var(--white); }
+    .users-toolbar .search-box i { color: var(--gray-300); font-size: 0.8rem; flex-shrink: 0; }
+    .users-toolbar .search-box input {
+        border: none; outline: none; background: transparent; width: 100%;
+        font-family: var(--p-font-family-sans); font-size: 0.85rem; font-weight: 500; color: var(--fg);
+    }
+    .users-toolbar .search-box input::placeholder { color: var(--gray-300); }
+    .toolbar-divider { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+    .users-toolbar .result-count {
+        font-size: 0.8rem; font-weight: 600; color: var(--gray-400); white-space: nowrap;
     }
 
-    .admin-stat {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 0.875rem;
+    .filter-pills { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+    .filter-pill {
+        padding: 0.375rem 0.75rem; border-radius: 6px;
+        font-family: var(--p-font-family-sans); font-size: 0.75rem; font-weight: 600;
+        cursor: pointer; transition: all 0.15s; border: 2px solid var(--border);
+        background: var(--white); color: var(--gray-400);
     }
+    .filter-pill:hover { border-color: var(--border-strong); color: var(--fg); }
+    .filter-pill.active { background: var(--primary); border-color: var(--primary); color: white; }
 
-    .admin-stat .as-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1rem;
-        flex-shrink: 0;
-    }
-
-    .admin-stat .as-count {
-        font-size: 1.5rem;
-        font-weight: 800;
-        line-height: 1;
-    }
-
-    .admin-stat .as-label {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--gray-500);
-    }
-
-    .user-table-wrap {
-        background: var(--white);
-        border-radius: 8px;
+    .users-table-wrap {
+        background: var(--white); border-radius: 12px; border: 2px solid var(--border);
         overflow: hidden;
     }
-
-    .user-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.85rem;
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table thead th {
+        padding: 0.875rem 1.25rem; font-size: 0.7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400);
+        background: var(--muted); border-bottom: 2px solid var(--border); text-align: left;
+        position: sticky; top: 0; z-index: 1;
     }
-
-    .user-table thead th {
-        background: var(--muted);
-        padding: 0.875rem 1rem;
-        font-weight: 700;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--gray-500);
-        text-align: left;
-    }
-
-    .user-table tbody td {
-        padding: 0.875rem 1rem;
-        border-top: 2px solid var(--muted);
+    .users-table tbody td {
+        padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border);
         vertical-align: middle;
     }
+    .users-table tbody tr:last-child td { border-bottom: none; }
+    .users-table tbody tr:hover td { background: #FAFAFA; }
 
-    .user-table tbody tr:hover td {
-        background: #F8FAFC;
+    .user-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .user-cell .avatar {
+        width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+        border: 2px solid var(--muted);
     }
+    .user-cell .info .name { font-weight: 700; font-size: 0.85rem; }
+    .user-cell .info .handle { font-size: 0.75rem; color: var(--gray-400); }
 
-    .user-cell {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
+    .role-badge {
+        display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
+        font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
     }
+    .role-badge.manager { background: #171717; color: #ffffff; }
+    .role-badge.lead { background: #6366f1; color: #ffffff; }
+    .role-badge.content { background: #0ea5e9; color: #ffffff; }
+    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
+    .role-badge.backend { background: #f43f5e; color: #ffffff; }
+    .role-badge.researcher { background: #10b981; color: #ffffff; }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        flex-shrink: 0;
+    .cell-muted { color: var(--gray-400); font-size: 0.85rem; }
+    .cell-time { color: var(--gray-300); font-size: 0.8rem; white-space: nowrap; }
+
+    .row-actions { display: flex; gap: 0.25rem; justify-content: flex-end; }
+    .row-btn {
+        width: 32px; height: 32px; border: 2px solid var(--border); border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+        background: var(--white); color: var(--gray-400);
     }
+    .row-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .row-btn.btn-danger:hover { border-color: #DC2626; color: #DC2626; }
+    .row-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-    .user-name {
-        font-weight: 600;
-    }
-
-    .user-fullname {
-        font-size: 0.75rem;
-        color: var(--gray-500);
-    }
-
-    .action-btns {
-        display: flex;
-        gap: 0.375rem;
-        justify-content: flex-end;
-    }
-
-    .action-btn {
-        width: 32px;
-        height: 32px;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: all 0.15s;
-        background: transparent;
-        color: var(--gray-500);
-    }
-
-    .action-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-    }
-
-    .action-btn.btn-danger:hover {
-        border-color: #DC2626;
-        color: #DC2626;
-    }
-
-    .action-btn:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
-
-    /* Role Select */
     .role-select {
-        height: 48px;
-        padding: 0 1rem;
-        background: var(--muted);
-        border: 2px solid transparent;
-        border-radius: 6px;
-        font-family: 'Outfit', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--fg);
-        cursor: pointer;
-        outline: none;
-        transition: all 0.15s;
-        width: 100%;
-        appearance: auto;
+        height: 44px; padding: 0 1rem; background: var(--muted);
+        border: 2px solid transparent; border-radius: 8px;
+        font-family: var(--p-font-family-sans); font-size: 0.85rem; font-weight: 500;
+        color: var(--fg); cursor: pointer; outline: none; transition: all 0.15s;
+        width: 100%; appearance: auto;
     }
+    .role-select:focus { border-color: var(--primary); background: var(--white); }
 
-    .role-select:focus {
-        border-color: var(--primary);
-        background: var(--white);
-    }
-
-    /* Role Filter */
-    .role-filter {
-        display: flex;
-        gap: 0;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        overflow: hidden;
-    }
-
-    .rf-btn {
-        padding: 0.375rem 0.75rem;
-        border: none;
-        border-right: 2px solid var(--border);
-        background: var(--white);
-        font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 0.75rem;
-        color: var(--gray-500);
-        cursor: pointer;
-        transition: all 0.15s;
-    }
-
-    .rf-btn:last-child { border-right: none; }
-
-    .rf-btn.active {
-        background: var(--primary);
-        color: white;
-    }
-
-    .rf-btn:hover:not(.active) {
-        background: var(--muted);
-    }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray-300); }
+    .empty-state i { font-size: 2rem; display: block; margin-bottom: 0.75rem; color: var(--gray-200); }
 
     @media (max-width: 768px) {
-        .admin-stat-row { grid-template-columns: 1fr 1fr; }
-        .user-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .user-table { min-width: 650px; }
-        .role-filter { flex-wrap: wrap; }
-        .rf-btn { font-size: 0.7rem; padding: 0.3rem 0.5rem; }
-        .action-btns { flex-direction: column; gap: 0.25rem; }
-    }
-
-    @media (max-width: 480px) {
-        .admin-stat-row { grid-template-columns: 1fr; }
-        .user-table { min-width: 550px; }
+        .users-toolbar { flex-direction: column; align-items: stretch; }
+        .toolbar-divider { display: none; }
+        .filter-pills { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.25rem; }
+        .users-table-wrap { overflow-x: auto; }
+        .users-table { min-width: 640px; }
     }
 </style>
 @endsection
 
 @section('content')
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon" style="background: #DC2626;">ED</div>
-        <div>
-            <h5>Ecomm Dept</h5>
-            <span>Admin Panel</span>
-        </div>
-    </div>
-
-    <ul class="sidebar-nav">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
-        <li><a href="{{ route('admin.users') }}" class="active"><i class="fas fa-users"></i> Manage Users</a></li>
-        <li class="nav-dropdown" id="dailyLogsDropdown">
-            <a href="javascript:void(0)" onclick="toggleDropdown()" class="has-submenu">
-                <i class="fas fa-clipboard-list"></i> Daily Logs <i class="fas fa-chevron-down dropdown-arrow" id="dropdownArrow"></i>
-            </a>
-            <ul class="submenu" id="dailyLogsSubmenu">
-                <li><a href="{{ route('admin.daily-logs') }}">All Roles</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'content']) }}">Content</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'lead']) }}">Lead</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'researcher']) }}">Researcher</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'graphics']) }}">Graphics</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'backend']) }}">Backend</a></li>
-            </ul>
-        </li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
-        </form>
-    </div>
-</div>
+<x-sidebar active="admin.users" :isAdmin="true" />
 
 <div class="main-content">
     <a href="{{ route('admin.dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
-    <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
+    <div class="anim-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <div>
-            <h2>Manage <span class="highlight">Users</span></h2>
-            <p>Add, edit, or remove team members</p>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem;">Manage Users</h2>
+            <p style="color: var(--gray-400); font-size: 0.9rem; font-weight: 500; margin: 0;">Add, edit, or remove team members</p>
         </div>
-        <div class="user-badge">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $user->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="avatar" alt="{{ $user->username }}" style="width: 36px; height: 36px; border-radius: 50%;">
-            <div class="user-info">
-                <span class="user-name">{{ $user->username }}</span>
-                <span class="role-tag admin-role">Manager</span>
-            </div>
-        </div>
+        <button class="btn-flat-primary" style="height: 40px; padding: 0 1.25rem; font-size: 0.85rem;" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Add User
+        </button>
     </div>
 
     @if (session('success'))
@@ -273,70 +139,29 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <!-- Stats -->
-    <div class="admin-stat-row anim-up d1" style="grid-template-columns: 1fr;">
-        <div class="admin-stat" style="cursor: pointer; transition: all 0.2s;" onclick="toggleRoleBreakdown()" id="totalUsersCard">
-            <div class="as-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
-            <div style="flex: 1;">
-                <div class="as-count">{{ $users->count() }}</div>
-                <div class="as-label">Total Users — Click to see breakdown</div>
-            </div>
-            <i class="fas fa-chevron-down" id="breakdownChevron" style="color: var(--gray-400); transition: transform 0.2s;"></i>
+    <!-- Toolbar: Search + Filter + Count -->
+    <div class="users-toolbar anim-up d1">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search users..." oninput="handleSearch(this.value)">
         </div>
+        <div class="toolbar-divider"></div>
+        <div class="filter-pills" id="filterPills">
+            <button class="filter-pill active" onclick="filterByRole('all', this)">All</button>
+            <button class="filter-pill" onclick="filterByRole('manager', this)">Manager</button>
+            <button class="filter-pill" onclick="filterByRole('lead', this)">Lead</button>
+            <button class="filter-pill" onclick="filterByRole('content', this)">Content</button>
+            <button class="filter-pill" onclick="filterByRole('graphics', this)">Graphics</button>
+            <button class="filter-pill" onclick="filterByRole('backend', this)">Backend</button>
+            <button class="filter-pill" onclick="filterByRole('researcher', this)">Researcher</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <span class="result-count" id="resultCount">{{ $users->count() }} users</span>
     </div>
 
-    <!-- Role Breakdown (hidden by default) -->
-    <div id="roleBreakdown" style="display: none; margin-bottom: 1.5rem;" class="anim-up d1">
-        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; padding: 1rem; background: var(--white); border-radius: 8px; border: 2px solid var(--border);">
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #D97706;">{{ $users->where('role', 'manager')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Manager</div>
-            </div>
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #DB2777;">{{ $users->where('role', 'lead')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Lead</div>
-            </div>
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #92400E;">{{ $users->where('role', 'researcher')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Researcher</div>
-            </div>
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #059669;">{{ $users->where('role', 'content')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Content</div>
-            </div>
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #2563EB;">{{ $users->where('role', 'graphics')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Graphics</div>
-            </div>
-            <div style="text-align: center; padding: 0.75rem;">
-                <div style="font-size: 1.25rem; font-weight: 800; color: #7C3AED;">{{ $users->where('role', 'backend')->count() }}</div>
-                <div style="font-size: 0.65rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase;">Backend</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;" class="anim-up d2">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <h3 style="font-weight: 800; font-size: 1rem;">Team Members</h3>
-            <div class="role-filter" id="roleFilter">
-                <button class="rf-btn active" onclick="filterByRole('all', this)">All</button>
-                <button class="rf-btn" onclick="filterByRole('manager', this)">Manager</button>
-                <button class="rf-btn" onclick="filterByRole('lead', this)">Lead</button>
-                <button class="rf-btn" onclick="filterByRole('content', this)">Content</button>
-                <button class="rf-btn" onclick="filterByRole('graphics', this)">Graphics</button>
-                <button class="rf-btn" onclick="filterByRole('backend', this)">Backend</button>
-                <button class="rf-btn" onclick="filterByRole('researcher', this)">Researcher</button>
-            </div>
-        </div>
-        <button class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openAddModal()">
-            <i class="fas fa-plus"></i> Add User
-        </button>
-    </div>
-
-    <!-- Table -->
-    <div class="user-table-wrap anim-up d2">
-        <table class="user-table">
+    <!-- Users Table -->
+    <div class="users-table-wrap anim-up d2">
+        <table class="users-table">
             <thead>
                 <tr>
                     <th>User</th>
@@ -344,54 +169,39 @@
                     <th>Mobile</th>
                     <th>Role</th>
                     <th>Created</th>
-                    <th style="text-align: right;">Actions</th>
+                    <th style="width: 100px; text-align: right;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="userTableBody">
                 @forelse ($users as $u)
-                <tr data-role="{{ $u->role }}">
+                <tr data-role="{{ $u->role }}" data-search="{{ strtolower($u->first_name . ' ' . $u->last_name . ' ' . $u->username . ' ' . $u->role) }}">
                     <td>
                         <div class="user-cell">
-                            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $u->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="user-avatar" alt="{{ $u->username }}">
-                            <div>
-                                <div class="user-name">{{ $u->username }}</div>
+                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($u->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $u->username . 'Female' : $u->username }}" class="avatar" alt="">
+                            <div class="info">
+                                <div class="name">{{ $u->username }}</div>
                             </div>
                         </div>
                     </td>
                     <td style="font-weight: 500;">{{ $u->first_name }} {{ $u->last_name }}</td>
-                    <td style="color: var(--gray-500);">{{ $u->mobile_number ?: '—' }}</td>
+                    <td class="cell-muted">{{ $u->mobile_number ?: '—' }}</td>
+                    <td><span class="role-badge {{ $u->role }}">{{ ucfirst($u->role) }}</span></td>
+                    <td class="cell-time">{{ $u->created_at->diffForHumans() }}</td>
                     <td>
-                        @php
-                            $roleColors = [
-                                'manager' => ['bg' => '#FEF3C7', 'text' => '#D97706'],
-                                'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777'],
-                                'content' => ['bg' => '#D1FAE5', 'text' => '#059669'],
-                                'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB'],
-                                'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED'],
-                                'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                            ];
-                            $rc = $roleColors[$u->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280'];
-                        @endphp
-                        <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: {{ $rc['bg'] }}; color: {{ $rc['text'] }};">
-                            {{ ucfirst($u->role) }}
-                        </span>
-                    </td>
-                    <td style="color: var(--gray-500);">{{ $u->created_at->diffForHumans() }}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="action-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->first_name }}', '{{ $u->last_name }}', '{{ $u->username }}', '{{ $u->role }}', '{{ $u->mobile_number }}')">
+                        <div class="row-actions">
+                            <button class="row-btn" title="Edit" onclick="openEditModal({{ $u->id }}, '{{ $u->first_name }}', '{{ $u->last_name }}', '{{ $u->username }}', '{{ $u->role }}', '{{ $u->mobile_number }}')">
                                 <i class="fas fa-pen"></i>
                             </button>
                             @if ($u->id !== $user->id)
                             <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="d-inline" onsubmit="return confirm('Delete {{ $u->username }}? This cannot be undone.');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="action-btn btn-danger" title="Delete">
+                                <button type="submit" class="row-btn btn-danger" title="Delete">
                                     <i class="fas fa-trash-can"></i>
                                 </button>
                             </form>
                             @else
-                            <button class="action-btn" disabled title="Current user">
+                            <button class="row-btn" disabled title="Current user">
                                 <i class="fas fa-trash-can"></i>
                             </button>
                             @endif
@@ -400,8 +210,8 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 3rem; color: var(--gray-300);">
-                        <i class="fas fa-users" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                    <td colspan="6" class="empty-state">
+                        <i class="fas fa-users"></i>
                         No users found.
                     </td>
                 </tr>
@@ -533,21 +343,40 @@
         </div>
     </div>
 </div>
+
 @endsection
 
 @section('scripts')
 <script>
-function filterByRole(role, btn) {
-    document.querySelectorAll('.rf-btn').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
+var currentRole = 'all';
+var currentSearch = '';
 
-    document.querySelectorAll('.user-table tbody tr[data-role]').forEach(function(row) {
-        if (role === 'all' || row.getAttribute('data-role') === role) {
+function filterByRole(role, btn) {
+    currentRole = role;
+    document.querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    applyFilters();
+}
+
+function handleSearch(val) {
+    currentSearch = val.toLowerCase().trim();
+    applyFilters();
+}
+
+function applyFilters() {
+    var rows = document.querySelectorAll('#userTableBody tr[data-role]');
+    var visible = 0;
+    rows.forEach(function(row) {
+        var matchRole = currentRole === 'all' || row.getAttribute('data-role') === currentRole;
+        var matchSearch = !currentSearch || row.getAttribute('data-search').indexOf(currentSearch) !== -1;
+        if (matchRole && matchSearch) {
             row.style.display = '';
+            visible++;
         } else {
             row.style.display = 'none';
         }
     });
+    document.getElementById('resultCount').textContent = visible + ' user' + (visible !== 1 ? 's' : '');
 }
 
 function openAddModal() {
@@ -564,59 +393,5 @@ function openEditModal(id, firstName, lastName, username, role, mobile) {
     document.getElementById('editRoleSelect').value = role;
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
-
-function toggleRoleBreakdown() {
-    var panel = document.getElementById('roleBreakdown');
-    var chevron = document.getElementById('breakdownChevron');
-    if (panel.style.display === 'none') {
-        panel.style.display = 'block';
-        chevron.style.transform = 'rotate(180deg)';
-    } else {
-        panel.style.display = 'none';
-        chevron.style.transform = 'rotate(0deg)';
-    }
-}
-
-function toggleDropdown() {
-    var submenu = document.getElementById('dailyLogsSubmenu');
-    var arrow = document.getElementById('dropdownArrow');
-    if (submenu.style.display === 'none' || submenu.style.display === '') {
-        submenu.style.display = 'block';
-        arrow.style.transform = 'rotate(180deg)';
-    } else {
-        submenu.style.display = 'none';
-        arrow.style.transform = 'rotate(0deg)';
-    }
-}
 </script>
-<style>
-.nav-dropdown .has-submenu {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-}
-.dropdown-arrow {
-    font-size: 0.65rem;
-    transition: transform 0.2s;
-    margin-left: auto;
-}
-.submenu {
-    list-style: none;
-    padding: 0;
-    margin: 0.25rem 0 0.5rem 1.75rem;
-}
-.submenu li { margin: 0.125rem 0; }
-.submenu a {
-    display: block;
-    padding: 0.5rem 0.875rem;
-    color: var(--gray-300);
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 0.85rem;
-    transition: all 0.15s;
-}
-.submenu a:hover { background: var(--gray-700); color: white; }
-.submenu a.active { background: var(--primary); color: white; }
-</style>
 @endsection

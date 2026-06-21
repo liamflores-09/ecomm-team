@@ -4,299 +4,386 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23DC2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
 @endsection
 
 @section('styles')
 <style>
-    .welcome-banner {
-        background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
-        border-radius: 12px;
-        padding: 2.5rem;
-        color: white;
-        position: relative;
-        overflow: hidden;
+    /* Hero KPIs */
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.25rem; margin-bottom: 1.75rem; }
+    .kpi-card {
+        background: var(--white); border-radius: 12px; padding: 1.5rem;
+        border: 1px solid var(--border); transition: all 0.2s; position: relative; overflow: hidden;
     }
-    .welcome-banner::after {
-        content: '';
-        position: absolute;
-        top: -80px; right: -40px;
-        width: 250px; height: 250px;
-        background: rgba(255,255,255,0.07);
-        border-radius: 50%;
+    .kpi-card:hover { border-color: #c7d2fe; box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+    .kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); }
+    .kpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white; }
+    .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.375rem; }
+    .kpi-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .kpi-sub { font-size: 0.75rem; color: var(--gray-400); font-weight: 500; }
+    .kpi-spark { width: 60px; height: 24px; }
+    .kpi-trend { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; }
+    .kpi-trend.up { background: #ecfdf5; color: #059669; }
+    .kpi-trend.down { background: #fef2f2; color: #dc2626; }
+
+    /* Team Health */
+    .health-card {
+        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
+        padding: 1.5rem; margin-bottom: 1.75rem;
     }
-    .welcome-banner::before {
-        content: '';
-        position: absolute;
-        bottom: -60px; right: 120px;
-        width: 160px; height: 160px;
-        background: rgba(255,255,255,0.04);
-        border-radius: 50%;
+    .health-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .health-header h4 { font-size: 0.9rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+    .health-header .pulse { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .health-bar-wrap { width: 100%; height: 8px; background: var(--muted); border-radius: 4px; overflow: hidden; margin-bottom: 1rem; }
+    .health-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .health-avatars { display: flex; align-items: center; gap: 0; }
+    .health-avatar {
+        width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--white);
+        margin-left: -10px; position: relative; transition: transform 0.2s;
     }
-    .welcome-banner h2 { color: white; font-size: 1.6rem; margin-bottom: 0.375rem; position: relative; z-index: 1; font-weight: 800; }
-    .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.95rem; margin: 0; position: relative; z-index: 1; }
-    .welcome-banner .wb-date { position: absolute; top: 2rem; right: 2.5rem; text-align: right; z-index: 1; }
-    .welcome-banner .wb-date .wd-day { font-size: 2rem; font-weight: 800; line-height: 1; }
-    .welcome-banner .wb-date .wd-month { font-size: 0.8rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.08em; }
+    .health-avatar:first-child { margin-left: 0; }
+    .health-avatar:hover { transform: translateY(-2px); z-index: 1; }
+    .health-avatar.logged { border-color: #10b981; }
+    .health-avatar.pending { border-color: #fca5a5; opacity: 0.5; }
+    .health-legend { display: flex; gap: 1.25rem; margin-left: auto; }
+    .health-legend span { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: var(--gray-500); }
+    .health-legend .dot { width: 7px; height: 7px; border-radius: 50%; }
 
-    .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
-    .section-divider .sd-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; flex-shrink: 0; }
-    .section-divider h4 { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
-    .section-divider .sd-line { flex: 1; height: 2px; background: var(--muted); }
+    /* Charts Grid */
+    .charts-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem; }
+    .chart-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .chart-card-header { display: flex; align-items: center; gap: 0.625rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--muted); }
+    .chart-card-header .cc-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; flex-shrink: 0; }
+    .chart-card-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+    .chart-card-body { padding: 1.25rem 1.5rem; }
 
-    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .stat-card { background: var(--white); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; border: 2px solid transparent; }
-    .stat-card:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: 0 4px 12px rgba(59,130,246,0.1); }
-    .stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; flex-shrink: 0; }
-    .stat-count { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.125rem; }
-    .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--gray-400); }
+    /* Role Breakdown */
+    .role-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .role-header { display: flex; align-items: center; gap: 0.625rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--muted); }
+    .role-header .rh-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; flex-shrink: 0; }
+    .role-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+    .role-list { padding: 1rem 1.5rem; }
+    .role-row { display: flex; align-items: center; gap: 0.875rem; padding: 0.625rem 0; }
+    .role-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .role-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .role-name { flex: 1; font-size: 0.85rem; font-weight: 600; }
+    .role-bar-wrap { width: 80px; height: 6px; background: var(--muted); border-radius: 3px; overflow: hidden; }
+    .role-bar { height: 100%; border-radius: 3px; }
+    .role-count { font-size: 0.85rem; font-weight: 700; min-width: 24px; text-align: right; }
 
-    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .quick-card { background: var(--white); border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--fg); transition: all 0.2s; border: 2px solid transparent; }
-    .quick-card:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: 0 4px 12px rgba(59,130,246,0.1); }
-    .quick-card .qc-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; flex-shrink: 0; }
-    .quick-card h5 { font-weight: 700; font-size: 0.9rem; margin: 0; }
-    .quick-card p { font-size: 0.75rem; color: var(--gray-400); margin: 0.25rem 0 0; font-weight: 500; }
-
-    .recent-card { background: var(--white); border-radius: 12px; overflow: hidden; }
-    .recent-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 2px solid var(--muted); }
-    .recent-header h4 { font-weight: 800; font-size: 0.85rem; margin: 0; }
-    .recent-header a { font-size: 0.8rem; font-weight: 600; color: var(--primary); text-decoration: none; }
-    .recent-list { padding: 0; }
-    .recent-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.5rem; border-bottom: 1px solid var(--muted); transition: all 0.15s; }
-    .recent-item:last-child { border-bottom: none; }
-    .recent-item:hover { background: #F8FAFC; }
-    .recent-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
-    .recent-name { font-weight: 700; font-size: 0.9rem; }
-    .recent-info { font-size: 0.75rem; color: var(--gray-400); }
-    .recent-time { margin-left: auto; font-size: 0.75rem; color: var(--gray-400); font-weight: 500; white-space: nowrap; }
-
-    @media (max-width: 768px) {
-        .stat-grid { grid-template-columns: 1fr 1fr; }
-        .quick-grid { grid-template-columns: 1fr 1fr; }
-        .welcome-banner { padding: 2rem; }
-        .welcome-banner .wb-date { display: none; }
+    /* Quick Actions */
+    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+    .quick-link {
+        display: flex; align-items: center; gap: 0.875rem; padding: 1rem 1.125rem;
+        background: var(--white); border-radius: 10px; text-decoration: none; color: var(--fg);
+        border: 1px solid var(--border); transition: all 0.2s;
     }
-    @media (max-width: 480px) {
-        .stat-grid { grid-template-columns: 1fr; }
+    .quick-link:hover { border-color: #6366f1; background: #f5f3ff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.1); }
+    .ql-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: white; flex-shrink: 0; }
+    .ql-text strong { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.125rem; }
+    .ql-text small { color: var(--gray-400); font-size: 0.75rem; font-weight: 500; }
+    .ql-arrow { margin-left: auto; color: var(--gray-300); font-size: 0.75rem; transition: all 0.2s; }
+    .quick-link:hover .ql-arrow { color: #6366f1; }
+
+    /* Activity Timeline */
+    .activity-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--muted); }
+    .activity-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+    .activity-header a { font-size: 0.8rem; font-weight: 600; color: #6366f1; text-decoration: none; }
+    .activity-header a:hover { text-decoration: underline; }
+    .activity-item { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.875rem 1.5rem; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item:hover { background: #fafafa; }
+    .activity-dot-wrap { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
+    .activity-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .activity-line { width: 1px; flex: 1; background: var(--border); margin-top: 6px; min-height: 20px; }
+    .activity-content { flex: 1; min-width: 0; }
+    .activity-title { font-weight: 500; font-size: 0.85rem; }
+    .activity-meta { font-size: 0.75rem; color: var(--gray-400); margin-top: 3px; }
+    .activity-time { font-size: 0.75rem; color: var(--gray-300); white-space: nowrap; flex-shrink: 0; }
+
+    .empty-state { text-align: center; padding: 2.5rem; color: var(--gray-400); font-size: 0.85rem; }
+
+    @media (max-width: 1280px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1024px) {
+        .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        .charts-grid { grid-template-columns: 1fr; }
+        .quick-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .kpi-grid { grid-template-columns: 1fr; }
         .quick-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
 
 @section('content')
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon" style="background: #DC2626;">ED</div>
-        <div>
-            <h5>Ecomm Dept</h5>
-            <span>Admin Panel</span>
-        </div>
-    </div>
-
-    <ul class="sidebar-nav">
-        <li><a href="{{ route('admin.dashboard') }}" class="active"><i class="fas fa-grip"></i> Dashboard</a></li>
-        <li><a href="{{ route('admin.users') }}"><i class="fas fa-users"></i> Manage Users</a></li>
-        <li class="nav-dropdown" id="dailyLogsDropdown">
-            <a href="javascript:void(0)" onclick="toggleDropdown()" class="has-submenu">
-                <i class="fas fa-clipboard-list"></i> Daily Logs <i class="fas fa-chevron-down dropdown-arrow" id="dropdownArrow"></i>
-            </a>
-            <ul class="submenu" id="dailyLogsSubmenu">
-                <li><a href="{{ route('admin.daily-logs') }}">All Roles</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'content']) }}">Content</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'lead']) }}">Lead</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'researcher']) }}">Researcher</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'graphics']) }}">Graphics</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'backend']) }}">Backend</a></li>
-            </ul>
-        </li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
-        </form>
-    </div>
-</div>
+<x-sidebar active="admin.dashboard" :isAdmin="true" />
 
 <div class="main-content">
-    <div class="top-bar anim-up">
-        <div>
-            <h2>Admin <span class="highlight">Dashboard</span></h2>
-            <p>Manage your team and training system</p>
+    @php
+        $taskChange = $lastMonthTasks > 0 ? round(($thisMonthTasks - $lastMonthTasks) / $lastMonthTasks * 100) : null;
+        $nonManagerCount = $totalUsers - $managers;
+        $healthPct = $nonManagerCount > 0 ? round($todayLogged / $nonManagerCount * 100) : 0;
+        $healthColor = $healthPct >= 80 ? '#10b981' : ($healthPct >= 50 ? '#f59e0b' : '#ef4444');
+        $avgTasksPerson = $totalUsers > 0 ? round($thisMonthTasks / max(1, $totalUsers - $managers)) : 0;
+
+        // Weekly sparkline data (last 7 days)
+        $sparkData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $d = now()->subDays($i);
+            $sparkData[] = \App\Models\DailyLog::whereDate('date', $d)
+                ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
+        }
+        $sparkTrend = $sparkData[6] > 0 ? round(($sparkData[6] - $sparkData[5]) / max(1, $sparkData[5]) * 100) : 0;
+
+        // Today's members
+        $allMembers = \App\Models\User::where('role', '!=', 'manager')->get();
+        $loggedUserIds = $todayLogs->pluck('user_id')->toArray();
+    @endphp
+
+    <!-- Header -->
+    <div class="anim-up" style="margin-bottom: 1.75rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.375rem;">Good {{ now()->hour < 12 ? 'morning' : (now()->hour < 18 ? 'afternoon' : 'evening') }}, {{ $user->first_name }}</h2>
+        <p style="color: var(--gray-400); font-size: 0.9rem; font-weight: 500; margin: 0;">{{ now()->format('l, M d, Y') }} — Team overview at a glance</p>
+    </div>
+
+    <!-- KPIs with Sparklines -->
+    <div class="kpi-grid anim-up d1">
+        <div class="kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">This Month</span>
+                <div class="kpi-icon" style="background: #6366f1;"><i class="fas fa-bolt"></i></div>
+            </div>
+            <div class="kpi-value">{{ number_format($thisMonthTasks) }}</div>
+            <div class="kpi-bottom">
+                <span class="kpi-sub">tasks logged</span>
+                @if($taskChange !== null)
+                <span class="kpi-trend {{ $taskChange >= 0 ? 'up' : 'down' }}">
+                    <i class="fas fa-arrow-{{ $taskChange >= 0 ? 'up' : 'down' }}"></i>{{ $taskChange >= 0 ? '+' : '' }}{{ $taskChange }}%
+                </span>
+                @endif
+            </div>
         </div>
-        <div class="user-badge">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $user->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="avatar" alt="{{ $user->username }}" style="width: 40px; height: 40px; border-radius: 50%;">
-            <div class="user-info">
-                <span class="user-name">{{ $user->first_name }} {{ $user->last_name }}</span>
-                <span class="role-tag admin-role">Manager</span>
+        <div class="kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Today</span>
+                <div class="kpi-icon" style="background: #10b981;"><i class="fas fa-clipboard-check"></i></div>
+            </div>
+            <div class="kpi-value">{{ $todayLogged }}<span style="font-size: 0.9rem; color: var(--gray-400); font-weight: 500;">/{{ $nonManagerCount }}</span></div>
+            <div class="kpi-bottom">
+                <span class="kpi-sub">members logged in</span>
+                @if($todayPending > 0)
+                <span class="kpi-trend down"><i class="fas fa-clock"></i> {{ $todayPending }} pending</span>
+                @else
+                <span class="kpi-trend up"><i class="fas fa-check"></i> Complete</span>
+                @endif
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Avg / Person</span>
+                <div class="kpi-icon" style="background: #0ea5e9;"><i class="fas fa-user"></i></div>
+            </div>
+            <div class="kpi-value">{{ $avgTasksPerson }}</div>
+            <div class="kpi-bottom">
+                <span class="kpi-sub">tasks per member</span>
+                <div id="sparkAvg" class="kpi-spark"></div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Top Performer</span>
+                <div class="kpi-icon" style="background: #f59e0b;"><i class="fas fa-trophy"></i></div>
+            </div>
+            <div class="kpi-value" style="font-size: 1.15rem;">{{ $topContributor->username ?? '—' }}</div>
+            <div class="kpi-bottom">
+                <span class="kpi-sub">{{ $topContributor ? number_format($topContributor->total) . ' tasks' : 'No data' }}</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Team Size</span>
+                <div class="kpi-icon" style="background: #f43f5e;"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="kpi-value">{{ $totalUsers }}</div>
+            <div class="kpi-bottom">
+                <span class="kpi-sub">{{ $nonManagerCount }} active members</span>
             </div>
         </div>
     </div>
 
-    <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up d1">
-        <div>
-            <h2>Welcome back, {{ $user->first_name }}!</h2>
-            <p>Here's an overview of your team and system.</p>
+    <!-- Team Health -->
+    <div class="health-card anim-up d2">
+        <div class="health-header">
+            <h4><div class="pulse"></div> Today's Pulse</h4>
+            <span style="font-size: 0.75rem; font-weight: 700; color: {{ $healthColor }};">{{ $healthPct }}% logged in</span>
         </div>
-        <div class="wb-date">
-            <div class="wd-day">{{ now()->format('d') }}</div>
-            <div class="wd-month">{{ now()->format('M Y') }}</div>
+        <div class="health-bar-wrap">
+            <div class="health-bar" style="width: {{ $healthPct }}%; background: {{ $healthColor }};"></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="health-avatars">
+                @foreach($allMembers as $m)
+                    @php $isLogged = in_array($m->id, $loggedUserIds); @endphp
+                    <img class="health-avatar {{ $isLogged ? 'logged' : 'pending' }}"
+                         src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($m->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $m->username . 'Female' : $m->username }}"
+                         alt="{{ $m->first_name }}" title="{{ $m->first_name }} — {{ $isLogged ? 'Logged' : 'Pending' }}">
+                @endforeach
+            </div>
+            <div class="health-legend">
+                <span><div class="dot" style="background: #10b981;"></div> Logged ({{ $todayLogged }})</span>
+                <span><div class="dot" style="background: #ef4444;"></div> Pending ({{ $todayPending }})</span>
+            </div>
         </div>
     </div>
 
-    <!-- Stats -->
-    <div style="margin-top: 1.5rem;" class="anim-up d2">
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
-                <div>
-                    <div class="stat-count">{{ $totalUsers }}</div>
-                    <div class="stat-label">Team Members</div>
-                </div>
+    <!-- Charts + Role Distribution -->
+    <div class="charts-grid anim-up d3">
+        <!-- Weekly Activity -->
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="cc-icon" style="background: #0ea5e9;"><i class="fas fa-chart-bar"></i></div>
+                <h4>Weekly Activity</h4>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #059669;"><i class="fas fa-clipboard-list"></i></div>
-                <div>
-                    <div class="stat-count">{{ $totalLogs }}</div>
-                    <div class="stat-label">Total Logs</div>
-                </div>
+            <div class="chart-card-body">
+                <div id="weeklyChart" style="height: 260px;"></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #F59E0B;"><i class="fas fa-calendar-check"></i></div>
-                <div>
-                    <div class="stat-count">{{ $thisMonthLogs }}</div>
-                    <div class="stat-label">This Month</div>
+        </div>
+        <!-- Role Distribution -->
+        <div class="role-card">
+            <div class="role-header">
+                <div class="rh-icon" style="background: #6366f1;"><i class="fas fa-users"></i></div>
+                <h4>Team Composition</h4>
+            </div>
+            <div class="role-list">
+                @php
+                    $roleData = [
+                        ['name' => 'Lead', 'count' => $leads, 'color' => '#6366f1'],
+                        ['name' => 'Researcher', 'count' => $researchers, 'color' => '#10b981'],
+                        ['name' => 'Content', 'count' => $content, 'color' => '#0ea5e9'],
+                        ['name' => 'Graphics', 'count' => $graphics, 'color' => '#f59e0b'],
+                        ['name' => 'Backend', 'count' => $backend, 'color' => '#f43f5e'],
+                    ];
+                    $maxRole = max(array_column($roleData, 'count'));
+                @endphp
+                @foreach($roleData as $r)
+                <div class="role-row">
+                    <div class="role-dot" style="background: {{ $r['color'] }};"></div>
+                    <span class="role-name">{{ $r['name'] }}</span>
+                    <div class="role-bar-wrap">
+                        <div class="role-bar" style="width: {{ $maxRole > 0 ? ($r['count'] / $maxRole * 100) : 0 }}%; background: {{ $r['color'] }};"></div>
+                    </div>
+                    <span class="role-count">{{ $r['count'] }}</span>
                 </div>
+                @endforeach
             </div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="section-divider anim-up d3">
-        <div class="sd-icon" style="background: var(--accent);"><i class="fas fa-bolt"></i></div>
-        <h4>Quick Actions</h4>
-        <div class="sd-line"></div>
-    </div>
-
-    <div class="quick-grid anim-up d3">
-        <a href="{{ route('admin.users') }}" class="quick-card">
-            <div class="qc-icon" style="background: var(--primary);"><i class="fas fa-user-plus"></i></div>
-            <div>
-                <h5>Manage Users</h5>
-                <p>Add, edit, or remove members</p>
-            </div>
+    <div class="quick-grid anim-up d4">
+        <a href="{{ route('admin.users') }}" class="quick-link">
+            <div class="ql-icon" style="background: #6366f1;"><i class="fas fa-user-plus"></i></div>
+            <div class="ql-text"><strong>Manage Users</strong><small>Add, edit, remove</small></div>
+            <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
-        <a href="{{ route('admin.daily-logs') }}" class="quick-card">
-            <div class="qc-icon" style="background: #059669;"><i class="fas fa-clipboard-list"></i></div>
-            <div>
-                <h5>View Logs</h5>
-                <p>Check daily team activity</p>
-            </div>
+        <a href="{{ route('admin.daily-logs') }}" class="quick-link">
+            <div class="ql-icon" style="background: #0ea5e9;"><i class="fas fa-clipboard-list"></i></div>
+            <div class="ql-text"><strong>Daily Logs</strong><small>Team activity tracking</small></div>
+            <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
-        <a href="{{ route('team') }}" class="quick-card">
-            <div class="qc-icon" style="background: #EC4899;"><i class="fas fa-users"></i></div>
-            <div>
-                <h5>The Team</h5>
-                <p>View team directory</p>
-            </div>
+        <a href="{{ route('admin.reports') }}" class="quick-link">
+            <div class="ql-icon" style="background: #10b981;"><i class="fas fa-chart-pie"></i></div>
+            <div class="ql-text"><strong>Reports</strong><small>Performance analytics</small></div>
+            <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
-        <a href="{{ route('dashboard') }}" class="quick-card">
-            <div class="qc-icon" style="background: #8B5CF6;"><i class="fas fa-arrow-right-from-bracket"></i></div>
-            <div>
-                <h5>User View</h5>
-                <p>Switch to user dashboard</p>
-            </div>
+        <a href="{{ route('team') }}" class="quick-link">
+            <div class="ql-icon" style="background: #f59e0b;"><i class="fas fa-users"></i></div>
+            <div class="ql-text"><strong>The Team</strong><small>Team directory</small></div>
+            <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="section-divider anim-up d4">
-        <div class="sd-icon" style="background: var(--secondary);"><i class="fas fa-clock-rotate-left"></i></div>
-        <h4>Recent Activity</h4>
-        <div class="sd-line"></div>
-    </div>
-
-    <div class="recent-card anim-up d4">
-        <div class="recent-header">
-            <h4>Latest Actions</h4>
-            <a href="{{ route('admin.daily-logs') }}">View All <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></a>
+    <!-- Recent Activity Timeline -->
+    <div class="activity-card anim-up d5">
+        <div class="activity-header">
+            <h4>Recent Activity</h4>
+            <a href="{{ route('admin.daily-logs') }}">View All <i class="fas fa-arrow-right" style="font-size: 0.65rem;"></i></a>
         </div>
-        <div class="recent-list">
-            @forelse($recentActivity as $activity)
-            <div class="recent-item">
-                @php
-                    $activityIcons = [
-                        'eod_submitted' => ['icon' => 'fa-clipboard-check', 'color' => '#059669'],
-                        'eod_updated' => ['icon' => 'fa-pen', 'color' => '#3B82F6'],
-                        'eod_deleted' => ['icon' => 'fa-trash', 'color' => '#DC2626'],
-                        'user_created' => ['icon' => 'fa-user-plus', 'color' => '#8B5CF6'],
-                        'user_updated' => ['icon' => 'fa-user-pen', 'color' => '#F59E0B'],
-                        'user_deleted' => ['icon' => 'fa-user-minus', 'color' => '#DC2626'],
-                    ];
-                    $ai = $activityIcons[$activity->type] ?? ['icon' => 'fa-circle-info', 'color' => '#6B7280'];
-                @endphp
-                <div style="width: 36px; height: 36px; border-radius: 8px; background: {{ $ai['color'] }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i class="fas {{ $ai['icon'] }}" style="color: white; font-size: 0.8rem;"></i>
-                </div>
-                <div style="flex: 1;">
-                    <div class="recent-name" style="font-size: 0.85rem;">{{ $activity->description }}</div>
-                    <div class="recent-info">{{ $activity->user->first_name ?? 'System' }} · {{ ucfirst(str_replace('_', ' ', $activity->type)) }}</div>
-                </div>
-                <div class="recent-time">{{ $activity->created_at->diffForHumans() }}</div>
+        @forelse($recentActivity as $activity)
+        @php
+            $activityColors = [
+                'eod_submitted' => '#10b981',
+                'eod_updated' => '#3b82f6',
+                'eod_deleted' => '#ef4444',
+                'user_created' => '#8b5cf6',
+                'user_updated' => '#f59e0b',
+                'user_deleted' => '#ef4444',
+            ];
+            $ac = $activityColors[$activity->type] ?? '#64748b';
+        @endphp
+        <div class="activity-item">
+            <div class="activity-dot-wrap">
+                <div class="activity-dot" style="background: {{ $ac }};"></div>
+                @if(!$loop->last)<div class="activity-line"></div>@endif
             </div>
-            @empty
-            <div style="text-align: center; padding: 2.5rem; color: var(--gray-400); font-weight: 500;">
-                <i class="fas fa-clock-rotate-left" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
-                No activity yet.
+            <div class="activity-content">
+                <div class="activity-title">{{ $activity->description }}</div>
+                <div class="activity-meta">{{ $activity->user->first_name ?? 'System' }} · {{ ucfirst(str_replace('_', ' ', $activity->type)) }}</div>
             </div>
-            @endforelse
+            <div class="activity-time">{{ $activity->created_at->diffForHumans() }}</div>
         </div>
+        @empty
+        <div class="empty-state"><i class="fas fa-inbox" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200);"></i>No activity yet</div>
+        @endforelse
     </div>
 </div>
+@endsection
+
+@section('scripts')
 <script>
-function toggleDropdown() {
-    var submenu = document.getElementById('dailyLogsSubmenu');
-    var arrow = document.getElementById('dropdownArrow');
-    if (submenu.style.display === 'none' || submenu.style.display === '') {
-        submenu.style.display = 'block';
-        arrow.style.transform = 'rotate(180deg)';
-    } else {
-        submenu.style.display = 'none';
-        arrow.style.transform = 'rotate(0deg)';
+document.addEventListener('DOMContentLoaded', function() {
+    var colors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
+
+    // Sparkline in KPI card
+    var sparkEl = document.getElementById('sparkAvg');
+    if (sparkEl) {
+        var sparkData = {!! json_encode($sparkData) !!};
+        new ApexCharts(sparkEl, {
+            chart: { type: 'area', height: 24, width: 60, sparkline: { enabled: true } },
+            series: [{ data: sparkData }],
+            colors: ['#6366f1'],
+            stroke: { width: 2, curve: 'smooth' },
+            fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.05 } },
+            tooltip: { enabled: false }
+        }).render();
     }
-}
+
+    // Weekly Activity (Stacked Bar)
+    var weeklyEl = document.getElementById('weeklyChart');
+    if (weeklyEl) {
+        new ApexCharts(weeklyEl, {
+            chart: { type: 'bar', height: 260, stacked: true, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#64748b' },
+            series: [
+                { name: '{!! addslashes($taskLabels["task_1"] ?? "Task 1") !!}', data: {!! json_encode($chartNewSku) !!} },
+                { name: '{!! addslashes($taskLabels["task_2"] ?? "Task 2") !!}', data: {!! json_encode($chartVariationSku) !!} },
+                { name: '{!! addslashes($taskLabels["task_3"] ?? "Task 3") !!}', data: {!! json_encode($chartDataGathering) !!} },
+                { name: '{!! addslashes($taskLabels["task_4"] ?? "Task 4") !!}', data: {!! json_encode($chartUpdateListings) !!} },
+                { name: '{!! addslashes($taskLabels["task_5"] ?? "Task 5") !!}', data: {!! json_encode($chartOtherTasks) !!} }
+            ],
+            colors: colors,
+            plotOptions: { bar: { columnWidth: '55%', borderRadius: { topLeft: 4, topRight: 4 } } },
+            xaxis: { categories: {!! json_encode($chartLabels) !!}, labels: { style: { fontWeight: 600, fontSize: '12px', colors: '#94a3b8' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+            yaxis: { labels: { style: { fontWeight: 500, fontSize: '12px', colors: '#94a3b8' }, padding: 4 }, tickAmount: 4 },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
+            legend: { position: 'bottom', labels: { colors: '#64748b', useSeriesColors: true, fontWeight: 600, fontSize: '11px', padding: 12 }, markers: { width: 10, height: 10, radius: 3, strokeWidth: 0 }, itemMargin: { horizontal: 6, vertical: 2 } },
+            tooltip: { theme: 'light', style: { fontSize: '13px', fontFamily: 'Inter' }, y: { formatter: function(val) { return val + ' tasks'; } } },
+            dataLabels: { enabled: false }
+        }).render();
+    }
+});
 </script>
-<style>
-.nav-dropdown .has-submenu {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-}
-.dropdown-arrow {
-    font-size: 0.65rem;
-    transition: transform 0.2s;
-    margin-left: auto;
-}
-.submenu {
-    list-style: none;
-    padding: 0;
-    margin: 0.25rem 0 0.5rem 1.75rem;
-}
-.submenu li { margin: 0.125rem 0; }
-.submenu a {
-    display: block;
-    padding: 0.5rem 0.875rem;
-    color: var(--gray-300);
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 0.85rem;
-    transition: all 0.15s;
-}
-.submenu a:hover { background: var(--gray-700); color: white; }
-.submenu a.active { background: var(--primary); color: white; }
-</style>
 @endsection

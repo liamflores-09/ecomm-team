@@ -4,471 +4,532 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23DC2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
 @endsection
 
 @section('styles')
 <style>
-    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
-    .stat-card { background: var(--white); border-radius: 8px; padding: 1.25rem; display: flex; align-items: center; gap: 0.875rem; transition: all 0.2s; }
-    .stat-card:hover { transform: scale(1.02); }
-    .stat-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; flex-shrink: 0; }
+    /* === Stat Row === */
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .stat-card {
+        background: var(--white); border-radius: 12px; padding: 1.25rem;
+        display: flex; align-items: center; gap: 1rem; transition: all 0.2s;
+        border: 2px solid transparent;
+    }
+    .stat-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; flex-shrink: 0; }
     .stat-count { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-    .stat-label { font-size: 0.75rem; font-weight: 500; color: var(--gray-500); }
-    .admin-divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.75rem 0 1rem; }
-    .admin-divider .ad-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; flex-shrink: 0; }
-    .admin-divider h4 { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
-    .admin-divider .ad-line { flex: 1; height: 2px; background: var(--muted); }
-    .empty-logs { text-align: center; padding: 3rem; color: var(--gray-400); font-weight: 500; }
-    .empty-logs i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-300); }
-    @media (max-width: 768px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--gray-400); margin-top: 0.125rem; }
+
+    /* === Charts === */
+    .charts-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .chart-card { background: var(--white); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--border); }
+    .chart-card #weeklyChart, .chart-card #productivityChart { width: 100% !important; }
+    .chart-title { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+    .chart-title .ct-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; flex-shrink: 0; }
+    .chart-title h4 { font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
+
+    /* === Unified Table === */
+    .table-card { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; margin-bottom: 1.5rem; }
+    .table-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.875rem 1.25rem; border-bottom: 2px solid var(--muted);
+    }
+    .table-header .th-left { display: flex; align-items: center; gap: 0.5rem; }
+    .table-header .th-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; flex-shrink: 0; }
+    .table-header h4 { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
+    .table-header .badge {
+        display: inline-flex; align-items: center; padding: 2px 8px;
+        background: var(--muted); border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-500);
+    }
+
+    .filter-pills { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .filter-pill {
+        padding: 0.25rem 0.625rem; border-radius: 5px; font-size: 0.7rem; font-weight: 700;
+        cursor: pointer; transition: all 0.15s; border: 1.5px solid var(--border);
+        background: var(--white); color: var(--gray-400); text-transform: capitalize;
+    }
+    .filter-pill:hover { border-color: var(--border-strong); color: var(--fg); }
+    .filter-pill.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+    .ut { width: 100%; border-collapse: collapse; }
+    .ut thead th {
+        padding: 0.625rem 1rem; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);
+        background: var(--muted); border-bottom: 1px solid var(--border); text-align: left;
+        text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .ut tbody td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .ut tbody tr:last-child td { border-bottom: none; }
+    .ut tbody tr:hover td { background: #FAFAFA; }
+    .ut .num { text-align: center; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+    .user-cell { display: flex; align-items: center; gap: 0.5rem; }
+    .user-cell img { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; }
+    .user-cell .name { font-weight: 600; }
+
+    .role-badge {
+        display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px;
+        font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .role-badge.manager { background: #171717; color: #ffffff; }
+    .role-badge.lead { background: #6366f1; color: #ffffff; }
+    .role-badge.content { background: #0ea5e9; color: #ffffff; }
+    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
+    .role-badge.backend { background: #f43f5e; color: #ffffff; }
+    .role-badge.researcher { background: #10b981; color: #ffffff; }
+
+    .status-pill {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700;
+    }
+    .status-pill.logged { background: #F0FDF4; color: #166534; }
+    .status-pill.pending { background: #FEF2F2; color: #991B1B; }
+
+    .cell-muted { color: var(--gray-400); font-size: 0.8rem; }
+    .cell-remark { color: var(--gray-400); font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .task-pip { display: inline-flex; gap: 3px; }
+    .task-pip span {
+        min-width: 22px; text-align: center; padding: 2px 4px; background: var(--muted);
+        border-radius: 4px; font-size: 0.7rem; font-weight: 700; font-variant-numeric: tabular-nums;
+    }
+
+    .empty-state { text-align: center; padding: 3rem; color: var(--gray-300); font-size: 0.85rem; }
+    .empty-state i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-200); }
+
+    /* === Calendar === */
+    .cal-layout { display: grid; grid-template-columns: 280px 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .cal-card { background: var(--white); border-radius: 12px; border: 2px solid var(--border); padding: 1rem; }
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .cal-nav span { font-weight: 700; font-size: 0.85rem; }
+    .cal-nav button {
+        width: 28px; height: 28px; border: 1.5px solid var(--border); border-radius: 6px;
+        background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        color: var(--gray-400); font-size: 0.65rem; transition: all 0.1s;
+    }
+    .cal-nav button:hover { border-color: var(--border-strong); color: var(--fg); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-day-label { text-align: center; font-size: 0.6rem; font-weight: 700; color: var(--gray-300); padding: 2px 0; }
+    .cal-day {
+        display: flex; align-items: center; justify-content: center; height: 32px;
+        border-radius: 6px; font-size: 0.75rem; font-weight: 500; color: var(--gray-400);
+        text-decoration: none; transition: all 0.1s; position: relative;
+    }
+    .cal-day:hover { background: var(--hover); }
+    .cal-day.today { background: var(--fg); color: white; }
+    .cal-day.has-logs { color: var(--fg); font-weight: 700; }
+    .cal-day.selected { background: var(--fg); color: white; }
+    .cal-day .dot { position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: var(--fg); }
+
+    .cal-legend { display: flex; gap: 0.75rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); font-size: 0.6rem; color: var(--gray-300); }
+    .cal-legend span { display: flex; align-items: center; gap: 3px; }
+    .cal-legend .dot { width: 6px; height: 6px; border-radius: 2px; }
+
+    .day-panel { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; }
+    .day-panel-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.75rem 1rem; border-bottom: 2px solid var(--muted);
+    }
+    .day-panel-header h4 { font-size: 0.8rem; font-weight: 800; margin: 0; }
+    .day-panel-header a { font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600; }
+    .day-panel-header a:hover { text-decoration: underline; }
+    .day-item {
+        display: flex; align-items: center; gap: 0.625rem;
+        padding: 0.625rem 1rem; border-bottom: 1px solid var(--border);
+    }
+    .day-item:last-child { border-bottom: none; }
+    .day-item:hover { background: #FAFAFA; }
+
+    @media (max-width: 1024px) {
+        .charts-row { grid-template-columns: 1fr; }
+        .cal-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+        .stat-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+        .stat-row { grid-template-columns: 1fr; }
+    }
 </style>
 @endsection
 
 @section('content')
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon" style="background: #DC2626;">ED</div>
-        <div>
-            <h5>Ecomm Dept</h5>
-            <span>Admin Panel</span>
-        </div>
-    </div>
-    <ul class="sidebar-nav">
-        <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
-        <li><a href="{{ route('admin.users') }}"><i class="fas fa-users"></i> Manage Users</a></li>
-        <li class="nav-dropdown" id="dailyLogsDropdown">
-            <a href="javascript:void(0)" onclick="toggleDropdown()" class="has-submenu">
-                <i class="fas fa-clipboard-list"></i> Daily Logs <i class="fas fa-chevron-down dropdown-arrow" id="dropdownArrow"></i>
-            </a>
-            <ul class="submenu" id="dailyLogsSubmenu" style="display: {{ request()->query('role') ? 'block' : 'none' }};">
-                <li><a href="{{ route('admin.daily-logs') }}" class="{{ !request()->query('role') ? 'active' : '' }}">All Roles</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'content']) }}" class="{{ request()->query('role') === 'content' ? 'active' : '' }}">Content</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'lead']) }}" class="{{ request()->query('role') === 'lead' ? 'active' : '' }}">Lead</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'researcher']) }}" class="{{ request()->query('role') === 'researcher' ? 'active' : '' }}">Researcher</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'graphics']) }}" class="{{ request()->query('role') === 'graphics' ? 'active' : '' }}">Graphics</a></li>
-                <li><a href="{{ route('admin.daily-logs', ['role' => 'backend']) }}" class="{{ request()->query('role') === 'backend' ? 'active' : '' }}">Backend</a></li>
-            </ul>
-        </li>
-    </ul>
-    <div class="sidebar-footer">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
-        </form>
-    </div>
-</div>
+<x-sidebar active="admin.daily-logs" :isAdmin="true" />
 
 <div class="main-content">
-    <div class="top-bar anim-up">
+    <div class="anim-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <div>
-            <h2>Daily <span class="highlight">Logs</span></h2>
-            <p>View and track team daily activity</p>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem;">Daily Logs</h2>
+            <p style="color: var(--gray-400); font-size: 0.9rem; font-weight: 500; margin: 0;">View and track team daily activity</p>
         </div>
     </div>
 
     @php
-        $roleBadgeColors = [
-            'content' => ['bg' => '#D1FAE5', 'text' => '#059669', 'accent' => '#059669'],
-            'lead' => ['bg' => '#FCE7F3', 'text' => '#DB2777', 'accent' => '#DB2777'],
-            'researcher' => ['bg' => '#FEF3C7', 'text' => '#92400E', 'accent' => '#92400E'],
-            'graphics' => ['bg' => '#DBEAFE', 'text' => '#2563EB', 'accent' => '#2563EB'],
-            'backend' => ['bg' => '#EDE9FE', 'text' => '#7C3AED', 'accent' => '#7C3AED'],
-        ];
-        $roleDisplayNames = ['content' => 'Content', 'lead' => 'Lead (PR)', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend'];
-        $roleIcons = ['content' => 'fa-pen-nib', 'lead' => 'fa-star', 'researcher' => 'fa-magnifying-glass', 'graphics' => 'fa-palette', 'backend' => 'fa-server'];
+        $roleNames = ['content' => 'Content', 'lead' => 'Lead', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend'];
     @endphp
 
-    <!-- Bento Grid -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(120px, auto); gap: 1rem; margin-bottom: 2rem;" class="anim-up d1 bento-grid">
-        <div style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); border-radius: 14px; padding: 1.5rem; color: white; grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
-            <div>
-                <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7;">Total Logs</div>
-                <div style="font-size: 2.75rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $totalLogs }}</div>
-            </div>
-            <div style="font-size: 0.75rem; opacity: 0.6; font-weight: 500;">All time submissions</div>
+    <!-- KPIs -->
+    <div class="stat-row anim-up d1">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-clipboard-list"></i></div>
+            <div><div class="stat-count">{{ $totalLogs }}</div><div class="stat-label">Total Logs</div></div>
         </div>
-        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">This Month</div>
-                <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $thisMonthLogs }}</div>
-            </div>
-            <div style="font-size: 0.7rem; color: #059669; font-weight: 600;"><i class="fas fa-arrow-up" style="margin-right: 0.2rem;"></i>{{ now()->format('M Y') }}</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--gray-500);"><i class="fas fa-chart-line"></i></div>
+            <div><div class="stat-count">{{ $thisMonthLogs }}</div><div class="stat-label">This Month</div></div>
         </div>
-        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">Logged Today</div>
-                <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; margin-top: 0.25rem;">{{ $todayLogCount }}</div>
-            </div>
-            <div style="font-size: 0.7rem; color: var(--gray-400); font-weight: 500;">{{ now()->format('M d') }}</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-calendar-check"></i></div>
+            <div><div class="stat-count">{{ $todayLogCount }}</div><div class="stat-label">Logged Today</div></div>
         </div>
-        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; grid-column: span 2;">
-            <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 0.5rem;">Daily Tasks (7 Days)</div>
-            <div style="position: relative; height: 140px;"><canvas id="dailyTasksChart"></canvas></div>
-        </div>
-        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem;">
-            <div style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 0.5rem;">Top Performers</div>
-            <div style="position: relative; height: 140px;"><canvas id="productivityChart"></canvas></div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <div style="background: {{ $missingLogs->count() ? '#FEF2F2' : '#F0FDF4' }}; border-radius: 14px; padding: 1rem; flex: 1; border: 2px solid {{ $missingLogs->count() ? '#FECACA' : '#BBF7D0' }};">
-                <div style="font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: {{ $missingLogs->count() ? '#DC2626' : '#059669' }};">Missing</div>
-                <div style="font-size: 1.75rem; font-weight: 800; color: {{ $missingLogs->count() ? '#DC2626' : '#059669' }}; line-height: 1;">{{ $missingLogs->count() }}</div>
-            </div>
-            <div style="background: var(--white); border-radius: 14px; padding: 1rem; flex: 1;">
-                <div style="font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400);">Avg/Day</div>
-                <div style="font-size: 1.75rem; font-weight: 800; line-height: 1;">{{ $avgDailyTasks }}</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: {{ $missingLogs->count() ? '#991B1B' : 'var(--primary)' }};"><i class="fas fa-user-clock"></i></div>
+            <div><div class="stat-count" style="color: {{ $missingLogs->count() ? '#991B1B' : 'var(--fg)' }};">{{ $missingLogs->count() }}</div><div class="stat-label">Missing</div></div>
         </div>
     </div>
-    <style>@media (max-width: 900px) { .bento-grid { grid-template-columns: repeat(2, 1fr) !important; } .bento-grid > div { grid-column: span 1 !important; } } @media (max-width: 600px) { .bento-grid { grid-template-columns: 1fr !important; } }</style>
 
-    <!-- Member Status -->
-    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d2">
-        <div style="width: 32px; height: 32px; border-radius: 8px; background: #8B5CF6; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-users"></i></div>
-        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">{{ $roleFilter ? ucfirst($roleFilter) . ' Team' : 'All Members' }}</h4>
-        <span style="background: var(--muted); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: var(--gray-400);">{{ $memberLogStatus->count() }}</span>
-        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem; margin-bottom: 2rem;" class="anim-up d2">
-        @foreach($memberLogStatus as $m)
-        @php $rbc = $roleBadgeColors[$m['user']->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
-        <div style="background: var(--white); border-radius: 10px; padding: 0.75rem; border-left: 3px solid {{ $m['todayLog'] ? '#059669' : '#E5E7EB' }}; display: flex; align-items: center; gap: 0.625rem; transition: all 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow='none'">
-            <div style="position: relative;">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $m['user']->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 36px; height: 36px; border-radius: 50%;" alt="">
-                <span style="position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; background: {{ $m['todayLog'] ? '#059669' : '#DC2626' }};"></span>
+    <!-- Charts -->
+    <div class="charts-row anim-up d2">
+        <div class="chart-card">
+            <div class="chart-title">
+                <div class="ct-icon" style="background: var(--primary);"><i class="fas fa-chart-bar"></i></div>
+                <h4>Weekly Task Breakdown</h4>
             </div>
-            <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: 700; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $m['user']->first_name }}</div>
-                <span style="padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.5rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc['bg'] }}; color: {{ $rbc['text'] }};">{{ $m['user']->role }}</span>
-            </div>
-            @if($m['todayLog'])
-            @php $mLabels = \App\Support\TaskLabels::get($m['user']->role); @endphp
-            <div style="display: flex; gap: 0.2rem;">
-                <span title="{{ $mLabels['task_1'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #EFF6FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $m['todayLog']->task_1 }}</span>
-                <span title="{{ $mLabels['task_2'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #F5F3FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $m['todayLog']->task_2 }}</span>
-                <span title="{{ $mLabels['task_3'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #ECFDF5; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #059669; cursor: help;">{{ $m['todayLog']->task_3 }}</span>
-                <span title="{{ $mLabels['task_4'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FFFBEB; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $m['todayLog']->task_4 }}</span>
-                <span title="{{ $mLabels['task_5'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FDF2F8; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $m['todayLog']->task_5 }}</span>
-            </div>
-            @else
-            <span style="font-size: 0.6rem; color: var(--gray-300); font-weight: 500;">{{ $m['lastLog'] ? $m['lastLog']->date->diffForHumans() : '—' }}</span>
-            @endif
+            <div id="weeklyChart"></div>
         </div>
-        @endforeach
-    </div>
-
-    <!-- Today's Logs -->
-    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d3">
-        <div style="width: 32px; height: 32px; border-radius: 8px; background: #059669; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-list-check"></i></div>
-        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">Today's Logs</h4>
-        <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">{{ now()->format('l, F j, Y') }}</span>
-        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
-    </div>
-
-    @if($roleFilter)
-        @php $currentLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
-        @php $rbc = $roleBadgeColors[$roleFilter] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
-        <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);" class="anim-up d3">
-            <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
-                <div style="width: 28px; height: 28px; border-radius: 6px; background: {{ $rbc['accent'] }}; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas {{ $roleIcons[$roleFilter] ?? 'fa-users' }}"></i></div>
-                <span style="font-weight: 700; font-size: 0.85rem;">{{ $roleDisplayNames[$roleFilter] ?? ucfirst($roleFilter) }}</span>
-                <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);">{{ $todayLogs->count() }}</span>
+        <div class="chart-card">
+            <div class="chart-title">
+                <div class="ct-icon" style="background: var(--gray-500);"><i class="fas fa-trophy"></i></div>
+                <h4>Top Contributors</h4>
             </div>
-            @if($todayLogs->count())
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                    <thead><tr>
-                        <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Member</th>
-                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                        <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $currentLabels[$tk] }}</th>
-                        @endforeach
-                        <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Status</th>
-                        <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Remarks</th>
-                    </tr></thead>
-                    <tbody>
-                        @foreach($todayLogs as $log)
-                        <tr style="border-bottom: 1px solid #F5F5F5; {{ !$log->has_logged ? 'opacity: 0.5;' : '' }}" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
-                            <td style="padding: 0.75rem 1rem;"><div style="display: flex; align-items: center; gap: 0.5rem;"><img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt=""><span style="font-weight: 600; font-size: 0.85rem;">{{ $log->username }}</span></div></td>
-                            @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                            <td style="padding: 0.75rem; text-align: center; font-weight: 700;">{{ $log->$tk }}</td>
-                            @endforeach
-                            <td style="padding: 0.75rem; text-align: center;">@if($log->has_logged)<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #ECFDF5; color: #059669;"><i class="fas fa-check" style="font-size: 0.55rem;"></i>Logged</span>@else<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #FEF2F2; color: #DC2626;"><i class="fas fa-clock" style="font-size: 0.55rem;"></i>Pending</span>@endif</td>
-                            <td style="padding: 0.75rem 1rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-400); font-size: 0.75rem;">{{ $log->remarks ?: '—' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @else
-            <div style="text-align: center; padding: 3rem; color: var(--gray-300);"><i class="fas fa-clipboard-list" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i><span style="font-weight: 600; font-size: 0.85rem;">No members found</span></div>
-            @endif
+            <div id="productivityChart"></div>
         </div>
-    @else
-        @foreach($rolesWithData as $role)
-            @php $rLabels = \App\Support\TaskLabels::get($role); $rLogs = $todayLogsByRole[$role] ?? collect(); $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
-            <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--border); border-left: 4px solid {{ $rbc['accent'] }};" class="anim-up d3">
-                <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
-                    <div style="width: 28px; height: 28px; border-radius: 6px; background: {{ $rbc['accent'] }}; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas {{ $roleIcons[$role] ?? 'fa-users' }}"></i></div>
-                    <span style="font-weight: 700; font-size: 0.85rem;">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
-                    <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--gray-400);">{{ $rLogs->count() }}</span>
-                </div>
-                @if($rLogs->count())
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                        <thead><tr>
-                            <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Member</th>
-                            @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $rLabels[$tk] }}</th>
-                            @endforeach
-                            <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Status</th>
-                            <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Remarks</th>
-                        </tr></thead>
-                        <tbody>
-                            @foreach($rLogs as $log)
-                            <tr style="border-bottom: 1px solid #F5F5F5; {{ !$log->has_logged ? 'opacity: 0.5;' : '' }}" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
-                                <td style="padding: 0.75rem 1rem;"><div style="display: flex; align-items: center; gap: 0.5rem;"><img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt=""><span style="font-weight: 600; font-size: 0.85rem;">{{ $log->username }}</span></div></td>
+    </div>
+
+    <!-- Today's Logs — Unified Table -->
+    <div class="table-card anim-up d3">
+        <div class="table-header">
+            <div class="th-left">
+                <div class="th-icon" style="background: var(--primary);"><i class="fas fa-clipboard-check"></i></div>
+                <h4>Today's Logs</h4>
+                <span class="badge">{{ now()->format('M d, Y') }}</span>
+            </div>
+            <div class="filter-pills" id="todayFilter">
+                <button class="filter-pill active" onclick="filterToday('all', this)">All</button>
+                @foreach($rolesWithData as $r)
+                <button class="filter-pill" onclick="filterToday('{{ $r }}', this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
+                @endforeach
+            </div>
+        </div>
+        <div style="overflow-x: auto;">
+            <table class="ut" id="todayTable">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Role</th>
+                        <th class="th-pip" style="text-align: center;">Tasks</th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_1"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_2"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_3"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_4"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_5"></th>
+                        <th style="text-align: center;">Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($todayLogs as $log)
+                    @php $logLabels = \App\Support\TaskLabels::get($log->role); @endphp
+                    <tr data-role="{{ $log->role }}">
+                        <td>
+                            <div class="user-cell">
+                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" alt="">
+                                <span class="name">{{ $log->username }}</span>
+                            </div>
+                        </td>
+                        <td><span class="role-badge {{ $log->role }}">{{ $log->role }}</span></td>
+                        <td class="td-pips" style="text-align: center;">
+                            <div class="task-pip">
                                 @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                                <td style="padding: 0.75rem; text-align: center; font-weight: 700;">{{ $log->$tk }}</td>
+                                <span title="{{ $logLabels[$tk] }}">{{ $log->$tk }}</span>
                                 @endforeach
-                                <td style="padding: 0.75rem; text-align: center;">@if($log->has_logged)<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #ECFDF5; color: #059669;"><i class="fas fa-check" style="font-size: 0.55rem;"></i>Logged</span>@else<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; background: #FEF2F2; color: #DC2626;"><i class="fas fa-clock" style="font-size: 0.55rem;"></i>Pending</span>@endif</td>
-                                <td style="padding: 0.75rem 1rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-400); font-size: 0.75rem;">{{ $log->remarks ?: '—' }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @else
-                <div style="text-align: center; padding: 2rem; color: var(--gray-300); font-size: 0.85rem;">No members</div>
-                @endif
-            </div>
-        @endforeach
-    @endif
-
-    <!-- Calendar & Day View -->
-    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d4">
-        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-calendar"></i></div>
-        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">Calendar</h4>
-        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
+                            </div>
+                        </td>
+                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
+                        <td class="td-cols num" style="display: none;" data-label="{{ $logLabels[$tk] }}">{{ $log->$tk ?: '—' }}</td>
+                        @endforeach
+                        <td style="text-align: center;">@if($log->has_logged)<span class="status-pill logged">Logged</span>@else<span class="status-pill pending">Pending</span>@endif</td>
+                        <td class="cell-remark">{{ $log->remarks ?: '—' }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="9" class="empty-state"><i class="fas fa-clipboard-list"></i>No logs today</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 1rem; margin-bottom: 2rem;" class="anim-up d4 cal-layout">
-        <div style="background: var(--white); border-radius: 14px; padding: 1.25rem; border: 1px solid var(--border);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s;" onmouseover="this.style.background='var(--muted)'" onmouseout="this.style.background='transparent'"><i class="fas fa-chevron-left" style="font-size: 0.65rem;"></i></a>
-                <span style="font-weight: 800; font-size: 0.85rem;">{{ $calendarMonth->format('F Y') }}</span>
-                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s;" onmouseover="this.style.background='var(--muted)'" onmouseout="this.style.background='transparent'"><i class="fas fa-chevron-right" style="font-size: 0.65rem;"></i></a>
+
+    <!-- Calendar + Day Detail -->
+    <div class="cal-layout anim-up d4">
+        <div class="cal-card">
+            <div class="cal-nav">
+                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')])) }}'"><i class="fas fa-chevron-left"></i></button>
+                <span>{{ $calendarMonth->format('F Y') }}</span>
+                <button onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')])) }}'"><i class="fas fa-chevron-right"></i></button>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
+            <div class="cal-grid">
                 @foreach(['S','M','T','W','T','F','S'] as $d)
-                <div style="text-align: center; font-size: 0.55rem; font-weight: 700; color: var(--gray-300); padding: 0.375rem 0;">{{ $d }}</div>
+                <div class="cal-day-label">{{ $d }}</div>
                 @endforeach
                 @php $firstDay = $calendarMonth->copy()->startOfMonth(); $startOffset = $firstDay->dayOfWeek; $daysInMonth = $calendarMonth->daysInMonth; @endphp
                 @for($i = 0; $i < $startOffset; $i++) <div></div> @endfor
                 @for($day = 1; $day <= $daysInMonth; $day++)
                     @php $dateStr = $calendarMonth->copy()->day($day)->format('Y-m-d'); $hasLogs = in_array($dateStr, $calendarDays); $isToday = $dateStr === now()->format('Y-m-d'); $isSelected = $dateStr === $selectedDay; @endphp
-                    <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $dateStr])) }}" style="display: flex; align-items: center; justify-content: center; height: 30px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.75rem; transition: all 0.15s; position: relative; @if($isSelected) background: var(--primary); color: white; @elseif($isToday) background: #DBEAFE; color: #2563EB; @elseif($hasLogs) background: #D1FAE5; color: #059669; @else color: var(--gray-500); @endif">{{ $day }}@if($hasLogs && !$isSelected) <span style="position: absolute; bottom: 2px; width: 3px; height: 3px; border-radius: 50%; background: #059669;"></span> @endif</a>
+                    <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $dateStr])) }}" class="cal-day @if($isToday) today @endif @if($hasLogs) has-logs @endif @if($isSelected) selected @endif">
+                        {{ $day }}
+                        @if($hasLogs && !$isSelected) <span class="dot"></span> @endif
+                    </a>
                 @endfor
             </div>
-            <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--muted); font-size: 0.55rem; color: var(--gray-400);">
-                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: #D1FAE5; vertical-align: middle; margin-right: 0.2rem;"></span>Logs</span>
-                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: #DBEAFE; vertical-align: middle; margin-right: 0.2rem;"></span>Today</span>
-                <span><span style="display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: var(--primary); vertical-align: middle; margin-right: 0.2rem;"></span>Selected</span>
+            <div class="cal-legend">
+                <span><span class="dot" style="background: var(--fg);"></span> Today</span>
+                <span><span class="dot" style="background: var(--gray-300);"></span> Has logs</span>
             </div>
         </div>
-        <div style="background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--border);">
+
+        <div class="day-panel">
             @if($selectedDay)
-            <div style="padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; justify-content: space-between;">
-                <div><span style="font-weight: 800; font-size: 0.9rem;">{{ \Carbon\Carbon::parse($selectedDay)->format('l, F j') }}</span><span style="font-size: 0.7rem; color: var(--gray-400); margin-left: 0.5rem;">{{ $selectedDayLogs->count() }} member{{ $selectedDayLogs->count() !== 1 ? 's' : '' }}</span></div>
-                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->format('Y-m')])) }}" style="text-decoration: none; color: var(--gray-400); font-size: 0.7rem; font-weight: 600;">Clear</a>
+            <div class="day-panel-header">
+                <h4>{{ \Carbon\Carbon::parse($selectedDay)->format('l, F j') }} <span style="font-weight: 400; color: var(--gray-400);">— {{ $selectedDayLogs->count() }}</span></h4>
+                <a href="{{ route('admin.daily-logs', array_merge(request()->query(), ['month' => $calendarMonth->format('Y-m')])) }}">Clear</a>
             </div>
             @if($selectedDayLogs->count())
-            <div style="max-height: 350px; overflow-y: auto;">
+            <div style="max-height: 400px; overflow-y: auto;">
                 @foreach($selectedDayLogs as $log)
-                @php $logLabels = \App\Support\TaskLabels::get($log->role); $rbc2 = $roleBadgeColors[$log->role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280']; @endphp
-                <div style="padding: 0.625rem 1.25rem; border-bottom: 1px solid #F5F5F5; display: flex; align-items: center; gap: 0.625rem;" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
-                    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $log->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" style="width: 28px; height: 28px; border-radius: 50%;" alt="">
-                    <div style="flex: 1; min-width: 0;"><span style="font-weight: 700; font-size: 0.8rem;">{{ $log->username }}</span><span style="padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.5rem; font-weight: 700; text-transform: uppercase; background: {{ $rbc2['bg'] }}; color: {{ $rbc2['text'] }}; margin-left: 0.375rem;">{{ $log->role }}</span></div>
-                    <div style="display: flex; gap: 0.2rem;">
-                        <span title="{{ $logLabels['task_1'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #EFF6FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #3B82F6; cursor: help;">{{ $log->task_1 }}</span>
-                        <span title="{{ $logLabels['task_2'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #F5F3FF; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #8B5CF6; cursor: help;">{{ $log->task_2 }}</span>
-                        <span title="{{ $logLabels['task_3'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #ECFDF5; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #059669; cursor: help;">{{ $log->task_3 }}</span>
-                        <span title="{{ $logLabels['task_4'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FFFBEB; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #F59E0B; cursor: help;">{{ $log->task_4 }}</span>
-                        <span title="{{ $logLabels['task_5'] }}" style="min-width: 22px; text-align: center; padding: 0.15rem 0.25rem; background: #FDF2F8; border-radius: 4px; font-size: 0.7rem; font-weight: 800; color: #EC4899; cursor: help;">{{ $log->task_5 }}</span>
+                @php $logLabels = \App\Support\TaskLabels::get($log->role); @endphp
+                <div class="day-item">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($log->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $log->username . 'Female' : $log->username }}" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted);" alt="">
+                    <div style="flex: 1; min-width: 0;">
+                        <span style="font-weight: 600; font-size: 0.8rem;">{{ $log->username }}</span>
+                        <span class="role-badge {{ $log->role }}" style="margin-left: 4px;">{{ $log->role }}</span>
+                    </div>
+                    <div class="task-pip">
+                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
+                        <span title="{{ $logLabels[$tk] }}">{{ $log->$tk }}</span>
+                        @endforeach
                     </div>
                 </div>
                 @endforeach
             </div>
             @else
-            <div style="text-align: center; padding: 3rem; color: var(--gray-300);"><i class="fas fa-clipboard-list" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;"></i>No logs</div>
+            <div class="empty-state">No logs on this day</div>
             @endif
             @else
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; color: var(--gray-300);"><i class="fas fa-calendar-day" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4;"></i><span style="font-weight: 600; font-size: 0.85rem;">Select a date</span></div>
+            <div class="empty-state" style="min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <i class="fas fa-calendar-day" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--gray-200);"></i>
+                Select a date
+            </div>
             @endif
         </div>
     </div>
-    <style>@media (max-width: 900px) { .cal-layout { grid-template-columns: 1fr !important; } }</style>
 
-    <!-- History -->
-    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;" class="anim-up d5">
-        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--secondary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;"><i class="fas fa-history"></i></div>
-        <h4 style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0;">History</h4>
-        <span style="font-size: 0.75rem; color: var(--gray-400); font-weight: 500;">Last 14 Days</span>
-        <div style="flex: 1; height: 2px; background: var(--muted);"></div>
-    </div>
-    @if($roleFilter)
-        @php $hLabels = \App\Support\TaskLabels::get($roleFilter); @endphp
-        <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);" class="anim-up d5">
-            @if($historyDays->count())
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                    <thead><tr>
-                        <th style="padding: 0.625rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Date</th>
-                        <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Members</th>
-                        @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                        <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $hLabels[$tk] }}</th>
-                        @endforeach
-                        <th style="padding: 0.625rem 0.75rem; text-align: center; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Total</th>
-                    </tr></thead>
-                    <tbody>
-                        @foreach($historyDays as $hd)
-                        <tr style="border-bottom: 1px solid #F5F5F5; cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
-                            <td style="padding: 0.75rem 1rem; font-weight: 700; white-space: nowrap;">{{ $hd->date->format('M d, Y') }}</td>
-                            <td style="padding: 0.75rem; text-align: center;">{{ $hd->user_count }}</td>
-                            @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $tk)
-                            <td style="padding: 0.75rem; text-align: center; font-weight: 600;">{{ $hd->$tk }}</td>
-                            @endforeach
-                            <td style="padding: 0.75rem; text-align: center; font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+    <!-- History — Unified Table -->
+    <div class="table-card anim-up d5">
+        <div class="table-header">
+            <div class="th-left">
+                <div class="th-icon" style="background: var(--gray-500);"><i class="fas fa-clock-rotate-left"></i></div>
+                <h4>History</h4>
+                <span class="badge">Last 14 Days</span>
             </div>
-            @else
-            <div style="text-align: center; padding: 2.5rem; color: var(--gray-300);"><i class="fas fa-history" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;"></i>No history</div>
-            @endif
+            <div class="filter-pills" id="historyFilter">
+                <button class="filter-pill active" onclick="filterHistory('all', this)">All</button>
+                @foreach($rolesWithData as $r)
+                <button class="filter-pill" onclick="filterHistory('{{ $r }}', this)">{{ $roleNames[$r] ?? ucfirst($r) }}</button>
+                @endforeach
+            </div>
         </div>
-    @else
-        @foreach($rolesWithData as $role)
-            @php $hLabels = \App\Support\TaskLabels::get($role); $rHistory = $historyByRole[$role] ?? collect(); $rbc = $roleBadgeColors[$role] ?? ['bg' => '#F3F4F6', 'text' => '#6B7280', 'accent' => '#6B7280']; @endphp
-            <div style="background: var(--white); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--border); border-left: 4px solid {{ $rbc['accent'] }};" class="anim-up d5">
-                <div style="padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--muted); display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="font-weight: 700; font-size: 0.8rem;">{{ $roleDisplayNames[$role] ?? ucfirst($role) }}</span>
-                    <span style="background: var(--muted); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.6rem; font-weight: 700; color: var(--gray-400);">{{ $rHistory->count() }} days</span>
-                </div>
-                @if($rHistory->count())
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                        <thead><tr>
-                            <th style="padding: 0.5rem 1rem; text-align: left; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Date</th>
-                            <th style="padding: 0.5rem 0.75rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Members</th>
-                            @foreach(['task_1','task_2','task_3','task_4','task_5'] as $tk)
-                            <th style="padding: 0.5rem 0.625rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">{{ $hLabels[$tk] }}</th>
-                            @endforeach
-                            <th style="padding: 0.5rem 0.625rem; text-align: center; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); background: #FAFAFA; border-bottom: 1px solid var(--muted);">Total</th>
-                        </tr></thead>
-                        <tbody>
-                            @foreach($rHistory as $hd)
-                            <tr style="border-bottom: 1px solid #F5F5F5; cursor: pointer;" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='transparent'">
-                                <td style="padding: 0.625rem 1rem; font-weight: 700; white-space: nowrap; font-size: 0.8rem;">{{ $hd->date->format('M d, Y') }}</td>
-                                <td style="padding: 0.625rem; text-align: center; font-size: 0.8rem;">{{ $hd->user_count }}</td>
-                                @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $tk)
-                                <td style="padding: 0.625rem; text-align: center; font-weight: 600; font-size: 0.8rem;">{{ $hd->$tk }}</td>
+        <div style="overflow-x: auto;">
+            <table class="ut" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Role</th>
+                        <th style="text-align: center;">Members</th>
+                        <th class="th-pip" style="text-align: center;">Tasks</th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_1"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_2"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_3"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_4"></th>
+                        <th class="th-col" style="text-align: center; display: none;" data-col="task_5"></th>
+                        <th style="text-align: center;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($historyDays as $hd)
+                    @php $hLabels = \App\Support\TaskLabels::get($hd->role); @endphp
+                    <tr data-role="{{ $hd->role }}" onclick="window.location='{{ route('admin.daily-logs', array_merge(request()->query(), ['day' => $hd->date->format('Y-m-d')])) }}'" style="cursor: pointer;">
+                        <td style="font-weight: 600;">{{ $hd->date->format('M d, Y') }}</td>
+                        <td><span class="role-badge {{ $hd->role }}">{{ $roleNames[$hd->role] ?? ucfirst($hd->role) }}</span></td>
+                        <td class="num">{{ $hd->user_count }}</td>
+                        <td class="td-pips" style="text-align: center;">
+                            <div class="task-pip">
+                                @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $i => $tk)
+                                <span title="{{ $hLabels['task_' . ($i+1)] }}">{{ $hd->$tk ?: '—' }}</span>
                                 @endforeach
-                                <td style="padding: 0.625rem; text-align: center; font-weight: 800; font-size: 0.8rem;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @else
-                <div style="text-align: center; padding: 1.5rem; color: var(--gray-300); font-size: 0.8rem;">No history</div>
-                @endif
-            </div>
-        @endforeach
-    @endif
+                            </div>
+                        </td>
+                        @foreach(['total_task_1','total_task_2','total_task_3','total_task_4','total_task_5'] as $i => $tk)
+                        <td class="td-cols num" style="display: none;" data-label="{{ $hLabels['task_' . ($i+1)] }}">{{ $hd->$tk ?: '—' }}</td>
+                        @endforeach
+                        <td class="num" style="font-weight: 800;">{{ $hd->total_task_1 + $hd->total_task_2 + $hd->total_task_3 + $hd->total_task_4 + $hd->total_task_5 }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" class="empty-state"><i class="fas fa-clock-rotate-left"></i>No history</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var labels = @json($chartLabels);
-    var newSku = @json($chartNewSku);
-    var variationSku = @json($chartVariationSku);
-    var dataGathering = @json($chartDataGathering);
-    var updateListings = @json($chartUpdateListings);
-    var otherTasks = @json($chartOtherTasks);
-    var prodLabels = @json($prodLabels);
-    var prodData = @json($prodData);
+// === Role task labels for column headers ===
+var roleLabels = {};
+@foreach($rolesWithData as $r)
+    @php $rL = \App\Support\TaskLabels::get($r); @endphp
+    roleLabels['{{ $r }}'] = ['{{ $rL['task_1'] }}', '{{ $rL['task_2'] }}', '{{ $rL['task_3'] }}', '{{ $rL['task_4'] }}', '{{ $rL['task_5'] }}'];
+@endforeach
 
-    var dailyCtx = document.getElementById('dailyTasksChart');
-    if (dailyCtx) {
-        new Chart(dailyCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: labels.length ? labels : ['No Data'],
-                datasets: [
-                    { label: 'New SKU', data: newSku.length ? newSku : [0], backgroundColor: '#3B82F6', borderRadius: 4 },
-                    { label: 'Var. SKU', data: variationSku.length ? variationSku : [0], backgroundColor: '#8B5CF6', borderRadius: 4 },
-                    { label: 'Data Gather', data: dataGathering.length ? dataGathering : [0], backgroundColor: '#059669', borderRadius: 4 },
-                    { label: 'Update', data: updateListings.length ? updateListings : [0], backgroundColor: '#F59E0B', borderRadius: 4 },
-                    { label: 'Other', data: otherTasks.length ? otherTasks : [0], backgroundColor: '#EC4899', borderRadius: 4 }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10, family: 'Outfit' } } } },
-                scales: {
-                    x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10, family: 'Outfit' } } },
-                    y: { stacked: true, beginAtZero: true, grid: { color: '#F1F5F9' }, ticks: { font: { size: 10, family: 'Outfit' } } }
-                }
-            }
-        });
+// === Filter: Today's Logs ===
+function filterToday(role, btn) {
+    btn.closest('.filter-pills').querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    var thead = document.querySelector('#todayTable thead tr');
+    var thPip = thead.querySelector('.th-pip');
+    var thCols = thead.querySelectorAll('.th-col');
+    var allPips = document.querySelectorAll('#todayTable .td-pips');
+    var allCols = document.querySelectorAll('#todayTable .td-cols');
+
+    if (role === 'all') {
+        thPip.style.display = '';
+        thCols.forEach(function(el) { el.style.display = 'none'; el.textContent = ''; });
+        allPips.forEach(function(el) { el.style.display = ''; });
+        allCols.forEach(function(el) { el.style.display = 'none'; });
+    } else {
+        var labels = roleLabels[role] || [];
+        thPip.style.display = 'none';
+        thCols.forEach(function(el, i) { el.style.display = ''; el.textContent = labels[i] || ''; });
+        allPips.forEach(function(el) { el.style.display = 'none'; });
+        allCols.forEach(function(el) { el.style.display = ''; });
     }
 
-    var prodCtx = document.getElementById('productivityChart');
-    if (prodCtx) {
-        var barColors = ['#3B82F6','#8B5CF6','#059669','#F59E0B','#EC4899','#06B6D4','#F97316','#6366F1'];
-        new Chart(prodCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: prodLabels.length ? prodLabels : ['No Data'],
-                datasets: [{ label: 'Tasks', data: prodData.length ? prodData : [0], backgroundColor: barColors.slice(0, prodLabels.length || 1), borderRadius: 4 }]
+    document.querySelectorAll('#todayTable tbody tr[data-role]').forEach(function(row) {
+        row.style.display = (role === 'all' || row.getAttribute('data-role') === role) ? '' : 'none';
+    });
+}
+
+// === Filter: History ===
+function filterHistory(role, btn) {
+    btn.closest('.filter-pills').querySelectorAll('.filter-pill').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    var thead = document.querySelector('#historyTable thead tr');
+    var thPip = thead.querySelector('.th-pip');
+    var thCols = thead.querySelectorAll('.th-col');
+    var allPips = document.querySelectorAll('#historyTable .td-pips');
+    var allCols = document.querySelectorAll('#historyTable .td-cols');
+
+    if (role === 'all') {
+        thPip.style.display = '';
+        thCols.forEach(function(el) { el.style.display = 'none'; el.textContent = ''; });
+        allPips.forEach(function(el) { el.style.display = ''; });
+        allCols.forEach(function(el) { el.style.display = 'none'; });
+    } else {
+        var labels = roleLabels[role] || [];
+        thPip.style.display = 'none';
+        thCols.forEach(function(el, i) { el.style.display = ''; el.textContent = labels[i] || ''; });
+        allPips.forEach(function(el) { el.style.display = 'none'; });
+        allCols.forEach(function(el) { el.style.display = ''; });
+    }
+
+    document.querySelectorAll('#historyTable tbody tr[data-role]').forEach(function(row) {
+        row.style.display = (role === 'all' || row.getAttribute('data-role') === role) ? '' : 'none';
+    });
+}
+
+// === Charts ===
+document.addEventListener('DOMContentLoaded', function() {
+    var weeklyEl = document.getElementById('weeklyChart');
+    if (weeklyEl) {
+        new ApexCharts(weeklyEl, {
+            chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter', stacked: true, foreColor: '#64748b' },
+            series: [
+                { name: 'New SKU', data: {!! json_encode($chartNewSku) !!} },
+                { name: 'Var. SKU', data: {!! json_encode($chartVariationSku) !!} },
+                { name: 'Data Gather', data: {!! json_encode($chartDataGathering) !!} },
+                { name: 'Update', data: {!! json_encode($chartUpdateListings) !!} },
+                { name: 'Other', data: {!! json_encode($chartOtherTasks) !!} }
+            ],
+            colors: ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'],
+            plotOptions: { bar: { columnWidth: '55%', borderRadius: { topLeft: 4, topRight: 4 } } },
+            xaxis: {
+                categories: {!! json_encode($chartLabels) !!},
+                labels: { style: { fontWeight: 600, fontSize: '11px', colors: '#94a3b8' } },
+                axisBorder: { show: false }, axisTicks: { show: false }
             },
-            options: {
-                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { beginAtZero: true, grid: { color: '#F1F5F9' }, ticks: { font: { size: 10, family: 'Outfit' } } },
-                    y: { grid: { display: false }, ticks: { font: { size: 10, family: 'Outfit', weight: 600 } } }
-                }
+            yaxis: {
+                labels: { style: { fontWeight: 500, fontSize: '11px', colors: '#94a3b8' }, padding: 4 },
+                tickAmount: 4
+            },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
+            tooltip: {
+                theme: 'light',
+                style: { fontSize: '13px', fontFamily: 'Inter' },
+                y: { formatter: function(val) { return val + ' tasks'; } }
+            },
+            legend: {
+                position: 'bottom',
+                labels: { colors: '#64748b', useSeriesColors: true, fontWeight: 600, fontSize: '11px' },
+                markers: { width: 10, height: 10, radius: 3, strokeWidth: 0 },
+                itemMargin: { horizontal: 8 }
             }
+        }).render();
+    }
+
+    var prodEl = document.getElementById('productivityChart');
+    if (prodEl) {
+        var prodData = {!! json_encode($prodData) !!};
+        var prodColors = prodData.map(function(v, i) {
+            var palette = ['#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#ddd6fe', '#e0e7ff', '#4f46e5', '#4338ca'];
+            return palette[i % palette.length];
         });
+        new ApexCharts(prodEl, {
+            chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#64748b' },
+            series: [{ name: 'Tasks', data: prodData }],
+            colors: prodColors,
+            plotOptions: {
+                bar: { borderRadius: 8, columnWidth: '55%', distributed: true }
+            },
+            xaxis: {
+                categories: {!! json_encode($prodLabels) !!},
+                labels: { style: { fontWeight: 600, fontSize: '11px', colors: '#94a3b8' } },
+                axisBorder: { show: false }, axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: { style: { fontWeight: 500, fontSize: '11px', colors: '#94a3b8' }, padding: 4 },
+                tickAmount: 4
+            },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 0, padding: { left: 8 } },
+            tooltip: {
+                theme: 'light',
+                style: { fontSize: '13px', fontFamily: 'Inter' },
+                marker: { show: false },
+                y: { formatter: function(val) { return val + ' tasks'; } }
+            },
+            legend: { show: false }
+        }).render();
     }
 });
 </script>
-<script>
-function toggleDropdown() {
-    var submenu = document.getElementById('dailyLogsSubmenu');
-    var arrow = document.getElementById('dropdownArrow');
-    if (submenu.style.display === 'none' || submenu.style.display === '') {
-        submenu.style.display = 'block';
-        arrow.style.transform = 'rotate(180deg)';
-    } else {
-        submenu.style.display = 'none';
-        arrow.style.transform = 'rotate(0deg)';
-    }
-}
-</script>
-<style>
-.nav-dropdown .has-submenu { display: flex !important; align-items: center; justify-content: space-between; }
-.dropdown-arrow { font-size: 0.65rem; transition: transform 0.2s; margin-left: auto; }
-.submenu { list-style: none; padding: 0; margin: 0.25rem 0 0.5rem 1.75rem; }
-.submenu li { margin: 0.125rem 0; }
-.submenu a { display: block; padding: 0.5rem 0.875rem; color: var(--gray-300); text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 0.85rem; transition: all 0.15s; }
-.submenu a:hover { background: var(--gray-700); color: white; }
-.submenu a.active { background: var(--primary); color: white; }
-</style>
 @endsection

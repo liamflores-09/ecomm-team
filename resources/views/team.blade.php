@@ -106,8 +106,8 @@
     .leader-card.manager .lc-role { color: rgba(255,255,255,0.75) !important; }
     .leader-card.manager .lc-badge { background: rgba(255,255,255,0.2); color: white !important; }
 
-    .leader-card.lead { border: 2px solid #EC4899; }
-    .leader-card.lead .lc-badge { background: #FCE7F3; color: #DB2777; }
+    .leader-card.lead { border: 2px solid #6366f1; }
+    .leader-card.lead .lc-badge { background: #6366f1; color: #ffffff; }
 
     .lc-avatar {
         width: 64px;
@@ -148,7 +148,7 @@
         flex-shrink: 0;
     }
 
-    /* Role Badge */
+    /* Role Badge — Cleopatra monochrome gradient */
     .role-badge {
         display: inline-block;
         padding: 0.2rem 0.5rem;
@@ -159,12 +159,12 @@
         letter-spacing: 0.06em;
     }
 
-    .role-badge.manager { background: rgba(255,255,255,0.2); color: white; }
-    .role-badge.lead { background: #FCE7F3; color: #DB2777; }
-    .role-badge.content { background: #D1FAE5; color: #059669; }
-    .role-badge.graphics { background: #DBEAFE; color: #2563EB; }
-    .role-badge.backend { background: #EDE9FE; color: #7C3AED; }
-    .role-badge.researcher { background: #FEF3C7; color: #92400E; }
+    .role-badge.manager { background: #171717; color: #ffffff; }
+    .role-badge.lead { background: #6366f1; color: #ffffff; }
+    .role-badge.content { background: #0ea5e9; color: #ffffff; }
+    .role-badge.graphics { background: #f59e0b; color: #ffffff; }
+    .role-badge.backend { background: #f43f5e; color: #ffffff; }
+    .role-badge.researcher { background: #10b981; color: #ffffff; }
 
     /* Member grid */
     .member-grid {
@@ -255,35 +255,7 @@
 @endsection
 
 @section('content')
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon">ED</div>
-        <div>
-            <h5>Ecomm Dept</h5>
-            <span>PR x Content</span>
-        </div>
-    </div>
-
-    <ul class="sidebar-nav">
-        <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
-        @if(Auth::user()->role === 'content')
-        <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
-        <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
-        <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
-        @endif
-        <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
-        <li><a href="{{ route('end-of-day') }}"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
-        <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>
-        <li><a href="{{ route('team') }}" class="active"><i class="fas fa-users"></i> The Team</a></li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
-        </form>
-    </div>
-</div>
+<x-sidebar active="team" />
 
 <div class="main-content">
     <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
@@ -306,12 +278,12 @@
             <h3>Ecomm Department</h3>
             <p>Content, PR, Design, and Backend teams working together across e-commerce platforms</p>
             <div class="th-stats">
-                <div class="th-stat"><div class="dot" style="background: var(--secondary);"></div> Content — {{ $content->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #92400E;"></div> Research — {{ $researchers->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: var(--accent);"></div> Graphics — {{ $graphics->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #8B5CF6;"></div> Backend — {{ $backend->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: #EC4899;"></div> Lead — {{ $leads->count() }}</div>
-                <div class="th-stat"><div class="dot" style="background: var(--primary);"></div> Manager — {{ $managers->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #0ea5e9;"></div> Content — {{ $content->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #10b981;"></div> Research — {{ $researchers->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #f59e0b;"></div> Graphics — {{ $graphics->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #f43f5e;"></div> Backend — {{ $backend->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #6366f1;"></div> Lead — {{ $leads->count() }}</div>
+                <div class="th-stat"><div class="dot" style="background: #171717;"></div> Manager — {{ $managers->count() }}</div>
             </div>
         </div>
     </div>
@@ -327,7 +299,7 @@
     <div class="leader-row anim-up d2">
         @foreach($managers as $m)
         <div class="leader-card manager">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $m->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $m->username }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($m->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $m->username . 'Female' : $m->username }}" class="lc-avatar" alt="{{ $m->username }}">
             <div class="lc-info">
                 <div class="lc-name">{{ $m->first_name }} {{ $m->last_name }}</div>
                 @if($m->mobile_number)
@@ -346,7 +318,7 @@
     <!-- Lead -->
     @if($leads->count())
     <div class="team-divider anim-up d3">
-        <div class="td-icon" style="background: #EC4899;"><i class="fas fa-star"></i></div>
+        <div class="td-icon" style="background: #6366f1;"><i class="fas fa-star"></i></div>
         <h3>Lead</h3>
         <span class="td-count">{{ $leads->count() }}</span>
         <div class="td-line"></div>
@@ -354,7 +326,7 @@
     <div class="leader-row anim-up d3">
         @foreach($leads as $l)
         <div class="leader-card lead">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $l->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="lc-avatar" alt="{{ $l->username }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($l->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $l->username . 'Female' : $l->username }}" class="lc-avatar" alt="{{ $l->username }}">
             <div class="lc-info">
                 <div class="lc-name">{{ $l->first_name }} {{ $l->last_name }}</div>
                 @if($l->mobile_number)
@@ -373,7 +345,7 @@
     <!-- Product Researcher -->
     @if($researchers->count())
     <div class="team-divider anim-up d3b">
-        <div class="td-icon" style="background: #92400E;"><i class="fas fa-magnifying-glass"></i></div>
+        <div class="td-icon" style="background: #10b981;"><i class="fas fa-magnifying-glass"></i></div>
         <h3>Product Researcher</h3>
         <span class="td-count">{{ $researchers->count() }}</span>
         <div class="td-line"></div>
@@ -381,7 +353,7 @@
     <div class="member-grid anim-up d3b">
         @foreach($researchers as $r)
         <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $r->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $r->username }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($r->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $r->username . 'Female' : $r->username }}" class="member-avatar" alt="{{ $r->username }}">
             <div style="flex: 1; min-width: 0;">
                 <div class="member-name">{{ $r->first_name }} {{ $r->last_name }}</div>
                 <span class="role-badge researcher">Researcher</span>
@@ -409,7 +381,7 @@
     <div class="member-grid anim-up d4">
         @foreach($content as $c)
         <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $c->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $c->username }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($c->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $c->username . 'Female' : $c->username }}" class="member-avatar" alt="{{ $c->username }}">
             <div style="flex: 1; min-width: 0;">
                 <div class="member-name">{{ $c->first_name }} {{ $c->last_name }}</div>
                 <span class="role-badge content">Content</span>
@@ -443,7 +415,7 @@
         @foreach($graphics as $g)
         <div class="design-card">
             <div class="design-card-header">
-                <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $g->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="dc-avatar" alt="{{ $g->username }}">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($g->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $g->username . 'Female' : $g->username }}" class="dc-avatar" alt="{{ $g->username }}">
                 <div>
                     <div class="dc-name">{{ $g->first_name }} {{ $g->last_name }}</div>
                     <span class="role-badge graphics">Graphics</span>
@@ -467,7 +439,7 @@
 
     <!-- Backend Team -->
     <div class="team-divider anim-up d6">
-        <div class="td-icon" style="background: #8B5CF6;"><i class="fas fa-server"></i></div>
+        <div class="td-icon" style="background: #f43f5e;"><i class="fas fa-server"></i></div>
         <h3>Backend Team</h3>
         <span class="td-count">{{ $backend->count() }}</span>
         <div class="td-line"></div>
@@ -477,7 +449,7 @@
     <div class="member-grid anim-up d6">
         @foreach($backend as $b)
         <div class="member-card">
-            <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ $b->username }}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf" class="member-avatar" alt="{{ $b->username }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ in_array($b->username, ['jamie', 'em', 'ange', 'czein', 'well']) ? $b->username . 'Female' : $b->username }}" class="member-avatar" alt="{{ $b->username }}">
             <div style="flex: 1; min-width: 0;">
                 <div class="member-name">{{ $b->first_name }} {{ $b->last_name }}</div>
                 <span class="role-badge backend">Backend</span>

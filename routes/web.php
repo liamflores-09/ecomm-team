@@ -35,5 +35,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/daily-logs', [AdminController::class, 'dailyLogs'])->name('admin.daily-logs');
+        Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
     });
 });

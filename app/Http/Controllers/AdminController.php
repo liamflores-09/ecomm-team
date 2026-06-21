@@ -28,6 +28,30 @@ class AdminController extends Controller
             ->whereYear('date', now()->year)
             ->count();
 
+        // This month total tasks
+        $thisMonthTasks = DailyLog::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
+
+        // Last month for comparison
+        $lastMonthTasks = DailyLog::whereMonth('date', now()->subMonth()->month)
+            ->whereYear('date', now()->subMonth()->year)
+            ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
+
+        // Today's status
+        $todayLogged = DailyLog::where('date', now()->toDateString())->pluck('user_id')->unique()->count();
+        $nonManagerUsers = User::where('role', '!=', 'manager')->count();
+        $todayPending = max(0, $nonManagerUsers - $todayLogged);
+
+        // Top contributor this month
+        $topContributor = DailyLog::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->select('users.username', DB::raw('SUM(task_1 + task_2 + task_3 + task_4 + task_5) as total'))
+            ->groupBy('users.username')
+            ->orderByDesc('total')
+            ->first();
+
         $dailyTotals = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
             ->select(
                 'date',
@@ -41,7 +65,7 @@ class AdminController extends Controller
             ->orderBy('date')
             ->get();
 
-        $chartLabels = $dailyTotals->pluck('date')->map(fn($d) => $d->format('M d'))->toArray();
+        $chartLabels = $dailyTotals->pluck('date')->map(fn($d) => $d->format('D'))->toArray();
         $chartNewSku = $dailyTotals->pluck('total_task_1')->toArray();
         $chartVariationSku = $dailyTotals->pluck('total_task_2')->toArray();
         $chartDataGathering = $dailyTotals->pluck('total_task_3')->toArray();
@@ -64,7 +88,7 @@ class AdminController extends Controller
 
         $recentActivity = ActivityLog::with('user')
             ->latest()
-            ->take(10)
+            ->take(8)
             ->get();
 
         $todayLogs = DailyLog::where('date', now()->toDateString())
@@ -74,7 +98,9 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend',
-            'totalLogs', 'thisMonthLogs', 'recentActivity',
+            'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
+            'todayLogged', 'todayPending', 'topContributor',
+            'recentActivity',
             'chartLabels', 'chartNewSku', 'chartVariationSku', 'chartDataGathering', 'chartUpdateListings', 'chartOtherTasks',
             'prodLabels', 'prodData',
             'todayLogs'
@@ -357,6 +383,219 @@ class AdminController extends Controller
             'memberLogStatus', 'roleFilter',
             'calendarMonth', 'calendarDays', 'selectedDay', 'selectedDayLogs',
             'historyDays', 'historyByRole', 'rolesWithData'
+        ));
+    }
+
+    public function reports()
+    {
+        $user = Auth::user();
+        $roleFilter = request()->query('role');
+        $month = request()->query('month', now()->format('Y-m'));
+
+        $logQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        if ($roleFilter) {
+            $logQuery->where('users.role', $roleFilter);
+        }
+
+        $rolesWithData = $logQuery->clone()->distinct()->pluck('users.role')->sort()->values()->toArray();
+
+        // Available months
+        $availableMonthsQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        if ($roleFilter) {
+            $availableMonthsQuery->where('users.role', $roleFilter);
+        }
+        $availableMonths = $availableMonthsQuery
+            ->selectRaw("DISTINCT DATE_FORMAT(daily_logs.date, '%Y-%m') as month")
+            ->orderByDesc('month')
+            ->pluck('month')
+            ->toArray();
+        if (empty($availableMonths)) $availableMonths = [now()->format('Y-m')];
+
+        // Weekly data for selected month
+        $monthStart = \Carbon\Carbon::parse($month)->startOfMonth();
+        $monthEnd = $monthStart->copy()->endOfMonth();
+
+        $weeklyLogs = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereBetween('daily_logs.date', [$monthStart, $monthEnd]);
+        if ($roleFilter) {
+            $weeklyLogs->where('users.role', $roleFilter);
+        }
+        $weeklyLogs = $weeklyLogs
+            ->select(
+                'users.username', 'users.role', 'daily_logs.date',
+                DB::raw('WEEK(daily_logs.date, 1) as week_num'),
+                'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
+                'daily_logs.task_4', 'daily_logs.task_5'
+            )
+            ->orderBy('daily_logs.date')
+            ->orderBy('users.username')
+            ->get();
+
+        // Group by week number
+        $weeks = $weeklyLogs->groupBy('week_num')->map(function ($logs, $weekNum) {
+            return [
+                'week_num' => $weekNum,
+                'days' => $logs->groupBy('date')->map(function ($dayLogs, $date) {
+                    return [
+                        'date' => $date,
+                        'members' => $dayLogs->map(fn($l) => [
+                            'username' => $l->username,
+                            'role' => $l->role,
+                            'task_1' => $l->task_1,
+                            'task_2' => $l->task_2,
+                            'task_3' => $l->task_3,
+                            'task_4' => $l->task_4,
+                            'task_5' => $l->task_5,
+                        ])->values(),
+                    ];
+                })->values(),
+                'total_t1' => $logs->sum('task_1'),
+                'total_t2' => $logs->sum('task_2'),
+                'total_t3' => $logs->sum('task_3'),
+                'total_t4' => $logs->sum('task_4'),
+                'total_t5' => $logs->sum('task_5'),
+            ];
+        })->values();
+
+        // Month totals
+        $monthTotal = [
+            't1' => $weeklyLogs->sum('task_1'),
+            't2' => $weeklyLogs->sum('task_2'),
+            't3' => $weeklyLogs->sum('task_3'),
+            't4' => $weeklyLogs->sum('task_4'),
+            't5' => $weeklyLogs->sum('task_5'),
+        ];
+
+        // Task labels for this role
+        $taskLabels = \App\Support\TaskLabels::get($roleFilter ?: 'content');
+
+        // Share/pivot data: per task type, per week, per member
+        $taskKeys = ['task_1', 'task_2', 'task_3', 'task_4', 'task_5'];
+        $taskNames = [
+            'task_1' => $taskLabels['task_1'] ?? 'Task 1',
+            'task_2' => $taskLabels['task_2'] ?? 'Task 2',
+            'task_3' => $taskLabels['task_3'] ?? 'Task 3',
+            'task_4' => $taskLabels['task_4'] ?? 'Task 4',
+            'task_5' => $taskLabels['task_5'] ?? 'Task 5',
+        ];
+        $memberNames = $weeklyLogs->pluck('username')->unique()->sort()->values()->toArray();
+
+        $shareData = collect($taskKeys)->map(function ($tk) use ($weeklyLogs, $taskNames, $memberNames) {
+            $weekData = $weeklyLogs->groupBy('week_num')->map(function ($weekLogs, $wk) use ($tk, $memberNames) {
+                $weekTotal = $weekLogs->sum($tk);
+                $members = collect($memberNames)->mapWithKeys(function ($name) use ($weekLogs, $tk, $weekTotal) {
+                    $val = $weekLogs->where('username', $name)->sum($tk);
+                    $pct = $weekTotal > 0 ? round(($val / $weekTotal) * 100, 2) : 0;
+                    return [$name => ['tasks' => $val, 'share' => $pct]];
+                });
+                return [
+                    'week_num' => $wk,
+                    'total' => $weekTotal,
+                    'members' => $members,
+                ];
+            })->values();
+
+            return [
+                'task_key' => $tk,
+                'task_name' => $taskNames[$tk],
+                'weeks' => $weekData,
+            ];
+        });
+
+        // Previous months totals
+        $allMonths = collect($availableMonths)->map(function ($m) use ($roleFilter) {
+            $start = \Carbon\Carbon::parse($m)->startOfMonth();
+            $end = $start->copy()->endOfMonth();
+            $totalsQuery = DailyLog::whereBetween('date', [$start, $end]);
+            if ($roleFilter) {
+                $totalsQuery->whereHas('user', fn($q) => $q->where('role', $roleFilter));
+            }
+            $totals = $totalsQuery->selectRaw('
+                    SUM(task_1) as t1, SUM(task_2) as t2, SUM(task_3) as t3,
+                    SUM(task_4) as t4, SUM(task_5) as t5
+                ')->first();
+            return [
+                'month' => $m,
+                'label' => $start->format('F'),
+                'short' => $start->format('M'),
+                'year' => $start->format('Y'),
+                't1' => $totals->t1 ?? 0, 't2' => $totals->t2 ?? 0,
+                't3' => $totals->t3 ?? 0, 't4' => $totals->t4 ?? 0,
+                't5' => $totals->t5 ?? 0,
+                'total' => ($totals->t1 ?? 0) + ($totals->t2 ?? 0) + ($totals->t3 ?? 0) + ($totals->t4 ?? 0) + ($totals->t5 ?? 0),
+            ];
+        })->sortBy('month')->values();
+
+        // Per-member monthly breakdown: each member's task_1..task_5 per month
+        $memberMonthlyQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        if ($roleFilter) {
+            $memberMonthlyQuery->where('users.role', $roleFilter);
+        }
+        $memberMonthlyRaw = $memberMonthlyQuery
+            ->select(
+                'users.username',
+                DB::raw("DATE_FORMAT(daily_logs.date, '%Y-%m') as month_key"),
+                DB::raw('SUM(task_1) as t1'),
+                DB::raw('SUM(task_2) as t2'),
+                DB::raw('SUM(task_3) as t3'),
+                DB::raw('SUM(task_4) as t4'),
+                DB::raw('SUM(task_5) as t5')
+            )
+            ->groupBy('users.username', 'month_key')
+            ->orderBy('month_key')
+            ->orderBy('users.username')
+            ->get();
+
+        // Structure: [ month_key => [ [username, t1..t5, total], ... ], ... ]
+        $memberMonthly = $memberMonthlyRaw->groupBy('month_key')->map(function ($rows) {
+            return $rows->map(function ($r) {
+                $total = $r->t1 + $r->t2 + $r->t3 + $r->t4 + $r->t5;
+                return [
+                    'username' => $r->username,
+                    't1' => $r->t1, 't2' => $r->t2, 't3' => $r->t3,
+                    't4' => $r->t4, 't5' => $r->t5,
+                    'total' => $total,
+                ];
+            })->values();
+        });
+
+        // Full 12-month year overview for selected year
+        $selectedYear = \Carbon\Carbon::parse($month)->year;
+        $yearDataQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereYear('daily_logs.date', $selectedYear);
+        if ($roleFilter) {
+            $yearDataQuery->where('users.role', $roleFilter);
+        }
+        $yearData = $yearDataQuery
+            ->select(
+                DB::raw("MONTH(daily_logs.date) as month_num"),
+                DB::raw('SUM(task_1) as t1'),
+                DB::raw('SUM(task_2) as t2'),
+                DB::raw('SUM(task_3) as t3'),
+                DB::raw('SUM(task_4) as t4'),
+                DB::raw('SUM(task_5) as t5')
+            )
+            ->groupBy('month_num')
+            ->get()
+            ->keyBy('month_num');
+
+        $yearOverview = collect();
+        for ($m = 1; $m <= 12; $m++) {
+            $row = $yearData->get($m);
+            $t1 = $row->t1 ?? 0; $t2 = $row->t2 ?? 0;
+            $t3 = $row->t3 ?? 0; $t4 = $row->t4 ?? 0; $t5 = $row->t5 ?? 0;
+            $yearOverview->push([
+                'month' => \Carbon\Carbon::create($selectedYear, $m, 1)->format('F'),
+                'month_num' => $m,
+                't1' => $t1, 't2' => $t2, 't3' => $t3, 't4' => $t4, 't5' => $t5,
+                'total' => $t1 + $t2 + $t3 + $t4 + $t5,
+            ]);
+        }
+
+        return view('admin.reports', compact(
+            'user', 'roleFilter', 'rolesWithData',
+            'month', 'availableMonths', 'weeks', 'monthTotal', 'allMonths', 'memberMonthly', 'yearOverview', 'selectedYear',
+            'shareData', 'memberNames'
         ));
     }
 }

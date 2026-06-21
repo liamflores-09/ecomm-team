@@ -75,7 +75,7 @@
         background: var(--muted);
         border: 2px solid transparent;
         border-radius: 6px;
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
         color: var(--fg);
@@ -104,7 +104,7 @@
         background: var(--muted);
         border: 2px solid transparent;
         border-radius: 6px;
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
         color: var(--fg);
@@ -125,7 +125,7 @@
         background: var(--muted);
         border: 2px solid transparent;
         border-radius: 6px;
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
         color: var(--fg);
@@ -309,35 +309,7 @@
 @endsection
 
 @section('content')
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-icon">EC</div>
-        <div>
-            <h5>Ecomm Dept</h5>
-            <span>PR x Content</span>
-        </div>
-    </div>
-
-    <ul class="sidebar-nav">
-        <li><a href="{{ route('dashboard') }}"><i class="fas fa-grip"></i> Dashboard</a></li>
-        @if($user->role === 'content')
-        <li><a href="{{ route('posting-procedure') }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
-        <li><a href="{{ route('data-gathering') }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
-        <li><a href="{{ route('ecommerce-requirements') }}"><i class="fas fa-clipboard-list"></i> E-commerce Requirements</a></li>
-        @endif
-        <li><a href="{{ route('price-calculator') }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
-        <li><a href="{{ route('end-of-day') }}" class="active"><i class="fas fa-calendar-check"></i> End-of-Day Report</a></li>
-        <li><a href="{{ route('important-links') }}"><i class="fas fa-link"></i> Important Links</a></li>
-        <li><a href="{{ route('team') }}"><i class="fas fa-users"></i> The Team</a></li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn-logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
-        </form>
-    </div>
-</div>
+<x-sidebar active="end-of-day" />
 
 <div class="main-content">
     <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
