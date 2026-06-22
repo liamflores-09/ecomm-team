@@ -5,16 +5,6 @@
 
 @section('styles')
 <style>
-    /* ── Role palette ────────────────────────────────────────────── */
-    :root {
-        --rc-manager:    #1e293b;
-        --rc-lead:       #6366f1;
-        --rc-researcher: #10b981;
-        --rc-content:    #0ea5e9;
-        --rc-graphics:   #f59e0b;
-        --rc-backend:    #f43f5e;
-    }
-
     /* ── Role tabs ───────────────────────────────────────────────── */
     .tm-tabs {
         display: flex;
