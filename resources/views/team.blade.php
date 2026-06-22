@@ -15,23 +15,41 @@
         --rc-backend:    #f43f5e;
     }
 
-    /* ── Hero stat bar ───────────────────────────────────────────── */
-    .tm-hero {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
-        padding: 0.875rem 1.25rem; margin-bottom: 2rem;
-        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    /* ── Role tabs ───────────────────────────────────────────────── */
+    .tm-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
     }
-    .tm-hero-label {
-        font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 0.06em; color: var(--gray-400); margin-right: 0.25rem;
+    .tm-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.875rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border-light);
+        background: var(--muted);
+        color: var(--foreground);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
     }
-    .tm-hero-pill {
-        display: inline-flex; align-items: center; gap: 0.35rem;
-        padding: 0.28rem 0.7rem; border-radius: 9999px;
-        font-size: 0.75rem; font-weight: 600;
-        background: var(--muted); color: var(--fg);
+    .tm-tab:hover {
+        border-color: var(--foreground);
     }
-    .tm-hero-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .tm-tab.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+    .tm-tab-count {
+        font-size: 0.7rem;
+        font-weight: 700;
+        opacity: 0.75;
+    }
 
     /* ── Section header ──────────────────────────────────────────── */
     .tm-hd {
@@ -158,31 +176,32 @@
         </div>
     </div>
 
-    {{-- Hero stat pills --}}
-    <div class="tm-hero anim-up d1">
-        <span class="tm-hero-label">{{ $total }} members</span>
+    {{-- Role tabs --}}
+    <div class="tm-tabs anim-up d1">
+        <button class="tm-tab active" data-filter="all">All <span class="tm-tab-count">{{ $total }}</span></button>
         @if($managers->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#1e293b;"></span> Manager <strong style="margin-left:2px;">{{ $managers->count() }}</strong></span>
+        <button class="tm-tab" data-filter="manager">Manager <span class="tm-tab-count">{{ $managers->count() }}</span></button>
         @endif
         @if($leads->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#6366f1;"></span> Lead <strong style="margin-left:2px;">{{ $leads->count() }}</strong></span>
+        <button class="tm-tab" data-filter="lead">Lead <span class="tm-tab-count">{{ $leads->count() }}</span></button>
         @endif
         @if($researchers->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#10b981;"></span> Research <strong style="margin-left:2px;">{{ $researchers->count() }}</strong></span>
+        <button class="tm-tab" data-filter="researcher">Researcher <span class="tm-tab-count">{{ $researchers->count() }}</span></button>
         @endif
         @if($content->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#0ea5e9;"></span> Content <strong style="margin-left:2px;">{{ $content->count() }}</strong></span>
+        <button class="tm-tab" data-filter="content">Content <span class="tm-tab-count">{{ $content->count() }}</span></button>
         @endif
         @if($graphics->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#f59e0b;"></span> Graphics <strong style="margin-left:2px;">{{ $graphics->count() }}</strong></span>
+        <button class="tm-tab" data-filter="graphics">Graphics <span class="tm-tab-count">{{ $graphics->count() }}</span></button>
         @endif
         @if($backend->count())
-        <span class="tm-hero-pill"><span class="tm-hero-dot" style="background:#f43f5e;"></span> Backend <strong style="margin-left:2px;">{{ $backend->count() }}</strong></span>
+        <button class="tm-tab" data-filter="backend">Backend <span class="tm-tab-count">{{ $backend->count() }}</span></button>
         @endif
     </div>
 
     {{-- ════ MANAGER ════ --}}
     @if($managers->count())
+    <div class="tm-section" data-role="manager">
     <div class="tm-hd anim-up d2">
         <div class="tm-hd-icon" style="background:#1e293b;"><i class="fas fa-crown"></i></div>
         <h3>Manager</h3>
@@ -205,10 +224,12 @@
         </div>
         @endforeach
     </div>
+    </div>
     @endif
 
     {{-- ════ LEAD ════ --}}
     @if($leads->count())
+    <div class="tm-section" data-role="lead">
     <div class="tm-hd anim-up d3">
         <div class="tm-hd-icon" style="background:#6366f1;"><i class="fas fa-star"></i></div>
         <h3>Lead</h3>
@@ -231,10 +252,12 @@
         </div>
         @endforeach
     </div>
+    </div>
     @endif
 
     {{-- ════ RESEARCHER ════ --}}
     @if($researchers->count())
+    <div class="tm-section" data-role="researcher">
     <div class="tm-hd anim-up d4">
         <div class="tm-hd-icon" style="background:#10b981;"><i class="fas fa-magnifying-glass"></i></div>
         <h3>Product Researcher</h3>
@@ -253,9 +276,11 @@
         </div>
         @endforeach
     </div>
+    </div>
     @endif
 
     {{-- ════ CONTENT ════ --}}
+    <div class="tm-section" data-role="content">
     <div class="tm-hd anim-up d4">
         <div class="tm-hd-icon" style="background:#0ea5e9;"><i class="fas fa-pen-nib"></i></div>
         <h3>Content Team</h3>
@@ -278,8 +303,10 @@
     @else
     <div class="tm-empty anim-up d4"><i class="fas fa-users"></i> No content members yet.</div>
     @endif
+    </div>
 
     {{-- ════ GRAPHICS ════ --}}
+    <div class="tm-section" data-role="graphics">
     <div class="tm-hd anim-up d5">
         <div class="tm-hd-icon" style="background:#f59e0b;"><i class="fas fa-palette"></i></div>
         <h3>Design Team</h3>
@@ -302,8 +329,10 @@
     @else
     <div class="tm-empty anim-up d5"><i class="fas fa-palette"></i> No graphics members yet.</div>
     @endif
+    </div>
 
     {{-- ════ BACKEND ════ --}}
+    <div class="tm-section" data-role="backend">
     <div class="tm-hd anim-up d5">
         <div class="tm-hd-icon" style="background:#f43f5e;"><i class="fas fa-server"></i></div>
         <h3>Backend Team</h3>
@@ -326,6 +355,25 @@
     @else
     <div class="tm-empty anim-up d5"><i class="fas fa-server"></i> No backend members yet.</div>
     @endif
+    </div>
 
 </div>
+<script>
+(function () {
+    var tabs = document.querySelectorAll('.tm-tab');
+    var sections = document.querySelectorAll('.tm-section');
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            tabs.forEach(function (t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+
+            var filter = tab.dataset.filter;
+            sections.forEach(function (s) {
+                s.style.display = (filter === 'all' || s.dataset.role === filter) ? '' : 'none';
+            });
+        });
+    });
+}());
+</script>
 @endsection
