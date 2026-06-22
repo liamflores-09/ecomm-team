@@ -157,7 +157,125 @@
         <button class="il-tab" data-filter="training">Training <span class="il-tab-count">1</span></button>
     </div>
 
-    {{-- Category sections go here (Task 2) --}}
+    <!-- Posted SKUs -->
+    <div class="il-section" data-category="skus">
+        <div class="il-hd">
+            <span class="il-hd-name">Posted SKUs</span>
+            <span class="il-hd-count">2 links</span>
+        </div>
+        <div class="il-grid">
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Content x PR Posted SKUs 2026</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Content x PR Posted SKUs 2025</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="il-section" data-category="reports">
+        <div class="il-hd">
+            <span class="il-hd-name">Reports & Tracking</span>
+            <span class="il-hd-count">4 links</span>
+        </div>
+        <div class="il-grid">
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Content x GA Dept Report 2026 V2</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">JG QC Tracker</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Operation x Content Inactive Monitoring</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-table"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">JG Ecom CP Tracker</div>
+                <div class="il-card-type">Google Sheet</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Directories -->
+    <div class="il-section" data-category="dirs">
+        <div class="il-hd">
+            <span class="il-hd-name">Directories & Master Files</span>
+            <span class="il-hd-count">3 links</span>
+        </div>
+        <div class="il-grid">
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-folder-open"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">JG SUPERSTORE ECOMMERCE DIRECTORY</div>
+                <div class="il-card-type">Folder</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-folder-open"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Change SKU Tracker</div>
+                <div class="il-card-type">Folder</div>
+            </a>
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-folder-open"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Freebie & Update CVP Monitoring V2 2026</div>
+                <div class="il-card-type">Folder</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Training -->
+    <div class="il-section" data-category="training">
+        <div class="il-hd">
+            <span class="il-hd-name">Training Resources</span>
+            <span class="il-hd-count">1 link</span>
+        </div>
+        <div class="il-grid">
+            <a href="#" target="_blank" class="il-card">
+                <div class="il-card-top">
+                    <div class="il-card-icon"><i class="fas fa-folder-open"></i></div>
+                    <i class="fas fa-arrow-up-right-from-square il-card-ext"></i>
+                </div>
+                <div class="il-card-name">Content Associate Training Files</div>
+                <div class="il-card-type">Folder</div>
+            </a>
+        </div>
+    </div>
 
     <script>
     (function () {
