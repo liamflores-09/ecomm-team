@@ -9,249 +9,129 @@
 
 @section('styles')
 <style>
-    .links-layout {
-        display: grid;
-        grid-template-columns: 220px 1fr;
-        gap: 0;
-        background: var(--white);
-        border-radius: 8px;
-        overflow: hidden;
-        min-height: 400px;
-    }
-
-    /* Category Tabs */
-    .cat-tabs {
-        background: var(--muted);
-        border-right: 2px solid var(--border);
-        padding: 0.5rem;
-    }
-
-    .cat-tab {
+    /* ── Tabs ─────────────────────────────────────────────────── */
+    .il-tabs {
         display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .il-tab {
+        display: inline-flex;
         align-items: center;
-        gap: 0.625rem;
-        padding: 0.75rem 0.875rem;
-        border-radius: 8px;
+        gap: 0.4rem;
+        padding: 0.4rem 0.875rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border-light);
+        background: var(--muted);
+        color: var(--foreground);
+        font-size: 0.8rem;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.15s;
-        margin-bottom: 0.25rem;
-        border: none;
-        background: transparent;
-        width: 100%;
-        text-align: left;
-        font-family: var(--p-font-family-sans);
+        font-family: inherit;
     }
-
-    .cat-tab:hover {
-        background: var(--white);
-    }
-
-    .cat-tab.active {
-        background: var(--white);
-        border: 1px solid var(--border-light, var(--border));
-    }
-
-    .cat-tab .ct-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
+    .il-tab:hover { border-color: var(--foreground); }
+    .il-tab.active {
+        background: var(--primary);
+        border-color: var(--primary);
         color: white;
-        flex-shrink: 0;
-        transition: transform 0.2s;
     }
-
-    .cat-tab:hover .ct-icon,
-    .cat-tab.active .ct-icon {
-        transform: scale(1.1);
-    }
-
-    .ct-icon.ci-blue { background: var(--primary); }
-    .ct-icon.ci-green { background: var(--secondary); }
-    .ct-icon.ci-amber { background: var(--accent); }
-    .ct-icon.ci-dark { background: var(--fg); }
-
-    .cat-tab .ct-text {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .cat-tab .ct-name {
-        display: block;
+    .il-tab-count {
+        font-size: 0.7rem;
         font-weight: 700;
-        font-size: 0.8rem;
-        color: var(--fg);
-        line-height: 1.2;
+        opacity: 0.75;
     }
 
-    .cat-tab .ct-count {
-        display: block;
-        font-size: 0.65rem;
-        font-weight: 500;
-        color: var(--gray-400);
-        margin-top: 0.125rem;
-    }
-
-    /* Link Content */
-    .link-content {
-        padding: 1.5rem;
-    }
-
-    .link-content-header {
+    /* ── Section headers ──────────────────────────────────────── */
+    .il-hd {
         display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--muted);
+        align-items: baseline;
+        gap: 0.625rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.625rem;
+        border-bottom: 1px solid var(--border-light);
     }
-
-    .link-content-header .lch-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1rem;
-    }
-
-    .link-content-header h3 {
+    .il-hd-name {
         font-weight: 800;
-        font-size: 1.1rem;
-        margin: 0;
+        font-size: 0.95rem;
+        color: var(--foreground);
     }
-
-    .link-content-header span {
+    .il-hd-count {
         font-size: 0.75rem;
         font-weight: 500;
-        color: var(--gray-400);
+        color: var(--muted-foreground);
     }
 
-    .link-rows {
+    /* ── Link grid ────────────────────────────────────────────── */
+    .il-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    /* ── Link cards ───────────────────────────────────────────── */
+    .il-card {
+        background: var(--card);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 1.25rem;
+        text-decoration: none;
+        color: var(--foreground);
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 0.5rem;
+        transition: border-color 0.2s;
     }
-
-    .link-row {
+    .il-card:hover { border-color: var(--foreground); }
+    .il-card-top {
         display: flex;
-        align-items: center;
-        gap: 0.875rem;
-        padding: 0.875rem 1rem;
-        border-radius: 8px;
-        transition: all 0.15s;
-        text-decoration: none;
-        color: var(--fg);
-        border: 2px solid transparent;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
     }
-
-    .link-row:hover {
-        background: var(--muted);
-        border-color: var(--border);
-    }
-
-    .link-row .lr-num {
-        width: 28px;
-        height: 28px;
+    .il-card-icon {
+        width: 36px;
+        height: 36px;
         background: var(--muted);
         border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.7rem;
-        font-weight: 800;
-        color: var(--gray-400);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
         flex-shrink: 0;
-        transition: all 0.15s;
+        transition: background 0.2s, color 0.2s;
     }
-
-    .link-row:hover .lr-num {
+    .il-card:hover .il-card-icon {
         background: var(--primary);
         color: white;
     }
-
-    .link-row .lr-info {
-        flex: 1;
-        min-width: 0;
+    .il-card-ext {
+        font-size: 0.65rem;
+        color: var(--border);
+        transition: color 0.2s;
     }
-
-    .link-row .lr-name {
-        font-weight: 600;
-        font-size: 0.9rem;
-        margin-bottom: 0.125rem;
+    .il-card:hover .il-card-ext { color: var(--muted-foreground); }
+    .il-card-name {
+        font-weight: 700;
+        font-size: 0.875rem;
+        line-height: 1.35;
+        color: var(--foreground);
     }
-
-    .link-row .lr-desc {
+    .il-card-type {
         font-size: 0.75rem;
-        color: var(--gray-400);
         font-weight: 500;
+        color: var(--muted-foreground);
     }
 
-    .link-row .lr-arrow {
-        color: var(--gray-300);
-        font-size: 0.75rem;
-        transition: all 0.15s;
-    }
-
-    .link-row:hover .lr-arrow {
-        color: var(--primary);
-        transform: translateX(4px);
-    }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: var(--gray-300);
-    }
-
-    .empty-state i {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    /* Panel visibility */
-    .link-panel { display: none; }
-    .link-panel.active { display: block; animation: fadeIn 0.2s ease-out; }
-
-    /* Responsive */
+    /* ── Responsive ───────────────────────────────────────────── */
     @media (max-width: 768px) {
-        .links-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .cat-tabs {
-            border-right: none;
-            border-bottom: 2px solid var(--border);
-            display: flex;
-            overflow-x: auto;
-            padding: 0.5rem;
-            gap: 0.25rem;
-        }
-
-        .cat-tab {
-            flex-direction: column;
-            text-align: center;
-            padding: 0.5rem 0.75rem;
-            min-width: 80px;
-            margin-bottom: 0;
-        }
-
-        .cat-tab .ct-count { display: none; }
-
-        .link-content { padding: 1rem; }
+        .il-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 480px) {
-        .cat-tab { min-width: 60px; padding: 0.375rem 0.5rem; font-size: 0.7rem; }
-        .link-row { padding: 0.625rem 0.75rem; }
-        .link-row .lr-name { font-size: 0.8rem; }
+        .il-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection
@@ -269,186 +149,31 @@
         </div>
     </div>
 
-    <div class="links-layout anim-up d1">
-        <!-- Category Tabs -->
-        <div class="cat-tabs">
-            <button class="cat-tab active" onclick="switchTab('skus', this)">
-                <div class="ct-icon ci-blue"><i class="fas fa-box"></i></div>
-                <div class="ct-text">
-                    <span class="ct-name">Posted SKUs</span>
-                    <span class="ct-count">2 sheets</span>
-                </div>
-            </button>
-            <button class="cat-tab" onclick="switchTab('reports', this)">
-                <div class="ct-icon ci-green"><i class="fas fa-chart-simple"></i></div>
-                <div class="ct-text">
-                    <span class="ct-name">Reports</span>
-                    <span class="ct-count">4 sheets</span>
-                </div>
-            </button>
-            <button class="cat-tab" onclick="switchTab('dirs', this)">
-                <div class="ct-icon ci-amber"><i class="fas fa-folder-open"></i></div>
-                <div class="ct-text">
-                    <span class="ct-name">Directories</span>
-                    <span class="ct-count">3 sheets</span>
-                </div>
-            </button>
-            <button class="cat-tab" onclick="switchTab('training', this)">
-                <div class="ct-icon ci-dark"><i class="fas fa-graduation-cap"></i></div>
-                <div class="ct-text">
-                    <span class="ct-name">Training</span>
-                    <span class="ct-count">1 folder</span>
-                </div>
-            </button>
-        </div>
-
-        <!-- Link Panels -->
-        <div class="link-content">
-
-            <!-- Posted SKUs -->
-            <div class="link-panel active" id="panel-skus">
-                <div class="link-content-header">
-                    <div class="lch-icon" style="background: var(--primary);"><i class="fas fa-box"></i></div>
-                    <div>
-                        <h3>Posted SKUs Tracking</h3>
-                        <span>2 resources</span>
-                    </div>
-                </div>
-                <div class="link-rows">
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">01</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Content x PR Posted SKUs 2026</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">02</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Content x PR Posted SKUs 2025</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Reports -->
-            <div class="link-panel" id="panel-reports">
-                <div class="link-content-header">
-                    <div class="lch-icon" style="background: var(--secondary);"><i class="fas fa-chart-simple"></i></div>
-                    <div>
-                        <h3>Reports & Tracking</h3>
-                        <span>4 resources</span>
-                    </div>
-                </div>
-                <div class="link-rows">
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">01</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Content x GA Dept Report 2026 V2</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">02</div>
-                        <div class="lr-info">
-                            <div class="lr-name">JG QC Tracker</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">03</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Operation x Content Inactive Monitoring</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">04</div>
-                        <div class="lr-info">
-                            <div class="lr-name">JG Ecom CP Tracker</div>
-                            <div class="lr-desc">Google Sheet</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Directories -->
-            <div class="link-panel" id="panel-dirs">
-                <div class="link-content-header">
-                    <div class="lch-icon" style="background: var(--accent);"><i class="fas fa-folder-open"></i></div>
-                    <div>
-                        <h3>Directories & Master Files</h3>
-                        <span>3 resources</span>
-                    </div>
-                </div>
-                <div class="link-rows">
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">01</div>
-                        <div class="lr-info">
-                            <div class="lr-name">JG SUPERSTORE ECOMMERCE DIRECTORY</div>
-                            <div class="lr-desc">Folder</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">02</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Change SKU Tracker</div>
-                            <div class="lr-desc">Folder</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">03</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Freebie & Update CVP Monitoring V2 2026</div>
-                            <div class="lr-desc">Folder</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Training -->
-            <div class="link-panel" id="panel-training">
-                <div class="link-content-header">
-                    <div class="lch-icon" style="background: var(--fg);"><i class="fas fa-graduation-cap"></i></div>
-                    <div>
-                        <h3>Training Resources</h3>
-                        <span>1 resource</span>
-                    </div>
-                </div>
-                <div class="link-rows">
-                    <a href="#" target="_blank" class="link-row">
-                        <div class="lr-num">01</div>
-                        <div class="lr-info">
-                            <div class="lr-name">Content Associate Training Files</div>
-                            <div class="lr-desc">Folder</div>
-                        </div>
-                        <div class="lr-arrow"><i class="fas fa-arrow-right"></i></div>
-                    </a>
-                </div>
-            </div>
-
-        </div>
+    <div class="il-tabs anim-up d1">
+        <button class="il-tab active" data-filter="all">All <span class="il-tab-count">10</span></button>
+        <button class="il-tab" data-filter="skus">Posted SKUs <span class="il-tab-count">2</span></button>
+        <button class="il-tab" data-filter="reports">Reports <span class="il-tab-count">4</span></button>
+        <button class="il-tab" data-filter="dirs">Directories <span class="il-tab-count">3</span></button>
+        <button class="il-tab" data-filter="training">Training <span class="il-tab-count">1</span></button>
     </div>
-</div>
-@endsection
 
-@section('scripts')
-<script>
-function switchTab(id, btn) {
-    document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
-    document.querySelectorAll('.link-panel').forEach(function(p) { p.classList.remove('active'); });
-    btn.classList.add('active');
-    document.getElementById('panel-' + id).classList.add('active');
-}
-</script>
+    {{-- Category sections go here (Task 2) --}}
+
+    <script>
+    (function () {
+        var tabs = document.querySelectorAll('.il-tab');
+        var sections = document.querySelectorAll('.il-section');
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                var filter = tab.dataset.filter;
+                sections.forEach(function (s) {
+                    s.style.display = (filter === 'all' || s.dataset.category === filter) ? '' : 'none';
+                });
+            });
+        });
+    }());
+    </script>
+</div>
 @endsection
