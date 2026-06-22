@@ -73,25 +73,32 @@
         display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
     }
 
-    /* Leader card: gradient strip + overlapping avatar */
     .tm-lcard {
-        background: var(--card); border-radius: 8px;
-        border: 1px solid var(--border); overflow: hidden;
-        transition: transform 0.2s, border-color 0.2s;
+        background: var(--card);
+        border-radius: 8px;
+        border: 1px solid var(--border-light);
+        overflow: hidden;
+        transition: border-color 0.2s;
     }
-    .tm-lcard:hover { transform: translateY(-3px); border-color: var(--foreground); }
+    .tm-lcard:hover { border-color: var(--foreground); }
 
-    .tm-lcard-strip { height: 72px; }
-
-    .tm-lcard-body { text-align: center; padding: 0 1.5rem 1.5rem; margin-top: -38px; }
+    .tm-lcard-body {
+        text-align: center;
+        padding: 2rem 1.5rem 1.5rem;
+    }
 
     .tm-lcard-avatar {
-        width: 80px; height: 80px; border-radius: 50%;
-        border: 4px solid var(--card); display: block; margin: 0 auto 0.75rem;
-        background: var(--muted); object-fit: cover;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        border: 3px solid var(--border);
+        display: block;
+        margin: 0 auto 0.875rem;
+        background: var(--muted);
+        object-fit: cover;
     }
     .tm-lcard-name { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.2rem; line-height: 1.2; }
-    .tm-lcard-sub  { font-size: 0.73rem; color: var(--gray-400); font-weight: 500; margin-bottom: 0.5rem; }
+    .tm-lcard-sub  { font-size: 0.73rem; color: var(--muted-foreground); font-weight: 500; margin-bottom: 0.5rem; }
 
     .tm-viber-link {
         display: inline-flex; align-items: center; gap: 0.35rem;
@@ -211,7 +218,6 @@
     <div class="tm-leaders anim-up d2">
         @foreach($managers as $u)
         <div class="tm-lcard">
-            <div class="tm-lcard-strip" style="background: #1e293b;"></div>
             <div class="tm-lcard-body">
                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
@@ -239,7 +245,6 @@
     <div class="tm-leaders anim-up d3">
         @foreach($leads as $u)
         <div class="tm-lcard">
-            <div class="tm-lcard-strip" style="background: #6366f1;"></div>
             <div class="tm-lcard-body">
                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
