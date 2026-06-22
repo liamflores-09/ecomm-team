@@ -112,25 +112,31 @@
         display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.875rem;
     }
 
-    /* Member card: centered portrait style */
     .tm-card {
-        background: var(--card); border-radius: 8px;
-        border: 1px solid var(--border); border-top-width: 3px;
-        padding: 1.5rem 1rem 1.25rem; text-align: center;
-        transition: transform 0.2s, border-color 0.2s;
+        background: var(--card);
+        border-radius: 8px;
+        border: 1px solid var(--border-light);
+        padding: 1.5rem 1rem 1.25rem;
+        text-align: center;
+        transition: border-color 0.2s;
     }
-    .tm-card:hover { transform: translateY(-3px); border-color: var(--foreground); }
+    .tm-card:hover { border-color: var(--foreground); }
 
     .tm-avatar {
-        width: 68px; height: 68px; border-radius: 50%;
-        border: 3px solid var(--border); display: block;
-        margin: 0 auto 0.75rem; object-fit: cover;
-        background: var(--muted); transition: border-color 0.2s;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: 2px solid var(--border-light);
+        display: block;
+        margin: 0 auto 0.75rem;
+        object-fit: cover;
+        background: var(--muted);
+        transition: border-color 0.2s;
     }
-    .tm-card:hover .tm-avatar { border-color: var(--tm-role-color, var(--border)); }
+    .tm-card:hover .tm-avatar { border-color: var(--foreground); }
 
     .tm-name { font-weight: 800; font-size: 0.9rem; line-height: 1.25; margin-bottom: 0.35rem; }
-    .tm-username { font-size: 0.7rem; color: var(--gray-400); font-weight: 500; margin-bottom: 0.45rem; }
+    .tm-username { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; margin-bottom: 0.45rem; }
 
     /* ── Role badges ─────────────────────────────────────────────── */
     .role-badge {
@@ -271,8 +277,8 @@
     </div>
     <div class="tm-members anim-up d4">
         @foreach($researchers as $u)
-        <div class="tm-card" style="border-top-color:#10b981; --tm-role-color:#10b981;">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#10b981;" alt="{{ $u->full_name }}">
+        <div class="tm-card">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge researcher">Researcher</span>
             @if($u->mobile_number)
@@ -295,8 +301,8 @@
     @if($content->count())
     <div class="tm-members anim-up d4">
         @foreach($content as $u)
-        <div class="tm-card" style="border-top-color:#0ea5e9; --tm-role-color:#0ea5e9;">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#0ea5e9;" alt="{{ $u->full_name }}">
+        <div class="tm-card">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge content">Content</span>
             @if($u->mobile_number)
@@ -321,8 +327,8 @@
     @if($graphics->count())
     <div class="tm-members anim-up d5">
         @foreach($graphics as $u)
-        <div class="tm-card" style="border-top-color:#f59e0b; --tm-role-color:#f59e0b;">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#f59e0b;" alt="{{ $u->full_name }}">
+        <div class="tm-card">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge graphics">Graphics</span>
             @if($u->mobile_number)
@@ -347,8 +353,8 @@
     @if($backend->count())
     <div class="tm-members anim-up d5">
         @foreach($backend as $u)
-        <div class="tm-card" style="border-top-color:#f43f5e; --tm-role-color:#f43f5e;">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" style="border-color:#f43f5e;" alt="{{ $u->full_name }}">
+        <div class="tm-card">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge backend">Backend</span>
             @if($u->mobile_number)
