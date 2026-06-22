@@ -219,7 +219,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
         <div class="wb-avatar-zone">
             <div class="wb-fade"></div>
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed }}" class="wb-avatar" alt="{{ $user->full_name }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ urlencode($avatarSeed) }}" class="wb-avatar" alt="{{ $user->full_name }}">
         </div>
     </div>
 
