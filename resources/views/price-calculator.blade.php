@@ -33,7 +33,7 @@
         width: 24px;
         height: 24px;
         background: var(--primary);
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -71,7 +71,7 @@
         display: flex;
         gap: 0;
         border: 2px solid var(--border);
-        border-radius: 6px;
+        border-radius: 8px;
         overflow: hidden;
         height: 44px;
     }
@@ -132,7 +132,7 @@
         gap: 0.5rem;
         background: var(--white);
         border: 2px solid var(--border);
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 0 0.75rem;
         height: 40px;
         min-width: 220px;
@@ -165,7 +165,7 @@
         padding: 0 0.75rem;
         background: var(--white);
         border: 2px solid var(--border);
-        border-radius: 6px;
+        border-radius: 8px;
         font-family: var(--p-font-family-sans);
         font-size: 0.85rem;
         font-weight: 500;
@@ -203,7 +203,7 @@
         right: 0;
         background: var(--white);
         border: 2px solid var(--border);
-        border-radius: 6px;
+        border-radius: 8px;
         z-index: 20;
         max-height: 200px;
         overflow-y: auto;
@@ -219,7 +219,7 @@
         display: flex;
         align-items: center;
         padding: 0.5rem 0.625rem;
-        border-radius: 4px;
+        border-radius: 8px;
         font-family: var(--p-font-family-sans);
         font-size: 0.85rem;
         font-weight: 500;
@@ -242,7 +242,7 @@
         width: 16px;
         height: 16px;
         border: 2px solid var(--border);
-        border-radius: 3px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -259,7 +259,7 @@
     .result-count {
         background: var(--muted);
         padding: 0.25rem 0.625rem;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 0.75rem;
         font-weight: 600;
         color: var(--gray-500);
@@ -286,7 +286,7 @@
         width: 24px;
         height: 24px;
         background: var(--primary);
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -359,7 +359,7 @@
 
     .price-table .c-input {
         border: 2px solid transparent;
-        border-radius: 4px;
+        border-radius: 8px;
         padding: 0.375rem 0.5rem;
         font-family: var(--p-font-family-sans);
         font-size: 0.85rem;
@@ -406,7 +406,7 @@
         background: #D1FAE5;
         color: #059669;
         padding: 0.15rem 0.5rem;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 0.7rem;
         font-weight: 700;
     }
@@ -416,7 +416,7 @@
         background: #FEE2E2;
         color: #DC2626;
         padding: 0.15rem 0.5rem;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 0.7rem;
         font-weight: 700;
     }
@@ -426,7 +426,7 @@
         background: #FEF3C7;
         color: #92400E;
         padding: 0.125rem 0.375rem;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 0.6rem;
         font-weight: 700;
         margin-left: 0.375rem;
@@ -438,7 +438,7 @@
         margin-top: 1rem;
         padding: 0.875rem 1rem;
         background: var(--muted);
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 0.8rem;
         font-weight: 500;
         color: var(--gray-500);

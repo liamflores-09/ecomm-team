@@ -33,7 +33,7 @@
         width: 24px;
         height: 24px;
         background: var(--primary);
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -74,7 +74,7 @@
         padding: 0 0.875rem;
         background: var(--muted);
         border: 2px solid transparent;
-        border-radius: 6px;
+        border-radius: 8px;
         font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
@@ -103,7 +103,7 @@
         padding: 0 0.875rem;
         background: var(--muted);
         border: 2px solid transparent;
-        border-radius: 6px;
+        border-radius: 8px;
         font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
@@ -124,7 +124,7 @@
         padding: 0.75rem 0.875rem;
         background: var(--muted);
         border: 2px solid transparent;
-        border-radius: 6px;
+        border-radius: 8px;
         font-family: var(--p-font-family-sans);
         font-size: 0.9rem;
         font-weight: 500;
@@ -223,7 +223,7 @@
         width: 28px;
         height: 28px;
         border: 2px solid var(--border);
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -260,7 +260,7 @@
         width: 32px;
         height: 32px;
         background: var(--fg);
-        border-radius: 6px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;

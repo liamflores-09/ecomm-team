@@ -31,7 +31,7 @@
         align-items: center;
         gap: 0.625rem;
         padding: 0.75rem 0.875rem;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.15s;
         margin-bottom: 0.25rem;
@@ -48,13 +48,13 @@
 
     .cat-tab.active {
         background: var(--white);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--border-light, var(--border));
     }
 
     .cat-tab .ct-icon {
         width: 32px;
         height: 32px;
-        border-radius: 6px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -143,7 +143,7 @@
         align-items: center;
         gap: 0.875rem;
         padding: 0.875rem 1rem;
-        border-radius: 6px;
+        border-radius: 8px;
         transition: all 0.15s;
         text-decoration: none;
         color: var(--fg);
@@ -159,7 +159,7 @@
         width: 28px;
         height: 28px;
         background: var(--muted);
-        border-radius: 6px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;

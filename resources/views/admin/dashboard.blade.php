@@ -9,53 +9,51 @@
 
 @section('styles')
 <style>
-    /* Hero KPIs */
+    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.75rem; }
     .kpi-card {
-        background: var(--white); border-radius: 12px; padding: 1.5rem;
-        border: 1px solid var(--border); transition: all 0.2s; position: relative; overflow: hidden;
+        background: var(--card); border-radius: 8px; padding: 1.5rem;
+        border: 1px solid var(--border-light); transition: border-color 0.2s; position: relative;
     }
-    .kpi-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .kpi-card:hover { border-color: var(--foreground); }
     .kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); }
-    .kpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white; }
-    .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.375rem; }
+    .kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); }
+    .kpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white; background: var(--primary); }
+    .kpi-value { font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.375rem; font-family: 'Space Grotesk', sans-serif; }
     .kpi-bottom { display: flex; align-items: center; justify-content: space-between; }
-    .kpi-sub { font-size: 0.75rem; color: var(--gray-400); font-weight: 500; }
+    .kpi-sub { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; }
     .kpi-spark { width: 60px; height: 24px; }
-    .kpi-trend { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; }
-    .kpi-trend.up   { background: #ecfdf5; color: #059669; }
-    .kpi-trend.down { background: #fef2f2; color: #dc2626; }
+    .kpi-trend { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; font-size: 0.7rem; padding: 3px 8px; border-radius: 9999px; }
+    .kpi-trend.up   { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .kpi-trend.down { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 
-    .kpi-card[data-color="indigo"]  { border-top: 3px solid var(--indigo);  }
-    .kpi-card[data-color="emerald"] { border-top: 3px solid var(--emerald); }
-    .kpi-card[data-color="sky"]     { border-top: 3px solid var(--sky);     }
-    .kpi-card[data-color="amber"]   { border-top: 3px solid var(--amber);   }
-    .kpi-card[data-color="rose"]    { border-top: 3px solid var(--rose);    }
-    .kpi-icon[data-color="indigo"]  { background: var(--indigo);  }
-    .kpi-icon[data-color="emerald"] { background: var(--emerald); }
-    .kpi-icon[data-color="sky"]     { background: var(--sky);     }
-    .kpi-icon[data-color="amber"]   { background: var(--amber);   }
-    .kpi-icon[data-color="rose"]    { background: var(--rose);    }
+    .kpi-card[data-color="indigo"]  { border-top: 2px solid var(--primary); }
+    .kpi-card[data-color="emerald"] { border-top: 2px solid var(--success); }
+    .kpi-card[data-color="sky"]     { border-top: 2px solid var(--primary); }
+    .kpi-card[data-color="amber"]   { border-top: 2px solid var(--warning); }
+    .kpi-card[data-color="rose"]    { border-top: 2px solid var(--destructive); }
+    .kpi-icon[data-color="emerald"] { background: var(--success); }
+    .kpi-icon[data-color="amber"]   { background: var(--warning); }
+    .kpi-icon[data-color="rose"]    { background: var(--destructive); }
 
     /* Team Health */
     .health-card {
-        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
+        background: var(--card); border-radius: 8px; border: 1px solid var(--border-light);
         padding: 1.5rem; margin-bottom: 1.75rem;
     }
     .health-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    .health-header h4 { font-size: 0.9rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
-    .health-header .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); animation: pulse 2s infinite; }
+    .health-header h4 { font-size: 0.9rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; font-family: 'Space Grotesk', sans-serif; }
+    .health-header .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .health-bar-wrap { width: 100%; height: 8px; background: var(--muted); border-radius: 4px; overflow: hidden; margin-bottom: 1rem; }
-    .health-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .health-bar-wrap { width: 100%; height: 6px; background: var(--border-light); border-radius: 9999px; overflow: hidden; margin-bottom: 1rem; }
+    .health-bar { height: 100%; border-radius: 9999px; transition: width 1s ease; }
     .health-avatars { display: flex; align-items: center; gap: 0; }
     .health-avatar {
-        width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--white);
+        width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--card);
         display: block; transition: transform 0.2s;
     }
-    .health-avatar.logged  { border-color: var(--emerald); }
-    .health-avatar.pending { border-color: var(--rose); opacity: 0.5; }
+    .health-avatar.logged  { border-color: var(--success); }
+    .health-avatar.pending { border-color: var(--destructive); opacity: 0.5; }
 
     .avatar-tip-wrap { position: relative; display: inline-flex; margin-left: -10px; }
     .avatar-tip-wrap:first-child { margin-left: 0; }
@@ -67,10 +65,10 @@
         bottom: calc(100% + 6px);
         left: 50%;
         transform: translateX(-50%);
-        background: #1e293b;
-        color: #fff;
+        background: var(--foreground);
+        color: var(--card);
         padding: 4px 10px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 0.72rem;
         font-weight: 600;
         white-space: nowrap;
@@ -80,73 +78,72 @@
         z-index: 10;
     }
     .avatar-tip-wrap:hover::after { opacity: 1; }
-    .health-legend { display: flex; gap: 1.25rem; margin-left: auto; }
-    .health-legend span { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: var(--gray-500); }
-    .health-legend .dot { width: 7px; height: 7px; border-radius: 50%; }
 
-    /* Role Overview Cards */
-    .role-ov-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.75rem; }
+    .health-legend { display: flex; gap: 1.25rem; margin-top: 0.75rem; font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; }
+    .health-legend .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+    /* Role Overview */
+    .role-ov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .role-ov-card {
-        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
-        padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;
-        transition: box-shadow 0.2s, border-color 0.2s;
+        background: var(--card); border-radius: 8px; padding: 1.25rem; border: 1px solid var(--border-light);
+        transition: border-color 0.2s;
     }
-    .role-ov-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .role-ov-card:hover { border-color: var(--foreground); }
     .role-ov-header { display: flex; align-items: center; justify-content: space-between; }
     .role-ov-members { font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); }
     .role-ov-link { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
     .role-ov-link:hover { gap: 7px; }
 
-    /* Quick Actions */
+    /* Quick Links */
+    .ql-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .quick-link {
-        display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem;
-        background: var(--white); border-radius: 12px; text-decoration: none; color: var(--fg);
-        border: 1px solid var(--border); transition: all 0.2s;
+        display: flex; align-items: center; gap: 0.875rem;
+        background: var(--card); border-radius: 8px; padding: 1.25rem; text-decoration: none;
+        color: var(--foreground); border: 1px solid var(--border-light); transition: border-color 0.2s;
     }
-    .quick-link:hover { border-color: var(--border-strong); background: var(--secondary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
-    .ql-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; flex-shrink: 0; }
+    .quick-link:hover { border-color: var(--foreground); }
+    .ql-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; background: var(--primary); flex-shrink: 0; }
     .ql-text { flex: 1; }
     .ql-text strong { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .ql-text small { color: var(--gray-400); font-size: 0.78rem; font-weight: 500; line-height: 1.4; display: block; }
-    .ql-arrow { color: var(--gray-300); font-size: 0.8rem; transition: all 0.2s; flex-shrink: 0; }
+    .ql-text small { color: var(--muted-foreground); font-size: 0.78rem; font-weight: 500; line-height: 1.4; display: block; }
+    .ql-arrow { color: var(--muted-foreground); font-size: 0.8rem; transition: all 0.2s; flex-shrink: 0; }
     .quick-link:hover .ql-arrow { color: var(--foreground); transform: translateX(3px); }
 
-    /* Activity Timeline */
-    .activity-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-    .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--muted); }
+    /* Activity Feed */
+    .activity-card { background: var(--card); border-radius: 8px; border: 1px solid var(--border-light); overflow: hidden; }
+    .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); }
     .activity-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
     .activity-header a { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; transition: color 0.15s; }
     .activity-header a:hover { color: var(--foreground); }
-    .activity-item { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.875rem 1.5rem; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .activity-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); transition: background 0.15s; }
     .activity-item:last-child { border-bottom: none; }
-    .activity-item:hover { background: var(--secondary); }
+    .activity-item:hover { background: var(--background); }
     .activity-dot-wrap { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
     .activity-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .activity-line { width: 1px; flex: 1; background: var(--border); margin-top: 6px; min-height: 20px; }
+    .activity-line { width: 1px; flex: 1; background: var(--border-light); margin-top: 6px; min-height: 20px; }
     .activity-content { flex: 1; min-width: 0; }
     .activity-title { font-weight: 500; font-size: 0.85rem; }
-    .activity-meta { font-size: 0.75rem; color: var(--gray-400); margin-top: 3px; }
-    .activity-time { font-size: 0.75rem; color: var(--gray-300); white-space: nowrap; flex-shrink: 0; }
+    .activity-meta { font-size: 0.75rem; color: var(--muted-foreground); margin-top: 3px; }
+    .activity-time { font-size: 0.75rem; color: var(--muted-foreground); white-space: nowrap; flex-shrink: 0; }
 
-    /* Welcome Banner */
+    /* Welcome bar */
     .welcome-banner {
+        background: var(--card); border: 1px solid var(--border-light); border-radius: 8px;
         display: flex; align-items: center; justify-content: space-between;
-        background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-        padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; gap: 1rem;
+        gap: 1.5rem; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;
     }
-    .welcome-banner h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.375rem; }
-    .welcome-banner p { color: var(--gray-400); font-size: 0.9rem; font-weight: 500; margin: 0; }
+    .welcome-banner h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.375rem; font-family: 'Space Grotesk', sans-serif; }
+    .welcome-banner p { color: var(--muted-foreground); font-size: 0.9rem; font-weight: 500; margin: 0; }
     .wb-stats { display: flex; align-items: center; gap: 1.5rem; flex-shrink: 0; }
     .wb-stat { text-align: right; }
-    .wb-stat-val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-    .wb-stat-label { font-size: 0.7rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 3px; }
-    .wb-divider { width: 1px; height: 36px; background: var(--border); }
-    @media (max-width: 640px) { .wb-stats { display: none; } }
+    .wb-stat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-bottom: 2px; }
+    .wb-stat-val { font-size: 1.1rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+    .wb-divider { width: 1px; height: 36px; background: var(--border-light); }
 
+    @media (max-width: 640px) { .wb-stats { display: none; } }
     @media (max-width: 1024px) { .role-ov-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px)  { .role-ov-grid { grid-template-columns: 1fr; } }
-
     @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px)  { .kpi-grid { grid-template-columns: 1fr; } }
 </style>
@@ -157,7 +154,7 @@
 
 <div class="main-content">
     @if(now()->dayOfWeek === 0)
-    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.875rem 1.25rem;background:#fef9ec;border:1px solid #fde68a;border-radius:10px;color:#92400e;font-size:0.875rem;font-weight:500;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.875rem 1.25rem;background:#fef9ec;border:1px solid #fde68a;border-radius:8px;color:#92400e;font-size:0.875rem;font-weight:500;margin-bottom:1.25rem;">
         <i class="fas fa-umbrella-beach" style="font-size:1rem;flex-shrink:0;"></i>
         <span><strong>Today is Sunday — Rest Day (RDO).</strong> No EOD submissions are expected. Charts mark today as an off day.</span>
     </div>
@@ -349,22 +346,22 @@
     <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted-foreground);margin-bottom:0.75rem;">Quick Actions</div>
     <div class="quick-grid anim-up d4">
         <a href="{{ route('admin.users') }}" class="quick-link">
-            <div class="ql-icon" style="background: var(--indigo);"><i class="fas fa-user-plus"></i></div>
+            <div class="ql-icon"><i class="fas fa-user-plus"></i></div>
             <div class="ql-text"><strong>Manage Users</strong><small>Add, edit, or deactivate team members</small></div>
             <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
         <a href="{{ route('admin.daily-logs') }}" class="quick-link">
-            <div class="ql-icon" style="background: var(--sky);"><i class="fas fa-clipboard-list"></i></div>
+            <div class="ql-icon"><i class="fas fa-clipboard-list"></i></div>
             <div class="ql-text"><strong>Daily Logs</strong><small>Browse &amp; review submitted EOD reports</small></div>
             <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
         <a href="{{ route('admin.reports') }}" class="quick-link">
-            <div class="ql-icon" style="background: var(--emerald);"><i class="fas fa-chart-pie"></i></div>
+            <div class="ql-icon"><i class="fas fa-chart-pie"></i></div>
             <div class="ql-text"><strong>Reports</strong><small>Weekly &amp; monthly task analytics per role</small></div>
             <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>
         <a href="{{ route('team') }}" class="quick-link">
-            <div class="ql-icon" style="background: var(--amber);"><i class="fas fa-users"></i></div>
+            <div class="ql-icon"><i class="fas fa-users"></i></div>
             <div class="ql-text"><strong>The Team</strong><small>Browse member profiles &amp; roles</small></div>
             <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
         </a>

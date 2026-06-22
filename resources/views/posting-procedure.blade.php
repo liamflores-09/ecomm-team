@@ -99,7 +99,7 @@
     .def-block {
         background: var(--muted);
         border-left: 4px solid var(--primary);
-        border-radius: 0 6px 6px 0;
+        border-radius: 0 8px 8px 0;
         padding: 0.875rem 1.25rem;
         margin-bottom: 1.5rem;
     }
@@ -177,7 +177,7 @@
     .tick {
         width: 22px;
         height: 22px;
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -193,7 +193,7 @@
     /* Folder tree */
     .folder-tree {
         background: var(--fg);
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 1.5rem;
         margin: 0.75rem 0 1.5rem;
         overflow-x: auto;
@@ -265,7 +265,7 @@
         text-transform: uppercase;
         letter-spacing: 0.04em;
         padding: 0.15rem 0.5rem;
-        border-radius: 4px;
+        border-radius: 8px;
         margin-left: 0.5rem;
     }
 
@@ -314,7 +314,7 @@
         left: 0;
         width: 320px;
         background: var(--fg);
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 1rem 1.25rem;
         z-index: 10;
     }
@@ -348,7 +348,7 @@
 
     /* Callout boxes */
     .callout {
-        border-radius: 0 6px 6px 0;
+        border-radius: 0 8px 8px 0;
         padding: 1rem 1.25rem;
         margin: 0 0 1.5rem;
     }
@@ -412,8 +412,8 @@
         color: var(--gray-500);
     }
 
-    .img-table th:first-child { border-radius: 6px 0 0 6px; }
-    .img-table th:last-child { border-radius: 0 6px 6px 0; }
+    .img-table th:first-child { border-radius: 8px 0 0 8px; }
+    .img-table th:last-child { border-radius: 0 8px 8px 0; }
 
     .img-table td {
         border-top: 2px solid var(--muted);
@@ -430,7 +430,7 @@
 
     .sku-box {
         background: var(--muted);
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 1rem 1.25rem;
     }
 

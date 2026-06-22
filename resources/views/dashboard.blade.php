@@ -10,97 +10,68 @@
 @section('styles')
 <style>
     .welcome-banner {
-        border-radius: 12px;
+        border-radius: 8px;
         padding: 2.5rem;
+        background: var(--foreground);
         color: white;
         position: relative;
         overflow: hidden;
         margin-bottom: 2rem;
+        border: 1px solid var(--foreground);
     }
-    .welcome-banner::after {
-        content: '';
-        position: absolute;
-        top: -80px; right: -40px;
-        width: 250px; height: 250px;
-        background: rgba(255,255,255,0.07);
-        border-radius: 50%;
-    }
-    .welcome-banner::before {
-        content: '';
-        position: absolute;
-        bottom: -60px; right: 120px;
-        width: 160px; height: 160px;
-        background: rgba(255,255,255,0.04);
-        border-radius: 50%;
-    }
-    .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; position: relative; z-index: 1; font-weight: 800; }
-    .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.9rem; margin: 0; position: relative; z-index: 1; }
+    .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; position: relative; z-index: 1; font-weight: 700; }
+    .welcome-banner p { color: rgba(255,255,255,0.75); font-weight: 500; font-size: 0.9rem; margin: 0; position: relative; z-index: 1; }
     .welcome-banner .wb-date { position: absolute; top: 2rem; right: 2.5rem; text-align: right; z-index: 1; }
-    .welcome-banner .wb-date .wd-day { font-size: 2rem; font-weight: 800; line-height: 1; }
-    .welcome-banner .wb-date .wd-month { font-size: 0.8rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.08em; }
+    .welcome-banner .wb-date .wd-day { font-size: 2rem; font-weight: 700; line-height: 1; font-family: 'Space Grotesk', sans-serif; }
+    .welcome-banner .wb-date .wd-month { font-size: 0.8rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; }
 
     .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
-    .section-divider .sd-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; flex-shrink: 0; }
-    .section-divider h4 { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
-    .section-divider .sd-line { flex: 1; height: 2px; background: var(--muted); }
+    .section-divider .sd-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; background: var(--primary); font-size: 0.75rem; flex-shrink: 0; }
+    .section-divider h4 { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; font-family: 'Space Grotesk', sans-serif; }
+    .section-divider .sd-line { flex: 1; height: 1px; background: var(--border-light); }
 
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0.25rem; }
-    .stat-card { background: var(--white); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; border: 2px solid transparent; }
-    .stat-card:hover { transform: translateY(-2px); border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-    .stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; flex-shrink: 0; }
-    .stat-count { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.125rem; }
-    .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--gray-400); }
+    .stat-card { background: var(--card); border-radius: 8px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.2s; border: 1px solid var(--border-light); }
+    .stat-card:hover { border-color: var(--foreground); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; font-size: 1.1rem; flex-shrink: 0; }
+    .stat-count { font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.125rem; font-family: 'Space Grotesk', sans-serif; }
+    .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); }
 
-    .chart-section { background: var(--white); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+    .chart-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
     .chart-section #weeklyChart { width: 100% !important; }
 
-    .quick-section { background: var(--white); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+    .quick-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
     .quick-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .quick-link { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--muted); border-radius: 10px; text-decoration: none; color: var(--fg); transition: all 0.2s; border: 2px solid transparent; }
-    .quick-link:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .quick-link:hover .ql-icon { background: rgba(255,255,255,0.2); color: white; }
-    .quick-link:hover .ql-text small { color: rgba(255,255,255,0.75); }
-    .quick-link:hover .ql-arrow { color: white; }
-    .ql-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--primary); transition: all 0.2s; flex-shrink: 0; }
-    .ql-text { flex: 1; }
-    .ql-text strong { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.125rem; }
-    .ql-text small { color: var(--gray-400); font-size: 0.75rem; font-weight: 500; }
-    .ql-arrow { color: var(--gray-300); font-size: 0.85rem; transition: all 0.2s; }
+    .quick-link { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--background); border-radius: 8px; text-decoration: none; color: var(--foreground); transition: all 0.2s; border: 1px solid var(--border-light); }
+    .quick-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .quick-link:hover .ql-icon { background: rgba(255,255,255,0.2); }
+    .ql-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: var(--primary); color: white; flex-shrink: 0; }
+    .ql-label { font-weight: 600; font-size: 0.875rem; }
 
-    .logs-section { background: var(--white); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
-    .logs-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 2px solid var(--muted); }
-    .logs-header h4 { font-weight: 800; font-size: 0.85rem; margin: 0; }
-    .logs-header a { font-size: 0.8rem; font-weight: 600; color: var(--primary); text-decoration: none; }
-    .logs-header a:hover { text-decoration: underline; }
+    .ref-section { margin-bottom: 2rem; }
+    .ref-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .ref-card { background: var(--card); border-radius: 8px; padding: 1.5rem; border: 1px solid var(--border-light); text-align: center; text-decoration: none; color: var(--foreground); transition: border-color 0.2s; display: block; }
+    .ref-card:hover { border-color: var(--foreground); }
+    .ref-card .rc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1rem; background: var(--primary); color: white; }
+    .ref-card .rc-label { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .ref-card .rc-sub { font-size: 0.75rem; color: var(--muted-foreground); }
 
+    .logs-section { background: var(--card); border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 2rem; overflow: hidden; }
+    .logs-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); }
+    .logs-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; color: var(--foreground); }
+    .logs-header a { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; }
+    .logs-header a:hover { color: var(--foreground); }
     .logs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .logs-table thead th { background: var(--muted); padding: 0.75rem 1rem; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); text-align: left; }
-    .logs-table tbody td { padding: 0.875rem 1rem; border-top: 1px solid var(--muted); font-weight: 500; }
-    .logs-table tbody tr:hover td { background: #F8FAFC; }
-    .logs-table .num { font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
-    .logs-table .date-cell { font-weight: 700; white-space: nowrap; }
-
-    .ref-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .ref-card { background: var(--white); border-radius: 12px; padding: 1.25rem; text-align: center; transition: all 0.2s; border: 2px solid transparent; text-decoration: none; color: var(--fg); }
-    .ref-card:hover { transform: translateY(-2px); border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-    .ref-card .rc-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1.1rem; color: white; }
-    .ref-card h5 { font-weight: 700; font-size: 0.85rem; margin: 0; }
-
-    .empty-state { text-align: center; padding: 2.5rem; color: var(--gray-400); font-weight: 500; font-size: 0.9rem; }
-    .empty-state i { font-size: 2rem; display: block; margin-bottom: 0.75rem; color: var(--gray-200); }
-    .empty-state a { color: var(--primary); font-weight: 600; }
-
-    @media (max-width: 768px) {
-        .stat-grid { grid-template-columns: 1fr 1fr; }
-        .quick-links { grid-template-columns: 1fr; }
-        .ref-grid { grid-template-columns: repeat(2, 1fr); }
-        .welcome-banner { padding: 2rem; }
-        .welcome-banner .wb-date { display: none; }
-    }
-    @media (max-width: 480px) {
-        .stat-grid { grid-template-columns: 1fr; }
-        .ref-grid { grid-template-columns: 1fr 1fr; }
-    }
+    .logs-table thead tr { border-bottom: 1px solid var(--border-light); }
+    .logs-table th { padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); }
+    .logs-table td { padding: 0.75rem 1rem; color: var(--foreground); border-bottom: 1px solid var(--border-light); }
+    .logs-table tbody tr:last-child td { border-bottom: none; }
+    .logs-table tbody tr:hover td { background: var(--background); }
+    .date-cell { font-weight: 600; color: var(--foreground); white-space: nowrap; }
+    .num { text-align: center; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+    .empty-state { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted-foreground); font-size: 0.875rem; }
+    .empty-state i { display: block; font-size: 1.5rem; margin-bottom: 0.75rem; opacity: 0.4; }
+    .empty-state a { color: var(--foreground); font-weight: 600; text-decoration: underline; }
 </style>
 @endsection
 
@@ -108,13 +79,8 @@
 <x-sidebar active="dashboard" />
 
 <div class="main-content">
-    @php
-        $bannerColors = ['content' => '#171717', 'lead' => '#262626', 'researcher' => '#333333', 'graphics' => '#1a1a1a', 'backend' => '#0d0d0d'];
-        $bannerColor = $bannerColors[$user->role] ?? '#171717';
-    @endphp
-
     <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up" style="background: linear-gradient(135deg, {{ $bannerColor }} 0%, {{ $bannerColor }}dd 100%);">
+    <div class="welcome-banner anim-up">
         <div>
             <h2>Welcome back, {{ $user->first_name }}!</h2>
             @if($user->role === 'content')
@@ -288,7 +254,7 @@
         <div class="sd-line"></div>
     </div>
 
-    <div class="ref-grid anim-up d5">
+    <div class="ref-cards anim-up d5">
         <a href="{{ route('end-of-day') }}" class="ref-card">
             <div class="rc-icon" style="background: var(--primary);"><i class="fas fa-calendar-check"></i></div>
             <h5>EOD Report</h5>

@@ -17,7 +17,7 @@
     .rpt-controls {
         display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
         flex-wrap: wrap; padding: 0.875rem 1.125rem;
-        background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
     }
     .rpt-controls-label { font-size: 0.72rem; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.25rem; }
     .rpt-month-wrap { min-width: 140px; max-width: 160px; }
@@ -42,28 +42,28 @@
 
     /* ── KPI cards ───────────────────────────────────────────────── */
     .rpt-kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-    .rpt-kpi-card { background: var(--white); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--border); }
+    .rpt-kpi-card { background: var(--card); border-radius: 8px; padding: 1.25rem; border: 1px solid var(--border); }
     .rpt-kpi-top  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.625rem; }
     .rpt-kpi-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-400); }
-    .rpt-kpi-icon  { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: white; }
+    .rpt-kpi-icon  { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: white; }
     .rpt-kpi-value { font-size: 1.65rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
     .rpt-kpi-sub   { font-size: 0.73rem; color: var(--gray-400); font-weight: 500; }
 
     /* ── Section header ──────────────────────────────────────────── */
     .rpt-section { margin-bottom: 1.75rem; }
     .rpt-section-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
-    .rpt-section-icon { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; flex-shrink: 0; }
+    .rpt-section-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; flex-shrink: 0; }
     .rpt-section-header h3 { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
     .rpt-section-line { flex: 1; height: 1px; background: var(--border); }
 
     /* ── Role overview 2x2 ───────────────────────────────────────── */
     .rpt-role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
     .rpt-role-card {
-        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
-        padding: 1.25rem 1.5rem; transition: box-shadow 0.2s, border-color 0.2s;
+        background: var(--card); border-radius: 8px; border: 1px solid var(--border);
+        padding: 1.25rem 1.5rem; transition: border-color 0.2s;
         display: flex; flex-direction: column; gap: 0.875rem;
     }
-    .rpt-role-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .rpt-role-card:hover { border-color: var(--border-strong); }
     .rpt-role-card-header { display: flex; align-items: center; justify-content: space-between; }
     .rpt-role-total { font-size: 1.75rem; font-weight: 800; line-height: 1; }
     .rpt-role-sub   { font-size: 0.7rem; color: var(--muted-foreground); margin-top: 2px; }
@@ -76,14 +76,14 @@
 
     /* ── Charts grid ─────────────────────────────────────────────── */
     .rpt-charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-    .rpt-chart-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .rpt-chart-card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
     .rpt-chart-header { display: flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--muted); }
-    .rpt-chart-icon  { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; flex-shrink: 0; }
+    .rpt-chart-icon  { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; flex-shrink: 0; }
     .rpt-chart-header h4 { font-size: 0.82rem; font-weight: 700; margin: 0; }
     .rpt-chart-body { padding: 1rem 1.25rem; }
 
     /* ── Table card ──────────────────────────────────────────────── */
-    .rpt-table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1rem; }
+    .rpt-table-card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1rem; }
     .rpt-table-header { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; border-bottom: 1px solid var(--muted); }
     .rpt-table-header .th-left { display: flex; align-items: center; gap: 0.5rem; }
     .rpt-table-header h4 { font-size: 0.8rem; font-weight: 700; margin: 0; }
@@ -128,10 +128,10 @@
     /* ── Member perf cards ───────────────────────────────────────── */
     .rpt-perf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .rpt-perf-card {
-        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
-        padding: 1.1rem; transition: all 0.2s;
+        background: var(--card); border-radius: 8px; border: 1px solid var(--border);
+        padding: 1.1rem; transition: border-color 0.2s;
     }
-    .rpt-perf-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .rpt-perf-card:hover { border-color: var(--border-strong); }
     .mpc-top { display: flex; align-items: center; gap: 0.625rem; margin-bottom: 1rem; }
     .mpc-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--muted); flex-shrink: 0; }
     .mpc-info { flex: 1; min-width: 0; }
@@ -163,7 +163,7 @@
     .rpt-role-nav {
         display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
         padding: 0.75rem 1rem; margin-bottom: 1.5rem;
-        background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
     }
     .rpt-role-nav-label {
         font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
@@ -171,22 +171,20 @@
     }
     .rpt-role-nav-btn {
         display: inline-flex; align-items: center; gap: 0.45rem;
-        padding: 0.45rem 0.9rem; border-radius: 7px;
+        padding: 0.45rem 0.9rem; border-radius: 8px;
         border: 1.5px solid var(--border); background: transparent;
         cursor: pointer; font-family: var(--p-font-family-sans);
         font-size: 0.78rem; font-weight: 700; color: var(--fg);
-        transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
         outline: none; white-space: nowrap;
     }
     .rpt-role-nav-btn:hover {
         border-color: var(--rn-color, var(--primary));
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--rn-color, var(--primary)) 12%, transparent);
     }
     .rpt-role-nav-btn.active {
         background: var(--rn-color, var(--primary));
         border-color: var(--rn-color, var(--primary));
         color: white;
-        box-shadow: 0 2px 8px color-mix(in srgb, var(--rn-color, var(--primary)) 35%, transparent);
     }
     .rn-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: opacity 0.15s; }
     .rpt-role-nav-btn.active .rn-dot { opacity: 0.5; }
@@ -334,7 +332,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Total Tasks</span>
-                    <div class="rpt-kpi-icon" style="background:#6366f1;"><i class="fas fa-list-check"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--primary);"><i class="fas fa-list-check"></i></div>
                 </div>
                 <div class="rpt-kpi-value">{{ number_format($grandTotal) }}</div>
                 <div class="rpt-kpi-sub">Across {{ $daysWithLogs }} active day{{ $daysWithLogs !== 1 ? 's' : '' }} this month</div>
@@ -342,7 +340,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Avg / Day</span>
-                    <div class="rpt-kpi-icon" style="background:#0ea5e9;"><i class="fas fa-gauge-high"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--success);"><i class="fas fa-gauge-high"></i></div>
                 </div>
                 <div class="rpt-kpi-value">{{ $avgPerDay }}</div>
                 <div class="rpt-kpi-sub">Average tasks logged per active day</div>
@@ -350,7 +348,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Most Common</span>
-                    <div class="rpt-kpi-icon" style="background:#f59e0b;"><i class="fas fa-fire"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--warning);"><i class="fas fa-fire"></i></div>
                 </div>
                 <div class="rpt-kpi-value" style="font-size:1.1rem;">{{ $topTaskLabel }}</div>
                 <div class="rpt-kpi-sub">{{ number_format($topTaskVal) }} tasks ({{ $grandTotal > 0 ? round($topTaskVal / $grandTotal * 100) : 0 }}% of total)</div>
@@ -363,7 +361,7 @@
         @if($isAllRoles)
         <div class="rpt-section anim-up d3">
             <div class="rpt-section-header">
-                <div class="rpt-section-icon" style="background:#6366f1;"><i class="fas fa-layer-group"></i></div>
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-layer-group"></i></div>
                 <h3>Role Overview</h3>
                 <div class="rpt-section-line"></div>
                 <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">{{ \Carbon\Carbon::parse($month)->format('F Y') }} totals per role</span>
@@ -415,7 +413,7 @@
             $rdColor       = $rd['color'];
             $rdLabel       = $rd['label'];
         @endphp
-        <div class="rpt-role-panel {{ $loop->first ? 'active' : '' }}" data-role="{{ $role }}" style="border-top:3px solid {{ $rdColor }};margin-bottom:0;background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+        <div class="rpt-role-panel {{ $loop->first ? 'active' : '' }}" data-role="{{ $role }}" style="border-top:3px solid {{ $rdColor }};margin-bottom:0;background:var(--card);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--muted);display:flex;align-items:center;justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:0.625rem;">
                     <span class="role-badge {{ $role }}">{{ $rdLabel }}</span>
@@ -451,7 +449,7 @@
 
                 {{-- Weekly Summary --}}
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                    <div class="rpt-section-icon" style="background:#0ea5e9;"><i class="fas fa-chart-simple"></i></div>
+                    <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-chart-simple"></i></div>
                     <h3>Weekly Summary</h3>
                     <div class="rpt-section-line"></div>
                 </div>
@@ -557,7 +555,7 @@
                     ])->values()->toArray();
                 @endphp
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                    <div class="rpt-section-icon" style="background:#6366f1;"><i class="fas fa-chart-pie"></i></div>
+                    <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-chart-pie"></i></div>
                     <h3>Avg Contribution % by Task</h3>
                     <div class="rpt-section-line"></div>
                     <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">Average % per member per task type</span>
@@ -568,7 +566,7 @@
                     </div>
                 </div>
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                    <div class="rpt-section-icon" style="background:#6366f1;"><i class="fas fa-table-list"></i></div>
+                    <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-table-list"></i></div>
                     <h3>Contribution Analysis</h3>
                     <div class="rpt-section-line"></div>
                 </div>
@@ -622,7 +620,7 @@
         <div class="rpt-charts-grid anim-up d3">
             <div class="rpt-chart-card">
                 <div class="rpt-chart-header">
-                    <div class="rpt-chart-icon" style="background:#0ea5e9;"><i class="fas fa-chart-line"></i></div>
+                    <div class="rpt-chart-icon" style="background:var(--primary);"><i class="fas fa-chart-line"></i></div>
                     <h4>Weekly Trend</h4>
                 </div>
                 <div class="rpt-chart-body">
@@ -631,7 +629,7 @@
             </div>
             <div class="rpt-chart-card">
                 <div class="rpt-chart-header">
-                    <div class="rpt-chart-icon" style="background:#10b981;"><i class="fas fa-ranking-star"></i></div>
+                    <div class="rpt-chart-icon" style="background:var(--primary);"><i class="fas fa-ranking-star"></i></div>
                     <h4>Member Leaderboard</h4>
                 </div>
                 <div class="rpt-chart-body">
@@ -645,7 +643,7 @@
         @if(!$isAllRoles && $weeks->count())
         <div class="rpt-section anim-up d4">
             <div class="rpt-section-header">
-                <div class="rpt-section-icon" style="background:#0ea5e9;"><i class="fas fa-chart-simple"></i></div>
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-chart-simple"></i></div>
                 <h3>Weekly Summary</h3>
                 <div class="rpt-section-line"></div>
             </div>
@@ -781,7 +779,7 @@
         @endphp
         <div class="rpt-section anim-up d5">
             <div class="rpt-section-header">
-                <div class="rpt-section-icon" style="background:#6366f1;"><i class="fas fa-chart-pie"></i></div>
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-chart-pie"></i></div>
                 <h3>Avg Contribution % by Task</h3>
                 <div class="rpt-section-line"></div>
                 <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">Average % contribution per member per task type</span>
@@ -792,7 +790,7 @@
                 </div>
             </div>
             <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                <div class="rpt-section-icon" style="background:#6366f1;"><i class="fas fa-table-list"></i></div>
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-table-list"></i></div>
                 <h3>Contribution Analysis</h3>
                 <div class="rpt-section-line"></div>
             </div>
@@ -860,7 +858,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Total (All Months)</span>
-                    <div class="rpt-kpi-icon" style="background:#6366f1;"><i class="fas fa-layer-group"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--primary);"><i class="fas fa-layer-group"></i></div>
                 </div>
                 <div class="rpt-kpi-value">{{ number_format($mTotalAll) }}</div>
                 <div class="rpt-kpi-sub">{{ $allMonths->count() }} month{{ $allMonths->count()>1?'s':'' }} of data</div>
@@ -868,7 +866,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Avg / Month</span>
-                    <div class="rpt-kpi-icon" style="background:#0ea5e9;"><i class="fas fa-calculator"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--success);"><i class="fas fa-calculator"></i></div>
                 </div>
                 <div class="rpt-kpi-value">{{ $allMonths->count()>0 ? round($mTotalAll/$allMonths->count()) : 0 }}</div>
                 <div class="rpt-kpi-sub">tasks per month</div>
@@ -876,7 +874,7 @@
             <div class="rpt-kpi-card">
                 <div class="rpt-kpi-top">
                     <span class="rpt-kpi-label">Best Month</span>
-                    <div class="rpt-kpi-icon" style="background:#10b981;"><i class="fas fa-arrow-trend-up"></i></div>
+                    <div class="rpt-kpi-icon" style="background:var(--success);"><i class="fas fa-arrow-trend-up"></i></div>
                 </div>
                 <div class="rpt-kpi-value" style="font-size:1.2rem;">{{ $allMonths->sortByDesc('total')->first()['short'] ?? '—' }}</div>
                 <div class="rpt-kpi-sub">{{ number_format($allMonths->sortByDesc('total')->first()['total'] ?? 0) }} tasks</div>
@@ -895,7 +893,7 @@
             $rdMonthlyMembers = collect($rd['memberMonthly'])->get($selectedMonthKey, collect())->sortByDesc('total');
             $rdMonthlyTotal   = $rdMonthlyMembers->sum('total');
         @endphp
-        <div class="rpt-role-panel {{ $loop->first ? 'active' : '' }}" data-role="{{ $role }}" style="border-top:3px solid {{ $rdColor }};margin-bottom:0;background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+        <div class="rpt-role-panel {{ $loop->first ? 'active' : '' }}" data-role="{{ $role }}" style="border-top:3px solid {{ $rdColor }};margin-bottom:0;background:var(--card);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--muted);display:flex;align-items:center;justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:0.625rem;">
                     <span class="role-badge {{ $role }}">{{ $rdLabel }}</span>
@@ -921,7 +919,7 @@
                     </div>
                     <div class="rpt-chart-card">
                         <div class="rpt-chart-header">
-                            <div class="rpt-chart-icon" style="background:#6366f1;"><i class="fas fa-chart-bar"></i></div>
+                            <div class="rpt-chart-icon" style="background:var(--primary);"><i class="fas fa-chart-bar"></i></div>
                             <h4>Task Composition</h4>
                         </div>
                         <div class="rpt-chart-body">
@@ -934,7 +932,7 @@
                 {{-- Team Performance (selected month) --}}
                 @if($rdMonthlyMembers->count())
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                    <div class="rpt-section-icon" style="background:#10b981;"><i class="fas fa-users"></i></div>
+                    <div class="rpt-section-icon" style="background:var(--success);"><i class="fas fa-users"></i></div>
                     <h3>Team Performance</h3>
                     <div class="rpt-section-line"></div>
                     <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">{{ \Carbon\Carbon::parse($month)->format('F Y') }}</span>
@@ -977,7 +975,7 @@
                 {{-- Monthly Summary table --}}
                 @if($rdAllMonths->count())
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
-                    <div class="rpt-section-icon" style="background:#0ea5e9;"><i class="fas fa-calendar-days"></i></div>
+                    <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-calendar-days"></i></div>
                     <h3>Monthly Summary</h3>
                     <div class="rpt-section-line"></div>
                 </div>
@@ -1031,7 +1029,7 @@
         <div class="rpt-charts-grid anim-up d3">
             <div class="rpt-chart-card">
                 <div class="rpt-chart-header">
-                    <div class="rpt-chart-icon" style="background:#0ea5e9;"><i class="fas fa-chart-line"></i></div>
+                    <div class="rpt-chart-icon" style="background:var(--primary);"><i class="fas fa-chart-line"></i></div>
                     <h4>Monthly Trend</h4>
                 </div>
                 <div class="rpt-chart-body">
@@ -1040,7 +1038,7 @@
             </div>
             <div class="rpt-chart-card">
                 <div class="rpt-chart-header">
-                    <div class="rpt-chart-icon" style="background:#6366f1;"><i class="fas fa-chart-bar"></i></div>
+                    <div class="rpt-chart-icon" style="background:var(--primary);"><i class="fas fa-chart-bar"></i></div>
                     <h4>Task Composition</h4>
                 </div>
                 <div class="rpt-chart-body">
@@ -1058,7 +1056,7 @@
         @if($selectedMonthMembers->count())
         <div class="rpt-section anim-up d4">
             <div class="rpt-section-header">
-                <div class="rpt-section-icon" style="background:#10b981;"><i class="fas fa-users"></i></div>
+                <div class="rpt-section-icon" style="background:var(--success);"><i class="fas fa-users"></i></div>
                 <h3>Team Performance</h3>
                 <div class="rpt-section-line"></div>
                 <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">{{ \Carbon\Carbon::parse($month)->format('F Y') }}</span>
@@ -1102,7 +1100,7 @@
         <!-- Year Overview -->
         <div class="rpt-section anim-up d4">
             <div class="rpt-section-header">
-                <div class="rpt-section-icon" style="background:#0ea5e9;"><i class="fas fa-calendar-days"></i></div>
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-calendar-days"></i></div>
                 <h3>{{ $selectedYear }} Overview</h3>
                 <div class="rpt-section-line"></div>
             </div>

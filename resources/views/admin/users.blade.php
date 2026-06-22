@@ -17,7 +17,7 @@
     /* Stats Row */
     .user-stats {
         display: flex; align-items: stretch;
-        background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
         overflow: hidden; margin-bottom: 1.25rem;
     }
     .ustat { flex: 1; padding: 1rem 1.25rem; text-align: center; }
@@ -28,7 +28,7 @@
     /* Toolbar */
     .users-toolbar {
         display: flex; align-items: center; gap: 0.75rem;
-        padding: 0.625rem 0.875rem; background: var(--card); border-radius: 12px;
+        padding: 0.625rem 0.875rem; background: var(--card); border-radius: 8px;
         border: 1px solid var(--border); margin-bottom: 1rem; flex-wrap: wrap;
     }
     .users-toolbar .search-box {
@@ -48,7 +48,7 @@
     .result-count { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); white-space: nowrap; }
 
     /* Table */
-    .users-table-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .users-table-wrap { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
     .users-table { width: 100%; border-collapse: collapse; }
     .users-table thead th {
         padding: 0.75rem 1.25rem; font-size: 0.65rem; font-weight: 700;
@@ -88,7 +88,7 @@
     /* Avatar Preview in Modal */
     .avatar-preview-wrap {
         display: flex; align-items: center; gap: 1rem;
-        background: var(--muted); border-radius: 10px; padding: 0.875rem 1rem; margin-bottom: 1.25rem;
+        background: var(--muted); border-radius: 8px; padding: 0.875rem 1rem; margin-bottom: 1.25rem;
     }
     .avatar-preview {
         width: 52px; height: 52px; border-radius: 50%;
@@ -213,7 +213,7 @@
                     <td>
                         <span class="role-badge {{ $u->role }}">{{ ucfirst($u->role) }}</span>
                         @if($u->badge)
-                        <span style="display:inline-flex;align-items:center;margin-left:5px;padding:2px 7px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:4px;font-size:0.6rem;font-weight:700;color:#0369a1;white-space:nowrap;">{{ $u->badge }}</span>
+                        <span style="display:inline-flex;align-items:center;margin-left:5px;padding:2px 8px;background:#f0f0ff;border:1px solid #a5a5fc;border-radius:9999px;font-size:0.6rem;font-weight:700;color:#5757f8;white-space:nowrap;">{{ $u->badge }}</span>
                         @endif
                     </td>
                     <td class="cell-time">{{ $u->created_at->diffForHumans() }}</td>

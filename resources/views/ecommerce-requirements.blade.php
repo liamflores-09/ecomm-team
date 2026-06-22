@@ -135,7 +135,7 @@
         }
 
         .req-table tbody td:first-child {
-            box-shadow: 2px 0 0 var(--white);
+            border-right: 2px solid var(--border);
         }
     }
 

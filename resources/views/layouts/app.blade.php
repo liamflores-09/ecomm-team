@@ -5,68 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Ecomm Dept')</title>
     @yield('favicon')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js"></script>
     <style>
-        /* Cleopatra Theme Tokens */
         :root {
-            --radius: 0.625rem;
-            --background: #ffffff;
-            --foreground: #0a0a0a;
+            --radius: 8px;
+
+            /* Design system surfaces */
+            --background: #f5f5f5;
+            --foreground: #202020;
             --card: #ffffff;
-            --card-foreground: #0a0a0a;
+            --card-foreground: #202020;
             --popover: #ffffff;
-            --popover-foreground: #0a0a0a;
-            --primary: #171717;
-            --primary-foreground: #fafafa;
+            --popover-foreground: #202020;
+
+            /* Primary = Violet */
+            --primary: #5757f8;
+            --primary-foreground: #ffffff;
+
+            /* Secondary / Muted */
             --secondary: #f5f5f5;
-            --secondary-foreground: #171717;
+            --secondary-foreground: #202020;
             --muted: #f5f5f5;
-            --muted-foreground: #737373;
+            --muted-foreground: #333333;
             --accent: #f5f5f5;
-            --accent-foreground: #171717;
+            --accent-foreground: #202020;
+
+            /* Status */
             --destructive: #ef4444;
-            --destructive-foreground: #fafafa;
-            --border: #e5e5e5;
-            --input: #e5e5e5;
-            --ring: #a3a3a3;
-            --sidebar: #fafafa;
-            --sidebar-foreground: #0a0a0a;
-            --sidebar-primary: #171717;
-            --sidebar-primary-foreground: #fafafa;
-            --sidebar-accent: #f5f5f5;
-            --sidebar-accent-foreground: #171717;
-            --sidebar-border: #e5e5e5;
+            --destructive-foreground: #ffffff;
             --success: #22c55e;
             --warning: #f59e0b;
             --info: #3b82f6;
 
-            /* Accent palette */
-            --indigo: #6366f1;
-            --emerald: #10b981;
-            --sky: #0ea5e9;
-            --amber: #f59e0b;
-            --rose: #f43f5e;
-            --violet: #8b5cf6;
+            /* Borders & inputs */
+            --border: #202020;
+            --input: #202020;
+            --ring: #5757f8;
 
-            /* Legacy aliases for existing views */
-            --white: var(--background);
-            --bg: var(--background);
-            --bg-card: var(--card);
-            --fg: var(--foreground);
-            --fg-secondary: var(--muted-foreground);
-            --fg-tertiary: #a3a3a3;
-            --border-strong: #d4d4d4;
-            --border-light: var(--border);
-            --hover: var(--secondary);
+            /* Sidebar */
+            --sidebar: #ffffff;
+            --sidebar-foreground: #202020;
+            --sidebar-primary: #5757f8;
+            --sidebar-primary-foreground: #ffffff;
+            --sidebar-accent: #f5f5f5;
+            --sidebar-accent-foreground: #202020;
+            --sidebar-border: #e5e5e5;
+
+            /* Legacy aliases */
+            --white: #ffffff;
+            --bg: #f5f5f5;
+            --bg-card: #ffffff;
+            --fg: #202020;
+            --fg-secondary: #333333;
+            --fg-tertiary: #737373;
+            --border-strong: #202020;
+            --border-light: #e5e5e5;
+            --hover: #f5f5f5;
             --gray-200: #e5e5e5;
             --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-700: #404040;
+            --gray-400: #737373;
+            --gray-500: #333333;
+            --gray-600: #202020;
+            --gray-700: #202020;
             --p-font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+            /* Accent palette — kept only for semantic data indicators */
+            --indigo: #5757f8;
+            --emerald: #22c55e;
+            --sky: #5757f8;
+            --amber: #f59e0b;
+            --rose: #ef4444;
+            --violet: #5757f8;
         }
 
         * { box-sizing: border-box; }
@@ -77,7 +88,13 @@
             -webkit-font-smoothing: antialiased;
             margin: 0;
         }
-        h1, h2, h3, h4, h5, h6 { color: var(--foreground); font-weight: 600; line-height: 1.3; }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            color: var(--foreground);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
 
         /* Sidebar */
         .sidebar {
@@ -126,7 +143,7 @@
             transition: all 0.15s;
         }
         .sidebar-nav a:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
-        .sidebar-nav a.active { background: var(--sidebar-accent); color: var(--sidebar-foreground); font-weight: 600; }
+        .sidebar-nav a.active { background: var(--primary); color: var(--primary-foreground); font-weight: 600; }
         .sidebar-nav a i { width: 20px; text-align: center; font-size: 16px; }
 
         .dropdown-nav { list-style: none; padding: 0; }
@@ -137,7 +154,7 @@
             transition: all 0.15s;
         }
         .dropdown-nav a:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
-        .dropdown-nav a.active { background: var(--sidebar-accent); color: var(--sidebar-foreground); font-weight: 600; }
+        .dropdown-nav a.active { background: var(--primary); color: var(--primary-foreground); font-weight: 600; }
 
         .sidebar-footer {
             padding: 12px;
@@ -189,6 +206,10 @@
             border-radius: var(--radius);
             display: flex; align-items: center; justify-content: center;
             color: var(--primary-foreground); font-weight: 700; font-size: 12px;
+        }
+        .sidebar-brand .brand-icon {
+            background: var(--primary);
+            color: var(--primary-foreground);
         }
         .top-header .logo-section h4 { font-size: 18px; font-weight: 600; margin: 0; }
         .top-header .nav-area { flex: 1; display: flex; align-items: center; padding: 0 16px; }
@@ -277,38 +298,38 @@
         .btn-primary {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 10px 20px; background: var(--primary); color: var(--primary-foreground);
-            border: none; border-radius: var(--radius);
+            border: 1px solid var(--primary); border-radius: var(--radius);
             font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
             cursor: pointer; transition: opacity 0.15s;
         }
-        .btn-primary:hover { opacity: 0.9; }
+        .btn-primary:hover { opacity: 0.88; }
 
         .btn-secondary {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 10px 20px; background: var(--secondary); color: var(--secondary-foreground);
-            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 10px 20px; background: transparent; color: var(--foreground);
+            border: 1px solid var(--foreground); border-radius: var(--radius);
             font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
             cursor: pointer; transition: all 0.15s;
         }
-        .btn-secondary:hover { background: var(--accent); }
+        .btn-secondary:hover { background: var(--secondary); }
 
         .btn-flat-primary {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             padding: 10px 20px; background: var(--primary); color: var(--primary-foreground);
-            border: none; border-radius: var(--radius);
+            border: 1px solid var(--primary); border-radius: var(--radius);
             font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
             cursor: pointer; transition: opacity 0.15s;
         }
-        .btn-flat-primary:hover { opacity: 0.9; }
+        .btn-flat-primary:hover { opacity: 0.88; }
 
         .btn-flat-secondary {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 10px 20px; background: var(--secondary); color: var(--secondary-foreground);
-            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 10px 20px; background: transparent; color: var(--foreground);
+            border: 1px solid var(--foreground); border-radius: var(--radius);
             font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
             cursor: pointer; transition: all 0.15s;
         }
-        .btn-flat-secondary:hover { background: var(--accent); }
+        .btn-flat-secondary:hover { background: var(--secondary); }
 
         .alert, .alert-flat {
             padding: 12px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 500;
@@ -319,11 +340,11 @@
 
         .input-flat {
             width: 100%; height: 40px; padding: 0 12px;
-            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            background: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius);
             font-family: 'Inter', sans-serif; font-size: 14px; color: var(--foreground);
             outline: none; transition: border-color 0.15s;
         }
-        .input-flat:focus { border-color: var(--ring); }
+        .input-flat:focus { border-color: var(--primary); }
         .input-flat::placeholder { color: var(--muted-foreground); }
 
         .label-flat { display: block; font-weight: 500; font-size: 14px; color: var(--foreground); margin-bottom: 6px; }
@@ -407,7 +428,7 @@
             line-height: 1.5;
         }
         select:hover  { border-color: var(--border-strong); }
-        select:focus  { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+        select:focus  { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(87,87,248,0.12); }
         select option { padding: 8px 12px; font-weight: 500; }
 
         /* Animations */
@@ -443,12 +464,12 @@
         /* Shared: Filter Pills */
         .filter-pills { display: flex; gap: 0.375rem; flex-wrap: wrap; }
         .filter-pill {
-            padding: 0.25rem 0.625rem; border-radius: 5px;
+            padding: 0.25rem 0.625rem; border-radius: 9999px;
             font-family: var(--p-font-family-sans); font-size: 0.75rem; font-weight: 600;
-            cursor: pointer; transition: all 0.15s; border: 1.5px solid var(--border);
-            background: transparent; color: var(--muted-foreground);
+            cursor: pointer; transition: all 0.15s; border: 1px solid var(--foreground);
+            background: transparent; color: var(--foreground);
         }
-        .filter-pill:hover  { border-color: var(--border-strong); color: var(--foreground); }
+        .filter-pill:hover  { background: var(--secondary); }
         .filter-pill.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
 
         /* Command Palette */

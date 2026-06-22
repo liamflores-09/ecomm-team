@@ -19,12 +19,12 @@
     /* KPIs */
     .dl-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .dl-kpi-card {
-        background: var(--white); border-radius: 12px; padding: 1.25rem 1.5rem;
+        background: var(--card); border-radius: 8px; padding: 1.25rem 1.5rem;
         border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem;
-        transition: box-shadow 0.2s, border-color 0.2s;
+        transition: border-color 0.2s;
     }
-    .dl-kpi-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
-    .dl-kpi-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; flex-shrink: 0; }
+    .dl-kpi-card:hover { border-color: var(--border-strong); }
+    .dl-kpi-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; flex-shrink: 0; }
     .dl-kpi-val  { font-size: 1.6rem; font-weight: 800; line-height: 1; }
     .dl-kpi-lbl  { font-size: 0.73rem; font-weight: 600; color: var(--gray-400); margin-top: 3px; }
 
@@ -38,9 +38,9 @@
     .dl-role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin-bottom: 1.75rem; }
     .dl-role-grid--single { grid-template-columns: 1fr; }
     .dl-role-card {
-        background: var(--white); border-radius: 12px; border: 1px solid var(--border);
+        background: var(--card); border-radius: 8px; border: 1px solid var(--border);
         padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
-        transition: box-shadow 0.2s, border-color 0.2s;
+        transition: border-color 0.2s;
     }
     .dl-role-grid--single .dl-role-card { padding: 1.5rem 1.75rem; gap: 1rem; }
     .dl-role-grid--single .contrib-list { gap: 0.85rem; }
@@ -48,7 +48,7 @@
     .dl-role-grid--single .contrib-name { font-size: 0.85rem; }
     .dl-role-grid--single .contrib-bar-wrap { height: 7px; }
     .dl-role-grid--single .contrib-total { font-size: 0.8rem; min-width: 34px; }
-    .dl-role-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .dl-role-card:hover { border-color: var(--border-strong); }
     .dl-role-header { display: flex; align-items: center; justify-content: space-between; }
     .dl-role-sub    { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; margin: 0; line-height: 1.4; }
     .dl-role-link   { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
@@ -65,13 +65,13 @@
     .contrib-total { font-size: 0.73rem; font-weight: 800; color: var(--gray-500); min-width: 28px; text-align: right; }
 
     /* Table cards */
-    .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.75rem; }
+    .table-card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.75rem; }
     .table-header {
         display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
         padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border);
     }
     .th-left { display: flex; align-items: center; gap: 0.5rem; }
-    .th-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; }
+    .th-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; }
     .th-title { font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; }
     .th-badge {
         display: inline-flex; align-items: center; padding: 2px 8px;
@@ -97,7 +97,7 @@
     .role-divider-row:first-child td { border-top: none; }
     .role-divider-row td span.rd-count { font-size: 0.72rem; font-weight: 600; color: var(--gray-400); margin-left: 6px; }
 
-    .status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
+    .status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; font-size: 0.65rem; font-weight: 700; }
     .status-pill.logged  { background: #f0fdf4; color: #166534; }
     .status-pill.pending { background: #fef2f2; color: #991b1b; }
     .status-pill.rdo     { background: #fef9ec; color: #92400e; }
@@ -107,7 +107,7 @@
 
     /* Calendar */
     .cal-layout { display: grid; grid-template-columns: 290px 1fr; gap: 1rem; margin-bottom: 1.75rem; }
-    .cal-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 1rem; }
+    .cal-card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); padding: 1rem; }
     .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
     .cal-nav span { font-weight: 700; font-size: 0.85rem; }
     .cal-nav button {
@@ -140,7 +140,7 @@
     .cal-legend .cl-dot { width: 6px; height: 6px; border-radius: 2px; }
     .cal-rdo-label { font-size: 0.55rem; font-weight: 700; color: #ef4444; position: absolute; bottom: 1px; line-height: 1; }
 
-    .day-panel { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
+    .day-panel { background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
     .day-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .day-panel-header h4 { font-size: 0.82rem; font-weight: 800; margin: 0; }
     .day-panel-body { flex: 1; overflow-y: auto; max-height: 380px; }
@@ -181,7 +181,7 @@
                 <p style="color:var(--gray-400);font-size:0.9rem;font-weight:500;margin:0;">{{ $todayFmt }}</p>
             </div>
             @if($isSunday)
-            <div style="display:flex;align-items:center;gap:0.625rem;padding:0.6rem 1rem;background:#fef9ec;border:1px solid #fde68a;border-radius:10px;color:#92400e;font-size:0.82rem;font-weight:600;">
+            <div style="display:flex;align-items:center;gap:0.625rem;padding:0.6rem 1rem;background:#fef9ec;border:1px solid #fde68a;border-radius:8px;color:#92400e;font-size:0.82rem;font-weight:600;">
                 <i class="fas fa-umbrella-beach"></i> Today is Sunday — Rest Day (RDO)
             </div>
             @endif

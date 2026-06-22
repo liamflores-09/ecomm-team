@@ -19,7 +19,7 @@
     .tm-hero {
         display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
         padding: 0.875rem 1.25rem; margin-bottom: 2rem;
-        background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
     }
     .tm-hero-label {
         font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
@@ -27,7 +27,7 @@
     }
     .tm-hero-pill {
         display: inline-flex; align-items: center; gap: 0.35rem;
-        padding: 0.28rem 0.7rem; border-radius: 20px;
+        padding: 0.28rem 0.7rem; border-radius: 9999px;
         font-size: 0.75rem; font-weight: 600;
         background: var(--muted); color: var(--fg);
     }
@@ -46,7 +46,7 @@
     .tm-hd h3 { font-weight: 800; font-size: 1rem; margin: 0; }
     .tm-hd-count {
         font-size: 0.65rem; font-weight: 700; background: var(--muted);
-        color: var(--gray-400); padding: 0.15rem 0.45rem; border-radius: 4px;
+        color: var(--gray-400); padding: 0.15rem 0.45rem; border-radius: 8px;
     }
     .tm-hd-line { flex: 1; height: 1px; background: var(--border); }
 
@@ -57,11 +57,11 @@
 
     /* Leader card: gradient strip + overlapping avatar */
     .tm-lcard {
-        background: var(--white); border-radius: 14px;
+        background: var(--card); border-radius: 8px;
         border: 1px solid var(--border); overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.2s, border-color 0.2s;
     }
-    .tm-lcard:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+    .tm-lcard:hover { transform: translateY(-3px); border-color: var(--foreground); }
 
     .tm-lcard-strip { height: 72px; }
 
@@ -69,9 +69,8 @@
 
     .tm-lcard-avatar {
         width: 80px; height: 80px; border-radius: 50%;
-        border: 4px solid var(--white); display: block; margin: 0 auto 0.75rem;
+        border: 4px solid var(--card); display: block; margin: 0 auto 0.75rem;
         background: var(--muted); object-fit: cover;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
     .tm-lcard-name { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.2rem; line-height: 1.2; }
     .tm-lcard-sub  { font-size: 0.73rem; color: var(--gray-400); font-weight: 500; margin-bottom: 0.5rem; }
@@ -90,12 +89,12 @@
 
     /* Member card: centered portrait style */
     .tm-card {
-        background: var(--white); border-radius: 14px;
+        background: var(--card); border-radius: 8px;
         border: 1px solid var(--border); border-top-width: 3px;
         padding: 1.5rem 1rem 1.25rem; text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.2s, border-color 0.2s;
     }
-    .tm-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
+    .tm-card:hover { transform: translateY(-3px); border-color: var(--foreground); }
 
     .tm-avatar {
         width: 68px; height: 68px; border-radius: 50%;
@@ -110,7 +109,7 @@
 
     /* ── Role badges ─────────────────────────────────────────────── */
     .role-badge {
-        display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px;
+        display: inline-block; padding: 0.18rem 0.5rem; border-radius: 8px;
         font-size: 0.59rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
     }
     .role-badge.manager    { background: #1e293b; color: #fff; }
@@ -122,8 +121,8 @@
 
     /* ── Empty state ─────────────────────────────────────────────── */
     .tm-empty {
-        text-align: center; padding: 2.5rem; background: var(--white);
-        border-radius: 12px; border: 1px dashed var(--border);
+        text-align: center; padding: 2.5rem; background: var(--card);
+        border-radius: 8px; border: 1px dashed var(--border);
         color: var(--gray-400); font-size: 0.85rem; font-weight: 500;
     }
     .tm-empty i { font-size: 1.75rem; display: block; margin-bottom: 0.625rem; opacity: 0.35; }
@@ -193,7 +192,7 @@
     <div class="tm-leaders anim-up d2">
         @foreach($managers as $u)
         <div class="tm-lcard">
-            <div class="tm-lcard-strip" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);"></div>
+            <div class="tm-lcard-strip" style="background: #1e293b;"></div>
             <div class="tm-lcard-body">
                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
@@ -219,7 +218,7 @@
     <div class="tm-leaders anim-up d3">
         @foreach($leads as $u)
         <div class="tm-lcard">
-            <div class="tm-lcard-strip" style="background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);"></div>
+            <div class="tm-lcard-strip" style="background: #6366f1;"></div>
             <div class="tm-lcard-body">
                 <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
