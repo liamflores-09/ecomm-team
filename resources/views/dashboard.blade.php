@@ -159,19 +159,12 @@
 
     .quick-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
     .quick-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .quick-link { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--background); border-radius: 8px; text-decoration: none; color: var(--foreground); transition: all 0.2s; border: 1px solid var(--border-light); }
-    .quick-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
-    .quick-link:hover .ql-icon { background: rgba(255,255,255,0.2); }
-    .ql-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: var(--primary); color: white; flex-shrink: 0; }
-    .ql-label { font-weight: 600; font-size: 0.875rem; }
-
-    .ref-section { margin-bottom: 2rem; }
-    .ref-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .ref-card { background: var(--card); border-radius: 8px; padding: 1.5rem; border: 1px solid var(--border-light); text-align: center; text-decoration: none; color: var(--foreground); transition: border-color 0.2s; display: block; }
-    .ref-card:hover { border-color: var(--foreground); }
-    .ref-card .rc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1rem; background: var(--primary); color: white; }
-    .ref-card .rc-label { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; }
-    .ref-card .rc-sub { font-size: 0.75rem; color: var(--muted-foreground); }
+    .quick-link { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--background); border-radius: 8px; text-decoration: none; color: var(--foreground); transition: border-color 0.2s; border: 1px solid var(--border-light); }
+    .quick-link:hover { border-color: var(--foreground); }
+    .quick-link:hover .ql-icon { background: var(--foreground); }
+    .ql-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: var(--primary); color: white; flex-shrink: 0; transition: background 0.2s; }
+    .ql-name { display: block; font-weight: 600; font-size: 0.875rem; color: var(--foreground); }
+    .ql-desc { display: block; font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.125rem; }
 
     .logs-section { background: var(--card); border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 2rem; overflow: hidden; }
     .logs-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); }
@@ -306,44 +299,60 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             @if($user->role === 'content')
             <a href="{{ route('posting-procedure') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-book-open"></i></div>
-                <div class="ql-text"><strong>Posting Procedure</strong><small>8-step guide for product posting</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Posting Procedure</span>
+                    <span class="ql-desc">8-step guide for product posting</span>
+                </div>
             </a>
             <a href="{{ route('data-gathering') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-folder-open"></i></div>
-                <div class="ql-text"><strong>Data Gathering</strong><small>Collect product info and assets</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Data Gathering</span>
+                    <span class="ql-desc">Collect product info and assets</span>
+                </div>
             </a>
             <a href="{{ route('ecommerce-requirements') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-clipboard-list"></i></div>
-                <div class="ql-text"><strong>E-commerce Requirements</strong><small>Platform-specific posting rules</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">E-commerce Requirements</span>
+                    <span class="ql-desc">Platform-specific posting rules</span>
+                </div>
             </a>
             <a href="{{ route('price-calculator') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-calculator"></i></div>
-                <div class="ql-text"><strong>Price Calculator</strong><small>Compute SRP across platforms</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Price Calculator</span>
+                    <span class="ql-desc">Compute SRP across platforms</span>
+                </div>
             </a>
             @else
             <a href="{{ route('end-of-day') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-calendar-check"></i></div>
-                <div class="ql-text"><strong>End-of-Day Report</strong><small>Log your daily tasks</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">End-of-Day Report</span>
+                    <span class="ql-desc">Log your daily tasks</span>
+                </div>
             </a>
             <a href="{{ route('price-calculator') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-calculator"></i></div>
-                <div class="ql-text"><strong>Price Calculator</strong><small>Compute SRP across platforms</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Price Calculator</span>
+                    <span class="ql-desc">Compute SRP across platforms</span>
+                </div>
             </a>
             <a href="{{ route('team') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-users"></i></div>
-                <div class="ql-text"><strong>The Team</strong><small>View your colleagues</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">The Team</span>
+                    <span class="ql-desc">View your colleagues</span>
+                </div>
             </a>
             <a href="{{ route('important-links') }}" class="quick-link">
                 <div class="ql-icon"><i class="fas fa-link"></i></div>
-                <div class="ql-text"><strong>Important Links</strong><small>Quick access to resources</small></div>
-                <div class="ql-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Important Links</span>
+                    <span class="ql-desc">Quick access to resources</span>
+                </div>
             </a>
             @endif
         </div>
@@ -391,31 +400,6 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         @endif
     </div>
 
-    <!-- Quick Reference -->
-    <div class="section-divider anim-up d5">
-        <div class="sd-icon" style="background: var(--primary);"><i class="fas fa-star"></i></div>
-        <h4>Quick Reference</h4>
-        <div class="sd-line"></div>
-    </div>
-
-    <div class="ref-cards anim-up d5">
-        <a href="{{ route('end-of-day') }}" class="ref-card">
-            <div class="rc-icon" style="background: var(--primary);"><i class="fas fa-calendar-check"></i></div>
-            <h5>EOD Report</h5>
-        </a>
-        <a href="{{ route('important-links') }}" class="ref-card">
-            <div class="rc-icon" style="background: var(--gray-500);"><i class="fas fa-link"></i></div>
-            <h5>Important Links</h5>
-        </a>
-        <a href="{{ route('team') }}" class="ref-card">
-            <div class="rc-icon" style="background: var(--gray-700);"><i class="fas fa-users"></i></div>
-            <h5>The Team</h5>
-        </a>
-        <a href="{{ route('price-calculator') }}" class="ref-card">
-            <div class="rc-icon" style="background: var(--primary);"><i class="fas fa-calculator"></i></div>
-            <h5>Price Calculator</h5>
-        </a>
-    </div>
 </div>
 @endsection
 
