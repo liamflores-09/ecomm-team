@@ -73,17 +73,39 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem 1.25rem;
-        background: var(--card);
-        border: 1px solid var(--border-light);
-        border-left: 4px solid var(--primary);
         border-radius: 8px;
         margin-bottom: 1.25rem;
         gap: 1rem;
     }
+    .eod-status-strip.pending {
+        background: var(--primary);
+        border: 1px solid var(--primary);
+        padding: 1.5rem 1.25rem;
+    }
+    .eod-status-strip.pending .ess-icon {
+        background: rgba(255,255,255,0.2);
+        color: white;
+    }
+    .eod-status-strip.pending .ess-title {
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+    .eod-status-strip.pending .ess-sub {
+        color: rgba(255,255,255,0.75);
+        font-size: 0.8rem;
+        margin-top: 0.125rem;
+    }
     .eod-status-strip.submitted {
-        border-left-color: var(--success);
-        padding: 0.75rem 1.25rem;
+        background: var(--card);
+        border: 1px solid var(--border-light);
+        border-left: 4px solid var(--success);
+        padding: 1rem 1.25rem;
+    }
+    .eod-status-strip.submitted .ess-title {
+        color: var(--success);
+        font-size: 0.9rem;
+        font-weight: 700;
     }
     .ess-left {
         display: flex;
@@ -91,27 +113,37 @@
         gap: 0.75rem;
     }
     .ess-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--primary);
+        width: 36px;
+        height: 36px;
+        background: var(--success);
         border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 0.8rem;
+        font-size: 0.875rem;
         flex-shrink: 0;
     }
-    .ess-icon.submitted { background: var(--success); }
-    .ess-title {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--foreground);
+    .ess-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0 1rem;
+        height: 36px;
+        border-radius: 8px;
+        border: 1.5px solid rgba(255,255,255,0.6);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: border-color 0.15s, background 0.15s;
+        font-family: inherit;
     }
-    .ess-sub {
-        font-size: 0.8rem;
-        color: var(--muted-foreground);
-        margin-top: 0.125rem;
+    .ess-btn:hover {
+        border-color: white;
+        background: rgba(255,255,255,0.1);
+        color: white;
     }
     .ess-edit {
         font-size: 0.8rem;
@@ -202,13 +234,13 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
     @if($todayLog)
     <div class="eod-status-strip submitted anim-up">
         <div class="ess-left">
-            <div class="ess-icon submitted"><i class="fas fa-circle-check"></i></div>
+            <div class="ess-icon"><i class="fas fa-circle-check"></i></div>
             <div class="ess-title">EOD submitted for today</div>
         </div>
         <a href="{{ route('end-of-day') }}" class="ess-edit">Edit <i class="fas fa-pencil"></i></a>
     </div>
     @else
-    <div class="eod-status-strip anim-up">
+    <div class="eod-status-strip pending anim-up">
         <div class="ess-left">
             <div class="ess-icon"><i class="fas fa-clipboard-list"></i></div>
             <div>
@@ -216,7 +248,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 <div class="ess-sub">{{ now()->format('l, F j') }}</div>
             </div>
         </div>
-        <a href="{{ route('end-of-day') }}" class="btn-flat-primary" style="height: 36px; padding: 0 1rem; font-size: 0.85rem; white-space: nowrap;">Submit EOD <i class="fas fa-arrow-right"></i></a>
+        <a href="{{ route('end-of-day') }}" class="ess-btn">Submit EOD <i class="fas fa-arrow-right"></i></a>
     </div>
     @endif
 
