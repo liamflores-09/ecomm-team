@@ -258,7 +258,7 @@
             <p>Log your daily tasks and activities</p>
         </div>
         @if($user->role === 'content')
-        <button type="button" class="btn-flat-secondary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="new bootstrap.Modal(document.getElementById('tutorialModal')).show()">
+        <button type="button" class="btn-flat-secondary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openModal('tutorialModal')">
             <i class="fas fa-circle-info"></i> How to Fill
         </button>
         @endif
@@ -406,15 +406,14 @@
 </div>
 
 <!-- Tutorial Modal -->
-<div class="modal fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" style="font-weight: 700; font-size: 1rem;">
-                    <i class="fas fa-circle-info" style="color: var(--primary); margin-right: 0.5rem;"></i>How to Fill Your EOD Report
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+<div class="modal-overlay" id="tutorialModal">
+    <div class="modal-box" style="max-width: 760px;">
+        <div class="modal-header">
+            <h5 style="font-weight: 700; font-size: 1rem; margin: 0;">
+                <i class="fas fa-circle-info" style="color: var(--primary); margin-right: 0.5rem;"></i>How to Fill Your EOD Report
+            </h5>
+            <button class="modal-close" onclick="closeModal('tutorialModal')"><i class="fas fa-times"></i></button>
+        </div>
             <div class="modal-body" style="padding: 1.5rem;">
 
                 <!-- Column Overview -->
@@ -523,7 +522,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-flat-primary" data-bs-dismiss="modal" style="height: 40px; font-size: 0.85rem;">Got it!</button>
+                <button type="button" class="btn-flat-primary" onclick="closeModal('tutorialModal')" style="height: 40px; font-size: 0.85rem;">Got it!</button>
             </div>
         </div>
     </div>
