@@ -47,7 +47,7 @@
 
     .form-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(5, 1fr);
         gap: 1rem;
     }
 
@@ -59,6 +59,13 @@
 
     .form-group.full-width {
         grid-column: 1 / -1;
+    }
+
+    .form-group.attendance-row {
+        grid-column: 1 / -1;
+    }
+    .form-group.attendance-row .form-select {
+        max-width: 240px;
     }
 
     .form-label {
@@ -149,38 +156,6 @@
         border-top: 2px solid var(--muted);
     }
 
-    /* Column guide */
-    .col-guide {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0;
-        margin-bottom: 1.5rem;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .cg-item {
-        padding: 0.75rem;
-        text-align: center;
-        border-right: 2px solid var(--border);
-    }
-
-    .cg-item:last-child { border-right: none; }
-
-    .cg-item .cg-name {
-        font-weight: 700;
-        font-size: 0.7rem;
-        color: var(--fg);
-        margin-bottom: 0.125rem;
-    }
-
-    .cg-item .cg-desc {
-        font-size: 0.6rem;
-        color: var(--gray-400);
-        font-weight: 500;
-    }
-
     /* Recent logs table */
     .logs-table {
         width: 100%;
@@ -244,39 +219,6 @@
         color: #DC2626;
     }
 
-    /* Info banner */
-    .info-banner {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.875rem;
-        background: var(--white);
-        border-left: 4px solid var(--fg);
-        border-radius: 0 8px 8px 0;
-        padding: 1rem 1.25rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .info-banner .ib-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--fg);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.8rem;
-        flex-shrink: 0;
-    }
-
-    .info-banner p {
-        color: var(--gray-700);
-        font-weight: 500;
-        font-size: 0.85rem;
-        line-height: 1.5;
-        margin: 0;
-    }
-
     .empty-logs {
         text-align: center;
         padding: 2rem;
@@ -293,17 +235,13 @@
     }
 
     @media (max-width: 768px) {
-        .form-grid { grid-template-columns: 1fr; }
-        .col-guide { grid-template-columns: repeat(3, 1fr); }
-        .col-guide .cg-item:nth-child(4),
-        .col-guide .cg-item:nth-child(5) { display: none; }
+        .form-grid { grid-template-columns: repeat(3, 1fr); }
         .logs-table-wrap { overflow-x: auto; }
         .logs-table { min-width: 600px; }
     }
 
     @media (max-width: 480px) {
-        .col-guide { grid-template-columns: 1fr 1fr; }
-        .col-guide .cg-item:nth-child(2n) { border-right: none; }
+        .form-grid { grid-template-columns: repeat(2, 1fr); }
     }
 </style>
 @endsection
@@ -334,38 +272,8 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <!-- Info Banner -->
-    <div class="info-banner anim-up d1">
-        <div class="ib-icon"><i class="fas fa-circle-info"></i></div>
-        <p>Fill in your daily accomplishments below. Each field counts the number of items you completed for the day.</p>
-    </div>
-
-    <!-- Column Guide -->
-    <div class="col-guide anim-up d2">
-        <div class="cg-item">
-            <div class="cg-name">{{ $taskLabels['task_1'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc_task_1'] }}</div>
-        </div>
-        <div class="cg-item">
-            <div class="cg-name">{{ $taskLabels['task_2'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc_task_2'] }}</div>
-        </div>
-        <div class="cg-item">
-            <div class="cg-name">{{ $taskLabels['task_3'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc_task_3'] }}</div>
-        </div>
-        <div class="cg-item">
-            <div class="cg-name">{{ $taskLabels['task_4'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc_task_4'] }}</div>
-        </div>
-        <div class="cg-item">
-            <div class="cg-name">{{ $taskLabels['task_5'] }}</div>
-            <div class="cg-desc">{{ $taskLabels['desc_task_5'] }}</div>
-        </div>
-    </div>
-
     <!-- Log Form -->
-    <div class="eod-card anim-up d3">
+    <div class="eod-card anim-up d1">
         <div class="eod-card-header">
             <div class="t-icon"><i class="fas fa-pen"></i></div>
             {{ $existingLog ? 'Edit Today\'s Log' : 'Log Today\'s Tasks' }} — {{ now()->format('F j, Y') }}
@@ -381,7 +289,7 @@
 
                 <div class="form-grid">
                     <!-- Attendance -->
-                    <div class="form-group">
+                    <div class="form-group attendance-row">
                         <label class="form-label">Attendance</label>
                         <select name="attendance" class="form-select">
                             <option value="">— Present —</option>
@@ -393,39 +301,27 @@
                         </select>
                     </div>
 
-                    <div class="form-group"></div>
-
-                    <!-- Col 1 -->
+                    <!-- Task counts — 5 columns -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_1'] }}</label>
                         <input type="number" name="task_1" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_1 : 0 }}" required>
                     </div>
-
-                    <!-- Col 2 -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_2'] }}</label>
                         <input type="number" name="task_2" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_2 : 0 }}" required>
                     </div>
-
-                    <!-- Col 3 -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_3'] }}</label>
                         <input type="number" name="task_3" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_3 : 0 }}" required>
                     </div>
-
-                    <!-- Col 4 -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_4'] }}</label>
                         <input type="number" name="task_4" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_4 : 0 }}" required>
                     </div>
-
-                    <!-- Col 5 -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_5'] }}</label>
                         <input type="number" name="task_5" class="form-input" min="0" value="{{ $existingLog ? $existingLog->task_5 : 0 }}" required>
                     </div>
-
-                    <div class="form-group"></div>
 
                     <!-- Remarks -->
                     <div class="form-group full-width">
@@ -444,7 +340,7 @@
     </div>
 
     <!-- Recent Logs -->
-    <div class="eod-card anim-up d4">
+    <div class="eod-card anim-up d2">
         <div class="eod-card-header">
             <div class="t-icon" style="background: var(--secondary);"><i class="fas fa-clock"></i></div>
             Recent Logs
