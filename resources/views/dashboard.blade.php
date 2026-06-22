@@ -12,18 +12,50 @@
     .welcome-banner {
         border-radius: 8px;
         padding: 2.5rem;
-        background: var(--foreground);
-        color: white;
         position: relative;
         overflow: hidden;
         margin-bottom: 2rem;
-        border: 1px solid var(--foreground);
+        display: flex;
+        align-items: center;
+        min-height: 140px;
     }
-    .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; position: relative; z-index: 1; font-weight: 700; }
-    .welcome-banner p { color: rgba(255,255,255,0.75); font-weight: 500; font-size: 0.9rem; margin: 0; position: relative; z-index: 1; }
-    .welcome-banner .wb-date { position: absolute; top: 2rem; right: 2.5rem; text-align: right; z-index: 1; }
-    .welcome-banner .wb-date .wd-day { font-size: 2rem; font-weight: 700; line-height: 1; font-family: 'Space Grotesk', sans-serif; }
-    .welcome-banner .wb-date .wd-month { font-size: 0.8rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; }
+    .wb-content { position: relative; z-index: 3; }
+    .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; font-weight: 700; }
+    .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.9rem; margin: 0; }
+    .wb-date {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.625rem;
+    }
+    .wb-avatar-zone {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        pointer-events: none;
+    }
+    .wb-avatar {
+        height: 140px;
+        width: auto;
+        display: block;
+        position: relative;
+        z-index: 1;
+        margin-left: auto;
+    }
+    .wb-fade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, var(--wb-color) 0%, transparent 70%);
+        z-index: 2;
+    }
+    @media (max-width: 480px) {
+        .wb-avatar-zone { display: none; }
+    }
 
     .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
     .section-divider .sd-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; background: var(--primary); font-size: 0.75rem; flex-shrink: 0; }
@@ -129,12 +161,23 @@
 @endsection
 
 @section('content')
+@php
+$roleColor = match($user->role) {
+    'content'    => '#0ea5e9',
+    'lead'       => '#6366f1',
+    'researcher' => '#10b981',
+    'graphics'   => '#f59e0b',
+    'backend'    => '#f43f5e',
+    default      => '#5757f8',
+};
+$avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user->username;
+@endphp
 <x-sidebar active="dashboard" />
 
 <div class="main-content">
     <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up">
-        <div>
+    <div class="welcome-banner anim-up" style="--wb-color: {{ $roleColor }}; background: var(--wb-color);">
+        <div class="wb-content">
             <h2>Welcome back, {{ $user->first_name }}!</h2>
             @if($user->role === 'content')
             <p>Your content workspace — posting, data gathering, and daily logs.</p>
@@ -147,10 +190,11 @@
             @elseif($user->role === 'backend')
             <p>Backend operations — bulk uploads, cross-listing, QC, and Q&A.</p>
             @endif
+            <div class="wb-date">{{ now()->format('l, F j') }}</div>
         </div>
-        <div class="wb-date">
-            <div class="wd-day">{{ now()->format('d') }}</div>
-            <div class="wd-month">{{ now()->format('M Y') }}</div>
+        <div class="wb-avatar-zone">
+            <div class="wb-fade"></div>
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed }}" class="wb-avatar" alt="{{ $user->full_name }}">
         </div>
     </div>
 
