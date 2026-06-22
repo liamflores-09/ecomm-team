@@ -473,7 +473,7 @@
         .filter-pill.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
 
         /* Command Palette */
-        .cmd-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: flex-start; justify-content: center; padding-top: 15vh; }
+        .cmd-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999; align-items: flex-start; justify-content: center; padding-top: 15vh; }
         .cmd-overlay.open { display: flex; }
         .cmd-palette { width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
         .cmd-input-wrap { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border); }
