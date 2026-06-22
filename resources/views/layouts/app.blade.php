@@ -485,7 +485,7 @@
         .cmd-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; text-decoration: none; color: var(--foreground); font-size: 14px; transition: background 0.15s; }
         .cmd-item:hover, .cmd-item.active { background: var(--secondary); }
         .cmd-item .ci-icon { width: 32px; height: 32px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; background: var(--muted); color: var(--muted-foreground); font-size: 13px; flex-shrink: 0; }
-        .cmd-item:hover .ci-icon, .cmd-item.active .ci-icon { background: var(--border); }
+        .cmd-item:hover .ci-icon, .cmd-item.active .ci-icon { background: var(--primary); color: white; }
         .cmd-item .ci-name { font-weight: 500; }
         .cmd-item .ci-desc { font-size: 12px; color: var(--muted-foreground); }
         .cmd-footer { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted-foreground); }
