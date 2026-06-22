@@ -30,12 +30,65 @@
     .section-divider h4 { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; font-family: 'Space Grotesk', sans-serif; }
     .section-divider .sd-line { flex: 1; height: 1px; background: var(--border-light); }
 
-    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0.25rem; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 0.25rem; }
     .stat-card { background: var(--card); border-radius: 8px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.2s; border: 1px solid var(--border-light); }
     .stat-card:hover { border-color: var(--foreground); }
     .stat-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; font-size: 1.1rem; flex-shrink: 0; }
     .stat-count { font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.125rem; font-family: 'Space Grotesk', sans-serif; }
     .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); }
+
+    .eod-status-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: var(--card);
+        border: 1px solid var(--border-light);
+        border-left: 4px solid var(--primary);
+        border-radius: 8px;
+        margin-bottom: 1.25rem;
+        gap: 1rem;
+    }
+    .eod-status-strip.submitted {
+        border-left-color: var(--success);
+        padding: 0.75rem 1.25rem;
+    }
+    .ess-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .ess-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .ess-icon.submitted { background: var(--success); }
+    .ess-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--foreground);
+    }
+    .ess-sub {
+        font-size: 0.8rem;
+        color: var(--muted-foreground);
+        margin-top: 0.125rem;
+    }
+    .ess-edit {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .ess-edit:hover { color: var(--foreground); }
 
     .chart-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
     .chart-section #weeklyChart { width: 100% !important; }
@@ -101,6 +154,28 @@
         </div>
     </div>
 
+    <!-- EOD Status Strip -->
+    @if($todayLog)
+    <div class="eod-status-strip submitted anim-up">
+        <div class="ess-left">
+            <div class="ess-icon submitted"><i class="fas fa-circle-check"></i></div>
+            <div class="ess-title">EOD submitted for today</div>
+        </div>
+        <a href="{{ route('end-of-day') }}" class="ess-edit">Edit <i class="fas fa-pencil"></i></a>
+    </div>
+    @else
+    <div class="eod-status-strip anim-up">
+        <div class="ess-left">
+            <div class="ess-icon"><i class="fas fa-clipboard-list"></i></div>
+            <div>
+                <div class="ess-title">EOD report not submitted yet</div>
+                <div class="ess-sub">{{ now()->format('l, F j') }}</div>
+            </div>
+        </div>
+        <a href="{{ route('end-of-day') }}" class="btn-flat-primary" style="height: 36px; padding: 0 1rem; font-size: 0.85rem; white-space: nowrap;">Submit EOD <i class="fas fa-arrow-right"></i></a>
+    </div>
+    @endif
+
     <!-- Stats -->
     <div class="anim-up d1">
         <div class="stat-grid">
@@ -116,13 +191,6 @@
                 <div>
                     <div class="stat-count">{{ $thisMonthTasks }}</div>
                     <div class="stat-label">Tasks This Month</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: {{ $todayLog ? 'var(--primary)' : '#991B1B' }};"><i class="fas fa-clipboard-check"></i></div>
-                <div>
-                    <div class="stat-count" style="color: {{ $todayLog ? 'var(--fg)' : '#991B1B' }};">{{ $todayLog ? 'Done' : 'Pending' }}</div>
-                    <div class="stat-label">Today's EOD</div>
                 </div>
             </div>
         </div>
