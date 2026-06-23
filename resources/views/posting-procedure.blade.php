@@ -9,71 +9,44 @@
 
 @section('styles')
 <style>
-    /* ── Step pill nav ── */
-    .step-nav-bar {
-        position: sticky;
-        top: 64px;
-        z-index: 30;
-        background: var(--background);
-        border-bottom: 1px solid var(--border-light);
-        padding: 0.625rem 0;
-        margin: 0 -2.5rem 1.75rem;
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-        display: flex;
-        gap: 0.375rem;
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-    .step-nav-bar::-webkit-scrollbar { display: none; }
-    .step-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        padding: 0.35rem 0.875rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--muted-foreground);
-        background: var(--card);
-        border: 1px solid var(--border-light);
-        text-decoration: none;
-        white-space: nowrap;
-        transition: all 0.15s;
-        flex-shrink: 0;
-    }
-    .step-pill:hover { color: var(--foreground); border-color: var(--border); }
-    .step-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-    /* ── Step card ── */
+    /* ── Accordion step card ── */
     .proc-step {
         background: var(--card);
         border: 1px solid var(--border-light);
         border-radius: 12px;
-        margin-bottom: 1.125rem;
+        margin-bottom: 0.625rem;
         overflow: hidden;
-        scroll-margin-top: 130px;
+        transition: border-color 0.2s;
     }
-    .proc-bar { height: 3px; }
-    .proc-bar.cp { background: var(--primary); }
-    .proc-bar.cs { background: var(--success); }
-    .proc-bar.cw { background: var(--warning); }
+    .proc-step.open { border-color: var(--border); }
 
+    /* Colored left accent bar */
+    .proc-step.cp { border-left: 4px solid var(--primary); }
+    .proc-step.cs { border-left: 4px solid var(--success); }
+    .proc-step.cw { border-left: 4px solid var(--warning); }
+
+    /* ── Clickable header ── */
     .proc-header {
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 1.375rem 1.75rem 1.125rem;
+        padding: 1.25rem 1.5rem;
+        cursor: pointer;
         position: relative;
         overflow: hidden;
+        user-select: none;
+        transition: background 0.15s;
     }
+    .proc-header:hover { background: var(--muted); }
+    .proc-step.open .proc-header { background: var(--muted); }
+
     .proc-ghost-num {
         position: absolute;
-        right: 1.25rem;
+        right: 3.5rem;
         top: 50%;
         transform: translateY(-50%);
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 5rem;
+        font-size: 4.5rem;
         font-weight: 800;
         color: var(--border-light);
         line-height: 1;
@@ -81,26 +54,48 @@
         user-select: none;
         letter-spacing: -0.05em;
     }
+
     .proc-icon {
-        width: 42px; height: 42px;
+        width: 40px; height: 40px;
         border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1rem; color: white; flex-shrink: 0;
+        font-size: 0.95rem; color: white; flex-shrink: 0;
     }
     .proc-icon.cp { background: var(--primary); }
     .proc-icon.cs { background: var(--success); }
     .proc-icon.cw { background: var(--warning); }
+
+    .proc-header-text { flex: 1; min-width: 0; }
     .proc-title {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.05rem; font-weight: 700;
+        font-size: 1rem; font-weight: 700;
         color: var(--foreground); line-height: 1.2;
     }
-    .proc-sub { font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; margin-top: 0.15rem; }
-
-    .proc-body {
-        padding: 0 1.75rem 1.625rem;
-        display: flex; flex-direction: column; gap: 1.125rem;
+    .proc-sub {
+        font-size: 0.775rem; color: var(--muted-foreground);
+        font-weight: 500; margin-top: 0.15rem;
     }
+
+    .proc-chevron {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        transition: transform 0.25s ease;
+        margin-right: 0.25rem;
+        z-index: 1;
+    }
+    .proc-step.open .proc-chevron { transform: rotate(180deg); }
+
+    /* ── Collapsible body ── */
+    .proc-body {
+        display: none;
+        padding: 1.25rem 1.5rem 1.5rem;
+        border-top: 1px solid var(--border-light);
+        flex-direction: column;
+        gap: 1.125rem;
+        animation: fadeInUp 0.18s ease-out both;
+    }
+    .proc-step.open .proc-body { display: flex; }
 
     /* ── Section label ── */
     .p-sec {
@@ -166,16 +161,20 @@
     .plat-badge.std { background: rgba(87,87,248,0.12); color: var(--primary); }
     .plat-badge.pro { background: rgba(34,197,94,0.12); color: #16a34a; }
 
-    /* ── Code block ── */
-    .p-code {
+    /* ── Folder tree ── */
+    .p-tree {
         background: #18181b; border-radius: 8px;
         padding: 1.125rem 1.25rem; overflow-x: auto;
-        font-family: ui-monospace, 'Courier New', monospace;
-        font-size: 0.8rem; line-height: 1.8; color: #a1a1aa;
     }
-    .p-code .ct { color: #818cf8; font-weight: 700; }
-    .p-code .cf { color: #60a5fa; }
-    .p-code .cn { color: #3f3f46; }
+    .p-tree pre {
+        margin: 0;
+        font-family: ui-monospace, 'Courier New', monospace;
+        font-size: 0.82rem; line-height: 1.8; color: #a1a1aa;
+        white-space: pre;
+    }
+    .p-tree .ct { color: #818cf8; font-weight: 700; }
+    .p-tree .cf { color: #60a5fa; }
+    .p-tree .cn { color: #52525b; }
 
     /* ── Table ── */
     .p-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -209,10 +208,9 @@
     }
 
     @media (max-width: 768px) {
-        .step-nav-bar { margin: 0 -1.25rem 1.5rem; padding-left: 1.25rem; padding-right: 1.25rem; }
-        .proc-header { padding: 1.125rem; }
-        .proc-body { padding: 0 1.125rem 1.25rem; }
-        .proc-ghost-num { font-size: 3.5rem; }
+        .proc-ghost-num { font-size: 3rem; right: 3rem; }
+        .proc-header { padding: 1rem 1.125rem; }
+        .proc-body { padding: 1rem 1.125rem 1.25rem; }
         .p-sku { grid-template-columns: 1fr; }
     }
 </style>
@@ -223,35 +221,23 @@
 
 <div class="main-content">
 
-    <div class="top-bar anim-up" style="margin-bottom:1.25rem;">
+    <div class="top-bar anim-up" style="margin-bottom:1.5rem;">
         <div>
             <h2>Posting <span class="highlight">Procedure</span></h2>
             <p>8-step guide for e-commerce product posting</p>
         </div>
     </div>
 
-    <!-- Step pills -->
-    <div class="step-nav-bar" id="stepNav">
-        <a class="step-pill active" href="#step-1">1 · Mine SKU</a>
-        <a class="step-pill" href="#step-2">2 · Data Gathering</a>
-        <a class="step-pill" href="#step-3">3 · Go Signal</a>
-        <a class="step-pill" href="#step-4">4 · Ecomm Posting</a>
-        <a class="step-pill" href="#step-5">5 · inFlow Update</a>
-        <a class="step-pill" href="#step-6">6 · Pro Posting</a>
-        <a class="step-pill" href="#step-7">7 · Brand Malls</a>
-        <a class="step-pill" href="#step-8">8 · Link Sheet</a>
-    </div>
-
     <!-- STEP 1 -->
-    <div class="proc-step anim-up d1" id="step-1">
-        <div class="proc-bar cp"></div>
-        <div class="proc-header">
+    <div class="proc-step cp anim-up d1" id="step-1">
+        <div class="proc-header" onclick="toggleStep('step-1')">
             <div class="proc-icon cp"><i class="fas fa-magnifying-glass"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Mine SKU from Link Sheet</div>
                 <div class="proc-sub">Claim an available SKU before starting any work</div>
             </div>
             <div class="proc-ghost-num">01</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -267,15 +253,15 @@
     </div>
 
     <!-- STEP 2 -->
-    <div class="proc-step anim-up d2" id="step-2">
-        <div class="proc-bar cs"></div>
-        <div class="proc-header">
+    <div class="proc-step cs anim-up d2" id="step-2">
+        <div class="proc-header" onclick="toggleStep('step-2')">
             <div class="proc-icon cs"><i class="fas fa-folder-open"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Data Gathering</div>
                 <div class="proc-sub">Collect all product information and assets required for posting</div>
             </div>
             <div class="proc-ghost-num">02</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -288,18 +274,19 @@
             </div>
             <div>
                 <div class="p-sec">Folder Naming Rules</div>
-                <div class="p-code"><span class="ct">Single SKU</span>
+                <div class="p-tree"><pre>
+<span class="ct">Single SKU Structure</span>
 [SKU_Name]/
-├── <span class="cf">1000x1000/</span>     <span class="cn">← Ecommerce Posting Images</span>
-├── <span class="cf">500x500/</span>       <span class="cn">← inFlow Images</span>
-└── <span class="cf">Long Desc/</span>     <span class="cn">← 1000x2000 Images</span>
+├── <span class="cf">1000x1000/</span>     <span class="cn">(Ecommerce Posting Images)</span>
+├── <span class="cf">500x500/</span>       <span class="cn">(inFlow Images)</span>
+└── <span class="cf">Long Desc/</span>     <span class="cn">(1000x2000 Images)</span>
 
-<span class="ct">Variation SKU</span>
+<span class="ct">Variation SKU Structure</span>
 [Parent_SKU]/
 └── [Child_SKU_Variation1]/
     ├── <span class="cf">1000x1000/</span>
     ├── <span class="cf">500x500/</span>
-    └── <span class="cf">Long Desc/</span></div>
+    └── <span class="cf">Long Desc/</span></pre></div>
             </div>
             <div>
                 <div class="p-sec">SKU Definitions</div>
@@ -329,15 +316,15 @@
     </div>
 
     <!-- STEP 3 -->
-    <div class="proc-step anim-up d3" id="step-3">
-        <div class="proc-bar cw"></div>
-        <div class="proc-header">
+    <div class="proc-step cw anim-up d3" id="step-3">
+        <div class="proc-header" onclick="toggleStep('step-3')">
             <div class="proc-icon cw"><i class="fas fa-clock"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Wait for Go Signal</div>
                 <div class="proc-sub">Do not begin posting until approval is received</div>
             </div>
             <div class="proc-ghost-num">03</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -356,15 +343,15 @@
     </div>
 
     <!-- STEP 4 -->
-    <div class="proc-step anim-up d4" id="step-4">
-        <div class="proc-bar cp"></div>
-        <div class="proc-header">
+    <div class="proc-step cp anim-up d4" id="step-4">
+        <div class="proc-header" onclick="toggleStep('step-4')">
             <div class="proc-icon cp"><i class="fas fa-cart-shopping"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">E-commerce Posting</div>
                 <div class="proc-sub">Post products across all platforms in the required sequence</div>
             </div>
             <div class="proc-ghost-num">04</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -394,15 +381,15 @@
     </div>
 
     <!-- STEP 5 -->
-    <div class="proc-step anim-up d5" id="step-5">
-        <div class="proc-bar cs"></div>
-        <div class="proc-header">
+    <div class="proc-step cs anim-up d5" id="step-5">
+        <div class="proc-header" onclick="toggleStep('step-5')">
             <div class="proc-icon cs"><i class="fas fa-database"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">inFlow Update</div>
                 <div class="proc-sub">Update inventory information inside the inFlow system</div>
             </div>
             <div class="proc-ghost-num">05</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div class="p-call info">
@@ -434,15 +421,15 @@
     </div>
 
     <!-- STEP 6 -->
-    <div class="proc-step anim-up" id="step-6">
-        <div class="proc-bar cw"></div>
-        <div class="proc-header">
+    <div class="proc-step cw anim-up" id="step-6">
+        <div class="proc-header" onclick="toggleStep('step-6')">
             <div class="proc-icon cw"><i class="fas fa-star"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Pro E-commerce Posting</div>
                 <div class="proc-sub">Publish to professional accounts after completing the inFlow update</div>
             </div>
             <div class="proc-ghost-num">06</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -460,15 +447,15 @@
     </div>
 
     <!-- STEP 7 -->
-    <div class="proc-step anim-up" id="step-7">
-        <div class="proc-bar cp"></div>
-        <div class="proc-header">
+    <div class="proc-step cp anim-up" id="step-7">
+        <div class="proc-header" onclick="toggleStep('step-7')">
             <div class="proc-icon cp"><i class="fas fa-store"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Brand Malls</div>
                 <div class="proc-sub">Post products to official Brand Mall stores when available</div>
             </div>
             <div class="proc-ghost-num">07</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -483,15 +470,15 @@
     </div>
 
     <!-- STEP 8 -->
-    <div class="proc-step anim-up" id="step-8">
-        <div class="proc-bar cs"></div>
-        <div class="proc-header">
+    <div class="proc-step cs anim-up" id="step-8">
+        <div class="proc-header" onclick="toggleStep('step-8')">
             <div class="proc-icon cs"><i class="fas fa-link"></i></div>
-            <div>
+            <div class="proc-header-text">
                 <div class="proc-title">Update Link Sheet</div>
                 <div class="proc-sub">Record all product listing URLs after posting</div>
             </div>
             <div class="proc-ghost-num">08</div>
+            <i class="fas fa-chevron-down proc-chevron"></i>
         </div>
         <div class="proc-body">
             <div>
@@ -514,29 +501,15 @@
 
 @section('scripts')
 <script>
-(function() {
-    var ids   = ['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
-    var pills = document.querySelectorAll('#stepNav .step-pill');
-
-    function setActive(i) {
-        pills.forEach(function(p, idx) { p.classList.toggle('active', idx === i); });
-    }
-
-    window.addEventListener('scroll', function() {
-        var atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 40;
-        if (atBottom) { setActive(ids.length - 1); return; }
-
-        var active = 0;
-        ids.forEach(function(id, i) {
-            var el = document.getElementById(id);
-            if (el && el.getBoundingClientRect().top <= 150) active = i;
-        });
-        setActive(active);
-    }, { passive: true });
-
-    pills.forEach(function(pill, i) {
-        pill.addEventListener('click', function() { setActive(i); });
+function toggleStep(id) {
+    var el = document.getElementById(id);
+    var isOpen = el.classList.contains('open');
+    // close all
+    document.querySelectorAll('.proc-step.open').forEach(function(s) {
+        s.classList.remove('open');
     });
-})();
+    // open clicked if it was closed
+    if (!isOpen) el.classList.add('open');
+}
 </script>
 @endsection
