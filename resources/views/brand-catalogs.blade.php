@@ -45,6 +45,60 @@
 
     .bc-empty { text-align: center; padding: 3rem; color: var(--muted-foreground); }
     .bc-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; color: var(--border); }
+
+    .file-upload-area {
+        border: 1.5px dashed var(--border-light);
+        border-radius: 8px;
+        padding: 0.875rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: border-color 0.15s;
+        background: var(--muted);
+    }
+    .file-upload-area:hover {
+        border-color: var(--primary);
+    }
+    .file-upload-area input[type="file"] {
+        display: none;
+    }
+    .file-upload-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: var(--card);
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted-foreground);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .file-upload-label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+    .file-upload-label span:first-child {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--foreground);
+    }
+    .file-upload-label span:last-child {
+        font-size: 0.72rem;
+        color: var(--muted-foreground);
+    }
+    .file-upload-area.has-file {
+        border-style: solid;
+        border-color: var(--primary);
+    }
+    .file-upload-area.has-file .file-upload-icon {
+        background: rgba(87,87,248,0.08);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
 </style>
 @endsection
 
@@ -165,7 +219,7 @@
             <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
                 <div class="form-group">
                     <label class="form-label">Brand</label>
-                    <select name="brand_id" id="catalogBrand" class="form-select" required>
+                    <select name="brand_id" id="catalogBrand" class="form-select" style="width: 100%;" required>
                         <option value="">— Select brand —</option>
                         @foreach($brands as $brand)
                         <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -178,7 +232,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
-                    <select name="status" id="catalogStatus" class="form-select" required>
+                    <select name="status" id="catalogStatus" class="form-select" style="width: 100%;" required>
                         <option value="available">Available</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="seasonal">Seasonal</option>
@@ -194,8 +248,15 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Upload File <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(PDF or image, max 10MB)</span></label>
-                    <div id="catalogCurrentFile" style="font-size: 0.8rem; color: var(--muted-foreground); margin-bottom: 0.375rem;"></div>
-                    <input type="file" name="file" id="catalogFile" accept=".pdf,.jpg,.jpeg,.png" style="font-size: 0.85rem;">
+                    <div id="catalogFileArea" class="file-upload-area" onclick="document.getElementById('catalogFile').click()">
+                        <div class="file-upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                        <div class="file-upload-label">
+                            <span id="catalogFileLabel">Click to choose file</span>
+                            <span>PDF, JPG, PNG — max 10MB</span>
+                        </div>
+                        <input type="file" name="file" id="catalogFile" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileChange(this, 'catalogFileArea', 'catalogFileLabel')">
+                    </div>
+                    <div id="catalogCurrentFile" style="font-size: 0.8rem; color: var(--muted-foreground); margin-top: 0.375rem;"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -241,12 +302,26 @@
     });
 }());
 
+function handleFileChange(input, areaId, labelId) {
+    var area = document.getElementById(areaId);
+    var label = document.getElementById(labelId);
+    if (input.files && input.files[0]) {
+        area.classList.add('has-file');
+        label.textContent = input.files[0].name;
+    } else {
+        area.classList.remove('has-file');
+        label.textContent = 'Click to choose file';
+    }
+}
+
 function addCatalog() {
     document.getElementById('catalogModalTitle').textContent = 'Add Catalog';
     document.getElementById('catalogForm').reset();
     document.getElementById('catalogForm').action = '{{ route("brand-catalogs.store") }}';
     document.getElementById('catalogMethod').value = '';
     document.getElementById('catalogCurrentFile').textContent = '';
+    document.getElementById('catalogFileArea').classList.remove('has-file');
+    document.getElementById('catalogFileLabel').textContent = 'Click to choose file';
     openModal('catalogModal');
 }
 
@@ -262,6 +337,13 @@ function editCatalog(btn) {
     document.getElementById('catalogLink').value = d.link;
     document.getElementById('catalogCurrentFile').textContent = d.file ? 'Current file: ' + d.file : '';
     document.getElementById('catalogFile').value = '';
+    if (d.file) {
+        document.getElementById('catalogFileArea').classList.add('has-file');
+        document.getElementById('catalogFileLabel').textContent = d.file;
+    } else {
+        document.getElementById('catalogFileArea').classList.remove('has-file');
+        document.getElementById('catalogFileLabel').textContent = 'Click to choose file';
+    }
     openModal('catalogModal');
 }
 </script>

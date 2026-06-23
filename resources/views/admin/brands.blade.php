@@ -15,7 +15,59 @@
     .action-btn-sm { width: 28px; height: 28px; border: 1px solid var(--border-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: border-color 0.15s; background: transparent; color: var(--muted-foreground); }
     .action-btn-sm:hover { border-color: var(--foreground); color: var(--foreground); }
     .action-btn-sm.btn-danger:hover { border-color: #dc2626; color: #dc2626; }
-    .logo-preview { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; display: none; margin-top: 0.5rem; }
+    .file-upload-area {
+        border: 1.5px dashed var(--border-light);
+        border-radius: 8px;
+        padding: 0.875rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: border-color 0.15s;
+        background: var(--muted);
+    }
+    .file-upload-area:hover {
+        border-color: var(--primary);
+    }
+    .file-upload-area input[type="file"] {
+        display: none;
+    }
+    .file-upload-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: var(--card);
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted-foreground);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .file-upload-label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+    .file-upload-label span:first-child {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--foreground);
+    }
+    .file-upload-label span:last-child {
+        font-size: 0.72rem;
+        color: var(--muted-foreground);
+    }
+    .file-upload-area.has-file {
+        border-style: solid;
+        border-color: var(--primary);
+    }
+    .file-upload-area.has-file .file-upload-icon {
+        background: rgba(87,87,248,0.08);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
 </style>
 @endsection
 
@@ -124,8 +176,14 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Logo <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(image, max 2MB)</span></label>
-                    <img id="brandLogoPreview" src="" alt="Logo preview" class="logo-preview">
-                    <input type="file" name="logo" id="brandLogo" accept=".jpg,.jpeg,.png,.svg,.webp" style="font-size: 0.85rem; margin-top: 0.375rem;" onchange="previewLogo(this)">
+                    <div id="brandLogoArea" class="file-upload-area" onclick="document.getElementById('brandLogo').click()">
+                        <div class="file-upload-icon" id="brandLogoIconBox"><i class="fas fa-image"></i></div>
+                        <div class="file-upload-label">
+                            <span id="brandLogoLabel">Click to choose logo</span>
+                            <span>JPG, PNG, WEBP — max 2MB</span>
+                        </div>
+                        <input type="file" name="logo" id="brandLogo" accept=".jpg,.jpeg,.png,.webp" onchange="handleFileChange(this, 'brandLogoArea', 'brandLogoLabel')">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -137,12 +195,25 @@
 </div>
 
 <script>
+function handleFileChange(input, areaId, labelId) {
+    var area = document.getElementById(areaId);
+    var label = document.getElementById(labelId);
+    if (input.files && input.files[0]) {
+        area.classList.add('has-file');
+        label.textContent = input.files[0].name;
+    } else {
+        area.classList.remove('has-file');
+        label.textContent = 'Click to choose file';
+    }
+}
+
 function openAddBrand() {
     document.getElementById('brandModalTitle').textContent = 'Add Brand';
     document.getElementById('brandForm').action = '{{ route("admin.brands.store") }}';
     document.getElementById('brandMethod').value = '';
     document.getElementById('brandForm').reset();
-    document.getElementById('brandLogoPreview').style.display = 'none';
+    document.getElementById('brandLogoArea').classList.remove('has-file');
+    document.getElementById('brandLogoLabel').textContent = 'Click to choose logo';
     openModal('brandModal');
 }
 
@@ -154,23 +225,14 @@ function openEditBrand(btn) {
     document.getElementById('brandName').value = d.name;
     document.getElementById('brandDescription').value = d.description;
     document.getElementById('brandLogo').value = '';
-    var preview = document.getElementById('brandLogoPreview');
     if (d.logo) {
-        preview.src = d.logo;
-        preview.style.display = 'block';
+        document.getElementById('brandLogoArea').classList.add('has-file');
+        document.getElementById('brandLogoLabel').textContent = 'Current logo';
     } else {
-        preview.style.display = 'none';
+        document.getElementById('brandLogoArea').classList.remove('has-file');
+        document.getElementById('brandLogoLabel').textContent = 'Click to choose logo';
     }
     openModal('brandModal');
-}
-
-function previewLogo(input) {
-    var preview = document.getElementById('brandLogoPreview');
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) { preview.src = e.target.result; preview.style.display = 'block'; };
-        reader.readAsDataURL(input.files[0]);
-    }
 }
 </script>
 @endsection

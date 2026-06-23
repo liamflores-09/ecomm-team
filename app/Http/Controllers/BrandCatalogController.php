@@ -53,21 +53,23 @@ class BrandCatalogController extends Controller
             'file'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
+        $oldFile = $catalog->file_path;
         if ($request->hasFile('file')) {
-            if ($catalog->file_path) {
-                Storage::disk('public')->delete($catalog->file_path);
-            }
             $data['file_path'] = $request->file('file')->store('catalogs', 'public');
         } else {
             $data['file_path'] = $catalog->file_path;
         }
+        unset($data['file']);
 
         if (!$request->filled('link') && !$data['file_path']) {
             return back()->with('error', 'Please provide an external link or upload a file.');
         }
 
-        unset($data['file']);
         $catalog->update($data);
+
+        if ($request->hasFile('file') && $oldFile) {
+            Storage::disk('public')->delete($oldFile);
+        }
         return back()->with('success', 'Catalog updated.');
     }
 

@@ -21,7 +21,7 @@ class AdminBrandController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
-            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -37,17 +37,20 @@ class AdminBrandController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
-            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($brand->logo) {
-                Storage::disk('public')->delete($brand->logo);
-            }
+            $oldLogo = $brand->logo;
             $data['logo'] = $request->file('logo')->store('brands', 'public');
+            $brand->update($data);
+            if ($oldLogo) {
+                Storage::disk('public')->delete($oldLogo);
+            }
+        } else {
+            unset($data['logo']);
+            $brand->update($data);
         }
-
-        $brand->update($data);
         return back()->with('success', 'Brand updated.');
     }
 

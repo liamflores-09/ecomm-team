@@ -615,6 +615,7 @@
             { name: 'Admin Dashboard', desc: 'Overview', icon: 'fa-grip', url: '{{ route("admin.dashboard") }}' },
             { name: 'Manage Users', desc: 'User management', icon: 'fa-users', url: '{{ route("admin.users") }}' },
             { name: 'Daily Logs', desc: 'Team activity', icon: 'fa-clipboard-list', url: '{{ route("admin.daily-logs") }}' },
+            { name: 'Brands', desc: 'Manage brands', icon: 'fa-tag', url: '{{ route("admin.brands") }}' },
             { name: 'User Dashboard', desc: 'Switch view', icon: 'fa-arrow-right-from-bracket', url: '{{ route("dashboard") }}' }
         ];
 
