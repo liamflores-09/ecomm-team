@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
     <title>@yield('title', 'Ecomm Dept')</title>
     @yield('favicon')
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -80,6 +81,47 @@
             --rose: #ef4444;
             --violet: #5757f8;
         }
+
+        [data-theme="dark"] {
+            --background: #111111;
+            --foreground: #ebebeb;
+            --card: #1c1c1c;
+            --card-foreground: #ebebeb;
+            --muted: #252525;
+            --muted-foreground: #999999;
+            --border: #2e2e2e;
+            --border-light: #282828;
+            --border-strong: #3e3e3e;
+            --secondary: #252525;
+            --secondary-foreground: #ebebeb;
+            --accent: #252525;
+            --accent-foreground: #ebebeb;
+            --sidebar: #161616;
+            --sidebar-foreground: #ebebeb;
+            --sidebar-accent: #252525;
+            --sidebar-accent-foreground: #ebebeb;
+            --sidebar-border: #282828;
+            --popover: #1c1c1c;
+            --popover-foreground: #ebebeb;
+            --white: #1c1c1c;
+            --bg: #111111;
+            --bg-card: #1c1c1c;
+            --fg: #ebebeb;
+            --fg-secondary: #999999;
+            --fg-tertiary: #666666;
+            --hover: #252525;
+            --gray-200: #282828;
+            --gray-300: #333333;
+            --gray-400: #666666;
+            --gray-500: #999999;
+            --gray-600: #cccccc;
+            --gray-700: #e0e0e0;
+        }
+        [data-theme="dark"] .notif-panel,
+        [data-theme="dark"] .user-menu-dropdown { box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+        [data-theme="dark"] .alert.success, [data-theme="dark"] .alert-flat.success { background: #052e16; color: #86efac; border-color: #166534; }
+        [data-theme="dark"] .alert.danger,  [data-theme="dark"] .alert-flat.danger  { background: #2d0a0a; color: #fca5a5; border-color: #7f1d1d; }
+        [data-theme="dark"] .cmd-overlay { background: rgba(0,0,0,0.7); }
 
         * { box-sizing: border-box; }
         body {
@@ -545,6 +587,7 @@
                 </div>
             </div>
 
+            <button onclick="toggleTheme()" title="Toggle dark mode" id="themeToggleBtn"><i class="fas fa-moon" id="themeToggleIcon"></i></button>
             <button onclick="openCmdPalette()" title="Search (Ctrl+K)"><i class="fas fa-search"></i></button>
             <div style="width:1px;height:20px;background:var(--border-light);flex-shrink:0;margin:0 2px;"></div>
 
@@ -604,6 +647,24 @@
             </div>
         </div>
     </div>
+
+    <script>
+    (function() {
+        function updateIcon() {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            var icon = document.getElementById('themeToggleIcon');
+            if (icon) icon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        function toggleTheme() {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+            localStorage.setItem('theme', dark ? 'light' : 'dark');
+            updateIcon();
+        }
+        window.toggleTheme = toggleTheme;
+        updateIcon();
+    })();
+    </script>
 
     <script>
     function openCmdPalette() {
