@@ -57,6 +57,29 @@
     .form-textarea { padding: 0.75rem 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; resize: vertical; min-height: 80px; transition: all 0.15s; width: 100%; }
     .form-textarea:focus { border-color: var(--primary); background: var(--white); }
 
+    /* Side drawer */
+    .bc-drawer-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:198; opacity:0; pointer-events:none; transition:opacity 0.25s; }
+    .bc-drawer-overlay.open { opacity:1; pointer-events:all; }
+    .bc-drawer { position:fixed; top:0; right:0; bottom:0; width:420px; max-width:90vw; background:var(--card); border-left:1px solid var(--border-light); z-index:199; transform:translateX(100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); display:flex; flex-direction:column; overflow:hidden; }
+    .bc-drawer.open { transform:translateX(0); }
+    .bc-drawer-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border-light); flex-shrink:0; }
+    .bc-drawer-logo { width:44px; height:44px; border-radius:8px; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1rem; }
+    .bc-drawer-logo img { width:100%; height:100%; object-fit:cover; }
+    .bc-drawer-brand { font-weight:700; font-size:0.9rem; color:var(--foreground); }
+    .bc-drawer-close { width:32px; height:32px; border:1px solid var(--border-light); border-radius:6px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted-foreground); font-size:0.8rem; transition:all 0.15s; }
+    .bc-drawer-close:hover { border-color:var(--foreground); color:var(--foreground); }
+    .bc-drawer-body { flex:1; overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:1.25rem; }
+    .bc-drawer-footer { padding:1rem 1.25rem; border-top:1px solid var(--border-light); display:flex; gap:0.5rem; flex-shrink:0; }
+    .bc-drawer-section-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted-foreground); margin-bottom:0.4rem; }
+    .bc-drawer-title { font-size:1.05rem; font-weight:800; color:var(--foreground); line-height:1.35; font-family:'Space Grotesk', sans-serif; }
+    .bc-drawer-notes { font-size:0.85rem; color:var(--foreground); line-height:1.65; white-space:pre-line; }
+    .bc-res-btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 0.875rem; border:1px solid var(--border-light); border-radius:6px; font-size:0.8rem; font-weight:600; color:var(--foreground); text-decoration:none; transition:border-color 0.15s; }
+    .bc-res-btn:hover { border-color:var(--foreground); }
+    .brand-class-badge { display:inline-flex; align-items:center; padding:0.18rem 0.6rem; border-radius:9999px; font-size:0.68rem; font-weight:700; white-space:nowrap; }
+    .brand-class-badge.tech     { background:rgba(87,87,248,0.12); color:var(--primary); }
+    .brand-class-badge.consumer { background:rgba(245,158,11,0.12); color:#f59e0b; }
+    .brand-class-badge.both     { background:rgba(34,197,94,0.12);  color:var(--success); }
+
     .file-upload-area { border: 1.5px dashed var(--border-light); border-radius: 8px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: border-color 0.15s; background: var(--muted); }
     .file-upload-area:hover { border-color: var(--primary); }
     .file-upload-area input[type="file"] { display: none; }
@@ -70,7 +93,7 @@
 @endsection
 
 @section('content')
-<x-sidebar active="brand-catalogs" />
+<x-sidebar :isAdmin="$user->role === 'manager'" active="brand-catalogs" />
 
 <div class="main-content">
     <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
@@ -145,8 +168,11 @@
                     @endif
                     <span class="bc-date">{{ $catalog->created_at->format('M j, Y') }}</span>
                 </div>
-                @if(in_array($user->role, ['manager', 'researcher']))
                 <div class="bc-actions">
+                    <button class="bc-action-btn" title="View full details" onclick="openDetails({{ $catalog->id }})">
+                        <i class="fas fa-up-right-and-down-left-from-center"></i>
+                    </button>
+                    @if(in_array($user->role, ['manager', 'researcher']))
                     <button class="bc-action-btn" title="Edit"
                         onclick="editCatalog(this)"
                         data-id="{{ $catalog->id }}"
@@ -163,14 +189,31 @@
                         @method('DELETE')
                         <button type="submit" class="bc-action-btn btn-danger" title="Delete"><i class="fas fa-trash-can"></i></button>
                     </form>
+                    @endif
                 </div>
-                @endif
             </div>
         </div>
         @endforeach
     </div>
 
     @endif
+</div>
+
+<!-- Side Drawer -->
+<div class="bc-drawer-overlay" id="drawerOverlay" onclick="closeDetails()"></div>
+<div class="bc-drawer" id="detailsDrawer">
+    <div class="bc-drawer-header">
+        <div style="display:flex;align-items:center;gap:0.875rem;">
+            <div class="bc-drawer-logo" id="drawerLogo"></div>
+            <div>
+                <div class="bc-drawer-brand" id="drawerBrandName"></div>
+                <div id="drawerBrandCls" style="margin-top:0.2rem;"></div>
+            </div>
+        </div>
+        <button class="bc-drawer-close" onclick="closeDetails()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="bc-drawer-body" id="drawerBody"></div>
+    <div class="bc-drawer-footer" id="drawerFooter" style="display:none;"></div>
 </div>
 
 <!-- Catalog Modal -->
@@ -257,6 +300,129 @@ function addCatalog() {
     document.getElementById('catalogFileLabel').textContent = 'Click to choose file';
     openModal('catalogModal');
 }
+
+@php
+$_catalogJson = $catalogs->map(function($c) {
+    return [
+        'id'         => $c->id,
+        'brand_id'   => $c->brand_id,
+        'brand_name' => $c->brand->name,
+        'brand_logo' => $c->brand->logo ? asset('storage/' . $c->brand->logo) : null,
+        'brand_cls'  => $c->brand->classification,
+        'title'      => $c->title,
+        'status'     => $c->status,
+        'notes'      => $c->notes,
+        'link'       => $c->link,
+        'file_url'   => $c->file_path ? asset('storage/' . $c->file_path) : null,
+        'file_name'  => $c->file_path ? basename($c->file_path) : null,
+        'date'       => $c->created_at->format('F j, Y'),
+    ];
+})->keyBy('id');
+@endphp
+var catalogData = @json($_catalogJson);
+var canEdit = {{ in_array($user->role, ['manager', 'researcher']) ? 'true' : 'false' }};
+var _activeDetail = null;
+
+function esc(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+function openDetails(id) {
+    var c = catalogData[id];
+    if (!c) return;
+    _activeDetail = id;
+
+    var logoEl = document.getElementById('drawerLogo');
+    if (c.brand_logo) {
+        logoEl.innerHTML = '<img src="' + esc(c.brand_logo) + '" alt="">';
+        logoEl.style.background = '';
+    } else {
+        var bgMap = {'Tech':'#5757f8','Design/Consumer':'#f59e0b','Both':'#22c55e'};
+        logoEl.style.background = bgMap[c.brand_cls] || '#6366f1';
+        logoEl.textContent = c.brand_name.charAt(0).toUpperCase();
+    }
+    document.getElementById('drawerBrandName').textContent = c.brand_name;
+
+    var clsEl = document.getElementById('drawerBrandCls');
+    if (c.brand_cls) {
+        var clsMap = {'Tech':'tech','Design/Consumer':'consumer','Both':'both'};
+        clsEl.innerHTML = '<span class="brand-class-badge ' + (clsMap[c.brand_cls]||'') + '">' + esc(c.brand_cls) + '</span>';
+    } else { clsEl.innerHTML = ''; }
+
+    var html = '<div>' +
+        '<div class="bc-drawer-title">' + esc(c.title) + '</div>' +
+        '<div style="margin-top:0.5rem;"><span class="bc-badge ' + esc(c.status) + '">' + cap(c.status) + '</span></div>' +
+    '</div>';
+
+    if (c.notes) {
+        html += '<div><div class="bc-drawer-section-label">Notes</div>' +
+            '<div class="bc-drawer-notes">' + esc(c.notes) + '</div></div>';
+    }
+
+    var res = '';
+    if (c.link) res += '<a href="' + esc(c.link) + '" target="_blank" rel="noopener" class="bc-res-btn"><i class="fas fa-link"></i> Open Link</a>';
+    if (c.file_url) res += '<a href="' + esc(c.file_url) + '" target="_blank" class="bc-res-btn"><i class="fas fa-file"></i> ' + esc(c.file_name) + '</a>';
+    if (res) html += '<div><div class="bc-drawer-section-label">Resources</div><div style="display:flex;gap:0.5rem;flex-wrap:wrap;">' + res + '</div></div>';
+
+    html += '<div style="font-size:0.78rem;color:var(--muted-foreground);">Added ' + esc(c.date) + '</div>';
+    document.getElementById('drawerBody').innerHTML = html;
+
+    var footer = document.getElementById('drawerFooter');
+    if (canEdit) {
+        footer.style.display = '';
+        footer.innerHTML =
+            '<button class="btn-flat-primary" style="height:36px;font-size:0.82rem;flex:1;" onclick="editFromDetails()">' +
+                '<i class="fas fa-pencil"></i> Edit Catalog' +
+            '</button>' +
+            '<form method="POST" action="/brand-catalogs/' + id + '" onsubmit="return confirm(\'Delete this catalog?\')" style="display:contents;">' +
+                '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                '<input type="hidden" name="_method" value="DELETE">' +
+                '<button type="submit" class="btn-flat-secondary" style="height:36px;font-size:0.82rem;padding:0 0.875rem;">' +
+                    '<i class="fas fa-trash-can" style="color:#dc2626;"></i>' +
+                '</button>' +
+            '</form>';
+    } else {
+        footer.style.display = 'none';
+    }
+
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('detailsDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function editFromDetails() {
+    var c = catalogData[_activeDetail];
+    if (!c) return;
+    closeDetails();
+    setTimeout(function() {
+        document.getElementById('catalogModalTitle').textContent = 'Edit Catalog';
+        document.getElementById('catalogForm').action = '/brand-catalogs/' + c.id;
+        document.getElementById('catalogMethod').value = 'PUT';
+        document.getElementById('catalogBrand').value = c.brand_id;
+        document.getElementById('catalogTitle').value = c.title;
+        document.getElementById('catalogStatus').value = c.status;
+        document.getElementById('catalogNotes').value = c.notes || '';
+        document.getElementById('catalogLink').value = c.link || '';
+        document.getElementById('catalogCurrentFile').textContent = c.file_name ? 'Current file: ' + c.file_name : '';
+        document.getElementById('catalogFile').value = '';
+        if (c.file_name) {
+            document.getElementById('catalogFileArea').classList.add('has-file');
+            document.getElementById('catalogFileLabel').textContent = c.file_name;
+        } else {
+            document.getElementById('catalogFileArea').classList.remove('has-file');
+            document.getElementById('catalogFileLabel').textContent = 'Click to choose file';
+        }
+        openModal('catalogModal');
+    }, 320);
+}
+
+function closeDetails() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('detailsDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+    _activeDetail = null;
+}
+
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetails(); });
 
 function editCatalog(btn) {
     var d = btn.dataset;
