@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
-    protected $fillable = ['name', 'description', 'logo'];
+    protected $fillable = ['name', 'description', 'classification', 'logo'];
 
     public function catalogs(): HasMany
     {

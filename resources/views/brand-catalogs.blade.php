@@ -5,12 +5,13 @@
 
 @section('styles')
 <style>
-    .bc-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-    .bc-tab { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border-radius: 9999px; border: 1px solid var(--border-light); background: var(--muted); color: var(--foreground); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
-    .bc-tab:hover { border-color: var(--foreground); }
-    .bc-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
-    .bc-status-tabs { margin-bottom: 1.5rem; }
-    .bc-status-tab { font-size: 0.75rem; padding: 0.3rem 0.75rem; }
+    .bc-filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .bc-filter-tab { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border-radius: 9999px; border: 1px solid var(--border-light); background: var(--muted); color: var(--foreground); font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: all 0.15s; }
+    .bc-filter-tab:hover { border-color: var(--foreground); color: var(--foreground); }
+    .bc-filter-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .bc-filter-tab.tech.active   { background: #5757f8; border-color: #5757f8; }
+    .bc-filter-tab.consumer.active { background: #f59e0b; border-color: #f59e0b; }
+    .bc-filter-tab.both.active   { background: var(--success); border-color: var(--success); }
 
     .bc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
     @media (max-width: 768px) { .bc-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -25,8 +26,8 @@
 
     .bc-badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
     .bc-badge.available { background: rgba(34,197,94,0.12); color: var(--success); }
-    .bc-badge.upcoming { background: rgba(87,87,248,0.12); color: var(--primary); }
-    .bc-badge.seasonal { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .bc-badge.upcoming  { background: rgba(87,87,248,0.12);  color: var(--primary); }
+    .bc-badge.seasonal  { background: rgba(245,158,11,0.12); color: #f59e0b; }
 
     .bc-title { font-weight: 700; font-size: 0.9rem; color: var(--foreground); }
     .bc-brand-name { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; }
@@ -46,6 +47,13 @@
     .bc-empty { text-align: center; padding: 3rem; color: var(--muted-foreground); }
     .bc-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; color: var(--border); }
 
+    .bc-pagination { display: flex; align-items: center; justify-content: center; gap: 0.375rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .bc-page-btn { height: 32px; min-width: 32px; padding: 0 0.5rem; border: 1px solid var(--border-light); border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; color: var(--foreground); text-decoration: none; background: var(--muted); transition: all 0.15s; white-space: nowrap; }
+    .bc-page-btn:hover { border-color: var(--foreground); }
+    .bc-page-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .bc-page-btn.disabled { opacity: 0.4; pointer-events: none; }
+    .bc-page-info { font-size: 0.78rem; color: var(--muted-foreground); padding: 0 0.5rem; }
+
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
     .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
@@ -56,59 +64,15 @@
     .form-textarea { padding: 0.75rem 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; resize: vertical; min-height: 80px; transition: all 0.15s; width: 100%; }
     .form-textarea:focus { border-color: var(--primary); background: var(--white); }
 
-    .file-upload-area {
-        border: 1.5px dashed var(--border-light);
-        border-radius: 8px;
-        padding: 0.875rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        cursor: pointer;
-        transition: border-color 0.15s;
-        background: var(--muted);
-    }
-    .file-upload-area:hover {
-        border-color: var(--primary);
-    }
-    .file-upload-area input[type="file"] {
-        display: none;
-    }
-    .file-upload-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        background: var(--card);
-        border: 1px solid var(--border-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--muted-foreground);
-        font-size: 0.8rem;
-        flex-shrink: 0;
-    }
-    .file-upload-label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
-    }
-    .file-upload-label span:first-child {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--foreground);
-    }
-    .file-upload-label span:last-child {
-        font-size: 0.72rem;
-        color: var(--muted-foreground);
-    }
-    .file-upload-area.has-file {
-        border-style: solid;
-        border-color: var(--primary);
-    }
-    .file-upload-area.has-file .file-upload-icon {
-        background: rgba(87,87,248,0.08);
-        color: var(--primary);
-        border-color: var(--primary);
-    }
+    .file-upload-area { border: 1.5px dashed var(--border-light); border-radius: 8px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: border-color 0.15s; background: var(--muted); }
+    .file-upload-area:hover { border-color: var(--primary); }
+    .file-upload-area input[type="file"] { display: none; }
+    .file-upload-icon { width: 32px; height: 32px; border-radius: 6px; background: var(--card); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.8rem; flex-shrink: 0; }
+    .file-upload-label { display: flex; flex-direction: column; gap: 0.1rem; }
+    .file-upload-label span:first-child { font-size: 0.8rem; font-weight: 600; color: var(--foreground); }
+    .file-upload-label span:last-child { font-size: 0.72rem; color: var(--muted-foreground); }
+    .file-upload-area.has-file { border-style: solid; border-color: var(--primary); }
+    .file-upload-area.has-file .file-upload-icon { background: rgba(87,87,248,0.08); color: var(--primary); border-color: var(--primary); }
 </style>
 @endsection
 
@@ -135,26 +99,18 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <!-- Brand filter tabs -->
-    <div class="bc-tabs anim-up d1">
-        <button class="bc-tab bc-brand-tab active" data-brand="all">All</button>
-        @foreach($brands as $brand)
-        <button class="bc-tab bc-brand-tab" data-brand="{{ $brand->id }}">{{ $brand->name }}</button>
-        @endforeach
-    </div>
-
-    <!-- Status filter tabs -->
-    <div class="bc-tabs bc-status-tabs anim-up d1">
-        <button class="bc-tab bc-status-tab active" data-status="all">All</button>
-        <button class="bc-tab bc-status-tab" data-status="available">Available</button>
-        <button class="bc-tab bc-status-tab" data-status="upcoming">Upcoming</button>
-        <button class="bc-tab bc-status-tab" data-status="seasonal">Seasonal</button>
+    <!-- Classification filter tabs -->
+    <div class="bc-filter-bar anim-up d1">
+        <a href="{{ route('brand-catalogs') }}" class="bc-filter-tab {{ !$classification ? 'active' : '' }}">All</a>
+        <a href="{{ route('brand-catalogs', ['classification' => 'Tech']) }}" class="bc-filter-tab tech {{ $classification === 'Tech' ? 'active' : '' }}">Tech</a>
+        <a href="{{ route('brand-catalogs', ['classification' => 'Design/Consumer']) }}" class="bc-filter-tab consumer {{ $classification === 'Design/Consumer' ? 'active' : '' }}">Design / Consumer</a>
+        <a href="{{ route('brand-catalogs', ['classification' => 'Both']) }}" class="bc-filter-tab both {{ $classification === 'Both' ? 'active' : '' }}">Both</a>
     </div>
 
     @if($catalogs->isEmpty())
     <div class="bc-empty anim-up d2">
         <i class="fas fa-book-open"></i>
-        No catalogs yet.@if(in_array($user->role, ['manager', 'researcher'])) Add the first one using the button above.@endif
+        No catalogs found.@if(in_array($user->role, ['manager', 'researcher'])) Add one using the button above.@endif
     </div>
     @else
     @php
@@ -163,7 +119,7 @@
     <div class="bc-grid anim-up d2">
         @foreach($catalogs as $catalog)
         @php $initColor = $initialColors[ord(strtoupper($catalog->brand->name[0])) % count($initialColors)]; @endphp
-        <div class="bc-card" data-brand="{{ $catalog->brand_id }}" data-status="{{ $catalog->status }}">
+        <div class="bc-card">
             <div class="bc-card-top">
                 <div class="bc-logo" @if(!$catalog->brand->logo) style="background: {{ $initColor }};" @endif>
                     @if($catalog->brand->logo)
@@ -213,6 +169,32 @@
         </div>
         @endforeach
     </div>
+
+    @if($catalogs->lastPage() > 1)
+    <div class="bc-pagination">
+        @if($catalogs->onFirstPage())
+        <span class="bc-page-btn disabled"><i class="fas fa-chevron-left"></i></span>
+        @else
+        <a href="{{ $catalogs->previousPageUrl() }}" class="bc-page-btn"><i class="fas fa-chevron-left"></i></a>
+        @endif
+
+        @foreach($catalogs->getUrlRange(1, $catalogs->lastPage()) as $page => $url)
+            @if($page == $catalogs->currentPage())
+            <span class="bc-page-btn active">{{ $page }}</span>
+            @elseif(abs($page - $catalogs->currentPage()) <= 2 || $page == 1 || $page == $catalogs->lastPage())
+            <a href="{{ $url }}" class="bc-page-btn">{{ $page }}</a>
+            @elseif(abs($page - $catalogs->currentPage()) == 3)
+            <span class="bc-page-info">…</span>
+            @endif
+        @endforeach
+
+        @if($catalogs->hasMorePages())
+        <a href="{{ $catalogs->nextPageUrl() }}" class="bc-page-btn"><i class="fas fa-chevron-right"></i></a>
+        @else
+        <span class="bc-page-btn disabled"><i class="fas fa-chevron-right"></i></span>
+        @endif
+    </div>
+    @endif
     @endif
 </div>
 
@@ -278,40 +260,6 @@
 </div>
 
 <script>
-(function () {
-    var brandTabs = document.querySelectorAll('.bc-brand-tab');
-    var statusTabs = document.querySelectorAll('.bc-status-tab');
-    var cards = document.querySelectorAll('.bc-card');
-    var activeBrand = 'all';
-    var activeStatus = 'all';
-
-    function applyFilters() {
-        cards.forEach(function (card) {
-            var brandMatch = activeBrand === 'all' || card.dataset.brand === activeBrand;
-            var statusMatch = activeStatus === 'all' || card.dataset.status === activeStatus;
-            card.style.display = (brandMatch && statusMatch) ? '' : 'none';
-        });
-    }
-
-    brandTabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            brandTabs.forEach(function (t) { t.classList.remove('active'); });
-            tab.classList.add('active');
-            activeBrand = tab.dataset.brand;
-            applyFilters();
-        });
-    });
-
-    statusTabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            statusTabs.forEach(function (t) { t.classList.remove('active'); });
-            tab.classList.add('active');
-            activeStatus = tab.dataset.status;
-            applyFilters();
-        });
-    });
-}());
-
 function handleFileChange(input, areaId, labelId) {
     var area = document.getElementById(areaId);
     var label = document.getElementById(labelId);

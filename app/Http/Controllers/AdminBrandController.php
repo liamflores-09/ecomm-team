@@ -13,15 +13,22 @@ class AdminBrandController extends Controller
     {
         $user = Auth::user();
         $brands = Brand::withCount('catalogs')->orderBy('name')->get();
-        return view('admin.brands', compact('user', 'brands'));
+        $stats = [
+            'total'    => $brands->count(),
+            'tech'     => $brands->where('classification', 'Tech')->count(),
+            'consumer' => $brands->where('classification', 'Design/Consumer')->count(),
+            'both'     => $brands->where('classification', 'Both')->count(),
+        ];
+        return view('admin.brands', compact('user', 'brands', 'stats'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'name'           => 'required|string|max:255',
+            'description'    => 'nullable|string|max:500',
+            'classification' => 'nullable|in:Tech,Design/Consumer,Both',
+            'logo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -35,9 +42,10 @@ class AdminBrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'name'           => 'required|string|max:255',
+            'description'    => 'nullable|string|max:500',
+            'classification' => 'nullable|in:Tech,Design/Consumer,Both',
+            'logo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {

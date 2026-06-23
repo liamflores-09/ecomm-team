@@ -10,12 +10,19 @@ use Illuminate\Support\Facades\Storage;
 
 class BrandCatalogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $brands = Brand::orderBy('name')->get();
-        $catalogs = BrandCatalog::with('brand')->latest()->get();
-        return view('brand-catalogs', compact('user', 'brands', 'catalogs'));
+        $classification = $request->input('classification');
+
+        $query = BrandCatalog::with('brand')->latest();
+        if ($classification) {
+            $query->whereHas('brand', fn($q) => $q->where('classification', $classification));
+        }
+        $catalogs = $query->paginate(10)->withQueryString();
+
+        return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification'));
     }
 
     public function store(Request $request)

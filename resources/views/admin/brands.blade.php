@@ -5,78 +5,59 @@
 
 @section('styles')
 <style>
-    .brand-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.25rem; }
-    .brand-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem 1.25rem 1rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.375rem; transition: border-color 0.2s; }
+    .brand-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1rem 1.25rem 0; }
+    .brand-stat-box { border-radius: 8px; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.2rem; }
+    .brand-stat-box .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    .brand-stat-box .stat-lbl { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .brand-stat-box.total  { background: rgba(87,87,248,0.08);  }
+    .brand-stat-box.total  .stat-num { color: var(--primary); }
+    .brand-stat-box.total  .stat-lbl { color: var(--primary); }
+    .brand-stat-box.tech   { background: rgba(87,87,248,0.06);  }
+    .brand-stat-box.tech   .stat-num { color: #5757f8; }
+    .brand-stat-box.tech   .stat-lbl { color: #5757f8; }
+    .brand-stat-box.consumer { background: rgba(245,158,11,0.08); }
+    .brand-stat-box.consumer .stat-num { color: #f59e0b; }
+    .brand-stat-box.consumer .stat-lbl { color: #f59e0b; }
+    .brand-stat-box.both   { background: rgba(34,197,94,0.08);  }
+    .brand-stat-box.both   .stat-num { color: var(--success); }
+    .brand-stat-box.both   .stat-lbl { color: var(--success); }
+
+    .brand-list { display: flex; flex-direction: column; gap: 0; padding: 1rem 1.25rem 1.25rem; }
+    .brand-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.875rem; transition: border-color 0.15s; margin-bottom: 0.5rem; }
+    .brand-card:last-child { margin-bottom: 0; }
     .brand-card:hover { border-color: var(--foreground); }
-    .brand-card-logo { width: 64px; height: 64px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.4rem; background: var(--primary); margin-bottom: 0.5rem; flex-shrink: 0; }
+    .brand-card-logo { width: 48px; height: 48px; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; background: var(--primary); flex-shrink: 0; }
     .brand-card-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-card-name { font-weight: 700; font-size: 0.95rem; color: var(--foreground); }
-    .brand-card-desc { font-size: 0.8rem; color: var(--muted-foreground); }
-    .brand-card-footer { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 0.875rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light); }
-    .brand-catalog-pill { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--muted); border: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 700; color: var(--muted-foreground); }
+    .brand-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-card-name { font-weight: 700; font-size: 0.9rem; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-card-desc { font-size: 0.78rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-card-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .brand-class-badge { display: inline-flex; align-items: center; padding: 0.18rem 0.6rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
+    .brand-class-badge.tech     { background: rgba(87,87,248,0.12); color: var(--primary); }
+    .brand-class-badge.consumer { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .brand-class-badge.both     { background: rgba(34,197,94,0.12);  color: var(--success); }
+    .brand-catalog-pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.18rem 0.6rem; border-radius: 9999px; background: var(--muted); border: 1px solid var(--border-light); font-size: 0.68rem; font-weight: 700; color: var(--muted-foreground); }
     .action-btns { display: flex; gap: 0.25rem; }
     .action-btn-sm { width: 28px; height: 28px; border: 1px solid var(--border-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: border-color 0.15s; background: transparent; color: var(--muted-foreground); }
     .action-btn-sm:hover { border-color: var(--foreground); color: var(--foreground); }
     .action-btn-sm.btn-danger:hover { border-color: #dc2626; color: #dc2626; }
+
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
-    .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
-    .form-input:focus { border-color: var(--primary); background: var(--white); }
+    .form-input, .form-select { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); background: var(--white); }
     .form-input::placeholder { color: var(--gray-300); }
+    .form-select { appearance: none; cursor: pointer; }
 
-    .file-upload-area {
-        border: 1.5px dashed var(--border-light);
-        border-radius: 8px;
-        padding: 0.875rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        cursor: pointer;
-        transition: border-color 0.15s;
-        background: var(--muted);
-    }
-    .file-upload-area:hover {
-        border-color: var(--primary);
-    }
-    .file-upload-area input[type="file"] {
-        display: none;
-    }
-    .file-upload-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        background: var(--card);
-        border: 1px solid var(--border-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--muted-foreground);
-        font-size: 0.8rem;
-        flex-shrink: 0;
-    }
-    .file-upload-label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
-    }
-    .file-upload-label span:first-child {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--foreground);
-    }
-    .file-upload-label span:last-child {
-        font-size: 0.72rem;
-        color: var(--muted-foreground);
-    }
-    .file-upload-area.has-file {
-        border-style: solid;
-        border-color: var(--primary);
-    }
-    .file-upload-area.has-file .file-upload-icon {
-        background: rgba(87,87,248,0.08);
-        color: var(--primary);
-        border-color: var(--primary);
-    }
+    .file-upload-area { border: 1.5px dashed var(--border-light); border-radius: 8px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: border-color 0.15s; background: var(--muted); }
+    .file-upload-area:hover { border-color: var(--primary); }
+    .file-upload-area input[type="file"] { display: none; }
+    .file-upload-icon { width: 32px; height: 32px; border-radius: 6px; background: var(--card); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.8rem; flex-shrink: 0; }
+    .file-upload-label { display: flex; flex-direction: column; gap: 0.1rem; }
+    .file-upload-label span:first-child { font-size: 0.8rem; font-weight: 600; color: var(--foreground); }
+    .file-upload-label span:last-child { font-size: 0.72rem; color: var(--muted-foreground); }
+    .file-upload-area.has-file { border-style: solid; border-color: var(--primary); }
+    .file-upload-area.has-file .file-upload-icon { background: rgba(87,87,248,0.08); color: var(--primary); border-color: var(--primary); }
 </style>
 @endsection
 
@@ -102,17 +83,32 @@
     @endif
 
     <div class="eod-card anim-up d1">
-        <div class="eod-card-header">
-            <div class="t-icon"><i class="fas fa-tag"></i></div>
-            Brands ({{ $brands->count() }})
+        <div class="brand-stats-bar">
+            <div class="brand-stat-box total">
+                <div class="stat-num">{{ $stats['total'] }}</div>
+                <div class="stat-lbl">Total Brands</div>
+            </div>
+            <div class="brand-stat-box tech">
+                <div class="stat-num">{{ $stats['tech'] }}</div>
+                <div class="stat-lbl">Tech</div>
+            </div>
+            <div class="brand-stat-box consumer">
+                <div class="stat-num">{{ $stats['consumer'] }}</div>
+                <div class="stat-lbl">Design / Consumer</div>
+            </div>
+            <div class="brand-stat-box both">
+                <div class="stat-num">{{ $stats['both'] }}</div>
+                <div class="stat-lbl">Both</div>
+            </div>
         </div>
+
         @if($brands->isEmpty())
         <div style="text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem;">
             <i class="fas fa-tag" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border);"></i>
             No brands yet. Add the first one.
         </div>
         @else
-        <div class="brand-grid">
+        <div class="brand-list">
             @foreach($brands as $brand)
             <div class="brand-card">
                 <div class="brand-card-logo">
@@ -122,14 +118,27 @@
                     {{ strtoupper(substr($brand->name, 0, 1)) }}
                     @endif
                 </div>
-                <div class="brand-card-name">{{ $brand->name }}</div>
-                @if($brand->description)
-                <div class="brand-card-desc">{{ $brand->description }}</div>
-                @endif
-                <div class="brand-card-footer">
+                <div class="brand-card-body">
+                    <div class="brand-card-name">{{ $brand->name }}</div>
+                    @if($brand->description)
+                    <div class="brand-card-desc">{{ $brand->description }}</div>
+                    @endif
+                </div>
+                <div class="brand-card-right">
+                    @if($brand->classification)
+                    @php
+                        $cls = match($brand->classification) {
+                            'Tech'             => 'tech',
+                            'Design/Consumer'  => 'consumer',
+                            'Both'             => 'both',
+                            default            => '',
+                        };
+                    @endphp
+                    <span class="brand-class-badge {{ $cls }}">{{ $brand->classification }}</span>
+                    @endif
                     <span class="brand-catalog-pill">
                         <i class="fas fa-book-open"></i>
-                        {{ $brand->catalogs_count }} {{ Str::plural('catalog', $brand->catalogs_count) }}
+                        {{ $brand->catalogs_count }}
                     </span>
                     <div class="action-btns">
                         <button class="action-btn-sm" title="Edit"
@@ -137,6 +146,7 @@
                             data-id="{{ $brand->id }}"
                             data-name="{{ $brand->name }}"
                             data-description="{{ $brand->description ?? '' }}"
+                            data-classification="{{ $brand->classification ?? '' }}"
                             data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
                             <i class="fas fa-pencil"></i>
                         </button>
@@ -176,6 +186,15 @@
                     <input type="text" name="description" id="brandDescription" class="form-input" placeholder="Short tagline" style="width: 100%;">
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Classification</label>
+                    <select name="classification" id="brandClassification" class="form-select">
+                        <option value="">— Select —</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Design/Consumer">Design / Consumer</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-label">Logo <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(image, max 2MB)</span></label>
                     <div id="brandLogoArea" class="file-upload-area" onclick="document.getElementById('brandLogo').click()">
                         <div class="file-upload-icon" id="brandLogoIconBox"><i class="fas fa-image"></i></div>
@@ -213,6 +232,7 @@ function openAddBrand() {
     document.getElementById('brandForm').action = '{{ route("admin.brands.store") }}';
     document.getElementById('brandMethod').value = '';
     document.getElementById('brandForm').reset();
+    document.getElementById('brandClassification').value = '';
     document.getElementById('brandLogoArea').classList.remove('has-file');
     document.getElementById('brandLogoLabel').textContent = 'Click to choose logo';
     openModal('brandModal');
@@ -225,6 +245,7 @@ function openEditBrand(btn) {
     document.getElementById('brandMethod').value = 'PUT';
     document.getElementById('brandName').value = d.name;
     document.getElementById('brandDescription').value = d.description;
+    document.getElementById('brandClassification').value = d.classification || '';
     document.getElementById('brandLogo').value = '';
     if (d.logo) {
         document.getElementById('brandLogoArea').classList.add('has-file');
