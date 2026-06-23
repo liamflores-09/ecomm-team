@@ -518,17 +518,25 @@
     var ids   = ['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
     var pills = document.querySelectorAll('#stepNav .step-pill');
 
+    function setActive(i) {
+        pills.forEach(function(p, idx) { p.classList.toggle('active', idx === i); });
+    }
+
     window.addEventListener('scroll', function() {
-        var scrollY = window.scrollY + 150;
-        var active  = 0;
+        var atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 40;
+        if (atBottom) { setActive(ids.length - 1); return; }
+
+        var active = 0;
         ids.forEach(function(id, i) {
             var el = document.getElementById(id);
-            if (el && el.offsetTop <= scrollY) active = i;
+            if (el && el.getBoundingClientRect().top <= 150) active = i;
         });
-        pills.forEach(function(p, i) {
-            p.classList.toggle('active', i === active);
-        });
+        setActive(active);
     }, { passive: true });
+
+    pills.forEach(function(pill, i) {
+        pill.addEventListener('click', function() { setActive(i); });
+    });
 })();
 </script>
 @endsection
