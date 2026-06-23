@@ -46,6 +46,16 @@
     .bc-empty { text-align: center; padding: 3rem; color: var(--muted-foreground); }
     .bc-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; color: var(--border); }
 
+    .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
+    .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
+    .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
+    .form-input:focus { border-color: var(--primary); background: var(--white); }
+    .form-input::placeholder { color: var(--gray-300); }
+    .form-select { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; cursor: pointer; transition: all 0.15s; width: 100%; appearance: auto; }
+    .form-select:focus { border-color: var(--primary); background: var(--white); }
+    .form-textarea { padding: 0.75rem 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; resize: vertical; min-height: 80px; transition: all 0.15s; width: 100%; }
+    .form-textarea:focus { border-color: var(--primary); background: var(--white); }
+
     .file-upload-area {
         border: 1.5px dashed var(--border-light);
         border-radius: 8px;

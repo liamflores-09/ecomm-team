@@ -15,6 +15,12 @@
     .action-btn-sm { width: 28px; height: 28px; border: 1px solid var(--border-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: border-color 0.15s; background: transparent; color: var(--muted-foreground); }
     .action-btn-sm:hover { border-color: var(--foreground); color: var(--foreground); }
     .action-btn-sm.btn-danger:hover { border-color: #dc2626; color: #dc2626; }
+    .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
+    .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
+    .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
+    .form-input:focus { border-color: var(--primary); background: var(--white); }
+    .form-input::placeholder { color: var(--gray-300); }
+
     .file-upload-area {
         border: 1.5px dashed var(--border-light);
         border-radius: 8px;
