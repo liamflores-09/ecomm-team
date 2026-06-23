@@ -5,33 +5,68 @@
 
 @section('styles')
 <style>
-    .brand-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1rem 1.25rem 0; }
-    .brand-stat-box { border-radius: 8px; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.2rem; }
-    .brand-stat-box .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    /* Stats bar */
+    .brand-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1.25rem; }
+    .brand-stat-box { border-radius: 8px; padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .brand-stat-box .stat-num { font-size: 1.6rem; font-weight: 800; line-height: 1; font-family: 'Space Grotesk', sans-serif; }
     .brand-stat-box .stat-lbl { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .brand-stat-box.total  { background: rgba(87,87,248,0.08);  }
-    .brand-stat-box.total  .stat-num { color: var(--primary); }
-    .brand-stat-box.total  .stat-lbl { color: var(--primary); }
-    .brand-stat-box.tech   { background: rgba(87,87,248,0.06);  }
-    .brand-stat-box.tech   .stat-num { color: #5757f8; }
-    .brand-stat-box.tech   .stat-lbl { color: #5757f8; }
+    .brand-stat-box.total    { background: rgba(87,87,248,0.08); }
+    .brand-stat-box.total    .stat-num, .brand-stat-box.total    .stat-lbl { color: var(--primary); }
+    .brand-stat-box.tech     { background: rgba(87,87,248,0.05); }
+    .brand-stat-box.tech     .stat-num, .brand-stat-box.tech     .stat-lbl { color: #5757f8; }
     .brand-stat-box.consumer { background: rgba(245,158,11,0.08); }
-    .brand-stat-box.consumer .stat-num { color: #f59e0b; }
-    .brand-stat-box.consumer .stat-lbl { color: #f59e0b; }
-    .brand-stat-box.both   { background: rgba(34,197,94,0.08);  }
-    .brand-stat-box.both   .stat-num { color: var(--success); }
-    .brand-stat-box.both   .stat-lbl { color: var(--success); }
+    .brand-stat-box.consumer .stat-num, .brand-stat-box.consumer .stat-lbl { color: #f59e0b; }
+    .brand-stat-box.both     { background: rgba(34,197,94,0.08); }
+    .brand-stat-box.both     .stat-num, .brand-stat-box.both     .stat-lbl { color: var(--success); }
 
-    .brand-list { display: flex; flex-direction: column; gap: 0; padding: 1rem 1.25rem 1.25rem; }
-    .brand-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.875rem; transition: border-color 0.15s; margin-bottom: 0.5rem; }
-    .brand-card:last-child { margin-bottom: 0; }
+    /* Search + A-Z controls */
+    .brand-controls { padding: 1rem 1.25rem; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 0.75rem; }
+    .brand-search-wrap { position: relative; }
+    .brand-search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); font-size: 0.8rem; pointer-events: none; }
+    .brand-search-input { width: 100%; height: 42px; padding: 0 2.5rem 0 2.5rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.875rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; box-sizing: border-box; }
+    .brand-search-input:focus { border-color: var(--primary); background: var(--white); }
+    .brand-search-input::placeholder { color: var(--gray-300); }
+    .brand-search-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted-foreground); padding: 0 0.25rem; font-size: 0.8rem; line-height: 1; }
+    .brand-search-clear:hover { color: var(--foreground); }
+    .az-bar { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+    .az-btn { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-decoration: none; transition: all 0.15s; }
+    .az-btn.has-brands { color: var(--foreground); background: var(--muted); border: 1px solid var(--border-light); }
+    .az-btn.has-brands:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .az-btn.no-brands { color: var(--border-light); cursor: default; font-weight: 500; }
+
+    /* Letter sections */
+    .letter-section { }
+    .letter-heading { padding: 0.625rem 1.25rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); border-bottom: 1px solid var(--border-light); background: var(--muted); }
+    .letter-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.875rem; padding: 1rem 1.25rem; }
+
+    /* Brand card — matches dashboard quick-link style */
+    .brand-card {
+        display: flex; align-items: center; gap: 0.875rem;
+        background: var(--card); border-radius: 8px; padding: 1.25rem;
+        border: 1px solid var(--border-light);
+        cursor: pointer; transition: border-color 0.2s;
+        text-decoration: none; color: var(--foreground);
+    }
     .brand-card:hover { border-color: var(--foreground); }
-    .brand-card-logo { width: 48px; height: 48px; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; background: var(--primary); flex-shrink: 0; }
-    .brand-card-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
-    .brand-card-name { font-weight: 700; font-size: 0.9rem; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-card-desc { font-size: 0.78rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-card-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .brand-card.tech     { border-top: 2px solid var(--primary); }
+    .brand-card.consumer { border-top: 2px solid #f59e0b; }
+    .brand-card.both     { border-top: 2px solid var(--success); }
+
+    /* Icon box — matches .ql-icon from dashboard */
+    .bc-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
+    .bc-icon.tech     { background: rgba(87,87,248,0.12); color: var(--primary); }
+    .bc-icon.consumer { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .bc-icon.both     { background: rgba(34,197,94,0.12);  color: var(--success); }
+    .bc-icon.none     { background: var(--muted); color: var(--muted-foreground); }
+    .bc-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+
+    /* Card body — matches .ql-text from dashboard */
+    .brand-card-body { flex: 1; min-width: 0; }
+    .brand-card-name { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--foreground); }
+    .brand-card-desc { display: block; font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Right side */
+    .brand-card-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
     .brand-class-badge { display: inline-flex; align-items: center; padding: 0.18rem 0.6rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
     .brand-class-badge.tech     { background: rgba(87,87,248,0.12); color: var(--primary); }
     .brand-class-badge.consumer { background: rgba(245,158,11,0.12); color: #f59e0b; }
@@ -42,13 +77,16 @@
     .action-btn-sm:hover { border-color: var(--foreground); color: var(--foreground); }
     .action-btn-sm.btn-danger:hover { border-color: #dc2626; color: #dc2626; }
 
+    .no-results { text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem; display: none; }
+    .no-results i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border); }
+
+    /* Modal form fields */
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
     .form-input, .form-select { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
     .form-input:focus, .form-select:focus { border-color: var(--primary); background: var(--white); }
     .form-input::placeholder { color: var(--gray-300); }
     .form-select { appearance: none; cursor: pointer; }
-
     .file-upload-area { border: 1.5px dashed var(--border-light); border-radius: 8px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: border-color 0.15s; background: var(--muted); }
     .file-upload-area:hover { border-color: var(--primary); }
     .file-upload-area input[type="file"] { display: none; }
@@ -83,6 +121,7 @@
     @endif
 
     <div class="eod-card anim-up d1">
+        <!-- Stats bar -->
         <div class="brand-stats-bar">
             <div class="brand-stat-box total">
                 <div class="stat-num">{{ $stats['total'] }}</div>
@@ -102,62 +141,100 @@
             </div>
         </div>
 
+        <!-- Search + A-Z -->
+        @php
+        $availableLetters = collect($brands->map(fn($b) => strtoupper(substr($b->name, 0, 1)))->unique()->values());
+        @endphp
+        <div class="brand-controls">
+            <div class="brand-search-wrap">
+                <i class="fas fa-magnifying-glass brand-search-icon"></i>
+                <input type="text" id="brandSearch" class="brand-search-input" placeholder="Search brands..." oninput="filterBrands(this.value)">
+                <button id="brandSearchClear" class="brand-search-clear" onclick="clearSearch()" style="display:none;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="az-bar" id="azBar">
+                @foreach(range('A', 'Z') as $letter)
+                @if($availableLetters->contains($letter))
+                <a href="#letter-{{ $letter }}" class="az-btn has-brands">{{ $letter }}</a>
+                @else
+                <span class="az-btn no-brands">{{ $letter }}</span>
+                @endif
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Brand list grouped by letter -->
         @if($brands->isEmpty())
         <div style="text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem;">
             <i class="fas fa-tag" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border);"></i>
             No brands yet. Add the first one.
         </div>
         @else
-        <div class="brand-list">
-            @foreach($brands as $brand)
-            <div class="brand-card">
-                <div class="brand-card-logo">
-                    @if($brand->logo)
-                    <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
-                    @else
-                    {{ strtoupper(substr($brand->name, 0, 1)) }}
-                    @endif
-                </div>
-                <div class="brand-card-body">
-                    <div class="brand-card-name">{{ $brand->name }}</div>
-                    @if($brand->description)
-                    <div class="brand-card-desc">{{ $brand->description }}</div>
-                    @endif
-                </div>
-                <div class="brand-card-right">
-                    @if($brand->classification)
+        <div id="brandGrid">
+            @php
+            $grouped = $brands->groupBy(fn($b) => strtoupper(substr($b->name, 0, 1)));
+            @endphp
+
+            <div class="no-results" id="noResults">
+                <i class="fas fa-magnifying-glass"></i>
+                No brands match your search.
+            </div>
+
+            @foreach($grouped as $letter => $letterBrands)
+            <div class="letter-section" id="letter-{{ $letter }}" data-letter="{{ $letter }}">
+                <div class="letter-heading">{{ $letter }}</div>
+                <div class="letter-cards">
+                    @foreach($letterBrands as $brand)
                     @php
-                        $cls = match($brand->classification) {
-                            'Tech'             => 'tech',
-                            'Design/Consumer'  => 'consumer',
-                            'Both'             => 'both',
-                            default            => '',
-                        };
+                    $clsKey  = match($brand->classification) { 'Tech' => 'tech', 'Design/Consumer' => 'consumer', 'Both' => 'both', default => 'none' };
+                    $clsIcon = match($brand->classification) { 'Tech' => 'fa-microchip', 'Design/Consumer' => 'fa-store', 'Both' => 'fa-layer-group', default => 'fa-tag' };
                     @endphp
-                    <span class="brand-class-badge {{ $cls }}">{{ $brand->classification }}</span>
-                    @endif
-                    <span class="brand-catalog-pill">
-                        <i class="fas fa-book-open"></i>
-                        {{ $brand->catalogs_count }}
-                    </span>
-                    <div class="action-btns">
-                        <button class="action-btn-sm" title="Edit"
-                            onclick="openEditBrand(this)"
-                            data-id="{{ $brand->id }}"
-                            data-name="{{ $brand->name }}"
-                            data-description="{{ $brand->description ?? '' }}"
-                            data-classification="{{ $brand->classification ?? '' }}"
-                            data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
-                            <i class="fas fa-pencil"></i>
-                        </button>
-                        <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}" onsubmit="return confirm({{ json_encode('Delete ' . $brand->name . '?') }});" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="action-btn-sm btn-danger" title="Delete">
-                                <i class="fas fa-trash-can"></i>
-                            </button>
-                        </form>
+                    <div class="brand-card {{ $clsKey }}"
+                         data-name="{{ strtolower($brand->name) }}"
+                         onclick="window.location.href='{{ route('brand-catalogs') }}?brand_id={{ $brand->id }}'">
+                        <div class="bc-icon {{ $clsKey }}">
+                            @if($brand->logo)
+                            <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
+                            @else
+                            <i class="fas {{ $clsIcon }}"></i>
+                            @endif
+                        </div>
+                        <div class="brand-card-body">
+                            <span class="brand-card-name">{{ $brand->name }}</span>
+                            @if($brand->description)
+                            <span class="brand-card-desc">{{ $brand->description }}</span>
+                            @endif
+                        </div>
+                        <div class="brand-card-right">
+                            @if($brand->classification)
+                            <span class="brand-class-badge {{ $clsKey }}">{{ $brand->classification }}</span>
+                            @endif
+                            <span class="brand-catalog-pill">
+                                <i class="fas fa-book-open"></i> {{ $brand->catalogs_count }}
+                            </span>
+                            <div class="action-btns">
+                                <button class="action-btn-sm" title="Edit"
+                                    onclick="event.stopPropagation(); openEditBrand(this)"
+                                    data-id="{{ $brand->id }}"
+                                    data-name="{{ $brand->name }}"
+                                    data-description="{{ $brand->description ?? '' }}"
+                                    data-classification="{{ $brand->classification ?? '' }}"
+                                    data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
+                                    <i class="fas fa-pencil"></i>
+                                </button>
+                                <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}"
+                                      onclick="event.stopPropagation()"
+                                      onsubmit="return confirm({{ json_encode('Delete ' . $brand->name . '?') }});"
+                                      style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-btn-sm btn-danger" title="Delete">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
             @endforeach
@@ -179,11 +256,11 @@
             <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
                 <div class="form-group">
                     <label class="form-label">Name</label>
-                    <input type="text" name="name" id="brandName" class="form-input" placeholder="e.g. Samsung" required style="width: 100%;">
+                    <input type="text" name="name" id="brandName" class="form-input" placeholder="e.g. Samsung" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(optional)</span></label>
-                    <input type="text" name="description" id="brandDescription" class="form-input" placeholder="Short tagline" style="width: 100%;">
+                    <input type="text" name="description" id="brandDescription" class="form-input" placeholder="Short tagline">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Classification</label>
@@ -197,7 +274,7 @@
                 <div class="form-group">
                     <label class="form-label">Logo <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(image, max 2MB)</span></label>
                     <div id="brandLogoArea" class="file-upload-area" onclick="document.getElementById('brandLogo').click()">
-                        <div class="file-upload-icon" id="brandLogoIconBox"><i class="fas fa-image"></i></div>
+                        <div class="file-upload-icon"><i class="fas fa-image"></i></div>
                         <div class="file-upload-label">
                             <span id="brandLogoLabel">Click to choose logo</span>
                             <span>JPG, PNG, WEBP — max 2MB</span>
@@ -215,6 +292,39 @@
 </div>
 
 <script>
+function filterBrands(query) {
+    var q = query.trim().toLowerCase();
+    var sections = document.querySelectorAll('.letter-section');
+    var clearBtn = document.getElementById('brandSearchClear');
+    var azBar = document.getElementById('azBar');
+    var noResults = document.getElementById('noResults');
+    var totalVisible = 0;
+
+    clearBtn.style.display = q ? '' : 'none';
+    azBar.style.display = q ? 'none' : '';
+
+    sections.forEach(function(section) {
+        var cards = section.querySelectorAll('.brand-card');
+        var visible = 0;
+        cards.forEach(function(card) {
+            var match = !q || card.dataset.name.includes(q);
+            card.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+        section.style.display = visible > 0 ? '' : 'none';
+        totalVisible += visible;
+    });
+
+    noResults.style.display = (q && totalVisible === 0) ? 'block' : 'none';
+}
+
+function clearSearch() {
+    var input = document.getElementById('brandSearch');
+    input.value = '';
+    filterBrands('');
+    input.focus();
+}
+
 function handleFileChange(input, areaId, labelId) {
     var area = document.getElementById(areaId);
     var label = document.getElementById(labelId);

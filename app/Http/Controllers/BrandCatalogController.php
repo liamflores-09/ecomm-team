@@ -15,14 +15,18 @@ class BrandCatalogController extends Controller
         $user = Auth::user();
         $brands = Brand::orderBy('name')->get();
         $classification = $request->input('classification');
+        $brandId = $request->input('brand_id');
 
         $query = BrandCatalog::with('brand')->latest();
-        if ($classification) {
+        if ($brandId) {
+            $query->where('brand_id', $brandId);
+        } elseif ($classification) {
             $query->whereHas('brand', fn($q) => $q->where('classification', $classification));
         }
-        $catalogs = $query->paginate(10)->withQueryString();
+        $catalogs = $query->get();
+        $selectedBrand = $brandId ? Brand::find($brandId) : null;
 
-        return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification'));
+        return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification', 'brandId', 'selectedBrand'));
     }
 
     public function store(Request $request)

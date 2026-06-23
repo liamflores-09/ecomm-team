@@ -47,13 +47,6 @@
     .bc-empty { text-align: center; padding: 3rem; color: var(--muted-foreground); }
     .bc-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; color: var(--border); }
 
-    .bc-pagination { display: flex; align-items: center; justify-content: center; gap: 0.375rem; margin-top: 1.5rem; flex-wrap: wrap; }
-    .bc-page-btn { height: 32px; min-width: 32px; padding: 0 0.5rem; border: 1px solid var(--border-light); border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; color: var(--foreground); text-decoration: none; background: var(--muted); transition: all 0.15s; white-space: nowrap; }
-    .bc-page-btn:hover { border-color: var(--foreground); }
-    .bc-page-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-    .bc-page-btn.disabled { opacity: 0.4; pointer-events: none; }
-    .bc-page-info { font-size: 0.78rem; color: var(--muted-foreground); padding: 0 0.5rem; }
-
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
     .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
@@ -99,6 +92,12 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
+    @if($selectedBrand)
+    <div class="alert-flat" style="margin-bottom: 1rem; background: rgba(87,87,248,0.06); border: 1px solid rgba(87,87,248,0.2); border-radius: 8px; padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--primary);">
+        <span><i class="fas fa-tag" style="margin-right: 0.5rem;"></i>Showing catalogs for <strong>{{ $selectedBrand->name }}</strong></span>
+        <a href="{{ route('brand-catalogs') }}" style="color: var(--muted-foreground); text-decoration: none; font-size: 0.8rem; font-weight: 500;"><i class="fas fa-times"></i> Clear</a>
+    </div>
+    @else
     <!-- Classification filter tabs -->
     <div class="bc-filter-bar anim-up d1">
         <a href="{{ route('brand-catalogs') }}" class="bc-filter-tab {{ !$classification ? 'active' : '' }}">All</a>
@@ -106,6 +105,7 @@
         <a href="{{ route('brand-catalogs', ['classification' => 'Design/Consumer']) }}" class="bc-filter-tab consumer {{ $classification === 'Design/Consumer' ? 'active' : '' }}">Design / Consumer</a>
         <a href="{{ route('brand-catalogs', ['classification' => 'Both']) }}" class="bc-filter-tab both {{ $classification === 'Both' ? 'active' : '' }}">Both</a>
     </div>
+    @endif
 
     @if($catalogs->isEmpty())
     <div class="bc-empty anim-up d2">
@@ -170,31 +170,6 @@
         @endforeach
     </div>
 
-    @if($catalogs->lastPage() > 1)
-    <div class="bc-pagination">
-        @if($catalogs->onFirstPage())
-        <span class="bc-page-btn disabled"><i class="fas fa-chevron-left"></i></span>
-        @else
-        <a href="{{ $catalogs->previousPageUrl() }}" class="bc-page-btn"><i class="fas fa-chevron-left"></i></a>
-        @endif
-
-        @foreach($catalogs->getUrlRange(1, $catalogs->lastPage()) as $page => $url)
-            @if($page == $catalogs->currentPage())
-            <span class="bc-page-btn active">{{ $page }}</span>
-            @elseif(abs($page - $catalogs->currentPage()) <= 2 || $page == 1 || $page == $catalogs->lastPage())
-            <a href="{{ $url }}" class="bc-page-btn">{{ $page }}</a>
-            @elseif(abs($page - $catalogs->currentPage()) == 3)
-            <span class="bc-page-info">…</span>
-            @endif
-        @endforeach
-
-        @if($catalogs->hasMorePages())
-        <a href="{{ $catalogs->nextPageUrl() }}" class="bc-page-btn"><i class="fas fa-chevron-right"></i></a>
-        @else
-        <span class="bc-page-btn disabled"><i class="fas fa-chevron-right"></i></span>
-        @endif
-    </div>
-    @endif
     @endif
 </div>
 
