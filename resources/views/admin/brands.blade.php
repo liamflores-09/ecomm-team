@@ -5,12 +5,17 @@
 
 @section('styles')
 <style>
-    .brands-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .brands-table thead th { background: var(--muted); padding: 0.75rem 1rem; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); text-align: left; }
-    .brands-table tbody td { padding: 0.75rem 1rem; border-top: 1px solid var(--border-light); font-weight: 500; vertical-align: middle; }
-    .brands-table tbody tr:hover td { background: var(--muted); }
-    .brand-logo-thumb { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
-    .brand-initial { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.85rem; background: var(--primary); }
+    .brand-list { display: flex; flex-direction: column; }
+    .brand-row { display: flex; align-items: center; gap: 1rem; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); transition: background 0.15s; }
+    .brand-row:last-child { border-bottom: none; }
+    .brand-row:hover { background: var(--muted); }
+    .brand-row-logo { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; background: var(--primary); }
+    .brand-row-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+    .brand-row-name { font-weight: 700; font-size: 0.95rem; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-row-desc { font-size: 0.8rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .brand-catalog-pill { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--muted); border: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 700; color: var(--muted-foreground); }
     .action-btns { display: flex; gap: 0.25rem; }
     .action-btn-sm { width: 28px; height: 28px; border: 1px solid var(--border-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: border-color 0.15s; background: transparent; color: var(--muted-foreground); }
     .action-btn-sm:hover { border-color: var(--foreground); color: var(--foreground); }
@@ -103,61 +108,55 @@
             <div class="t-icon"><i class="fas fa-tag"></i></div>
             Brands ({{ $brands->count() }})
         </div>
-        <div style="overflow-x: auto;">
-            @if($brands->isEmpty())
-            <div style="text-align: center; padding: 2rem; color: var(--muted-foreground); font-size: 0.85rem;">
-                <i class="fas fa-tag" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border);"></i>
-                No brands yet. Add the first one.
-            </div>
-            @else
-            <table class="brands-table">
-                <thead>
-                    <tr>
-                        <th style="width: 40px;"></th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th style="text-align: center;">Catalogs</th>
-                        <th style="text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($brands as $brand)
-                    <tr>
-                        <td>
-                            @if($brand->logo)
-                            <img src="{{ asset('storage/' . $brand->logo) }}" class="brand-logo-thumb" alt="{{ $brand->name }}">
-                            @else
-                            <span class="brand-initial">{{ strtoupper(substr($brand->name, 0, 1)) }}</span>
-                            @endif
-                        </td>
-                        <td style="font-weight: 700;">{{ $brand->name }}</td>
-                        <td style="color: var(--muted-foreground);">{{ $brand->description ?: '—' }}</td>
-                        <td style="text-align: center;">{{ $brand->catalogs_count }}</td>
-                        <td>
-                            <div class="action-btns" style="justify-content: flex-end;">
-                                <button class="action-btn-sm" title="Edit"
-                                    onclick="openEditBrand(this)"
-                                    data-id="{{ $brand->id }}"
-                                    data-name="{{ $brand->name }}"
-                                    data-description="{{ $brand->description ?? '' }}"
-                                    data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
-                                    <i class="fas fa-pencil"></i>
-                                </button>
-                                <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}" onsubmit="return confirm('Delete {{ addslashes($brand->name) }}?');" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn-sm btn-danger" title="Delete">
-                                        <i class="fas fa-trash-can"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            @endif
+        @if($brands->isEmpty())
+        <div style="text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem;">
+            <i class="fas fa-tag" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border);"></i>
+            No brands yet. Add the first one.
         </div>
+        @else
+        <div class="brand-list">
+            @foreach($brands as $brand)
+            <div class="brand-row">
+                <div class="brand-row-logo">
+                    @if($brand->logo)
+                    <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
+                    @else
+                    {{ strtoupper(substr($brand->name, 0, 1)) }}
+                    @endif
+                </div>
+                <div class="brand-row-info">
+                    <div class="brand-row-name">{{ $brand->name }}</div>
+                    @if($brand->description)
+                    <div class="brand-row-desc">{{ $brand->description }}</div>
+                    @endif
+                </div>
+                <div class="brand-row-right">
+                    <span class="brand-catalog-pill">
+                        <i class="fas fa-book-open"></i>
+                        {{ $brand->catalogs_count }} {{ Str::plural('catalog', $brand->catalogs_count) }}
+                    </span>
+                    <div class="action-btns">
+                        <button class="action-btn-sm" title="Edit"
+                            onclick="openEditBrand(this)"
+                            data-id="{{ $brand->id }}"
+                            data-name="{{ $brand->name }}"
+                            data-description="{{ $brand->description ?? '' }}"
+                            data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
+                            <i class="fas fa-pencil"></i>
+                        </button>
+                        <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}" onsubmit="return confirm({{ json_encode('Delete ' . $brand->name . '?') }});" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="action-btn-sm btn-danger" title="Delete">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @endif
     </div>
 </div>
 
