@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'End-of-Day Report — Ecomm Dept Hub')
 @section('has-sidebar', true)
@@ -250,7 +250,6 @@
 <x-sidebar active="end-of-day" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>

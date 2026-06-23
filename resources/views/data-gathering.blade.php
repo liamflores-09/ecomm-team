@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Data Gathering — Ecomm Dept Hub')
 @section('has-sidebar', true)
@@ -46,7 +46,6 @@
 <x-sidebar active="data-gathering" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <div class="top-bar anim-up" style="margin-bottom: 2.5rem;">
         <div>

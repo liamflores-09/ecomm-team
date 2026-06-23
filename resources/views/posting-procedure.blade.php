@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Posting Procedure — Ecomm Dept Hub')
 @section('has-sidebar', true)
@@ -489,7 +489,6 @@
 <x-sidebar active="posting-procedure" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <div class="top-bar anim-up" style="margin-bottom: 2.5rem;">
         <div>

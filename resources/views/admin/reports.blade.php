@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Reports — Admin Panel')
 @section('has-sidebar', true)
@@ -271,11 +271,6 @@
     // Avatar seed helper (closure)
     $avatarSeed = fn($username, $gender) => $gender === 'female' ? $username . 'Female' : $username;
 @endphp
-
-    <!-- Back link -->
-    <a href="{{ route('admin.dashboard') }}" class="back-link anim-up">
-        <i class="fas fa-arrow-left" style="font-size:0.7rem;"></i> Dashboard
-    </a>
 
     <!-- Header -->
     <div class="rpt-header anim-up">

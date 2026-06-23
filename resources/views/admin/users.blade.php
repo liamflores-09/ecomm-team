@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Manage Users — Ecomm Dept Hub')
 @section('has-sidebar', true)
@@ -122,7 +122,6 @@
 <x-sidebar active="admin.users" :isAdmin="true" />
 
 <div class="main-content">
-    <a href="{{ route('admin.dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <!-- Page Header -->
     <div class="page-top anim-up">

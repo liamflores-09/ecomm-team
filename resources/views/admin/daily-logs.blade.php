@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Daily Logs — Admin Panel')
 @section('has-sidebar', true)
@@ -174,7 +174,6 @@
 
     <!-- Header -->
     <div class="anim-up" style="margin-bottom: 1.5rem;">
-        <a href="{{ route('admin.dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
             <div>
                 <h2 style="font-size:1.5rem;font-weight:800;margin:0 0 0.25rem;">Daily Logs</h2>

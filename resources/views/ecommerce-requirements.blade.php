@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'E-commerce Requirements — Ecomm Dept Hub')
 @section('has-sidebar', true)
@@ -151,7 +151,6 @@
 <x-sidebar active="ecommerce-requirements" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <div class="top-bar anim-up" style="margin-bottom: 2rem;">
         <div>

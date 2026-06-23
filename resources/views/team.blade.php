@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'The Team — Ecomm Dept')
 @section('has-sidebar', true)
@@ -163,7 +163,6 @@
 <x-sidebar active="team" />
 
 <div class="main-content">
-    <a href="{{ route('dashboard') }}" class="back-link anim-fade"><i class="fas fa-arrow-left"></i> Dashboard</a>
 
     @php
         $avatarSeed = fn($u) => ($u->gender === 'female') ? $u->username . 'Female' : $u->username;
