@@ -157,29 +157,6 @@
         .dropdown-nav a:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
         .dropdown-nav a.active { background: var(--primary); color: var(--primary-foreground); font-weight: 600; }
 
-        .sidebar-footer {
-            padding: 12px;
-            border-top: 1px solid var(--sidebar-border);
-        }
-        .sidebar-footer .btn-logout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: transparent;
-            color: var(--muted-foreground);
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .sidebar-footer .btn-logout:hover { background: var(--secondary); color: var(--foreground); border-color: var(--border); }
-
         /* Top Header */
         .top-header {
             position: fixed;
@@ -217,21 +194,7 @@
             color: var(--muted-foreground);
             letter-spacing: 0.02em;
         }
-        .sidebar-brand .brand-icon {
-            background: var(--primary);
-            color: var(--primary-foreground);
-        }
-        .top-header .nav-area { flex: 1; display: flex; align-items: center; padding: 0 16px; }
-        .top-header .nav-area a {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--muted-foreground);
-            text-decoration: none;
-            border-radius: var(--radius);
-            transition: all 0.15s;
-        }
-        .top-header .nav-area a:hover { background: var(--secondary); color: var(--foreground); }
+        .top-header .nav-area { flex: 1; }
         .top-header .actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
         .top-header .actions > button {
             width: 40px; height: 40px;
@@ -414,8 +377,6 @@
         .nav-user-info { display: flex; flex-direction: column; line-height: 1.2; }
         .nav-user-name { font-size: 13px; font-weight: 600; color: var(--foreground); }
         .nav-user-role { font-size: 11px; font-weight: 500; color: var(--muted-foreground); }
-        @media (max-width: 768px) { .nav-user-info { display: none; } }
-
         /* Custom Select */
         select {
             -webkit-appearance: none;
@@ -565,8 +526,6 @@
 
         <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
 
-        <div class="nav-area"></div>
-
         <div class="actions">
             @if(Auth::check())
             {{-- Notification Bell --}}
@@ -585,15 +544,10 @@
                     </div>
                 </div>
             </div>
-            @endif
 
-            @if(Auth::check())
             <button onclick="openCmdPalette()" title="Search (Ctrl+K)"><i class="fas fa-search"></i></button>
-
             <div style="width:1px;height:20px;background:var(--border-light);flex-shrink:0;margin:0 2px;"></div>
-            @endif
 
-            @if(Auth::check())
             {{-- User Menu --}}
             <div class="user-menu-wrap" id="userMenuWrap">
                 <button class="user-menu-btn" onclick="toggleUserMenu()">
