@@ -607,7 +607,8 @@
             { name: 'Price Calculator', desc: 'Compute SRP', icon: 'fa-calculator', url: '{{ route("price-calculator") }}' },
             { name: 'End-of-Day Report', desc: 'Log daily tasks', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}' },
             { name: 'Important Links', desc: 'Quick access', icon: 'fa-link', url: '{{ route("important-links") }}' },
-            { name: 'The Team', desc: 'Team directory', icon: 'fa-users', url: '{{ route("team") }}' }
+            { name: 'The Team', desc: 'Team directory', icon: 'fa-users', url: '{{ route("team") }}' },
+            { name: 'Brand Catalogs', desc: 'Browse brand catalogs', icon: 'fa-book-open', url: '{{ route("brand-catalogs") }}' }
         ];
 
         var adminPages = [

@@ -27,6 +27,7 @@
             <li><a href="{{ route('end-of-day') }}" class="{{ $active === 'end-of-day' ? 'active' : '' }}"><i class="fas fa-calendar-check"></i> EOD Report</a></li>
             <li><a href="{{ route('important-links') }}" class="{{ $active === 'important-links' ? 'active' : '' }}"><i class="fas fa-link"></i> Important Links</a></li>
             <li><a href="{{ route('team') }}" class="{{ $active === 'team' ? 'active' : '' }}"><i class="fas fa-users"></i> The Team</a></li>
+            <li><a href="{{ route('brand-catalogs') }}" class="{{ $active === 'brand-catalogs' ? 'active' : '' }}"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
         @endif
     </ul>
 
