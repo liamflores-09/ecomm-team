@@ -201,7 +201,8 @@
 
     .lf-input:focus {
         border-color: var(--primary);
-        background: white;
+        background: var(--card);
+        color: var(--foreground);
     }
 
     .lf-input::placeholder { color: var(--gray-300); }
