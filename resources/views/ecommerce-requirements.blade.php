@@ -62,11 +62,11 @@
     }
 
     .req-table tbody tr:hover td {
-        background: #F8FAFC;
+        background: var(--muted);
     }
 
     .req-table tbody tr:hover td:first-child {
-        background: #F1F5F9;
+        background: var(--muted);
     }
 
     .req-table .check {
