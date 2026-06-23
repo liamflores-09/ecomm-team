@@ -200,27 +200,22 @@
             justify-content: center;
             border-right: 1px solid var(--border);
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
         }
-        .logo-ghost-text {
-            position: absolute;
-            top: 50%;
-            left: 0;
+        .nav-clock { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .nav-clock-time {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 3.25rem;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            color: var(--primary);
-            opacity: 0.07;
-            white-space: nowrap;
-            pointer-events: none;
-            user-select: none;
-            animation: ghostMarquee 10s linear infinite;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--foreground);
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
         }
-        @keyframes ghostMarquee {
-            from { transform: translateY(-50%) translateX(280px); }
-            to   { transform: translateY(-50%) translateX(-110%); }
+        .nav-clock-date {
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--muted-foreground);
+            letter-spacing: 0.02em;
         }
         .sidebar-brand .brand-icon {
             background: var(--primary);
@@ -562,7 +557,10 @@
     <!-- Top Header -->
     <header class="top-header">
         <div class="logo-section">
-            @auth<span class="logo-ghost-text">{{ strtoupper(Auth::user()->role) }}</span>@endauth
+            <div class="nav-clock">
+                <div class="nav-clock-time" id="navClockTime">--:--:--</div>
+                <div class="nav-clock-date" id="navClockDate">---</div>
+            </div>
         </div>
 
         <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
@@ -789,6 +787,25 @@
                 brand.insertAdjacentElement('afterend', trigger);
             }
         });
+    })();
+    </script>
+
+    <script>
+    (function() {
+        var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        function updateClock() {
+            var now = new Date();
+            var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            var time = (h < 10 ? '0'+h : h) + ':' + (m < 10 ? '0'+m : m) + ':' + (s < 10 ? '0'+s : s) + ' ' + ampm;
+            var date = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+            document.getElementById('navClockTime').textContent = time;
+            document.getElementById('navClockDate').textContent = date;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
     })();
     </script>
 
