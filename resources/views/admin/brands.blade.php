@@ -5,16 +5,14 @@
 
 @section('styles')
 <style>
-    .brand-list { display: flex; flex-direction: column; }
-    .brand-row { display: flex; align-items: center; gap: 1rem; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); transition: background 0.15s; }
-    .brand-row:last-child { border-bottom: none; }
-    .brand-row:hover { background: var(--muted); }
-    .brand-row-logo { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; background: var(--primary); }
-    .brand-row-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
-    .brand-row-name { font-weight: 700; font-size: 0.95rem; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-row-desc { font-size: 0.8rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .brand-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.25rem; }
+    .brand-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem 1.25rem 1rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.375rem; transition: border-color 0.2s; }
+    .brand-card:hover { border-color: var(--foreground); }
+    .brand-card-logo { width: 64px; height: 64px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.4rem; background: var(--primary); margin-bottom: 0.5rem; flex-shrink: 0; }
+    .brand-card-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-card-name { font-weight: 700; font-size: 0.95rem; color: var(--foreground); }
+    .brand-card-desc { font-size: 0.8rem; color: var(--muted-foreground); }
+    .brand-card-footer { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 0.875rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light); }
     .brand-catalog-pill { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 9999px; background: var(--muted); border: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 700; color: var(--muted-foreground); }
     .action-btns { display: flex; gap: 0.25rem; }
     .action-btn-sm { width: 28px; height: 28px; border: 1px solid var(--border-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: border-color 0.15s; background: transparent; color: var(--muted-foreground); }
@@ -114,23 +112,21 @@
             No brands yet. Add the first one.
         </div>
         @else
-        <div class="brand-list">
+        <div class="brand-grid">
             @foreach($brands as $brand)
-            <div class="brand-row">
-                <div class="brand-row-logo">
+            <div class="brand-card">
+                <div class="brand-card-logo">
                     @if($brand->logo)
                     <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
                     @else
                     {{ strtoupper(substr($brand->name, 0, 1)) }}
                     @endif
                 </div>
-                <div class="brand-row-info">
-                    <div class="brand-row-name">{{ $brand->name }}</div>
-                    @if($brand->description)
-                    <div class="brand-row-desc">{{ $brand->description }}</div>
-                    @endif
-                </div>
-                <div class="brand-row-right">
+                <div class="brand-card-name">{{ $brand->name }}</div>
+                @if($brand->description)
+                <div class="brand-card-desc">{{ $brand->description }}</div>
+                @endif
+                <div class="brand-card-footer">
                     <span class="brand-catalog-pill">
                         <i class="fas fa-book-open"></i>
                         {{ $brand->catalogs_count }} {{ Str::plural('catalog', $brand->catalogs_count) }}
