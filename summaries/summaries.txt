@@ -1,0 +1,105 @@
+Ecomm Dept Hub — Progress Summary
+Project Overview
+Internal team management app for an e-commerce department. Built on Laravel with Blade templating, Eloquent ORM, and ApexCharts. Admin-facing dashboard and daily logs system for tracking team productivity across roles.
+
+Completed Work
+1. Database & Models
+Item	Status
+badge column on users table (nullable string)	✅ Done
+Milo Gorospe → role: researcher, badge: Content/PR Lead	✅ Done
+User::$fillable includes badge	✅ Done
+Lead role excluded from storeUser / updateUser validation enums	✅ Done
+2. Layout & Navigation (layouts/app.blade.php)
+Item	Status
+Bell icon removed from nav header	✅ Done
+Profile avatar replaced with name + role badge (.nav-user-badge)	✅ Done
+Gender-based DiceBear avatar seeds (username = male, usernameFemale = female)	✅ Done
+Sidebar search bar repositioned (was stuck in logo area)	✅ Done
+Command palette (Ctrl+K) shows items immediately on open	✅ Done
+Global custom <select> styling with SVG chevron	✅ Done
+3. Admin Dashboard (admin/dashboard.blade.php)
+Item	Status
+KPI grid reduced to 4 cards — Top Performer card removed	✅ Done
+Sunday/RDO banner at top of main content	✅ Done
+Today KPI card — shows "Rest Day" + beach umbrella icon on Sunday	✅ Done
+Today's Pulse — greyed out, no progress bar, RDO message on Sunday	✅ Done
+Welcome banner stats replaced with RDO message on Sunday	✅ Done
+Role Activity charts: context subtitle + "Full Reports →" link per card	✅ Done
+Role Activity chart type changed: area → bar	✅ Done
+Sunday labels in charts colored red; tooltip shows "(RDO)"	✅ Done
+Quick Actions redesigned: 2×2 grid, larger icons (48px), descriptive labels	✅ Done
+4. Admin Daily Logs (admin/daily-logs.blade.php) — Full Redesign
+Structure
+Item	Status
+Back to Dashboard link at top	✅ Done
+RDO notice inline in header on Sunday	✅ Done
+4 KPI cards, all RDO-aware	✅ Done
+Weekly Activity Section
+Item	Status
+Per-role cards with bar charts (not unified)	✅ Done
+Context subtitle per card + "View Reports →" link to role filter	✅ Done
+Chart type: bar (not area)	✅ Done
+Sunday labels red in charts	✅ Done
+All Roles page: shows all 4 roles	✅ Done
+Role-specific page (e.g. /daily-logs?role=content): shows only that role's data	✅ Done
+Top Contributors Section
+Item	Status
+Per-role contributor cards with ranked CSS bar list	✅ Done
+Badge displayed under member name	✅ Done
+Role-specific page: shows only that role's contributors	✅ Done
+Today's Logs Table
+Item	Status
+Role subheader divider rows between roles	✅ Done
+Filter pills (All / Role) above table	✅ Done
+No "Pending" label on Sundays — full RDO rest-day state	✅ Done
+Badge shown under member name	✅ Done
+Role-specific page: no filter pills, no role subheaders	✅ Done
+Calendar
+Item	Status
+Sunday cells styled red (.is-rdo class)	✅ Done
+"RDO" micro-label on empty Sunday cells	✅ Done
+Clicking a date renders day panel instantly (no page reload) — reads pre-loaded JSON	✅ Done
+Role-specific page: calendar only shows data for that role	✅ Done
+Day Panel (calendar click)
+Item	Status
+Grouped by role with sticky .day-role-header dividers	✅ Done
+Member badge shown under name	✅ Done
+Sunday empty state: beach icon + RDO message	✅ Done
+Role-specific page: day panel only shows that role's members	✅ Done
+History Table
+Item	Status
+Role subheader divider rows	✅ Done
+Filter pills (All / Role)	✅ Done
+Sunday rows show amber "RDO" badge	✅ Done
+Clicking a row opens the day panel instantly	✅ Done
+Role-specific page: no filter pills, no role subheaders	✅ Done
+5. Sidebar (components/sidebar.blade.php)
+Item	Status
+Lead removed from Reports role filter nav	✅ Done
+Lead removed from Daily Logs role filter nav	✅ Done
+6. Users Page (admin/users.blade.php)
+Item	Status
+Lead removed from role <select> in Add modal	✅ Done
+Lead removed from role <select> in Edit modal	✅ Done
+Badge field added to Add User modal (optional)	✅ Done
+Badge field added to Edit User modal (optional)	✅ Done
+openEditModal JS populates badge from data-badge attribute	✅ Done
+Badge pill displayed in users table rows	✅ Done
+7. Controller (AdminController.php)
+Item	Status
+dashboard() — $weekSundayIndices computed and passed to view	✅ Done
+dailyLogs() — $isSunday flag passed to view	✅ Done
+dailyLogs() — $rolesToShow excludes Lead, respects $roleFilter	✅ Done
+dailyLogs() — $dlRoleTopContributors filters by role when set	✅ Done
+dailyLogs() — calendarLogsJson pre-loads all month data as nested JSON (date → role → members) including badge	✅ Done
+storeUser — validates + saves badge, Lead removed from role enum	✅ Done
+updateUser — validates + saves badge, Lead removed from role enum	✅ Done
+8. Documentation
+Item	Status
+DASHBOARD.md created — documents all KPIs, charts, role filters, Sunday RDO convention	✅ Done
+Pending / Not Yet Done
+Item	Notes
+Reports page (admin/reports.blade.php) — Lead role may still appear in data if not excluded at query level	Not checked
+User-facing (non-admin) pages — EOD report, team page, etc. may still reference Lead role	Not checked
+getDepartmentAttribute on User.php — still has 'lead' => 'PR' in the match	Minor, low impact
+Search command palette items — confirm all links are accurate and Lead pages aren't listed	Not verified

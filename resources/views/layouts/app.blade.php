@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Ecomm Dept')</title>
     @yield('favicon')
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -196,22 +197,35 @@
             height: 100%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
             border-right: 1px solid var(--border);
             flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
         }
-        .top-header .logo-section .brand-icon {
-            width: 32px; height: 32px;
-            background: var(--primary);
-            border-radius: var(--radius);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--primary-foreground); font-weight: 700; font-size: 12px;
+        .logo-ghost-text {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.25rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--primary);
+            opacity: 0.07;
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            animation: ghostMarquee 10s linear infinite;
+        }
+        @keyframes ghostMarquee {
+            from { transform: translateY(-50%) translateX(280px); }
+            to   { transform: translateY(-50%) translateX(-110%); }
         }
         .sidebar-brand .brand-icon {
             background: var(--primary);
             color: var(--primary-foreground);
         }
-        .top-header .logo-section h4 { font-size: 18px; font-weight: 600; margin: 0; }
         .top-header .nav-area { flex: 1; display: flex; align-items: center; padding: 0 16px; }
         .top-header .nav-area a {
             padding: 8px 16px;
@@ -223,8 +237,8 @@
             transition: all 0.15s;
         }
         .top-header .nav-area a:hover { background: var(--secondary); color: var(--foreground); }
-        .top-header .actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
-        .top-header .actions button {
+        .top-header .actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+        .top-header .actions > button {
             width: 40px; height: 40px;
             display: flex; align-items: center; justify-content: center;
             background: transparent;
@@ -235,7 +249,8 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-        .top-header .actions button:hover { background: var(--secondary); color: var(--foreground); }
+        .top-header .actions > button:hover { background: var(--secondary); color: var(--foreground); }
+        .notif-wrap, .user-menu-wrap { display: flex; align-items: center; }
 
         /* Main Content */
         .main-content {
@@ -473,9 +488,10 @@
         .filter-pill.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
 
         /* Command Palette */
-        .cmd-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999; align-items: flex-start; justify-content: center; padding-top: 15vh; }
-        .cmd-overlay.open { display: flex; }
-        .cmd-palette { width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .cmd-overlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999; align-items: flex-start; justify-content: center; padding-top: 15vh; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .cmd-overlay.open { opacity: 1; pointer-events: all; }
+        .cmd-palette { width: 100%; max-width: 520px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transform: translateY(-10px); transition: transform 0.22s cubic-bezier(0.16,1,0.3,1), opacity 0.22s ease; opacity: 0; }
+        .cmd-overlay.open .cmd-palette { transform: translateY(0); opacity: 1; }
         .cmd-input-wrap { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border); }
         .cmd-input-wrap i { color: var(--muted-foreground); font-size: 14px; }
         .cmd-input { flex: 1; height: 48px; border: none; outline: none; background: transparent; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--foreground); }
@@ -490,6 +506,55 @@
         .cmd-item .ci-desc { font-size: 12px; color: var(--muted-foreground); }
         .cmd-footer { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted-foreground); }
         .cmd-footer kbd { background: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; }
+
+        /* Notification Bell */
+        .notif-wrap { position: relative; }
+        .notif-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius); color: var(--muted-foreground); font-size: 16px; cursor: pointer; transition: all 0.15s; position: relative; }
+        .notif-btn:hover { background: var(--secondary); color: var(--foreground); }
+        .notif-badge { position: absolute; top: 5px; right: 5px; min-width: 16px; height: 16px; border-radius: 9999px; background: var(--destructive); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid var(--card); pointer-events: none; }
+        .notif-panel { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 340px; background: var(--card); border: 1px solid var(--border-light); border-radius: 10px; z-index: 500; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .notif-panel.open { display: block; animation: fadeInUp 0.15s ease-out both; }
+        .notif-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1rem; border-bottom: 1px solid var(--border-light); }
+        .notif-panel-title { font-size: 0.85rem; font-weight: 700; color: var(--foreground); }
+        .notif-clear-btn { font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.15s; }
+        .notif-clear-btn:hover { color: var(--destructive); }
+        .notif-list { max-height: 360px; overflow-y: auto; }
+        .notif-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.875rem 1rem; border-bottom: 1px solid var(--border-light); position: relative; transition: background 0.15s; }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item:hover { background: var(--muted); }
+        .notif-item.unread::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary); border-radius: 0 2px 2px 0; }
+        .notif-icon-box { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white; flex-shrink: 0; }
+        .notif-icon-box.primary { background: var(--primary); }
+        .notif-icon-box.success { background: var(--success); }
+        .notif-icon-box.warning { background: #f59e0b; }
+        .notif-body { flex: 1; min-width: 0; text-decoration: none; color: inherit; }
+        .notif-title { font-size: 0.8rem; font-weight: 700; color: var(--foreground); margin-bottom: 0.1rem; }
+        .notif-msg { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.4; margin-bottom: 0.2rem; }
+        .notif-time { font-size: 0.68rem; color: var(--muted-foreground); }
+        .notif-remove { width: 22px; height: 22px; border: none; background: none; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.68rem; flex-shrink: 0; opacity: 0; transition: opacity 0.15s, color 0.15s; }
+        .notif-item:hover .notif-remove { opacity: 1; }
+        .notif-remove:hover { color: var(--destructive); }
+        .notif-empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted-foreground); font-size: 0.82rem; }
+        .notif-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border-light); }
+
+        /* User Menu Dropdown */
+        .user-menu-wrap { position: relative; }
+        .user-menu-btn { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: var(--radius); border: none; background: transparent; cursor: pointer; transition: background 0.15s; }
+        .user-menu-btn:hover { background: var(--secondary); }
+        .user-menu-chevron { font-size: 10px; color: var(--muted-foreground); transition: transform 0.2s; margin-left: 2px; }
+        .user-menu-wrap.open .user-menu-chevron { transform: rotate(180deg); }
+        .user-menu-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 220px; background: var(--card); border: 1px solid var(--border-light); border-radius: 10px; z-index: 500; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .user-menu-dropdown.open { display: block; animation: fadeInUp 0.15s ease-out both; }
+        .user-menu-hd { padding: 0.875rem 1rem; border-bottom: 1px solid var(--border-light); }
+        .user-menu-hd-name { font-size: 0.85rem; font-weight: 700; color: var(--foreground); margin-bottom: 0.15rem; }
+        .user-menu-hd-role { font-size: 0.72rem; color: var(--muted-foreground); font-weight: 500; }
+        .user-menu-items { padding: 0.375rem; }
+        .user-menu-item { display: flex; align-items: center; gap: 0.625rem; width: 100%; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: var(--p-font-family-sans); font-size: 0.82rem; font-weight: 500; color: var(--foreground); text-decoration: none; background: none; border: none; cursor: pointer; transition: background 0.15s; }
+        .user-menu-item:hover { background: var(--secondary); }
+        .user-menu-item.danger { color: var(--destructive); }
+        .user-menu-item.danger:hover { background: #fef2f2; }
+        .user-menu-divider { height: 1px; background: var(--border-light); margin: 0.25rem 0; }
+        @media (max-width: 768px) { .nav-user-info { display: none; } .user-menu-chevron { display: none; } }
     </style>
     @yield('styles')
 </head>
@@ -497,24 +562,70 @@
     <!-- Top Header -->
     <header class="top-header">
         <div class="logo-section">
-            <div class="brand-icon">ED</div>
-            <h4>Ecomm Dept</h4>
+            @auth<span class="logo-ghost-text">{{ strtoupper(Auth::user()->role) }}</span>@endauth
         </div>
 
         <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
 
-        <div class="nav-area">
-            <a href="{{ route('dashboard') }}">Dashboard</a>
-        </div>
+        <div class="nav-area"></div>
 
         <div class="actions">
-            <button onclick="openCmdPalette()" title="Search (Ctrl+K)"><i class="fas fa-search"></i></button>
             @if(Auth::check())
-            <div class="nav-user-badge">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ Auth::user()->gender === 'female' ? Auth::user()->username . 'Female' : Auth::user()->username }}" alt="" class="nav-avatar">
-                <div class="nav-user-info">
-                    <span class="nav-user-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
-                    <span class="nav-user-role">{{ ucfirst(Auth::user()->role) }}</span>
+            {{-- Notification Bell --}}
+            <div class="notif-wrap" id="notifWrap">
+                <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-panel-header">
+                        <span class="notif-panel-title">Notifications</span>
+                        <button class="notif-clear-btn" onclick="clearAllNotifs()">Clear all</button>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications yet</div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if(Auth::check())
+            <button onclick="openCmdPalette()" title="Search (Ctrl+K)"><i class="fas fa-search"></i></button>
+
+            <div style="width:1px;height:20px;background:var(--border-light);flex-shrink:0;margin:0 2px;"></div>
+            @endif
+
+            @if(Auth::check())
+            {{-- User Menu --}}
+            <div class="user-menu-wrap" id="userMenuWrap">
+                <button class="user-menu-btn" onclick="toggleUserMenu()">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ Auth::user()->gender === 'female' ? Auth::user()->username . 'Female' : Auth::user()->username }}" alt="" class="nav-avatar">
+                    <div class="nav-user-info">
+                        <span class="nav-user-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
+                        <span class="nav-user-role">{{ ucfirst(Auth::user()->role) }}</span>
+                    </div>
+                    <i class="fas fa-chevron-down user-menu-chevron"></i>
+                </button>
+                <div class="user-menu-dropdown" id="userMenuDropdown">
+                    <div class="user-menu-hd">
+                        <div class="user-menu-hd-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</div>
+                        <div class="user-menu-hd-role">{{ ucfirst(Auth::user()->role) }}</div>
+                    </div>
+                    <div class="user-menu-items">
+                        <a href="{{ route('profile') }}" class="user-menu-item"><i class="fas fa-circle-user" style="width:14px;text-align:center;font-size:0.8rem;"></i> View Profile</a>
+                        <div class="user-menu-divider"></div>
+                        @if(Auth::user()->role === 'manager')
+                        <a href="{{ route('admin.dashboard') }}" class="user-menu-item"><i class="fas fa-gauge" style="width:14px;text-align:center;font-size:0.8rem;"></i> Admin Dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="user-menu-item"><i class="fas fa-grip" style="width:14px;text-align:center;font-size:0.8rem;"></i> User View</a>
+                        @else
+                        <a href="{{ route('dashboard') }}" class="user-menu-item"><i class="fas fa-grip" style="width:14px;text-align:center;font-size:0.8rem;"></i> Dashboard</a>
+                        @endif
+                        <div class="user-menu-divider"></div>
+                        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                            @csrf
+                            <button type="submit" class="user-menu-item danger"><i class="fas fa-right-from-bracket" style="width:14px;text-align:center;font-size:0.8rem;"></i> Logout</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             @endif
@@ -727,6 +838,142 @@
             </div>
         </div>
     </div>
+
+    @if(Auth::check())
+    <script>
+    (function() {
+        var _notifOpen = false;
+        var _notifData = [];
+        var _csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        function toggleNotifPanel() {
+            _notifOpen = !_notifOpen;
+            var panel = document.getElementById('notifPanel');
+            if (_notifOpen) {
+                panel.classList.add('open');
+                fetchNotifications(true);
+                // close user menu if open
+                closeUserMenu();
+            } else {
+                panel.classList.remove('open');
+            }
+        }
+        window.toggleNotifPanel = toggleNotifPanel;
+
+        function fetchNotifications(markRead) {
+            fetch('/notifications')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var badge = document.getElementById('notifBadge');
+                    if (data.unread > 0 && !_notifOpen) {
+                        badge.textContent = data.unread > 99 ? '99+' : data.unread;
+                        badge.style.display = '';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                    _notifData = data.notifications;
+                    if (_notifOpen) renderNotifications();
+                    if (markRead && data.unread > 0) {
+                        fetch('/notifications/read-all', { method: 'POST', headers: { 'X-CSRF-TOKEN': _csrf } });
+                    }
+                })
+                .catch(function() {});
+        }
+
+        function renderNotifications() {
+            var list = document.getElementById('notifList');
+            if (!list) return;
+            if (_notifData.length === 0) {
+                list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications yet</div>';
+                return;
+            }
+            list.innerHTML = _notifData.map(function(n) {
+                var color = n.data.color || 'primary';
+                var cls = n.read ? '' : ' unread';
+                return '<div class="notif-item' + cls + '" id="ni-' + n.id + '">' +
+                    '<div class="notif-icon-box ' + color + '"><i class="fas ' + (n.data.icon || 'fa-bell') + '"></i></div>' +
+                    '<a class="notif-body" href="' + (n.data.url || '#') + '">' +
+                        '<div class="notif-title">' + escHtml(n.data.title) + '</div>' +
+                        '<div class="notif-msg">' + escHtml(n.data.message) + '</div>' +
+                        '<div class="notif-time">' + n.time + '</div>' +
+                    '</a>' +
+                    '<button class="notif-remove" onclick="removeNotif(\'' + n.id + '\')" title="Remove"><i class="fas fa-times"></i></button>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function removeNotif(id) {
+            fetch('/notifications/' + id, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': _csrf } })
+                .then(function(r) { return r.json(); })
+                .then(function() {
+                    _notifData = _notifData.filter(function(n) { return n.id !== id; });
+                    renderNotifications();
+                });
+        }
+        window.removeNotif = removeNotif;
+
+        function clearAllNotifs() {
+            fetch('/notifications/clear', { method: 'POST', headers: { 'X-CSRF-TOKEN': _csrf } })
+                .then(function(r) { return r.json(); })
+                .then(function() {
+                    _notifData = [];
+                    renderNotifications();
+                    document.getElementById('notifBadge').style.display = 'none';
+                });
+        }
+        window.clearAllNotifs = clearAllNotifs;
+
+        // Close panel when clicking outside
+        document.addEventListener('click', function(e) {
+            var wrap = document.getElementById('notifWrap');
+            if (wrap && !wrap.contains(e.target) && _notifOpen) {
+                _notifOpen = false;
+                document.getElementById('notifPanel').classList.remove('open');
+            }
+        });
+
+        // Initial fetch + poll every 30s (only when panel is closed)
+        fetchNotifications(false);
+        setInterval(function() { if (!_notifOpen) fetchNotifications(false); }, 30000);
+
+
+        // User Menu
+        function toggleUserMenu() {
+            var wrap = document.getElementById('userMenuWrap');
+            var dd = document.getElementById('userMenuDropdown');
+            if (!wrap || !dd) return;
+            var isOpen = wrap.classList.contains('open');
+            if (isOpen) {
+                closeUserMenu();
+            } else {
+                wrap.classList.add('open');
+                dd.classList.add('open');
+                // close notif panel if open
+                if (_notifOpen) { _notifOpen = false; document.getElementById('notifPanel').classList.remove('open'); }
+            }
+        }
+        window.toggleUserMenu = toggleUserMenu;
+
+        function closeUserMenu() {
+            var wrap = document.getElementById('userMenuWrap');
+            var dd = document.getElementById('userMenuDropdown');
+            if (wrap) wrap.classList.remove('open');
+            if (dd) dd.classList.remove('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            var wrap = document.getElementById('userMenuWrap');
+            if (wrap && !wrap.contains(e.target) && wrap.classList.contains('open')) {
+                closeUserMenu();
+            }
+        });
+    })();
+    </script>
+    @endif
 
     @yield('scripts')
 </body>

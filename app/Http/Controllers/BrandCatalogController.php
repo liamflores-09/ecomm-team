@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\BrandCatalog;
+use App\Models\User;
+use App\Notifications\NewBrandCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -49,7 +51,13 @@ class BrandCatalogController extends Controller
         }
 
         unset($data['file']);
-        BrandCatalog::create($data);
+        $catalog = BrandCatalog::create($data);
+        $catalog->load('brand');
+
+        $currentId = Auth::id();
+        User::where('id', '!=', $currentId)->get()
+            ->each(fn($u) => $u->notify(new NewBrandCatalog($catalog)));
+
         return back()->with('success', 'Catalog added.');
     }
 

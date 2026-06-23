@@ -5,54 +5,53 @@
 
 @section('styles')
 <style>
-    /* Stats bar */
-    .brand-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1.25rem; }
-    .brand-stat-box { border-radius: 8px; padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.25rem; }
-    .brand-stat-box .stat-num { font-size: 1.6rem; font-weight: 800; line-height: 1; font-family: 'Space Grotesk', sans-serif; }
-    .brand-stat-box .stat-lbl { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .brand-stat-box.total    { background: rgba(87,87,248,0.08); }
-    .brand-stat-box.total    .stat-num, .brand-stat-box.total    .stat-lbl { color: var(--primary); }
-    .brand-stat-box.tech     { background: rgba(87,87,248,0.05); }
-    .brand-stat-box.tech     .stat-num, .brand-stat-box.tech     .stat-lbl { color: #5757f8; }
-    .brand-stat-box.consumer { background: rgba(245,158,11,0.08); }
-    .brand-stat-box.consumer .stat-num, .brand-stat-box.consumer .stat-lbl { color: #f59e0b; }
-    .brand-stat-box.both     { background: rgba(34,197,94,0.08); }
-    .brand-stat-box.both     .stat-num, .brand-stat-box.both     .stat-lbl { color: var(--success); }
+    /* KPI cards (matching dashboard format) */
+    .brand-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .brand-kpi-card { background: var(--card); border-radius: 8px; padding: 1.5rem; border: 1px solid var(--border-light); transition: border-color 0.2s; }
+    .brand-kpi-card:hover { border-color: var(--foreground); }
+    .brand-kpi-card.total    { border-top: 2px solid var(--primary); }
+    .brand-kpi-card.tech     { border-top: 2px solid #0ea5e9; }
+    .brand-kpi-card.consumer { border-top: 2px solid #f59e0b; }
+    .brand-kpi-card.both     { border-top: 2px solid var(--success); }
+    .bkpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .bkpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); }
+    .bkpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white; flex-shrink: 0; }
+    .bkpi-icon.total    { background: var(--primary); }
+    .bkpi-icon.tech     { background: #0ea5e9; }
+    .bkpi-icon.consumer { background: #f59e0b; }
+    .bkpi-icon.both     { background: var(--success); }
+    .bkpi-value { font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.375rem; font-family: 'Space Grotesk', sans-serif; color: var(--foreground); }
+    .bkpi-sub { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; }
 
-    /* Search + A-Z controls */
-    .brand-controls { padding: 1rem 1.25rem; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 0.75rem; }
+    /* Search + A-Z card */
+    .brand-controls-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
     .brand-search-wrap { position: relative; }
-    .brand-search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); font-size: 0.8rem; pointer-events: none; }
-    .brand-search-input { width: 100%; height: 42px; padding: 0 2.5rem 0 2.5rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.875rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; box-sizing: border-box; }
+    .brand-search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); font-size: 0.9rem; pointer-events: none; }
+    .brand-search-input { width: 100%; height: 48px; padding: 0 3rem 0 3rem; background: var(--muted); border: 2px solid transparent; border-radius: 10px; font-family: var(--p-font-family-sans); font-size: 0.95rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; box-sizing: border-box; }
     .brand-search-input:focus { border-color: var(--primary); background: var(--white); }
     .brand-search-input::placeholder { color: var(--gray-300); }
-    .brand-search-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted-foreground); padding: 0 0.25rem; font-size: 0.8rem; line-height: 1; }
+    .brand-search-clear { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted-foreground); padding: 0 0.25rem; font-size: 0.85rem; line-height: 1; }
     .brand-search-clear:hover { color: var(--foreground); }
-    .az-bar { display: flex; flex-wrap: wrap; gap: 0.2rem; }
-    .az-btn { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-decoration: none; transition: all 0.15s; }
-    .az-btn.has-brands { color: var(--foreground); background: var(--muted); border: 1px solid var(--border-light); }
+    .az-divider { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); margin-bottom: 0.5rem; }
+    .az-bar { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .az-btn { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.78rem; font-weight: 700; transition: all 0.15s; border: none; cursor: default; }
+    .az-btn.has-brands { color: var(--foreground); background: var(--muted); border: 1px solid var(--border-light); cursor: pointer; }
     .az-btn.has-brands:hover { background: var(--primary); color: white; border-color: var(--primary); }
-    .az-btn.no-brands { color: var(--border-light); cursor: default; font-weight: 500; }
+    .az-btn.no-brands { color: var(--border-light); background: transparent; font-weight: 500; }
 
-    /* Letter sections */
+    /* Brand list card */
+    .brand-list-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; overflow: hidden; }
     .letter-section { }
-    .letter-heading { padding: 0.625rem 1.25rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); border-bottom: 1px solid var(--border-light); background: var(--muted); }
+    .letter-heading { padding: 0.625rem 1.25rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); border-bottom: 1px solid var(--border-light); background: var(--muted); scroll-margin-top: 80px; }
     .letter-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.875rem; padding: 1rem 1.25rem; }
 
     /* Brand card — matches dashboard quick-link style */
-    .brand-card {
-        display: flex; align-items: center; gap: 0.875rem;
-        background: var(--card); border-radius: 8px; padding: 1.25rem;
-        border: 1px solid var(--border-light);
-        cursor: pointer; transition: border-color 0.2s;
-        text-decoration: none; color: var(--foreground);
-    }
+    .brand-card { display: flex; align-items: center; gap: 0.875rem; background: var(--card); border-radius: 8px; padding: 1.25rem; border: 1px solid var(--border-light); cursor: pointer; transition: border-color 0.2s; }
     .brand-card:hover { border-color: var(--foreground); }
     .brand-card.tech     { border-top: 2px solid var(--primary); }
     .brand-card.consumer { border-top: 2px solid #f59e0b; }
     .brand-card.both     { border-top: 2px solid var(--success); }
 
-    /* Icon box — matches .ql-icon from dashboard */
     .bc-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
     .bc-icon.tech     { background: rgba(87,87,248,0.12); color: var(--primary); }
     .bc-icon.consumer { background: rgba(245,158,11,0.12); color: #f59e0b; }
@@ -60,12 +59,10 @@
     .bc-icon.none     { background: var(--muted); color: var(--muted-foreground); }
     .bc-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 
-    /* Card body — matches .ql-text from dashboard */
     .brand-card-body { flex: 1; min-width: 0; }
     .brand-card-name { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--foreground); }
     .brand-card-desc { display: block; font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Right side */
     .brand-card-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
     .brand-class-badge { display: inline-flex; align-items: center; padding: 0.18rem 0.6rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
     .brand-class-badge.tech     { background: rgba(87,87,248,0.12); color: var(--primary); }
@@ -79,6 +76,11 @@
 
     .no-results { text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem; display: none; }
     .no-results i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border); }
+
+    /* Back to top */
+    #backToTop { position: fixed; bottom: 2rem; right: 2rem; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; transform: translateY(10px); z-index: 100; }
+    #backToTop.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+    #backToTop:hover { background: #4444e0; }
 
     /* Modal form fields */
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
@@ -120,128 +122,148 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <div class="eod-card anim-up d1">
-        <!-- Stats bar -->
-        <div class="brand-stats-bar">
-            <div class="brand-stat-box total">
-                <div class="stat-num">{{ $stats['total'] }}</div>
-                <div class="stat-lbl">Total Brands</div>
+    <!-- KPI Stats (matching dashboard card format) -->
+    <div class="brand-kpi-grid anim-up d1">
+        <div class="brand-kpi-card total">
+            <div class="bkpi-top">
+                <span class="bkpi-label">Total Brands</span>
+                <div class="bkpi-icon total"><i class="fas fa-tags"></i></div>
             </div>
-            <div class="brand-stat-box tech">
-                <div class="stat-num">{{ $stats['tech'] }}</div>
-                <div class="stat-lbl">Tech</div>
-            </div>
-            <div class="brand-stat-box consumer">
-                <div class="stat-num">{{ $stats['consumer'] }}</div>
-                <div class="stat-lbl">Design / Consumer</div>
-            </div>
-            <div class="brand-stat-box both">
-                <div class="stat-num">{{ $stats['both'] }}</div>
-                <div class="stat-lbl">Both</div>
-            </div>
+            <div class="bkpi-value">{{ $stats['total'] }}</div>
+            <div class="bkpi-sub">All classifications</div>
         </div>
-
-        <!-- Search + A-Z -->
-        @php
-        $availableLetters = collect($brands->map(fn($b) => strtoupper(substr($b->name, 0, 1)))->unique()->values());
-        @endphp
-        <div class="brand-controls">
-            <div class="brand-search-wrap">
-                <i class="fas fa-magnifying-glass brand-search-icon"></i>
-                <input type="text" id="brandSearch" class="brand-search-input" placeholder="Search brands..." oninput="filterBrands(this.value)">
-                <button id="brandSearchClear" class="brand-search-clear" onclick="clearSearch()" style="display:none;"><i class="fas fa-times"></i></button>
+        <div class="brand-kpi-card tech">
+            <div class="bkpi-top">
+                <span class="bkpi-label">Tech</span>
+                <div class="bkpi-icon tech"><i class="fas fa-microchip"></i></div>
             </div>
+            <div class="bkpi-value">{{ $stats['tech'] }}</div>
+            <div class="bkpi-sub">Technology brands</div>
+        </div>
+        <div class="brand-kpi-card consumer">
+            <div class="bkpi-top">
+                <span class="bkpi-label">Design / Consumer</span>
+                <div class="bkpi-icon consumer"><i class="fas fa-store"></i></div>
+            </div>
+            <div class="bkpi-value">{{ $stats['consumer'] }}</div>
+            <div class="bkpi-sub">Consumer-facing brands</div>
+        </div>
+        <div class="brand-kpi-card both">
+            <div class="bkpi-top">
+                <span class="bkpi-label">Both</span>
+                <div class="bkpi-icon both"><i class="fas fa-layer-group"></i></div>
+            </div>
+            <div class="bkpi-value">{{ $stats['both'] }}</div>
+            <div class="bkpi-sub">Multi-category brands</div>
+        </div>
+    </div>
+
+    <!-- Search + A-Z Controls -->
+    @php
+    $availableLetters = collect($brands->map(fn($b) => strtoupper(substr($b->name, 0, 1)))->unique()->values());
+    @endphp
+    <div class="brand-controls-card anim-up d2">
+        <div class="brand-search-wrap">
+            <i class="fas fa-magnifying-glass brand-search-icon"></i>
+            <input type="text" id="brandSearch" class="brand-search-input" placeholder="Search brands by name..." oninput="filterBrands(this.value)">
+            <button id="brandSearchClear" class="brand-search-clear" onclick="clearSearch()" style="display:none;"><i class="fas fa-times"></i></button>
+        </div>
+        <div>
+            <div class="az-divider">Jump to letter</div>
             <div class="az-bar" id="azBar">
                 @foreach(range('A', 'Z') as $letter)
                 @if($availableLetters->contains($letter))
-                <a href="#letter-{{ $letter }}" class="az-btn has-brands">{{ $letter }}</a>
+                <button class="az-btn has-brands" onclick="scrollToLetter('{{ $letter }}')">{{ $letter }}</button>
                 @else
                 <span class="az-btn no-brands">{{ $letter }}</span>
                 @endif
                 @endforeach
             </div>
         </div>
+    </div>
 
-        <!-- Brand list grouped by letter -->
-        @if($brands->isEmpty())
-        <div style="text-align: center; padding: 2.5rem; color: var(--muted-foreground); font-size: 0.85rem;">
-            <i class="fas fa-tag" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--border);"></i>
-            No brands yet. Add the first one.
+    <!-- Brand List -->
+    @if($brands->isEmpty())
+    <div class="brand-list-card anim-up d3" style="text-align:center;padding:2.5rem;color:var(--muted-foreground);font-size:0.85rem;">
+        <i class="fas fa-tag" style="font-size:1.5rem;display:block;margin-bottom:0.5rem;color:var(--border);"></i>
+        No brands yet. Add the first one.
+    </div>
+    @else
+    <div class="brand-list-card anim-up d3" id="brandGrid">
+        @php $grouped = $brands->groupBy(fn($b) => strtoupper(substr($b->name, 0, 1))); @endphp
+
+        <div class="no-results" id="noResults">
+            <i class="fas fa-magnifying-glass"></i>
+            No brands match your search.
         </div>
-        @else
-        <div id="brandGrid">
-            @php
-            $grouped = $brands->groupBy(fn($b) => strtoupper(substr($b->name, 0, 1)));
-            @endphp
 
-            <div class="no-results" id="noResults">
-                <i class="fas fa-magnifying-glass"></i>
-                No brands match your search.
-            </div>
-
-            @foreach($grouped as $letter => $letterBrands)
-            <div class="letter-section" id="letter-{{ $letter }}" data-letter="{{ $letter }}">
-                <div class="letter-heading">{{ $letter }}</div>
-                <div class="letter-cards">
-                    @foreach($letterBrands as $brand)
-                    @php
-                    $clsKey  = match($brand->classification) { 'Tech' => 'tech', 'Design/Consumer' => 'consumer', 'Both' => 'both', default => 'none' };
-                    $clsIcon = match($brand->classification) { 'Tech' => 'fa-microchip', 'Design/Consumer' => 'fa-store', 'Both' => 'fa-layer-group', default => 'fa-tag' };
-                    @endphp
-                    <div class="brand-card {{ $clsKey }}"
-                         data-name="{{ strtolower($brand->name) }}"
-                         onclick="window.location.href='{{ route('brand-catalogs') }}?brand_id={{ $brand->id }}'">
-                        <div class="bc-icon {{ $clsKey }}">
-                            @if($brand->logo)
-                            <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
-                            @else
-                            <i class="fas {{ $clsIcon }}"></i>
-                            @endif
-                        </div>
-                        <div class="brand-card-body">
-                            <span class="brand-card-name">{{ $brand->name }}</span>
-                            @if($brand->description)
-                            <span class="brand-card-desc">{{ $brand->description }}</span>
-                            @endif
-                        </div>
-                        <div class="brand-card-right">
-                            @if($brand->classification)
-                            <span class="brand-class-badge {{ $clsKey }}">{{ $brand->classification }}</span>
-                            @endif
-                            <span class="brand-catalog-pill">
-                                <i class="fas fa-book-open"></i> {{ $brand->catalogs_count }}
-                            </span>
-                            <div class="action-btns">
-                                <button class="action-btn-sm" title="Edit"
-                                    onclick="event.stopPropagation(); openEditBrand(this)"
-                                    data-id="{{ $brand->id }}"
-                                    data-name="{{ $brand->name }}"
-                                    data-description="{{ $brand->description ?? '' }}"
-                                    data-classification="{{ $brand->classification ?? '' }}"
-                                    data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
-                                    <i class="fas fa-pencil"></i>
+        @foreach($grouped as $letter => $letterBrands)
+        <div class="letter-section" id="letter-{{ $letter }}" data-letter="{{ $letter }}">
+            <div class="letter-heading">{{ $letter }}</div>
+            <div class="letter-cards">
+                @foreach($letterBrands as $brand)
+                @php
+                $clsKey  = match($brand->classification) { 'Tech' => 'tech', 'Design/Consumer' => 'consumer', 'Both' => 'both', default => 'none' };
+                $clsIcon = match($brand->classification) { 'Tech' => 'fa-microchip', 'Design/Consumer' => 'fa-store', 'Both' => 'fa-layer-group', default => 'fa-tag' };
+                @endphp
+                <div class="brand-card {{ $clsKey }}"
+                     data-name="{{ strtolower($brand->name) }}"
+                     onclick="window.location.href='{{ route('brand-catalogs') }}?brand_id={{ $brand->id }}'">
+                    <div class="bc-icon {{ $clsKey }}">
+                        @if($brand->logo)
+                        <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}">
+                        @else
+                        <i class="fas {{ $clsIcon }}"></i>
+                        @endif
+                    </div>
+                    <div class="brand-card-body">
+                        <span class="brand-card-name">{{ $brand->name }}</span>
+                        @if($brand->description)
+                        <span class="brand-card-desc">{{ $brand->description }}</span>
+                        @endif
+                    </div>
+                    <div class="brand-card-right">
+                        @if($brand->classification)
+                        <span class="brand-class-badge {{ $clsKey }}">{{ $brand->classification }}</span>
+                        @endif
+                        <span class="brand-catalog-pill">
+                            <i class="fas fa-book-open"></i> {{ $brand->catalogs_count }}
+                        </span>
+                        <div class="action-btns">
+                            <button class="action-btn-sm" title="Edit"
+                                onclick="event.stopPropagation(); openEditBrand(this)"
+                                data-id="{{ $brand->id }}"
+                                data-name="{{ $brand->name }}"
+                                data-description="{{ $brand->description ?? '' }}"
+                                data-classification="{{ $brand->classification ?? '' }}"
+                                data-logo="{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}">
+                                <i class="fas fa-pencil"></i>
+                            </button>
+                            <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}"
+                                  onclick="event.stopPropagation()"
+                                  onsubmit="return confirm({{ json_encode('Delete ' . $brand->name . '?') }});"
+                                  style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-btn-sm btn-danger" title="Delete">
+                                    <i class="fas fa-trash-can"></i>
                                 </button>
-                                <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}"
-                                      onclick="event.stopPropagation()"
-                                      onsubmit="return confirm({{ json_encode('Delete ' . $brand->name . '?') }});"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn-sm btn-danger" title="Delete">
-                                        <i class="fas fa-trash-can"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            </form>
                         </div>
                     </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
-        @endif
+        @endforeach
     </div>
+    @endif
 </div>
+
+<!-- Back to top -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
 <!-- Brand Modal -->
 <div class="modal-overlay" id="brandModal">
@@ -292,16 +314,25 @@
 </div>
 
 <script>
+function scrollToLetter(letter) {
+    var el = document.getElementById('letter-' + letter);
+    if (!el) return;
+    var offset = el.getBoundingClientRect().top + window.scrollY - 90;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
+}
+
 function filterBrands(query) {
     var q = query.trim().toLowerCase();
     var sections = document.querySelectorAll('.letter-section');
     var clearBtn = document.getElementById('brandSearchClear');
     var azBar = document.getElementById('azBar');
+    var azLabel = azBar.previousElementSibling;
     var noResults = document.getElementById('noResults');
     var totalVisible = 0;
 
     clearBtn.style.display = q ? '' : 'none';
     azBar.style.display = q ? 'none' : '';
+    azLabel.style.display = q ? 'none' : '';
 
     sections.forEach(function(section) {
         var cards = section.querySelectorAll('.brand-card');
@@ -324,6 +355,12 @@ function clearSearch() {
     filterBrands('');
     input.focus();
 }
+
+window.addEventListener('scroll', function() {
+    var btn = document.getElementById('backToTop');
+    if (window.scrollY > 320) { btn.classList.add('visible'); }
+    else { btn.classList.remove('visible'); }
+});
 
 function handleFileChange(input, areaId, labelId) {
     var area = document.getElementById(areaId);

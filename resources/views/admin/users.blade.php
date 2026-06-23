@@ -194,7 +194,7 @@
                     <th>Mobile</th>
                     <th>Role</th>
                     <th>Joined</th>
-                    <th style="width: 90px; text-align: right;">Actions</th>
+                    <th style="width: 120px; text-align: right;">Actions</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
@@ -219,6 +219,18 @@
                     <td class="cell-time">{{ $u->created_at->diffForHumans() }}</td>
                     <td>
                         <div class="row-actions">
+                            <button class="row-btn" title="View Profile"
+                                data-first="{{ $u->first_name }}"
+                                data-last="{{ $u->last_name }}"
+                                data-username="{{ $u->username }}"
+                                data-role="{{ $u->role }}"
+                                data-gender="{{ $u->gender }}"
+                                data-mobile="{{ $u->mobile_number }}"
+                                data-badge="{{ $u->badge }}"
+                                data-joined="{{ $u->created_at->format('M d, Y') }}"
+                                onclick="openProfileModal(this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
                             <button class="row-btn" title="Edit"
                                 data-id="{{ $u->id }}"
                                 data-first="{{ $u->first_name }}"
@@ -264,6 +276,51 @@
     @csrf
     @method('DELETE')
 </form>
+
+<!-- ============================================================ -->
+<!-- View Profile Modal                                           -->
+<!-- ============================================================ -->
+<div class="modal-overlay" id="viewProfileModal">
+    <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+            <h5 style="font-weight:700;font-size:1rem;margin:0;">User Profile</h5>
+            <button type="button" class="modal-close" onclick="closeModal('viewProfileModal')"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="padding:1.5rem;">
+            <!-- Avatar + name section -->
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+                <img id="vpAvatar" src="" alt="" style="width:72px;height:72px;border-radius:50%;border:2px solid var(--border-light);flex-shrink:0;">
+                <div>
+                    <div id="vpName" style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;font-family:'Space Grotesk',sans-serif;"></div>
+                    <div id="vpHandle" style="font-size:0.8rem;color:var(--muted-foreground);margin-bottom:0.375rem;"></div>
+                    <div style="display:flex;gap:0.375rem;flex-wrap:wrap;" id="vpBadges"></div>
+                </div>
+            </div>
+            <!-- Details -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                <div style="background:var(--muted);border-radius:8px;padding:0.875rem;">
+                    <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);margin-bottom:0.25rem;">Mobile</div>
+                    <div id="vpMobile" style="font-size:0.875rem;font-weight:600;"></div>
+                </div>
+                <div style="background:var(--muted);border-radius:8px;padding:0.875rem;">
+                    <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);margin-bottom:0.25rem;">Gender</div>
+                    <div id="vpGender" style="font-size:0.875rem;font-weight:600;"></div>
+                </div>
+                <div style="background:var(--muted);border-radius:8px;padding:0.875rem;">
+                    <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);margin-bottom:0.25rem;">Username</div>
+                    <div id="vpUsername" style="font-size:0.875rem;font-weight:600;"></div>
+                </div>
+                <div style="background:var(--muted);border-radius:8px;padding:0.875rem;">
+                    <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);margin-bottom:0.25rem;">Joined</div>
+                    <div id="vpJoined" style="font-size:0.875rem;font-weight:600;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-flat-secondary" onclick="closeModal('viewProfileModal')" style="height:38px;font-size:0.85rem;">Close</button>
+        </div>
+    </div>
+</div>
 
 <!-- ============================================================ -->
 <!-- Add User Modal                                               -->
@@ -522,6 +579,28 @@ function openEditModal(btn) {
     document.getElementById('editAvatarPreview').src = avatarUrl(d.username, d.gender || 'male');
     document.getElementById('editAvatarName').textContent = d.first + ' ' + d.last;
     openModal('editUserModal');
+}
+
+/* ---- View Profile ---- */
+function openProfileModal(btn) {
+    var d = btn.dataset;
+    var seed = d.gender === 'female' ? d.username + 'Female' : d.username;
+    document.getElementById('vpAvatar').src = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + encodeURIComponent(seed);
+    document.getElementById('vpName').textContent = d.first + ' ' + d.last;
+    document.getElementById('vpHandle').textContent = '@' + d.username;
+    document.getElementById('vpMobile').textContent = d.mobile || '—';
+    document.getElementById('vpGender').textContent = d.gender ? (d.gender.charAt(0).toUpperCase() + d.gender.slice(1)) : '—';
+    document.getElementById('vpUsername').textContent = d.username;
+    document.getElementById('vpJoined').textContent = d.joined || '—';
+
+    var badges = document.getElementById('vpBadges');
+    var roleColors = { manager:'#5757f8', lead:'#5757f8', content:'#5757f8', graphics:'#f59e0b', backend:'#ef4444', researcher:'#22c55e' };
+    var badgeHtml = '<span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;background:' + (roleColors[d.role] || '#5757f8') + ';color:white;">' + (d.role ? d.role.charAt(0).toUpperCase() + d.role.slice(1) : '') + '</span>';
+    if (d.badge) {
+        badgeHtml += '<span style="display:inline-flex;align-items:center;padding:2px 8px;background:#f0f0ff;border:1px solid #a5a5fc;border-radius:9999px;font-size:0.6rem;font-weight:700;color:#5757f8;">' + d.badge + '</span>';
+    }
+    badges.innerHTML = badgeHtml;
+    openModal('viewProfileModal');
 }
 
 /* ---- Custom Delete Confirm ---- */

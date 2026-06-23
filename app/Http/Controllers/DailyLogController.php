@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\DailyLog;
+use App\Models\User;
+use App\Notifications\EodSubmitted;
 use App\Support\TaskLabels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,6 +68,12 @@ class DailyLogController extends Controller
                 'total_tasks' => $validated['task_1'] + $validated['task_2'] + $validated['task_3'] + $validated['task_4'] + $validated['task_5'],
             ],
         ]);
+
+        if ($log->wasRecentlyCreated) {
+            $submitter = Auth::user();
+            User::where('role', 'manager')->get()
+                ->each(fn($admin) => $admin->notify(new EodSubmitted($submitter, $validated['date'])));
+        }
 
         return redirect()->route('end-of-day')->with('success', 'Daily log saved successfully!');
     }
