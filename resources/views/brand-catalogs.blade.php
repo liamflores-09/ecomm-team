@@ -67,7 +67,9 @@
     }
     .bc-brand-bar-clear:hover { color: var(--foreground); }
 
-    .bc-pagination { display: flex; align-items: center; justify-content: center; gap: 0.375rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .bc-pagination-row { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+    .bc-pagination-count { font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; }
+    .bc-pagination { display: flex; align-items: center; gap: 0.375rem; }
     .bc-page-btn {
         min-width: 36px; height: 36px; padding: 0 0.625rem;
         display: inline-flex; align-items: center; justify-content: center;
@@ -79,7 +81,7 @@
     .bc-page-btn:hover { border-color: var(--foreground); }
     .bc-page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
     .bc-page-btn.disabled { opacity: 0.4; pointer-events: none; }
-    .bc-page-info { font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; padding: 0 0.5rem; }
+    .bc-page-info { font-size: 0.78rem; color: var(--muted-foreground); font-weight: 500; padding: 0 0.25rem; }
 
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
@@ -245,32 +247,29 @@
 
     {{-- Pagination --}}
     @if($catalogs->hasPages())
-    <div class="bc-pagination">
-        {{-- Prev --}}
-        @if($catalogs->onFirstPage())
-        <span class="bc-page-btn disabled"><i class="fas fa-chevron-left"></i></span>
-        @else
-        <a class="bc-page-btn" href="{{ $catalogs->previousPageUrl() }}"><i class="fas fa-chevron-left"></i></a>
-        @endif
-
-        {{-- Page numbers --}}
-        @foreach($catalogs->getUrlRange(1, $catalogs->lastPage()) as $page => $url)
-            @if(abs($page - $catalogs->currentPage()) <= 2 || $page === 1 || $page === $catalogs->lastPage())
-            <a class="bc-page-btn {{ $page == $catalogs->currentPage() ? 'active' : '' }}" href="{{ $url }}">{{ $page }}</a>
-            @elseif(abs($page - $catalogs->currentPage()) === 3)
-            <span class="bc-page-info">…</span>
+    <div class="bc-pagination-row">
+        <span class="bc-pagination-count">Showing {{ $catalogs->firstItem() }}–{{ $catalogs->lastItem() }} of {{ $catalogs->total() }} catalogs</span>
+        <div class="bc-pagination">
+            @if($catalogs->onFirstPage())
+            <span class="bc-page-btn disabled"><i class="fas fa-chevron-left"></i></span>
+            @else
+            <a class="bc-page-btn" href="{{ $catalogs->previousPageUrl() }}"><i class="fas fa-chevron-left"></i></a>
             @endif
-        @endforeach
 
-        {{-- Next --}}
-        @if($catalogs->hasMorePages())
-        <a class="bc-page-btn" href="{{ $catalogs->nextPageUrl() }}"><i class="fas fa-chevron-right"></i></a>
-        @else
-        <span class="bc-page-btn disabled"><i class="fas fa-chevron-right"></i></span>
-        @endif
-    </div>
-    <div style="text-align:center;margin-top:0.5rem;font-size:0.75rem;color:var(--muted-foreground);">
-        Showing {{ $catalogs->firstItem() }}–{{ $catalogs->lastItem() }} of {{ $catalogs->total() }} catalogs
+            @foreach($catalogs->getUrlRange(1, $catalogs->lastPage()) as $page => $url)
+                @if(abs($page - $catalogs->currentPage()) <= 2 || $page === 1 || $page === $catalogs->lastPage())
+                <a class="bc-page-btn {{ $page == $catalogs->currentPage() ? 'active' : '' }}" href="{{ $url }}">{{ $page }}</a>
+                @elseif(abs($page - $catalogs->currentPage()) === 3)
+                <span class="bc-page-info">…</span>
+                @endif
+            @endforeach
+
+            @if($catalogs->hasMorePages())
+            <a class="bc-page-btn" href="{{ $catalogs->nextPageUrl() }}"><i class="fas fa-chevron-right"></i></a>
+            @else
+            <span class="bc-page-btn disabled"><i class="fas fa-chevron-right"></i></span>
+            @endif
+        </div>
     </div>
     @endif
 
