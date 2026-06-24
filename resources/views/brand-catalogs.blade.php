@@ -59,15 +59,7 @@
         letter-spacing: 0.07em; color: var(--muted-foreground);
         white-space: nowrap; flex-shrink: 0;
     }
-    .bc-brand-select {
-        flex: 1; height: 36px; padding: 0 0.875rem;
-        background: var(--muted); border: 1.5px solid transparent;
-        border-radius: 8px; font-family: var(--p-font-family-sans);
-        font-size: 0.85rem; font-weight: 500; color: var(--foreground);
-        cursor: pointer; outline: none; transition: all 0.15s;
-        max-width: 280px;
-    }
-    .bc-brand-select:focus, .bc-brand-select:hover { border-color: var(--primary); }
+    .bc-brand-bar .form-select { max-width: 280px; width: auto; flex: 1; }
     .bc-brand-bar-clear {
         font-size: 0.78rem; font-weight: 600; color: var(--muted-foreground);
         text-decoration: none; white-space: nowrap; flex-shrink: 0;
@@ -172,7 +164,7 @@
     <!-- Brand filter -->
     <div class="bc-brand-bar anim-up d2">
         <span class="bc-brand-bar-label"><i class="fas fa-tag" style="margin-right:0.375rem;"></i>Brand</span>
-        <select class="bc-brand-select" onchange="filterByBrand(this.value)">
+        <select class="form-select" onchange="filterByBrand(this.value)">
             <option value="">All brands</option>
             @foreach($brands as $brand)
             <option value="{{ $brand->id }}" {{ $brandId == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
