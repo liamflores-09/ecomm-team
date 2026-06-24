@@ -22,10 +22,11 @@ class BrandCatalogController extends Controller
         $query = BrandCatalog::with('brand')->latest();
         if ($brandId) {
             $query->where('brand_id', $brandId);
-        } elseif ($classification) {
+        }
+        if ($classification) {
             $query->whereHas('brand', fn($q) => $q->where('classification', $classification));
         }
-        $catalogs = $query->get();
+        $catalogs = $query->paginate(6)->appends($request->only(['classification', 'brand_id']));
         $selectedBrand = $brandId ? Brand::find($brandId) : null;
 
         return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification', 'brandId', 'selectedBrand'));
