@@ -47,16 +47,33 @@
     .bc-empty { text-align: center; padding: 3rem; color: var(--muted-foreground); }
     .bc-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; color: var(--border); }
 
-    .bc-brand-select {
-        height: 34px; padding: 0 0.75rem;
+    .bc-brand-bar {
+        display: flex; align-items: center; gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 1rem;
         background: var(--card); border: 1px solid var(--border-light);
-        border-radius: 9999px; font-family: var(--p-font-family-sans);
-        font-size: 0.8rem; font-weight: 600; color: var(--foreground);
-        cursor: pointer; outline: none; transition: border-color 0.15s;
-        margin-left: auto; flex-shrink: 0;
+        border-radius: 10px;
     }
-    .bc-brand-select:focus, .bc-brand-select:hover { border-color: var(--border); }
-    .bc-brand-select.has-value { background: var(--primary); border-color: var(--primary); color: white; }
+    .bc-brand-bar-label {
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.07em; color: var(--muted-foreground);
+        white-space: nowrap; flex-shrink: 0;
+    }
+    .bc-brand-select {
+        flex: 1; height: 36px; padding: 0 0.875rem;
+        background: var(--muted); border: 1.5px solid transparent;
+        border-radius: 8px; font-family: var(--p-font-family-sans);
+        font-size: 0.85rem; font-weight: 500; color: var(--foreground);
+        cursor: pointer; outline: none; transition: all 0.15s;
+        max-width: 280px;
+    }
+    .bc-brand-select:focus, .bc-brand-select:hover { border-color: var(--primary); }
+    .bc-brand-bar-clear {
+        font-size: 0.78rem; font-weight: 600; color: var(--muted-foreground);
+        text-decoration: none; white-space: nowrap; flex-shrink: 0;
+        transition: color 0.15s;
+    }
+    .bc-brand-bar-clear:hover { color: var(--foreground); }
 
     .bc-pagination { display: flex; align-items: center; justify-content: center; gap: 0.375rem; margin-top: 1.5rem; flex-wrap: wrap; }
     .bc-page-btn {
@@ -140,23 +157,32 @@
     <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
-    <!-- Filter bar: classification tabs + brand select -->
+    <!-- Classification tabs -->
     <div class="bc-filter-bar anim-up d1">
         <a href="{{ route('brand-catalogs', $brandId ? ['brand_id' => $brandId] : []) }}"
            class="bc-filter-tab {{ !$classification ? 'active' : '' }}">All</a>
-        <a href="{{ route('brand-catalogs', array_merge(['classification' => 'Tech'],       $brandId ? ['brand_id' => $brandId] : [])) }}"
-           class="bc-filter-tab tech     {{ $classification === 'Tech'            ? 'active' : '' }}">Tech</a>
+        <a href="{{ route('brand-catalogs', array_merge(['classification' => 'Tech'], $brandId ? ['brand_id' => $brandId] : [])) }}"
+           class="bc-filter-tab tech {{ $classification === 'Tech' ? 'active' : '' }}">Tech</a>
         <a href="{{ route('brand-catalogs', array_merge(['classification' => 'Design/Consumer'], $brandId ? ['brand_id' => $brandId] : [])) }}"
            class="bc-filter-tab consumer {{ $classification === 'Design/Consumer' ? 'active' : '' }}">Design / Consumer</a>
-        <a href="{{ route('brand-catalogs', array_merge(['classification' => 'Both'],       $brandId ? ['brand_id' => $brandId] : [])) }}"
-           class="bc-filter-tab both     {{ $classification === 'Both'            ? 'active' : '' }}">Both</a>
+        <a href="{{ route('brand-catalogs', array_merge(['classification' => 'Both'], $brandId ? ['brand_id' => $brandId] : [])) }}"
+           class="bc-filter-tab both {{ $classification === 'Both' ? 'active' : '' }}">Both</a>
+    </div>
 
-        <select class="bc-brand-select {{ $brandId ? 'has-value' : '' }}" onchange="filterByBrand(this.value)">
-            <option value="">All Brands</option>
+    <!-- Brand filter -->
+    <div class="bc-brand-bar anim-up d2">
+        <span class="bc-brand-bar-label"><i class="fas fa-tag" style="margin-right:0.375rem;"></i>Brand</span>
+        <select class="bc-brand-select" onchange="filterByBrand(this.value)">
+            <option value="">All brands</option>
             @foreach($brands as $brand)
             <option value="{{ $brand->id }}" {{ $brandId == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
             @endforeach
         </select>
+        @if($brandId)
+        <a href="{{ route('brand-catalogs', $classification ? ['classification' => $classification] : []) }}" class="bc-brand-bar-clear">
+            <i class="fas fa-times" style="margin-right:0.25rem;"></i>Clear
+        </a>
+        @endif
     </div>
 
     @if($catalogs->isEmpty())
