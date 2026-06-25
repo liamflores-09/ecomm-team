@@ -17,6 +17,7 @@
             <li><a href="{{ route('admin.reports') }}" class="{{ $active === 'admin.reports' ? 'active' : '' }}"><i class="fas fa-chart-pie"></i> Reports</a></li>
             <li><a href="{{ route('admin.brands') }}" class="{{ $active === 'admin.brands' ? 'active' : '' }}"><i class="fas fa-tag"></i> Brands</a></li>
             <li><a href="{{ route('brand-catalogs') }}" class="{{ $active === 'brand-catalogs' ? 'active' : '' }}" style="padding-left:2.25rem;"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
+            <li><a href="{{ route('calendar') }}" class="{{ $active === 'calendar' ? 'active' : '' }}"><i class="fas fa-calendar-days"></i> Calendar</a></li>
         @else
             <li><a href="{{ route('dashboard') }}" class="{{ $active === 'dashboard' ? 'active' : '' }}"><i class="fas fa-grip"></i> Dashboard</a></li>
             @if(Auth::user()->role === 'content')
@@ -32,6 +33,8 @@
             <li><a href="{{ route('data-gathering') }}" class="{{ $active === 'data-gathering' ? 'active' : '' }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
             @endif
             <li><a href="{{ route('price-calculator') }}" class="{{ $active === 'price-calculator' ? 'active' : '' }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
+
+            <li><a href="{{ route('calendar') }}" class="{{ $active === 'calendar' ? 'active' : '' }}"><i class="fas fa-calendar-days"></i> Calendar</a></li>
 
             <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li><a href="{{ route('team') }}" class="{{ $active === 'team' ? 'active' : '' }}"><i class="fas fa-users"></i> The Team</a></li>

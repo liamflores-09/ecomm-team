@@ -424,27 +424,53 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-color: var(--white);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-color: var(--muted);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            padding: 8px 36px 8px 12px;
+            background-position: right 0.75rem center;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 0 2.25rem 0 0.875rem;
+            height: 40px;
             font-family: var(--p-font-family-sans);
             font-size: 0.875rem;
             font-weight: 500;
-            color: var(--foreground);
+            color: var(--fg);
             cursor: pointer;
-            transition: border-color 0.15s, box-shadow 0.15s;
+            transition: all 0.15s;
             width: 100%;
-            line-height: 1.5;
         }
-        select:hover  { border-color: var(--border-strong); }
-        select:focus  { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(87,87,248,0.12); }
+        select:hover  { border-color: var(--primary); }
+        select:focus  { outline: none; border-color: var(--primary); background-color: var(--white); }
         select option { padding: 8px 12px; font-weight: 500; }
 
         /* Animations */
+        /* App Dropdown (x-select component) */
+        .app-dd { position: relative; }
+        .app-dd .dd-trigger {
+            display: flex; align-items: center; gap: 0.5rem; width: 100%; height: 40px;
+            padding: 0 0.75rem; background: var(--muted); border: 2px solid transparent;
+            border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.875rem;
+            font-weight: 500; color: var(--fg); cursor: pointer; transition: all 0.15s; user-select: none;
+        }
+        .app-dd .dd-trigger:hover,
+        .app-dd.open .dd-trigger { border-color: var(--primary); background: var(--white); }
+        .app-dd .dd-arrow { margin-left: auto; font-size: 0.6rem; color: var(--gray-400); transition: transform 0.2s; flex-shrink: 0; }
+        .app-dd.open .dd-arrow { transform: rotate(180deg); }
+        .app-dd .dd-menu {
+            display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 100%;
+            background: var(--white); border: 2px solid var(--border); border-radius: 8px;
+            z-index: 200; max-height: 240px; overflow-y: auto; padding: 0.25rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .app-dd.open .dd-menu { display: block; animation: fadeInUp 0.15s ease-out; }
+        .app-dd .dd-item {
+            padding: 0.5rem 0.625rem; border-radius: 6px; font-family: var(--p-font-family-sans);
+            font-size: 0.875rem; font-weight: 500; color: var(--fg); cursor: pointer; transition: background 0.1s;
+        }
+        .app-dd .dd-item:hover { background: var(--muted); }
+        .app-dd .dd-item.selected { background: var(--primary); color: white; }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .anim-up { animation: fadeInUp 0.25s ease-out both; }
@@ -553,6 +579,35 @@
         .user-menu-item.danger:hover { background: #fef2f2; }
         .user-menu-divider { height: 1px; background: var(--border-light); margin: 0.25rem 0; }
         @media (max-width: 768px) { .nav-user-info { display: none; } .user-menu-chevron { display: none; } }
+
+        /* ── Toast notifications ─────────────────────────────── */
+        .app-toast-wrap {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+            display: flex; flex-direction: column; align-items: flex-end;
+            gap: 0.5rem; pointer-events: none;
+        }
+        .app-toast-item {
+            display: flex; align-items: center; gap: 0.625rem;
+            padding: 0.75rem 1rem; border-radius: 10px;
+            min-width: 240px; max-width: 340px;
+            background: var(--card); border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+            font-family: var(--p-font-family-sans); font-size: 0.875rem;
+            font-weight: 500; color: var(--fg); pointer-events: all;
+            animation: toastIn 0.2s ease-out both;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .app-toast-item.t-success { border-left: 3px solid #10b981; }
+        .app-toast-item.t-error   { border-left: 3px solid #f43f5e; }
+        .app-toast-item.t-warning { border-left: 3px solid #f59e0b; }
+        .app-toast-item.t-info    { border-left: 3px solid #0ea5e9; }
+        .app-toast-item .t-icon   { font-size: 0.9rem; flex-shrink: 0; }
+        .app-toast-item.t-success .t-icon { color: #10b981; }
+        .app-toast-item.t-error   .t-icon { color: #f43f5e; }
+        .app-toast-item.t-warning .t-icon { color: #f59e0b; }
+        .app-toast-item.t-info    .t-icon { color: #0ea5e9; }
+        .app-toast-item.t-hiding  { opacity: 0; transform: translateX(14px); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
     </style>
     @yield('styles')
 </head>
@@ -840,6 +895,20 @@
         if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m) { closeModal(m.id); });
     });
 
+    function showToast(message, type) {
+        var icons = { success: 'fas fa-circle-check', error: 'fas fa-circle-xmark', warning: 'fas fa-triangle-exclamation', info: 'fas fa-circle-info' };
+        type = type || 'success';
+        var wrap = document.getElementById('appToastWrap');
+        var item = document.createElement('div');
+        item.className = 'app-toast-item t-' + type;
+        item.innerHTML = '<i class="' + (icons[type] || icons.info) + ' t-icon"></i><span>' + message + '</span>';
+        wrap.appendChild(item);
+        setTimeout(function() {
+            item.classList.add('t-hiding');
+            setTimeout(function() { item.remove(); }, 220);
+        }, 3500);
+    }
+
     var _confirmCb = null;
     function showConfirm(title, message, label, onConfirm) {
         document.getElementById('confirmTitle').textContent   = title;
@@ -853,6 +922,9 @@
         if (_confirmCb) { _confirmCb(); _confirmCb = null; }
     });
     </script>
+
+    <!-- Toast container -->
+    <div id="appToastWrap" class="app-toast-wrap"></div>
 
     <!-- Global Confirm Dialog -->
     <div class="modal-overlay" id="confirmModal">
@@ -1006,6 +1078,46 @@
     })();
     </script>
     @endif
+
+    <script>
+    // App Dropdown (x-select component)
+    function appDdToggle(uid) {
+        var dd = document.getElementById(uid);
+        var isOpen = dd.classList.contains('open');
+        document.querySelectorAll('.app-dd.open').forEach(function(d) { d.classList.remove('open'); });
+        if (!isOpen) dd.classList.add('open');
+    }
+    function appDdSelect(uid, val, label) {
+        var dd = document.getElementById(uid);
+        dd.classList.remove('open');
+        document.getElementById(uid + '-label').textContent = label;
+        dd.querySelector('input[type="hidden"]').value = val;
+        dd.querySelectorAll('.dd-item').forEach(function(item) {
+            item.classList.toggle('selected', item.dataset.value == val);
+        });
+        var cb = dd.dataset.onchange;
+        if (cb) (new Function('value', cb))(val);
+    }
+    function appDdSetValue(inputId, val) {
+        var input = document.getElementById(inputId);
+        if (!input) return;
+        var dd = input.closest('.app-dd');
+        if (!dd) return;
+        input.value = val;
+        var item = dd.querySelector('.dd-item[data-value="' + val + '"]');
+        if (item) {
+            document.getElementById(dd.id + '-label').textContent = item.textContent.trim();
+            dd.querySelectorAll('.dd-item').forEach(function(i) {
+                i.classList.toggle('selected', i.dataset.value == val);
+            });
+        }
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.app-dd')) {
+            document.querySelectorAll('.app-dd.open').forEach(function(d) { d.classList.remove('open'); });
+        }
+    });
+    </script>
 
     @yield('scripts')
 </body>
