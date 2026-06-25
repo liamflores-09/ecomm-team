@@ -6,6 +6,9 @@ use App\Models\CalendarCategory;
 use App\Models\CalendarEvent;
 use App\Models\CalendarTask;
 use App\Models\User;
+use App\Notifications\CalendarEventNotification;
+use App\Notifications\CalendarTaskNotification;
+use App\Notifications\CalendarTaskCompletedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -128,6 +131,15 @@ class CalendarController extends Controller
             $event->attendees()->sync($data['attendees']);
         }
 
+        // Notify attendees (or everyone if no attendees set), excluding creator
+        $event->load('attendees');
+        $toNotify = $event->attendees->isNotEmpty()
+            ? $event->attendees->where('id', '!=', Auth::id())
+            : User::where('id', '!=', Auth::id())->get();
+
+        $creator = Auth::user();
+        $toNotify->each(fn($u) => $u->notify(new CalendarEventNotification($event, $creator)));
+
         return response()->json(['success' => true, 'id' => $event->id]);
     }
 
@@ -187,6 +199,16 @@ class CalendarController extends Controller
                 'created_by'    => Auth::id(),
             ]);
         }
+
+        // Notify users with the assigned role + managers, excluding creator
+        $creator = Auth::user();
+        User::where(function ($q) use ($task) {
+                $q->where('role', $task->assigned_role)
+                  ->orWhere('role', 'manager');
+            })
+            ->where('id', '!=', $creator->id)
+            ->get()
+            ->each(fn($u) => $u->notify(new CalendarTaskNotification($task, $creator)));
 
         return response()->json(['success' => true, 'id' => $task->id]);
     }
@@ -250,12 +272,32 @@ class CalendarController extends Controller
         $newStatus = $task->status === 'done' ? 'pending' : 'done';
         $task->update(['status' => $newStatus]);
 
-        // If this is a subtask, check if all siblings are done → auto-complete parent
+        $completedTask = null;
+
         if ($task->parent_id) {
-            $parent   = $task->parent;
-            $siblings = $parent->subtasks;
-            $allDone  = $siblings->every(fn($s) => $s->status === 'done');
+            // Subtask — check if all siblings done → auto-complete parent
+            $parent  = $task->parent;
+            $allDone = $parent->subtasks->every(fn($s) => $s->status === 'done');
             $parent->update(['status' => $allDone ? 'done' : 'pending']);
+
+            if ($allDone) {
+                $completedTask = $parent; // notify about parent completing
+            }
+        } elseif ($newStatus === 'done') {
+            $completedTask = $task;
+        }
+
+        // Notify managers + creator (if different) when a parent task is completed
+        if ($completedTask) {
+            $actor = Auth::user();
+            $recipients = User::where(function ($q) use ($completedTask, $actor) {
+                    $q->where('role', 'manager')
+                      ->orWhere('id', $completedTask->created_by);
+                })
+                ->where('id', '!=', $actor->id)
+                ->get();
+
+            $recipients->each(fn($u) => $u->notify(new CalendarTaskCompletedNotification($completedTask, $actor)));
         }
 
         return response()->json(['success' => true, 'status' => $newStatus]);
