@@ -19,6 +19,8 @@ class BrandCatalogController extends Controller
         $classification = $request->input('classification');
         $brandId = $request->input('brand_id');
 
+        $search = $request->input('search');
+
         $query = BrandCatalog::with('brand')->latest();
         if ($brandId) {
             $query->where('brand_id', $brandId);
@@ -26,10 +28,17 @@ class BrandCatalogController extends Controller
         if ($classification) {
             $query->whereHas('brand', fn($q) => $q->where('classification', $classification));
         }
-        $catalogs = $query->paginate(6)->appends($request->only(['classification', 'brand_id']));
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('notes', 'like', '%' . $search . '%')
+                  ->orWhereHas('brand', fn($bq) => $bq->where('name', 'like', '%' . $search . '%'));
+            });
+        }
+        $catalogs = $query->paginate(6)->appends($request->only(['classification', 'brand_id', 'search']));
         $selectedBrand = $brandId ? Brand::find($brandId) : null;
 
-        return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification', 'brandId', 'selectedBrand'));
+        return view('brand-catalogs', compact('user', 'brands', 'catalogs', 'classification', 'brandId', 'selectedBrand', 'search'));
     }
 
     public function store(Request $request)

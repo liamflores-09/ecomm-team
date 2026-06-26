@@ -176,6 +176,7 @@
             <button class="filter-pill" onclick="filterByRole('head', this)">Ecomm Head</button>
             <button class="filter-pill" onclick="filterByRole('manager', this)">Manager</button>
             <button class="filter-pill" onclick="filterByRole('lead', this)">Lead</button>
+            <button class="filter-pill" onclick="filterByRole('analyst', this)">Analyst</button>
             <button class="filter-pill" onclick="filterByRole('content', this)">Content</button>
             <button class="filter-pill" onclick="filterByRole('graphics', this)">Graphics</button>
             <button class="filter-pill" onclick="filterByRole('backend', this)">Backend</button>

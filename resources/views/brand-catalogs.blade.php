@@ -59,7 +59,18 @@
         letter-spacing: 0.07em; color: var(--muted-foreground);
         white-space: nowrap; flex-shrink: 0;
     }
-    .bc-brand-bar .form-select { max-width: 280px; width: auto; flex: 1; }
+    .bc-brand-bar .form-select { max-width: 220px; width: auto; }
+    .bc-search-wrap { position: relative; flex: 1; min-width: 0; }
+    .bc-search-wrap i { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); font-size: 0.7rem; pointer-events: none; }
+    .bc-search {
+        width: 100%; height: 38px; padding: 0 0.75rem 0 2rem; box-sizing: border-box;
+        background: var(--muted); border: 1.5px solid transparent; border-radius: 8px;
+        font-family: inherit; font-size: 0.82rem; color: var(--fg); outline: none;
+        transition: border-color 0.15s, background 0.15s;
+    }
+    .bc-search:focus { border-color: var(--primary); background: var(--card); }
+    .bc-search::placeholder { color: var(--muted-foreground); }
+    .bc-brand-bar-div { width: 1px; height: 20px; background: var(--border-light); flex-shrink: 0; }
     .bc-brand-bar-clear {
         font-size: 0.78rem; font-weight: 600; color: var(--muted-foreground);
         text-decoration: none; white-space: nowrap; flex-shrink: 0;
@@ -163,21 +174,28 @@
            class="bc-filter-tab both {{ $classification === 'Both' ? 'active' : '' }}">Both</a>
     </div>
 
-    <!-- Brand filter -->
-    <div class="bc-brand-bar anim-up d2">
+    <!-- Search + Brand filter bar -->
+    <form method="GET" action="{{ route('brand-catalogs') }}" class="bc-brand-bar anim-up d2" id="bcFilterForm">
+        @if($classification)<input type="hidden" name="classification" value="{{ $classification }}">@endif
+        <div class="bc-search-wrap">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" name="search" class="bc-search" placeholder="Search catalogs, brand, or notes…"
+                value="{{ $search ?? '' }}" oninput="debounceSearch()" id="bcSearch">
+        </div>
+        <div class="bc-brand-bar-div"></div>
         <span class="bc-brand-bar-label"><i class="fas fa-tag" style="margin-right:0.375rem;"></i>Brand</span>
-        <select class="form-select" onchange="filterByBrand(this.value)">
+        <select class="form-select" name="brand_id" onchange="this.form.submit()">
             <option value="">All brands</option>
             @foreach($brands as $brand)
             <option value="{{ $brand->id }}" {{ $brandId == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
             @endforeach
         </select>
-        @if($brandId)
+        @if($brandId || $search)
         <a href="{{ route('brand-catalogs', $classification ? ['classification' => $classification] : []) }}" class="bc-brand-bar-clear">
             <i class="fas fa-times" style="margin-right:0.25rem;"></i>Clear
         </a>
         @endif
-    </div>
+    </form>
 
     @if($catalogs->isEmpty())
     <div class="bc-empty anim-up d2">
@@ -355,13 +373,12 @@
 </div>
 
 <script>
-function filterByBrand(val) {
-    var base = '{{ route("brand-catalogs") }}';
-    var cls  = '{{ $classification ?? "" }}';
-    var params = [];
-    if (val)  params.push('brand_id=' + val);
-    if (cls)  params.push('classification=' + encodeURIComponent(cls));
-    window.location.href = base + (params.length ? '?' + params.join('&') : '');
+var _searchTimer = null;
+function debounceSearch() {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(function() {
+        document.getElementById('bcFilterForm').submit();
+    }, 400);
 }
 
 function handleFileChange(input, areaId, labelId) {
