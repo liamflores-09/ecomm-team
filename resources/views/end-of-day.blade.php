@@ -4,7 +4,7 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/><path d='M8 14h.01'/><path d='M12 14h.01'/><path d='M16 14h.01'/><path d='M8 18h.01'/><path d='M12 18h.01'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235757f8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/><path d='M8 14h.01'/><path d='M12 14h.01'/><path d='M16 14h.01'/><path d='M8 18h.01'/><path d='M12 18h.01'/></svg>">
 @endsection
 
 @section('styles')
@@ -64,7 +64,7 @@
     .form-group.attendance-row {
         grid-column: 1 / -1;
     }
-    .form-group.attendance-row .form-select {
+    .form-group.attendance-row select {
         max-width: 240px;
     }
 
@@ -105,29 +105,7 @@
         color: var(--gray-300);
     }
 
-    .form-select {
-        height: 44px;
-        padding: 0 0.875rem;
-        background: var(--muted);
-        border: 2px solid transparent;
-        border-radius: 8px;
-        font-family: var(--p-font-family-sans);
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--fg);
-        outline: none;
-        cursor: pointer;
-        transition: all 0.15s;
-        width: 100%;
-        appearance: auto;
-    }
-
-    .form-select:focus {
-        border-color: var(--primary);
-        background: var(--white);
-    }
-
-    .form-textarea {
+.form-textarea {
         padding: 0.75rem 0.875rem;
         background: var(--muted);
         border: 2px solid transparent;
@@ -181,7 +159,7 @@
     }
 
     .logs-table tbody tr:hover td {
-        background: #F8FAFC;
+        background: var(--muted);
     }
 
     .logs-table .num {
@@ -290,14 +268,12 @@
                     <!-- Attendance -->
                     <div class="form-group attendance-row">
                         <label class="form-label">Attendance</label>
-                        <select name="attendance" class="form-select">
-                            <option value="">— Present —</option>
-                            <option value="HD" {{ $existingLog && $existingLog->attendance === 'HD' ? 'selected' : '' }}>Half Day (HD)</option>
-                            <option value="VL" {{ $existingLog && $existingLog->attendance === 'VL' ? 'selected' : '' }}>Vacation Leave (VL)</option>
-                            <option value="SL" {{ $existingLog && $existingLog->attendance === 'SL' ? 'selected' : '' }}>Sick Leave (SL)</option>
-                            <option value="A" {{ $existingLog && $existingLog->attendance === 'A' ? 'selected' : '' }}>Absent (A)</option>
-                            <option value="UT" {{ $existingLog && $existingLog->attendance === 'UT' ? 'selected' : '' }}>Unpaid (UT)</option>
-                        </select>
+                        <x-select
+                            name="attendance"
+                            :options="['' => '— Present —', 'HD' => 'Half Day (HD)', 'VL' => 'Vacation Leave (VL)', 'SL' => 'Sick Leave (SL)', 'A' => 'Absent (A)', 'UT' => 'Unpaid (UT)']"
+                            :selected="$existingLog?->attendance ?? ''"
+                            placeholder="— Present —"
+                        />
                     </div>
 
                     <!-- Task counts — 5 columns -->
@@ -418,11 +394,11 @@
                 <!-- Column Overview -->
                 <h6 style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 0.75rem;">Column Overview</h6>
                 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem;">
-                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">New SKU</div>
-                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Variation SKU</div>
-                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Adv. Data Gathering</div>
-                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Update Listings</div>
-                    <div style="padding: 0.75rem; text-align: center; background: var(--fg); color: white; font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Other</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: var(--card); font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">New SKU</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: var(--card); font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Variation SKU</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: var(--card); font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Adv. Data Gathering</div>
+                    <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); background: var(--fg); color: var(--card); font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Update Listings</div>
+                    <div style="padding: 0.75rem; text-align: center; background: var(--fg); color: var(--card); font-weight: 800; font-size: 0.65rem; text-transform: uppercase;">Other</div>
                     <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Parent/Single</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">New product posted</span></div>
                     <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Child/Variant</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Variation posted</span></div>
                     <div style="padding: 0.75rem; text-align: center; border-right: 2px solid var(--border); border-top: 2px solid var(--border);"><strong style="font-size: 0.7rem;">Data Gathered</strong><br><span style="font-size: 0.6rem; color: var(--gray-400);">Research completed</span></div>
@@ -435,7 +411,7 @@
                     <!-- New SKU & Variation -->
                     <div style="padding: 1rem; border-right: 2px solid var(--border); border-bottom: 2px solid var(--border);">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
-                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-box"></i></div>
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--card); font-size: 0.7rem;"><i class="fas fa-box"></i></div>
                             <strong style="font-size: 0.7rem; text-transform: uppercase;">New SKU & Variation SKU</strong>
                         </div>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
@@ -448,7 +424,7 @@
                     <!-- Advance Data Gathering -->
                     <div style="padding: 1rem; border-bottom: 2px solid var(--border);">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
-                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-magnifying-glass"></i></div>
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--card); font-size: 0.7rem;"><i class="fas fa-magnifying-glass"></i></div>
                             <strong style="font-size: 0.7rem; text-transform: uppercase;">Advance Data Gathering</strong>
                         </div>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
@@ -461,7 +437,7 @@
                     <!-- Update Listings -->
                     <div style="padding: 1rem; border-right: 2px solid var(--border);">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
-                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-pencil"></i></div>
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--card); font-size: 0.7rem;"><i class="fas fa-pencil"></i></div>
                             <strong style="font-size: 0.7rem; text-transform: uppercase;">Update Listings</strong>
                         </div>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
@@ -474,7 +450,7 @@
                     <!-- Other & Remarks -->
                     <div style="padding: 1rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg);">
-                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;"><i class="fas fa-list-check"></i></div>
+                            <div style="width: 28px; height: 28px; background: var(--fg); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--card); font-size: 0.7rem;"><i class="fas fa-list-check"></i></div>
                             <strong style="font-size: 0.7rem; text-transform: uppercase;">Other & Remarks</strong>
                         </div>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--gray-600);">
@@ -491,12 +467,12 @@
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
                         <thead>
                             <tr>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">New SKU</th>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Var. SKU</th>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Data Gather</th>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Update</th>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Other</th>
-                                <th style="background: var(--fg); color: white; padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Remarks</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">New SKU</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Var. SKU</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Data Gather</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Update</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Other</th>
+                                <th style="background: var(--fg); color: var(--card); padding: 0.625rem; font-size: 0.65rem; text-transform: uppercase; text-align: left;">Remarks</th>
                             </tr>
                         </thead>
                         <tbody>

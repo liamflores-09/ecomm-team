@@ -4,7 +4,7 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='2' width='16' height='20' rx='2'/><line x1='8' y1='6' x2='16' y2='6'/><line x1='16' y1='14' x2='16' y2='14.01'/><line x1='12' y1='14' x2='12' y2='14.01'/><line x1='8' y1='14' x2='8' y2='14.01'/><line x1='16' y1='18' x2='16' y2='18.01'/><line x1='12' y1='18' x2='12' y2='18.01'/><line x1='8' y1='18' x2='8' y2='18.01'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235757f8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='2' width='16' height='20' rx='2'/><line x1='8' y1='6' x2='16' y2='6'/><line x1='16' y1='14' x2='16' y2='14.01'/><line x1='12' y1='14' x2='12' y2='14.01'/><line x1='8' y1='14' x2='8' y2='14.01'/><line x1='16' y1='18' x2='16' y2='18.01'/><line x1='12' y1='18' x2='12' y2='18.01'/><line x1='8' y1='18' x2='8' y2='18.01'/></svg>">
 @endsection
 
 @section('styles')
@@ -111,6 +111,8 @@
         gap: 0.75rem;
         margin-bottom: 1rem;
         flex-wrap: wrap;
+        position: relative;
+        z-index: 10;
     }
 
     .toolbar-left {
@@ -524,7 +526,7 @@
                 <i class="fas fa-search" style="color: var(--gray-300); font-size: 0.8rem;"></i>
                 <input type="text" id="searchInput" placeholder="Search by Group, SKU, or Price..." oninput="handleSearch(this.value)">
             </div>
-            <select class="filter-select" id="groupFilterSelect" onchange="handleGroupFilter(this.value)" style="display: none;">
+            <select class="form-select" id="groupFilterSelect" onchange="handleGroupFilter(this.value)" style="display: none; width: auto;">
                 <option value="all">All Groups</option>
             </select>
             <div class="custom-dropdown" id="groupDropdown">

@@ -3,6 +3,10 @@
 @section('title', 'Brands — Admin')
 @section('has-sidebar', true)
 
+@section('favicon')
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235757f8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z'/><line x1='7' y1='7' x2='7.01' y2='7'/></svg>">
+@endsection
+
 @section('styles')
 <style>
     /* KPI cards (matching dashboard format) */
@@ -85,10 +89,9 @@
     /* Modal form fields */
     .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
     .form-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); }
-    .form-input, .form-select { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
-    .form-input:focus, .form-select:focus { border-color: var(--primary); background: var(--white); }
+    .form-input { height: 44px; padding: 0 0.875rem; background: var(--muted); border: 2px solid transparent; border-radius: 8px; font-family: var(--p-font-family-sans); font-size: 0.9rem; font-weight: 500; color: var(--fg); outline: none; transition: all 0.15s; width: 100%; }
+    .form-input:focus { border-color: var(--primary); background: var(--white); }
     .form-input::placeholder { color: var(--gray-300); }
-    .form-select { appearance: none; cursor: pointer; }
     .file-upload-area { border: 1.5px dashed var(--border-light); border-radius: 8px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: border-color 0.15s; background: var(--muted); }
     .file-upload-area:hover { border-color: var(--primary); }
     .file-upload-area input[type="file"] { display: none; }
@@ -286,12 +289,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Classification</label>
-                    <select name="classification" id="brandClassification" class="form-select">
-                        <option value="">— Select —</option>
-                        <option value="Tech">Tech</option>
-                        <option value="Design/Consumer">Design / Consumer</option>
-                        <option value="Both">Both</option>
-                    </select>
+                    <x-select
+                        name="classification"
+                        id="brandClassification"
+                        :options="['' => '— Select —', 'Tech' => 'Tech', 'Design/Consumer' => 'Design / Consumer', 'Both' => 'Both']"
+                        :selected="old('classification', '')"
+                    />
                 </div>
                 <div class="form-group">
                     <label class="form-label">Logo <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(image, max 2MB)</span></label>
@@ -379,7 +382,7 @@ function openAddBrand() {
     document.getElementById('brandForm').action = '{{ route("admin.brands.store") }}';
     document.getElementById('brandMethod').value = '';
     document.getElementById('brandForm').reset();
-    document.getElementById('brandClassification').value = '';
+    appDdSetValue('brandClassification', '');
     document.getElementById('brandLogoArea').classList.remove('has-file');
     document.getElementById('brandLogoLabel').textContent = 'Click to choose logo';
     openModal('brandModal');
@@ -392,7 +395,7 @@ function openEditBrand(btn) {
     document.getElementById('brandMethod').value = 'PUT';
     document.getElementById('brandName').value = d.name;
     document.getElementById('brandDescription').value = d.description;
-    document.getElementById('brandClassification').value = d.classification || '';
+    appDdSetValue('brandClassification', d.classification || '');
     document.getElementById('brandLogo').value = '';
     if (d.logo) {
         document.getElementById('brandLogoArea').classList.add('has-file');

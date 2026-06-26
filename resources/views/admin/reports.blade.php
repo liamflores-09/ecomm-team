@@ -4,7 +4,7 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235757f8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21.21 15.89A10 10 0 118 2.83'/><path d='M22 12A10 10 0 0012 2v10z'/></svg>">
 @endsection
 
 @section('styles')
@@ -288,11 +288,12 @@
     <div class="rpt-controls anim-up d1">
         <span class="rpt-controls-label">Month</span>
         <div class="rpt-month-wrap">
-            <select onchange="window.location.href=updateParam('month', this.value)" style="margin:0;">
-                @foreach($availableMonths as $m)
-                <option value="{{ $m }}" {{ $month === $m ? 'selected' : '' }}>{{ \Carbon\Carbon::parse($m)->format('M Y') }}</option>
-                @endforeach
-            </select>
+            <x-select
+                name="month_select"
+                :options="collect($availableMonths)->mapWithKeys(fn($m) => [$m => \Carbon\Carbon::parse($m)->format('M Y')])->toArray()"
+                :selected="$month"
+                onchange="window.location.href=updateParam('month', value)"
+            />
         </div>
         <div class="rpt-divider"></div>
         <div class="rpt-tabs">
@@ -364,7 +365,7 @@
             <div class="rpt-role-grid">
                 @foreach($roleMonthTotals as $role => $rt)
                 @php $rc = $roleColorMap[$role] ?? '#6366f1'; @endphp
-                <div class="rpt-role-card" style="border-top:3px solid {{ $rc }};">
+                <div class="rpt-role-card" data-role="{{ $role }}" style="border-top:3px solid {{ $rc }};">
                     <div class="rpt-role-card-header">
                         <span class="role-badge {{ $role }}">{{ $roleNameMap[$role] ?? ucfirst($role) }}</span>
                         <a href="{{ route('admin.reports', ['role' => $role, 'month' => $month]) }}" class="rpt-role-link">
@@ -924,6 +925,31 @@
                 </div>
                 @endif
 
+                {{-- Task Breakdown Pie Charts --}}
+                @if($rdMonthlyMembers->count() && $rdMonthlyTotal > 0)
+                <div class="rpt-section-header" style="margin-bottom:0.75rem;">
+                    <div class="rpt-section-icon" style="background:{{ $rdColor }};"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Task Breakdown</h3>
+                    <div class="rpt-section-line"></div>
+                    <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">{{ \Carbon\Carbon::parse($month)->format('F Y') }}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
+                    @foreach(['t1','t2','t3','t4','t5'] as $pi => $ptk)
+                    @if((int)$rdMonthlyMembers->sum($ptk) > 0)
+                    <div class="rpt-chart-card">
+                        <div class="rpt-chart-header" style="padding:0.6rem 0.875rem;">
+                            <div class="rpt-chart-icon" style="background:{{ $taskColorMap[$pi] }};width:22px;height:22px;font-size:0.58rem;"><i class="fas fa-chart-pie"></i></div>
+                            <h4 style="font-size:0.75rem;">{{ $rdTaskLabels['task_'.($pi+1)] }}</h4>
+                        </div>
+                        <div class="rpt-chart-body">
+                            <div id="taskPie-{{ $role }}-{{ $pi }}" style="height:200px;"></div>
+                        </div>
+                    </div>
+                    @endif
+                    @endforeach
+                </div>
+                @endif
+
                 {{-- Team Performance (selected month) --}}
                 @if($rdMonthlyMembers->count())
                 <div class="rpt-section-header" style="margin-bottom:0.75rem;">
@@ -1048,6 +1074,34 @@
             $selectedMonthMembers = $memberMonthly->get($selectedMonthKey, collect())->sortByDesc('total');
             $totalMonthTasks      = $selectedMonthMembers->sum('total');
         @endphp
+
+        {{-- ══ SINGLE ROLE Monthly: Task Breakdown Pie Charts ══ --}}
+        @if($grandTotal > 0 && $selectedMonthMembers->count())
+        <div class="rpt-section anim-up d3">
+            <div class="rpt-section-header" style="margin-bottom:0.75rem;">
+                <div class="rpt-section-icon" style="background:var(--primary);"><i class="fas fa-chart-pie"></i></div>
+                <h3>Task Breakdown</h3>
+                <div class="rpt-section-line"></div>
+                <span style="font-size:0.7rem;color:var(--muted-foreground);font-weight:500;">{{ \Carbon\Carbon::parse($month)->format('F Y') }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+                @foreach(['t1','t2','t3','t4','t5'] as $pi => $ptk)
+                @if((int)$selectedMonthMembers->sum($ptk) > 0)
+                <div class="rpt-chart-card">
+                    <div class="rpt-chart-header" style="padding:0.6rem 0.875rem;">
+                        <div class="rpt-chart-icon" style="background:{{ $taskColorMap[$pi] }};width:22px;height:22px;font-size:0.58rem;"><i class="fas fa-chart-pie"></i></div>
+                        <h4 style="font-size:0.75rem;">{{ $taskLabelsMonthly['task_'.($pi+1)] }}</h4>
+                    </div>
+                    <div class="rpt-chart-body">
+                        <div id="taskPie-{{ $pi }}" style="height:200px;"></div>
+                    </div>
+                </div>
+                @endif
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         @if($selectedMonthMembers->count())
         <div class="rpt-section anim-up d4">
             <div class="rpt-section-header">
@@ -1165,6 +1219,9 @@ function switchRole(role) {
     document.querySelectorAll('.rpt-role-panel').forEach(function(p) {
         p.classList.toggle('active', p.dataset.role === role);
     });
+    document.querySelectorAll('.rpt-role-card').forEach(function(c) {
+        c.style.display = c.dataset.role === role ? '' : 'none';
+    });
     if (typeof _rptInits !== 'undefined' && _rptInits[role] && !_rptDone[role]) {
         _rptInits[role]();
         _rptDone[role] = true;
@@ -1237,6 +1294,16 @@ document.addEventListener('DOMContentLoaded', function() {
             $rdContribLabels = [];
             $rdContribSeries = [];
         }
+        // Monthly pie data for selected month
+        $rdSelMonthKeyJs = \Carbon\Carbon::parse($month)->format('Y-m');
+        $rdMonthMemsJs   = collect($rd['memberMonthly'] ?? [])->get($rdSelMonthKeyJs, collect())->sortByDesc('total');
+        $rdMonthTJs      = [
+            $rdMonthMemsJs->sum('t1'),
+            $rdMonthMemsJs->sum('t2'),
+            $rdMonthMemsJs->sum('t3'),
+            $rdMonthMemsJs->sum('t4'),
+            $rdMonthMemsJs->sum('t5'),
+        ];
     @endphp
     _rptInits['{{ $role }}'] = function() {
         var c = '{{ $rd['color'] }}';
@@ -1345,13 +1412,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).render();
             }
         }
+
+        // ── Task Breakdown Pie Charts ──
+        @foreach(['t1','t2','t3','t4','t5'] as $pi => $ptk)
+        @php
+            $ptNames = $rdMonthMemsJs->filter(fn($m) => (int)($m[$ptk] ?? 0) > 0)->pluck('first_name')->values()->toArray();
+            $ptData  = $rdMonthMemsJs->filter(fn($m) => (int)($m[$ptk] ?? 0) > 0)->pluck($ptk)->map(fn($v) => (int)$v)->values()->toArray();
+        @endphp
+        @if(count($ptData) > 0)
+        (function() {
+            var el = document.getElementById('taskPie-{{ $role }}-{{ $pi }}');
+            if (!el) return;
+            new ApexCharts(el, {
+                chart: { type:'donut', height:200, fontFamily:'Inter', foreColor:'#64748b', toolbar:{show:false} },
+                series: {!! json_encode($ptData) !!},
+                labels: {!! json_encode($ptNames) !!},
+                colors: ['#6366f1','#0ea5e9','#10b981','#f59e0b','#f43f5e','#8b5cf6','#ec4899','#14b8a6'],
+                legend: { position:'bottom', fontSize:'10px', fontWeight:'600', labels:{colors:'#64748b',useSeriesColors:true}, markers:{width:8,height:8,radius:2,strokeWidth:0}, itemMargin:{horizontal:4,vertical:1} },
+                dataLabels: { enabled:true, formatter:function(val){ return val.toFixed(0)+'%'; }, style:{fontSize:'9px',fontFamily:'Inter',fontWeight:'700'}, dropShadow:{enabled:false} },
+                plotOptions: { pie: { donut: { size:'58%', labels: { show:true, total: { show:true, label:'Total', color:'#64748b', fontSize:'11px', fontWeight:'700', formatter:function(w){ return w.globals.seriesTotals.reduce(function(a,b){return a+b;},0); } } } } } },
+                tooltip: { y:{ formatter:function(v){ return v+' tasks'; } } },
+                stroke: { width:2 }
+            }).render();
+        })();
+        @endif
+        @endforeach
     };
     @endforeach
     // init only the default active role immediately
     var _activeRoleBtn = document.querySelector('.rpt-role-nav-btn.active');
-    if (_activeRoleBtn && _rptInits[_activeRoleBtn.dataset.role]) {
-        _rptInits[_activeRoleBtn.dataset.role]();
-        _rptDone[_activeRoleBtn.dataset.role] = true;
+    if (_activeRoleBtn) {
+        var _initRole = _activeRoleBtn.dataset.role;
+        document.querySelectorAll('.rpt-role-card').forEach(function(c) {
+            c.style.display = c.dataset.role === _initRole ? '' : 'none';
+        });
+        if (_rptInits[_initRole]) {
+            _rptInits[_initRole]();
+            _rptDone[_initRole] = true;
+        }
     }
     @endif
 
@@ -1472,6 +1570,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     @endif
+
+    // ── Single Role Monthly: Task Breakdown Pie Charts ──
+    @foreach(['t1','t2','t3','t4','t5'] as $spi => $sptk)
+    @php
+        $spNames = ($selectedMonthMembers ?? collect())->filter(fn($m) => (int)($m[$sptk] ?? 0) > 0)->pluck('first_name')->values()->toArray();
+        $spData  = ($selectedMonthMembers ?? collect())->filter(fn($m) => (int)($m[$sptk] ?? 0) > 0)->pluck($sptk)->map(fn($v) => (int)$v)->values()->toArray();
+    @endphp
+    @if(count($spData) > 0)
+    (function() {
+        var el = document.getElementById('taskPie-{{ $spi }}');
+        if (!el) return;
+        new ApexCharts(el, {
+            chart: { type:'donut', height:200, fontFamily:'Inter', foreColor:'#64748b', toolbar:{show:false} },
+            series: {!! json_encode($spData) !!},
+            labels: {!! json_encode($spNames) !!},
+            colors: ['#6366f1','#0ea5e9','#10b981','#f59e0b','#f43f5e','#8b5cf6','#ec4899','#14b8a6'],
+            legend: { position:'bottom', fontSize:'10px', fontWeight:'600', labels:{colors:'#64748b',useSeriesColors:true}, markers:{width:8,height:8,radius:2,strokeWidth:0}, itemMargin:{horizontal:4,vertical:1} },
+            dataLabels: { enabled:true, formatter:function(val){ return val.toFixed(0)+'%'; }, style:{fontSize:'9px',fontFamily:'Inter',fontWeight:'700'}, dropShadow:{enabled:false} },
+            plotOptions: { pie: { donut: { size:'58%', labels: { show:true, total: { show:true, label:'Total', color:'#64748b', fontSize:'11px', fontWeight:'700', formatter:function(w){ return w.globals.seriesTotals.reduce(function(a,b){return a+b;},0); } } } } } },
+            tooltip: { y:{ formatter:function(v){ return v+' tasks'; } } },
+            stroke: { width:2 }
+        }).render();
+    })();
+    @endif
+    @endforeach
     @endif
 });
 </script>
