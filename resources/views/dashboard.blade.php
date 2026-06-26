@@ -208,9 +208,9 @@
     }
     .bento-ann-item:hover .bento-ann-chevron { opacity: 1; transform: translateX(2px); }
     .bento-ann-body {
-        flex: 1;
         font-size: 0.8rem; color: var(--muted-foreground); font-weight: 400;
-        line-height: 1.65; overflow: hidden;
+        line-height: 1.65; overflow: hidden; display: -webkit-box;
+        -webkit-line-clamp: 3; -webkit-box-orient: vertical;
     }
     .bento-ann-foot { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; padding-top: 0.75rem; }
     .bento-ann-avatar {
