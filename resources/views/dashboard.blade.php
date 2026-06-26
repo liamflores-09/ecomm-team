@@ -10,52 +10,55 @@
 @section('styles')
 <style>
     .welcome-banner {
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 2.5rem;
         position: relative;
         overflow: hidden;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
+        max-height: 300px;
         min-height: 140px;
+        transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1),
+                    padding 0.35s cubic-bezier(0.4,0,0.2,1),
+                    min-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                    border-radius 0.35s ease;
     }
-    .wb-content { position: relative; z-index: 3; }
+    .welcome-banner.collapsed {
+        max-height: 52px;
+        min-height: unset;
+        padding: 0 1.25rem;
+    }
+    .wb-content {
+        position: relative; z-index: 3;
+        transition: opacity 0.2s ease, transform 0.25s ease;
+        opacity: 1; transform: translateY(0);
+    }
+    .welcome-banner.collapsed .wb-content {
+        opacity: 0; transform: translateY(-6px); pointer-events: none;
+    }
     .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; font-weight: 700; }
     .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.9rem; margin: 0; }
     .wb-date {
         color: rgba(255,255,255,0.7);
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-top: 0.625rem;
+        font-size: 0.8rem; font-weight: 600; margin-top: 0.625rem;
     }
     .wb-avatar-zone {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 200px;
-        display: flex;
-        align-items: flex-end;
-        overflow: hidden;
-        pointer-events: none;
+        position: absolute; right: 0; top: 0; bottom: 0; width: 200px;
+        display: flex; align-items: flex-end; overflow: hidden; pointer-events: none;
+        transition: opacity 0.2s ease;
     }
+    .welcome-banner.collapsed .wb-avatar-zone { opacity: 0; }
     .wb-avatar {
-        height: 140px;
-        width: auto;
-        display: block;
-        position: relative;
-        z-index: 1;
-        margin-left: auto;
+        height: 140px; width: auto; display: block;
+        position: relative; z-index: 1; margin-left: auto;
     }
     .wb-fade {
-        position: absolute;
-        inset: 0;
+        position: absolute; inset: 0;
         background: linear-gradient(to right, var(--wb-color) 0%, transparent 70%);
         z-index: 2;
     }
-    @media (max-width: 480px) {
-        .wb-avatar-zone { display: none; }
-    }
+    @media (max-width: 480px) { .wb-avatar-zone { display: none; } }
 
     .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
     .section-divider .sd-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; background: var(--primary); font-size: 0.75rem; flex-shrink: 0; }
@@ -225,18 +228,20 @@
         width: 28px; height: 28px; border-radius: 7px;
         background: rgba(255,255,255,0.18); border: none; color: white;
         cursor: pointer; display: flex; align-items: center; justify-content: center;
-        font-size: 0.72rem; transition: background 0.15s;
+        font-size: 0.72rem; transition: background 0.15s, top 0.35s cubic-bezier(0.4,0,0.2,1);
     }
     .wb-toggle:hover { background: rgba(255,255,255,0.3); }
-    .welcome-banner.collapsed { min-height: unset; padding: 0.75rem 1rem; }
-    .welcome-banner.collapsed .wb-content,
-    .welcome-banner.collapsed .wb-avatar-zone { display: none; }
+    .wb-toggle i { transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
     .welcome-banner.collapsed .wb-toggle { top: 50%; transform: translateY(-50%); }
     .wb-collapsed-label {
-        display: none; color: rgba(255,255,255,0.85); font-size: 0.8rem;
-        font-weight: 600; flex: 1;
+        color: rgba(255,255,255,0.9); font-size: 0.82rem; font-weight: 700;
+        flex: 1; opacity: 0; transform: translateY(4px);
+        transition: opacity 0.25s ease 0.05s, transform 0.25s ease 0.05s;
+        pointer-events: none;
     }
-    .welcome-banner.collapsed .wb-collapsed-label { display: block; }
+    .welcome-banner.collapsed .wb-collapsed-label {
+        opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
 
     .bento-quick {
         grid-column: 2; grid-row: 1;
@@ -652,13 +657,14 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
     var banner = document.getElementById('welcomeBanner');
     var icon   = document.getElementById('wbToggleIcon');
     if (!banner) return;
-    if (localStorage.getItem('wb_hidden') === '1') {
-        banner.classList.add('collapsed');
-        icon.className = 'fas fa-chevron-down';
+    function applyState(collapsed) {
+        banner.classList.toggle('collapsed', collapsed);
+        icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
     }
+    applyState(localStorage.getItem('wb_hidden') === '1');
     window.toggleBanner = function() {
-        var collapsed = banner.classList.toggle('collapsed');
-        icon.className = collapsed ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+        var collapsed = !banner.classList.contains('collapsed');
+        applyState(collapsed);
         localStorage.setItem('wb_hidden', collapsed ? '1' : '0');
     };
 })();
