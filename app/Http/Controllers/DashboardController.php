@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\DailyLog;
+use App\Models\BrandCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,17 @@ class DashboardController extends Controller
             ->whereYear('date', now()->year)
             ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
 
+        // Analyst-specific: brand catalog stats
+        $catalogStats = null;
+        if ($user->role === 'analyst') {
+            $catalogStats = [
+                'total'     => BrandCatalog::count(),
+                'available' => BrandCatalog::where('status', 'available')->count(),
+                'upcoming'  => BrandCatalog::where('status', 'upcoming')->count(),
+                'seasonal'  => BrandCatalog::where('status', 'seasonal')->count(),
+            ];
+        }
+
         $teamLogsToday = DailyLog::where('date', $today)
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select('daily_logs.*', 'users.username', 'users.role')
@@ -47,7 +59,7 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'user', 'todayLog', 'recentLogs', 'thisWeekTasks', 'thisMonthTasks',
-            'teamLogsToday', 'missingCount', 'totalTeam'
+            'teamLogsToday', 'missingCount', 'totalTeam', 'catalogStats'
         ));
     }
 

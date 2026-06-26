@@ -4,7 +4,7 @@
 @section('has-sidebar', true)
 
 @section('favicon')
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='7' height='7'/><rect x='14' y='3' width='7' height='7'/><rect x='14' y='14' width='7' height='7'/><rect x='3' y='14' width='7' height='7'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235757f8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='7' height='7'/><rect x='14' y='3' width='7' height='7'/><rect x='14' y='14' width='7' height='7'/><rect x='3' y='14' width='7' height='7'/></svg>">
 @endsection
 
 @section('styles')
@@ -193,6 +193,7 @@ $roleColor = match($user->role) {
     'researcher' => '#10b981',
     'graphics'   => '#f59e0b',
     'backend'    => '#f43f5e',
+    'analyst'    => '#ec4899',
     default      => '#5757f8',
 };
 $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user->username;
@@ -214,6 +215,8 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             <p>Design dashboard — CVP, banners, drafts, and visual assets.</p>
             @elseif($user->role === 'backend')
             <p>Backend operations — bulk uploads, cross-listing, QC, and Q&A.</p>
+            @elseif($user->role === 'analyst')
+            <p>Brand catalog hub — manage and update product catalogs across brands.</p>
             @endif
             <div class="wb-date">{{ now()->format('l, F j') }}</div>
         </div>
@@ -222,6 +225,69 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ urlencode($avatarSeed) }}" class="wb-avatar" alt="{{ $user->full_name }}">
         </div>
     </div>
+
+    @if($user->role === 'analyst')
+
+    {{-- ── Analyst: Catalog Stats ── --}}
+    <div class="anim-up d1">
+        <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="stat-card" style="border-top: 3px solid #ec4899;">
+                <div class="stat-icon" style="background: #ec4899;"><i class="fas fa-book-open"></i></div>
+                <div>
+                    <div class="stat-count">{{ $catalogStats['total'] }}</div>
+                    <div class="stat-label">Total Catalogs</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top: 3px solid #10b981;">
+                <div class="stat-icon" style="background: #10b981;"><i class="fas fa-circle-check"></i></div>
+                <div>
+                    <div class="stat-count">{{ $catalogStats['available'] }}</div>
+                    <div class="stat-label">Available</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top: 3px solid #f59e0b;">
+                <div class="stat-icon" style="background: #f59e0b;"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="stat-count">{{ $catalogStats['upcoming'] }}</div>
+                    <div class="stat-label">Upcoming</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top: 3px solid #0ea5e9;">
+                <div class="stat-icon" style="background: #0ea5e9;"><i class="fas fa-calendar-days"></i></div>
+                <div>
+                    <div class="stat-count">{{ $catalogStats['seasonal'] }}</div>
+                    <div class="stat-label">Seasonal</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ── Analyst: Quick Access ── --}}
+    <div class="section-divider anim-up d2">
+        <div class="sd-icon" style="background: #ec4899;"><i class="fas fa-bolt"></i></div>
+        <h4>Quick Access</h4>
+        <div class="sd-line"></div>
+    </div>
+    <div class="quick-section anim-up d2">
+        <div class="quick-links">
+            <a href="{{ route('brand-catalogs') }}" class="quick-link">
+                <div class="ql-icon" style="background: #ec4899;"><i class="fas fa-book-open"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">Brand Catalogs</span>
+                    <span class="ql-desc">Add and manage product catalogs</span>
+                </div>
+            </a>
+            <a href="{{ route('team') }}" class="quick-link">
+                <div class="ql-icon"><i class="fas fa-users"></i></div>
+                <div class="ql-text">
+                    <span class="ql-name">The Team</span>
+                    <span class="ql-desc">View your colleagues</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    @else
 
     <!-- EOD Status Strip -->
     @if($todayLog)
@@ -400,10 +466,13 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         @endif
     </div>
 
+    @endif
+
 </div>
 @endsection
 
 @section('scripts')
+@if($user->role !== 'analyst')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var el = document.getElementById('weeklyChart');
@@ -440,4 +509,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }).render();
 });
 </script>
+@endif
 @endsection
