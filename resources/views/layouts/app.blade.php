@@ -74,12 +74,12 @@
             --p-font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
             /* Accent palette — kept only for semantic data indicators */
-            --indigo: #5757f8;
-            --emerald: #22c55e;
-            --sky: #5757f8;
+            --indigo: #6366f1;
+            --emerald: #10b981;
+            --sky: #0ea5e9;
             --amber: #f59e0b;
-            --rose: #ef4444;
-            --violet: #5757f8;
+            --rose: #f43f5e;
+            --violet: #7c3aed;
         }
 
         [data-theme="dark"] {
@@ -483,12 +483,13 @@
             display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
             font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
         }
-        .role-badge.head    { background: #7c3aed;         color: #fff; }
-        .role-badge.manager { background: var(--primary); color: var(--primary-foreground); }
-        .role-badge.lead    { background: var(--indigo);  color: #fff; }
-        .role-badge.content { background: var(--sky);     color: #fff; }
-        .role-badge.graphics   { background: var(--amber); color: #fff; }
-        .role-badge.backend    { background: var(--rose);  color: #fff; }
+        .role-badge.head       { background: #7c3aed; color: #fff; }
+        .role-badge.manager    { background: #1e293b; color: #fff; }
+        .role-badge.analyst    { background: #ec4899; color: #fff; }
+        .role-badge.lead       { background: var(--indigo);  color: #fff; }
+        .role-badge.content    { background: var(--sky);     color: #fff; }
+        .role-badge.graphics   { background: var(--amber);   color: #fff; }
+        .role-badge.backend    { background: var(--rose);    color: #fff; }
         .role-badge.researcher { background: var(--emerald); color: #fff; }
 
         /* Shared: User Cell */

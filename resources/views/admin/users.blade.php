@@ -598,7 +598,7 @@ function openProfileModal(btn) {
     document.getElementById('vpJoined').textContent = d.joined || '—';
 
     var badges = document.getElementById('vpBadges');
-    var roleColors = { head:'#7c3aed', manager:'#5757f8', lead:'#5757f8', analyst:'#ec4899', content:'#5757f8', graphics:'#f59e0b', backend:'#ef4444', researcher:'#22c55e' };
+    var roleColors = { head:'#7c3aed', manager:'#1e293b', lead:'#6366f1', analyst:'#ec4899', content:'#0ea5e9', graphics:'#f59e0b', backend:'#f43f5e', researcher:'#10b981' };
     var badgeHtml = '<span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;background:' + (roleColors[d.role] || '#5757f8') + ';color:white;">' + (d.role ? d.role.charAt(0).toUpperCase() + d.role.slice(1) : '') + '</span>';
     if (d.badge) {
         badgeHtml += '<span style="display:inline-flex;align-items:center;padding:2px 8px;background:#f0f0ff;border:1px solid #a5a5fc;border-radius:9999px;font-size:0.6rem;font-weight:700;color:#5757f8;">' + d.badge + '</span>';
