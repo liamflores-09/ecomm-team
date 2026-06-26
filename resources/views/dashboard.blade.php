@@ -166,17 +166,18 @@
 
     /* ── Bento grid ── */
     .bento-grid {
-        display: grid;
-        grid-template-columns: 1fr 360px;
+        display: flex;
         gap: 1rem;
         margin-bottom: 1.5rem;
         align-items: stretch;
     }
     .bento-ann {
+        flex: 1; min-width: 0;
         background: var(--card); border: 1px solid var(--border-light);
         border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
     }
     .bento-right {
+        width: 360px; flex-shrink: 0;
         display: flex; flex-direction: column; gap: 1rem;
     }
     .bento-ann-hd {
