@@ -171,6 +171,110 @@
     .logs-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; color: var(--foreground); }
     .logs-header a { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; }
     .logs-header a:hover { color: var(--foreground); }
+
+    /* ── Bento grid ── */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        grid-template-rows: auto auto;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        align-items: start;
+    }
+    .bento-ann {
+        grid-column: 1; grid-row: 1 / 3;
+        background: var(--card); border: 1px solid var(--border-light);
+        border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .bento-ann-hd {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); flex-shrink: 0;
+    }
+    .bento-ann-hd h4 { font-size: 0.85rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+    .bento-ann-hd a { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-decoration: none; }
+    .bento-ann-item { padding: 0.875rem 1.25rem; }
+    .bento-ann-item + .bento-ann-item { border-top: 1px solid var(--border-light); }
+    .bento-ann-item.pinned { border-left: 3px solid #f59e0b; }
+    .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
+    .bento-ann-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.25; }
+
+    .bento-quick {
+        grid-column: 2; grid-row: 1;
+        background: var(--card); border: 1px solid var(--border-light);
+        border-radius: 12px; overflow: hidden;
+    }
+    .bento-quick-hd {
+        display: flex; align-items: center; gap: 0.5rem;
+        padding: 0.875rem 1.125rem; border-bottom: 1px solid var(--border-light);
+        font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--gray-400);
+    }
+    .bento-ql {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.75rem 1.125rem; text-decoration: none; color: var(--fg);
+        transition: background 0.12s; border-bottom: 1px solid var(--border-light);
+    }
+    .bento-ql:last-child { border-bottom: none; }
+    .bento-ql:hover { background: var(--muted); }
+    .bento-ql-icon {
+        width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+        background: var(--primary); color: white; display: flex;
+        align-items: center; justify-content: center; font-size: 0.82rem;
+        transition: background 0.12s;
+    }
+    .bento-ql:hover .bento-ql-icon { background: var(--fg); }
+    .bento-ql-name { font-size: 0.8rem; font-weight: 700; display: block; }
+    .bento-ql-desc { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; }
+
+    /* ── EOD bento card ── */
+    .bento-eod {
+        grid-column: 2; grid-row: 2;
+        border-radius: 12px; overflow: hidden;
+    }
+    .bento-eod-pending {
+        background: var(--primary); padding: 1.25rem;
+        display: flex; flex-direction: column; gap: 0.875rem;
+    }
+    .bento-eod-pending-top { display: flex; align-items: center; gap: 0.75rem; }
+    .bento-eod-icon {
+        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+        background: rgba(255,255,255,0.18); display: flex;
+        align-items: center; justify-content: center; color: white; font-size: 1rem;
+    }
+    .bento-eod-title { font-size: 0.9rem; font-weight: 800; color: white; line-height: 1.2; }
+    .bento-eod-sub { font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; margin-top: 0.2rem; }
+    .bento-eod-btn {
+        display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        width: 100%; height: 38px; border-radius: 8px;
+        border: 1.5px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.12);
+        color: white; font-family: var(--p-font-family-sans);
+        font-size: 0.82rem; font-weight: 700; text-decoration: none;
+        transition: background 0.15s, border-color 0.15s;
+    }
+    .bento-eod-btn:hover { background: rgba(255,255,255,0.22); border-color: white; color: white; }
+
+    .bento-eod-submitted {
+        background: var(--card); border: 1px solid var(--border-light);
+        border-left: 4px solid #10b981; padding: 1.25rem;
+        display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .bento-eod-submitted-top { display: flex; align-items: center; gap: 0.75rem; }
+    .bento-eod-done-icon {
+        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+        background: rgba(16,185,129,0.12); display: flex;
+        align-items: center; justify-content: center; color: #10b981; font-size: 1rem;
+    }
+    .bento-eod-done-title { font-size: 0.9rem; font-weight: 800; color: #10b981; }
+    .bento-eod-done-sub { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; margin-top: 0.15rem; }
+    .bento-eod-edit {
+        display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+        width: 100%; height: 34px; border-radius: 8px;
+        border: 1px solid var(--border-light); background: transparent;
+        color: var(--muted-foreground); font-family: var(--p-font-family-sans);
+        font-size: 0.78rem; font-weight: 700; text-decoration: none;
+        transition: all 0.15s;
+    }
+    .bento-eod-edit:hover { border-color: var(--fg); color: var(--fg); }
     .logs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .logs-table thead tr { border-bottom: 1px solid var(--border-light); }
     .logs-table th { padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); }
@@ -226,33 +330,6 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
     </div>
 
-    {{-- ── Announcements preview ── --}}
-    @if($recentAnnouncements->count())
-    <div class="logs-section anim-up" style="margin-bottom:1.5rem;">
-        <div class="logs-header">
-            <h4><i class="fas fa-bullhorn" style="margin-right:0.5rem;color:var(--primary);"></i>Announcements</h4>
-            <a href="{{ route('announcements') }}">View all →</a>
-        </div>
-        @foreach($recentAnnouncements as $ann)
-        <div style="padding:0.875rem 1.25rem;{{ !$loop->last ? 'border-bottom:1px solid var(--border-light);' : '' }}{{ $ann->pinned ? 'border-left:3px solid #f59e0b;' : '' }}">
-            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.35rem;">
-                @if($ann->pinned)
-                <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.12rem 0.4rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.58rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>
-                @endif
-                <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;color:var(--fg);">{{ $ann->title }}</span>
-            </div>
-            <div style="font-size:0.8rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.4rem;">{{ $ann->body }}</div>
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-                <span style="font-size:0.69rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="margin-right:2px;font-size:0.6rem;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
-                @if($ann->expires_at)
-                <span style="font-size:0.65rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.25rem;"><i class="fas fa-hourglass-half"></i> Expires {{ $ann->expires_at->format('M d') }}</span>
-                @endif
-            </div>
-        </div>
-        @endforeach
-    </div>
-    @endif
-
     @if($user->role === 'analyst')
 
     {{-- ── Analyst: Catalog Stats ── --}}
@@ -289,54 +366,144 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
     </div>
 
-    {{-- ── Analyst: Quick Access ── --}}
-    <div class="section-divider anim-up d2">
-        <div class="sd-icon" style="background: #ec4899;"><i class="fas fa-bolt"></i></div>
-        <h4>Quick Access</h4>
-        <div class="sd-line"></div>
-    </div>
-    <div class="quick-section anim-up d2">
-        <div class="quick-links">
-            <a href="{{ route('brand-catalogs') }}" class="quick-link">
-                <div class="ql-icon" style="background: #ec4899;"><i class="fas fa-book-open"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Brand Catalogs</span>
-                    <span class="ql-desc">Add and manage product catalogs</span>
-                </div>
-            </a>
-            <a href="{{ route('team') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-users"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">The Team</span>
-                    <span class="ql-desc">View your colleagues</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    @else
-
-    <!-- EOD Status Strip -->
-    @if($todayLog)
-    <div class="eod-status-strip submitted anim-up">
-        <div class="ess-left">
-            <div class="ess-icon"><i class="fas fa-circle-check"></i></div>
-            <div class="ess-title">EOD submitted for today</div>
-        </div>
-        <a href="{{ route('end-of-day') }}" class="ess-edit">Edit <i class="fas fa-pencil"></i></a>
-    </div>
-    @else
-    <div class="eod-status-strip pending anim-up">
-        <div class="ess-left">
-            <div class="ess-icon"><i class="fas fa-clipboard-list"></i></div>
-            <div>
-                <div class="ess-title">EOD report not submitted yet</div>
-                <div class="ess-sub">{{ now()->format('l, F j') }}</div>
+    {{-- ── Analyst: Announcements + Quick Access bento ── --}}
+    <div class="bento-grid anim-up d2">
+        {{-- Announcements --}}
+        <div class="bento-ann">
+            <div class="bento-ann-hd">
+                <h4><i class="fas fa-bullhorn" style="color:var(--primary);"></i> Announcements</h4>
+                <a href="{{ route('announcements') }}">View all →</a>
             </div>
+            @forelse($recentAnnouncements as $ann)
+            <div class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.3rem;">
+                    @if($ann->pinned)<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.1rem 0.375rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.57rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>@endif
+                    <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;">{{ $ann->title }}</span>
+                </div>
+                <div style="font-size:0.79rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.35rem;">{{ $ann->body }}</div>
+                <div style="display:flex;align-items:center;gap:0.625rem;">
+                    <span style="font-size:0.68rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    @if($ann->expires_at)<span style="font-size:0.64rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.2rem;"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>@endif
+                </div>
+            </div>
+            @empty
+            <div class="bento-ann-empty"><i class="fas fa-bullhorn"></i> No announcements yet.</div>
+            @endforelse
         </div>
-        <a href="{{ route('end-of-day') }}" class="ess-btn">Submit EOD <i class="fas fa-arrow-right"></i></a>
+        {{-- Quick Access --}}
+        <div class="bento-quick">
+            <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
+            <a href="{{ route('brand-catalogs') }}" class="bento-ql">
+                <div class="bento-ql-icon" style="background:#ec4899;"><i class="fas fa-book-open"></i></div>
+                <div><span class="bento-ql-name">Brand Catalogs</span><span class="bento-ql-desc">Manage product catalogs</span></div>
+            </a>
+            <a href="{{ route('announcements') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-bullhorn"></i></div>
+                <div><span class="bento-ql-name">Announcements</span><span class="bento-ql-desc">Team updates and notices</span></div>
+            </a>
+            <a href="{{ route('team') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-users"></i></div>
+                <div><span class="bento-ql-name">The Team</span><span class="bento-ql-desc">View your colleagues</span></div>
+            </a>
+        </div>
     </div>
-    @endif
+
+    @else
+
+    {{-- ── Non-analyst Bento: Announcements + Quick Access + EOD ── --}}
+    <div class="bento-grid anim-up">
+
+        {{-- Left: Announcements --}}
+        <div class="bento-ann">
+            <div class="bento-ann-hd">
+                <h4><i class="fas fa-bullhorn" style="color:var(--primary);"></i> Announcements</h4>
+                <a href="{{ route('announcements') }}">View all →</a>
+            </div>
+            @forelse($recentAnnouncements as $ann)
+            <div class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.3rem;">
+                    @if($ann->pinned)<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.1rem 0.375rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.57rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>@endif
+                    <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;">{{ $ann->title }}</span>
+                </div>
+                <div style="font-size:0.79rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.35rem;">{{ $ann->body }}</div>
+                <div style="display:flex;align-items:center;gap:0.625rem;">
+                    <span style="font-size:0.68rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    @if($ann->expires_at)<span style="font-size:0.64rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.2rem;"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>@endif
+                </div>
+            </div>
+            @empty
+            <div class="bento-ann-empty"><i class="fas fa-bullhorn"></i> No announcements yet.</div>
+            @endforelse
+        </div>
+
+        {{-- Top Right: Quick Access --}}
+        <div class="bento-quick">
+            <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
+            @if($user->role === 'content')
+            <a href="{{ route('posting-procedure') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-book-open"></i></div>
+                <div><span class="bento-ql-name">Posting Procedure</span><span class="bento-ql-desc">8-step product posting guide</span></div>
+            </a>
+            <a href="{{ route('data-gathering') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-folder-open"></i></div>
+                <div><span class="bento-ql-name">Data Gathering</span><span class="bento-ql-desc">Collect product info</span></div>
+            </a>
+            <a href="{{ route('price-calculator') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-calculator"></i></div>
+                <div><span class="bento-ql-name">Price Calculator</span><span class="bento-ql-desc">Compute SRP</span></div>
+            </a>
+            <a href="{{ route('important-links') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-link"></i></div>
+                <div><span class="bento-ql-name">Important Links</span><span class="bento-ql-desc">Quick resources</span></div>
+            </a>
+            @else
+            <a href="{{ route('end-of-day') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-calendar-check"></i></div>
+                <div><span class="bento-ql-name">End-of-Day Report</span><span class="bento-ql-desc">Log your daily tasks</span></div>
+            </a>
+            <a href="{{ route('price-calculator') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-calculator"></i></div>
+                <div><span class="bento-ql-name">Price Calculator</span><span class="bento-ql-desc">Compute SRP</span></div>
+            </a>
+            <a href="{{ route('team') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-users"></i></div>
+                <div><span class="bento-ql-name">The Team</span><span class="bento-ql-desc">View your colleagues</span></div>
+            </a>
+            <a href="{{ route('important-links') }}" class="bento-ql">
+                <div class="bento-ql-icon"><i class="fas fa-link"></i></div>
+                <div><span class="bento-ql-name">Important Links</span><span class="bento-ql-desc">Quick resources</span></div>
+            </a>
+            @endif
+        </div>
+
+        {{-- Bottom Right: EOD Card --}}
+        <div class="bento-eod">
+            @if($todayLog)
+            <div class="bento-eod-submitted">
+                <div class="bento-eod-submitted-top">
+                    <div class="bento-eod-done-icon"><i class="fas fa-circle-check"></i></div>
+                    <div>
+                        <div class="bento-eod-done-title">EOD Submitted</div>
+                        <div class="bento-eod-done-sub">{{ now()->format('l, F j') }}</div>
+                    </div>
+                </div>
+                <a href="{{ route('end-of-day') }}" class="bento-eod-edit"><i class="fas fa-pencil"></i> Edit Report</a>
+            </div>
+            @else
+            <div class="bento-eod-pending">
+                <div class="bento-eod-pending-top">
+                    <div class="bento-eod-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <div>
+                        <div class="bento-eod-title">No EOD yet today</div>
+                        <div class="bento-eod-sub">{{ now()->format('l, F j') }}</div>
+                    </div>
+                </div>
+                <a href="{{ route('end-of-day') }}" class="bento-eod-btn"><i class="fas fa-arrow-right"></i> Submit EOD Report</a>
+            </div>
+            @endif
+        </div>
+
+    </div>
 
     <!-- Stats -->
     <div class="anim-up d1">
@@ -378,77 +545,6 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             <div class="sd-line"></div>
         </div>
         <div id="weeklyChart"></div>
-    </div>
-
-    <!-- Quick Access -->
-    <div class="section-divider anim-up d3">
-        <div class="sd-icon" style="background: var(--primary);"><i class="fas fa-bolt"></i></div>
-        <h4>Quick Access</h4>
-        <div class="sd-line"></div>
-    </div>
-
-    <div class="quick-section anim-up d3">
-        <div class="quick-links">
-            @if($user->role === 'content')
-            <a href="{{ route('posting-procedure') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-book-open"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Posting Procedure</span>
-                    <span class="ql-desc">8-step guide for product posting</span>
-                </div>
-            </a>
-            <a href="{{ route('data-gathering') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-folder-open"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Data Gathering</span>
-                    <span class="ql-desc">Collect product info and assets</span>
-                </div>
-            </a>
-            <a href="{{ route('ecommerce-requirements') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-clipboard-list"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">E-commerce Requirements</span>
-                    <span class="ql-desc">Platform-specific posting rules</span>
-                </div>
-            </a>
-            <a href="{{ route('price-calculator') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-calculator"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Price Calculator</span>
-                    <span class="ql-desc">Compute SRP across platforms</span>
-                </div>
-            </a>
-            @else
-            <a href="{{ route('end-of-day') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-calendar-check"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">End-of-Day Report</span>
-                    <span class="ql-desc">Log your daily tasks</span>
-                </div>
-            </a>
-            <a href="{{ route('price-calculator') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-calculator"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Price Calculator</span>
-                    <span class="ql-desc">Compute SRP across platforms</span>
-                </div>
-            </a>
-            <a href="{{ route('team') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-users"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">The Team</span>
-                    <span class="ql-desc">View your colleagues</span>
-                </div>
-            </a>
-            <a href="{{ route('important-links') }}" class="quick-link">
-                <div class="ql-icon"><i class="fas fa-link"></i></div>
-                <div class="ql-text">
-                    <span class="ql-name">Important Links</span>
-                    <span class="ql-desc">Quick access to resources</span>
-                </div>
-            </a>
-            @endif
-        </div>
     </div>
 
     <!-- Recent Logs -->
