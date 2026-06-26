@@ -38,9 +38,14 @@ class AdminController extends Controller
             ->whereYear('date', now()->subMonth()->year)
             ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
 
-        // Today's status
-        $todayLogged = DailyLog::where('date', now()->toDateString())->pluck('user_id')->unique()->count();
-        $nonManagerUsers = User::whereNotIn('role', ['manager', 'head'])->count();
+        // Today's status — analysts excluded (they don't submit EOD)
+        $eodRoles = ['manager', 'head', 'analyst'];
+        $todayLogged = DailyLog::where('date', now()->toDateString())
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', $eodRoles)
+            ->distinct('daily_logs.user_id')
+            ->count('daily_logs.user_id');
+        $nonManagerUsers = User::whereNotIn('role', $eodRoles)->count();
         $todayPending = max(0, $nonManagerUsers - $todayLogged);
 
         // Top contributor this month
@@ -98,14 +103,14 @@ class AdminController extends Controller
             ->get();
 
         // Derived values — kept out of the view
-        $nonManagerCount  = $totalUsers - $managers;
+        $nonManagerCount  = User::whereNotIn('role', ['manager', 'head', 'analyst'])->count();
         $taskChange       = $lastMonthTasks > 0
             ? round(($thisMonthTasks - $lastMonthTasks) / $lastMonthTasks * 100)
             : null;
         $healthPct        = $nonManagerCount > 0 ? round($todayLogged / $nonManagerCount * 100) : 0;
         $healthColor      = $healthPct >= 80 ? 'var(--emerald)' : ($healthPct >= 50 ? 'var(--amber)' : 'var(--rose)');
         $avgTasksPerson   = $nonManagerCount > 0 ? round($thisMonthTasks / $nonManagerCount) : 0;
-        $allMembers       = User::whereNotIn('role', ['manager', 'head'])->get();
+        $allMembers       = User::whereNotIn('role', ['manager', 'head', 'analyst'])->get();
         $loggedUserIds    = $todayLogs->pluck('user_id')->toArray();
 
         // Sparkline — derived from $dailyTotals already in memory, no extra queries
