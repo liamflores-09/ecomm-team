@@ -187,7 +187,8 @@
     .bento-ann-hd h4 { font-size: 0.85rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
     .bento-ann-hd a { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-decoration: none; }
     .bento-ann-item {
-        display: block; text-decoration: none; color: inherit;
+        flex: 1; display: flex; flex-direction: column;
+        text-decoration: none; color: inherit;
         padding: 0.875rem 1.25rem; border-top: 1px solid var(--border-light);
         transition: background 0.12s; cursor: pointer;
     }
@@ -203,11 +204,12 @@
     }
     .bento-ann-title { font-weight: 700; font-size: 0.875rem; line-height: 1.3; flex: 1; color: var(--fg); }
     .bento-ann-body {
+        flex: 1;
         font-size: 0.79rem; color: var(--muted-foreground); font-weight: 500;
         line-height: 1.55; overflow: hidden; display: -webkit-box;
-        -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 0.375rem;
+        -webkit-line-clamp: 4; -webkit-box-orient: vertical;
     }
-    .bento-ann-foot { display: flex; align-items: center; gap: 0.625rem; }
+    .bento-ann-foot { display: flex; align-items: center; gap: 0.625rem; margin-top: auto; padding-top: 0.5rem; }
     .bento-ann-author { font-size: 0.68rem; font-weight: 600; color: var(--gray-400); }
     .bento-ann-expiry { font-size: 0.64rem; font-weight: 700; color: #d97706; display: inline-flex; align-items: center; gap: 0.2rem; }
     .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
