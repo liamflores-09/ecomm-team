@@ -189,29 +189,42 @@
     .bento-ann-item {
         flex: 1; display: flex; flex-direction: column;
         text-decoration: none; color: inherit;
-        padding: 0.875rem 1.25rem; border-top: 1px solid var(--border-light);
-        transition: background 0.12s; cursor: pointer;
+        padding: 1.125rem 1.25rem; border-top: 1px solid var(--border-light);
+        transition: background 0.15s;
     }
     .bento-ann-item:first-of-type { border-top: none; }
     .bento-ann-item:hover { background: var(--muted); }
     .bento-ann-item.pinned { border-left: 3px solid #f59e0b; padding-left: calc(1.25rem - 3px); }
-    .bento-ann-item-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
     .bento-ann-pin-badge {
-        display: inline-flex; align-items: center; gap: 0.2rem;
-        padding: 0.1rem 0.375rem; background: rgba(245,158,11,0.1); color: #d97706;
-        border-radius: 9999px; font-size: 0.57rem; font-weight: 800;
-        text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0;
+        display: inline-flex; align-items: center; gap: 0.25rem;
+        color: #d97706; font-size: 0.65rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;
     }
-    .bento-ann-title { font-weight: 700; font-size: 0.875rem; line-height: 1.3; flex: 1; color: var(--fg); }
+    .bento-ann-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .bento-ann-title { font-weight: 700; font-size: 0.925rem; line-height: 1.35; flex: 1; color: var(--fg); letter-spacing: -0.01em; }
+    .bento-ann-chevron {
+        color: var(--muted-foreground); font-size: 0.6rem; margin-top: 3px;
+        flex-shrink: 0; opacity: 0; transition: opacity 0.15s, transform 0.15s;
+    }
+    .bento-ann-item:hover .bento-ann-chevron { opacity: 1; transform: translateX(2px); }
     .bento-ann-body {
         flex: 1;
-        font-size: 0.79rem; color: var(--muted-foreground); font-weight: 500;
-        line-height: 1.55; overflow: hidden; display: -webkit-box;
-        -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+        font-size: 0.8rem; color: var(--muted-foreground); font-weight: 400;
+        line-height: 1.65; overflow: hidden;
     }
-    .bento-ann-foot { display: flex; align-items: center; gap: 0.625rem; margin-top: auto; padding-top: 0.5rem; }
-    .bento-ann-author { font-size: 0.68rem; font-weight: 600; color: var(--gray-400); }
-    .bento-ann-expiry { font-size: 0.64rem; font-weight: 700; color: #d97706; display: inline-flex; align-items: center; gap: 0.2rem; }
+    .bento-ann-foot { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; padding-top: 0.75rem; }
+    .bento-ann-avatar {
+        width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+        background: var(--primary); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.55rem; font-weight: 800;
+    }
+    .bento-ann-author { font-size: 0.7rem; font-weight: 600; color: var(--muted-foreground); flex: 1; }
+    .bento-ann-expiry {
+        display: inline-flex; align-items: center; gap: 0.2rem;
+        font-size: 0.65rem; font-weight: 700; color: #d97706;
+        background: rgba(245,158,11,0.1); padding: 0.15rem 0.4rem; border-radius: 9999px;
+    }
     .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
     .bento-ann-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.25; }
 
@@ -419,17 +432,19 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             </div>
             @forelse($recentAnnouncements as $ann)
             <a href="{{ route('announcements') }}" class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                @if($ann->pinned)
+                <div class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</div>
+                @endif
                 <div class="bento-ann-item-top">
-                    @if($ann->pinned)
-                    <span class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</span>
-                    @endif
                     <span class="bento-ann-title">{{ $ann->title }}</span>
+                    <i class="fas fa-chevron-right bento-ann-chevron"></i>
                 </div>
                 <div class="bento-ann-body">{{ $ann->body }}</div>
                 <div class="bento-ann-foot">
-                    <span class="bento-ann-author"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    <div class="bento-ann-avatar">{{ strtoupper(substr($ann->creator->first_name, 0, 1)) }}</div>
+                    <span class="bento-ann-author">{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
                     @if($ann->expires_at)
-                    <span class="bento-ann-expiry"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>
+                    <span class="bento-ann-expiry"><i class="fas fa-clock"></i> {{ $ann->expires_at->format('M d') }}</span>
                     @endif
                 </div>
             </a>
@@ -470,17 +485,19 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             </div>
             @forelse($recentAnnouncements as $ann)
             <a href="{{ route('announcements') }}" class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                @if($ann->pinned)
+                <div class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</div>
+                @endif
                 <div class="bento-ann-item-top">
-                    @if($ann->pinned)
-                    <span class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</span>
-                    @endif
                     <span class="bento-ann-title">{{ $ann->title }}</span>
+                    <i class="fas fa-chevron-right bento-ann-chevron"></i>
                 </div>
                 <div class="bento-ann-body">{{ $ann->body }}</div>
                 <div class="bento-ann-foot">
-                    <span class="bento-ann-author"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    <div class="bento-ann-avatar">{{ strtoupper(substr($ann->creator->first_name, 0, 1)) }}</div>
+                    <span class="bento-ann-author">{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
                     @if($ann->expires_at)
-                    <span class="bento-ann-expiry"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>
+                    <span class="bento-ann-expiry"><i class="fas fa-clock"></i> {{ $ann->expires_at->format('M d') }}</span>
                     @endif
                 </div>
             </a>
