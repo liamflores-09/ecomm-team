@@ -24,10 +24,13 @@
             <li><a href="{{ route('posting-procedure') }}" class="{{ $active === 'posting-procedure' ? 'active' : '' }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
             <li><a href="{{ route('ecommerce-requirements') }}" class="{{ $active === 'ecommerce-requirements' ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Requirements</a></li>
             @endif
+            @if(Auth::user()->role !== 'analyst')
             <li><a href="{{ route('end-of-day') }}" class="{{ $active === 'end-of-day' ? 'active' : '' }}"><i class="fas fa-calendar-check"></i> EOD Report</a></li>
             <li><a href="{{ route('important-links') }}" class="{{ $active === 'important-links' ? 'active' : '' }}"><i class="fas fa-link"></i> Important Links</a></li>
+            @endif
             <li><a href="{{ route('brand-catalogs') }}" class="{{ $active === 'brand-catalogs' ? 'active' : '' }}"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
 
+            @if(Auth::user()->role !== 'analyst')
             <li style="padding: 12px 12px 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); pointer-events: none;">Tools</li>
             @if(Auth::user()->role === 'content')
             <li><a href="{{ route('data-gathering') }}" class="{{ $active === 'data-gathering' ? 'active' : '' }}"><i class="fas fa-folder-open"></i> Data Gathering</a></li>
@@ -35,6 +38,7 @@
             <li><a href="{{ route('price-calculator') }}" class="{{ $active === 'price-calculator' ? 'active' : '' }}"><i class="fas fa-calculator"></i> Price Calculator</a></li>
 
             <li><a href="{{ route('calendar') }}" class="{{ $active === 'calendar' ? 'active' : '' }}"><i class="fas fa-calendar-days"></i> Calendar</a></li>
+            @endif
 
             <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li><a href="{{ route('team') }}" class="{{ $active === 'team' ? 'active' : '' }}"><i class="fas fa-users"></i> The Team</a></li>

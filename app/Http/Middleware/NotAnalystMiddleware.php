@@ -6,12 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CatalogManagerMiddleware
+class NotAnalystMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !in_array(auth()->user()->role, ['head', 'manager', 'analyst', 'researcher'])) {
-            abort(403);
+        if (auth()->check() && auth()->user()->role === 'analyst') {
+            abort(403, 'This section is not available for your role.');
         }
 
         return $next($request);

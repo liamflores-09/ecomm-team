@@ -32,27 +32,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posting-procedure', [DashboardController::class, 'postingProcedure'])->name('posting-procedure');
     Route::get('/data-gathering', [DashboardController::class, 'dataGathering'])->name('data-gathering');
     Route::get('/ecommerce-requirements', [DashboardController::class, 'ecommerceRequirements'])->name('ecommerce-requirements');
-    Route::get('/price-calculator', [DashboardController::class, 'priceCalculator'])->name('price-calculator');
-    Route::get('/end-of-day', [DailyLogController::class, 'index'])->name('end-of-day');
-    Route::post('/daily-logs', [DailyLogController::class, 'store'])->name('daily-logs.store');
-    Route::put('/daily-logs/{dailyLog}', [DailyLogController::class, 'update'])->name('daily-logs.update');
-    Route::delete('/daily-logs/{dailyLog}', [DailyLogController::class, 'destroy'])->name('daily-logs.destroy');
-    Route::get('/daily-logs/history', [DailyLogController::class, 'history'])->name('daily-logs.history');
-    Route::get('/important-links', [DashboardController::class, 'importantLinks'])->name('important-links');
-    Route::get('/team', [DashboardController::class, 'team'])->name('team');
+    Route::middleware(['not.analyst'])->group(function () {
+        Route::get('/end-of-day', [DailyLogController::class, 'index'])->name('end-of-day');
+        Route::post('/daily-logs', [DailyLogController::class, 'store'])->name('daily-logs.store');
+        Route::put('/daily-logs/{dailyLog}', [DailyLogController::class, 'update'])->name('daily-logs.update');
+        Route::delete('/daily-logs/{dailyLog}', [DailyLogController::class, 'destroy'])->name('daily-logs.destroy');
+        Route::get('/daily-logs/history', [DailyLogController::class, 'history'])->name('daily-logs.history');
+        Route::get('/important-links', [DashboardController::class, 'importantLinks'])->name('important-links');
+        Route::get('/price-calculator', [DashboardController::class, 'priceCalculator'])->name('price-calculator');
 
-    // Calendar
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
-    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
-    Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');
-    Route::put('/calendar/events/{event}', [CalendarController::class, 'update'])->name('calendar.events.update');
-    Route::delete('/calendar/events/{event}', [CalendarController::class, 'destroy'])->name('calendar.events.destroy');
-    Route::post('/calendar/categories', [CalendarController::class, 'storeCategory'])->name('calendar.categories.store');
-    Route::delete('/calendar/categories/{category}', [CalendarController::class, 'destroyCategory'])->name('calendar.categories.destroy');
-    Route::post('/calendar/tasks', [CalendarController::class, 'storeTask'])->name('calendar.tasks.store');
-    Route::put('/calendar/tasks/{task}', [CalendarController::class, 'updateTask'])->name('calendar.tasks.update');
-    Route::delete('/calendar/tasks/{task}', [CalendarController::class, 'destroyTask'])->name('calendar.tasks.destroy');
-    Route::patch('/calendar/tasks/{task}/toggle', [CalendarController::class, 'toggleTask'])->name('calendar.tasks.toggle');
+        // Calendar
+        Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+        Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+        Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');
+        Route::put('/calendar/events/{event}', [CalendarController::class, 'update'])->name('calendar.events.update');
+        Route::delete('/calendar/events/{event}', [CalendarController::class, 'destroy'])->name('calendar.events.destroy');
+        Route::post('/calendar/categories', [CalendarController::class, 'storeCategory'])->name('calendar.categories.store');
+        Route::delete('/calendar/categories/{category}', [CalendarController::class, 'destroyCategory'])->name('calendar.categories.destroy');
+        Route::post('/calendar/tasks', [CalendarController::class, 'storeTask'])->name('calendar.tasks.store');
+        Route::put('/calendar/tasks/{task}', [CalendarController::class, 'updateTask'])->name('calendar.tasks.update');
+        Route::delete('/calendar/tasks/{task}', [CalendarController::class, 'destroyTask'])->name('calendar.tasks.destroy');
+        Route::patch('/calendar/tasks/{task}/toggle', [CalendarController::class, 'toggleTask'])->name('calendar.tasks.toggle');
+    });
+
+    Route::get('/team', [DashboardController::class, 'team'])->name('team');
 
     // Brand Catalogs — all authenticated users can browse
     Route::get('/brand-catalogs', [BrandCatalogController::class, 'index'])->name('brand-catalogs');
