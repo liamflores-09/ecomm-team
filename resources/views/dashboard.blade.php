@@ -17,42 +17,31 @@
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
-        max-height: 300px;
         min-height: 140px;
-        transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1),
-                    padding 0.35s cubic-bezier(0.4,0,0.2,1),
-                    min-height 0.35s cubic-bezier(0.4,0,0.2,1),
-                    border-radius 0.35s ease;
     }
     .welcome-banner.collapsed {
-        max-height: 52px;
         min-height: unset;
         padding: 0 1.25rem;
+        height: 52px;
     }
     .wb-content {
         position: relative; z-index: 3;
-        transition: opacity 0.2s ease, transform 0.25s ease;
+        transition: opacity 0.22s ease, transform 0.25s ease;
         opacity: 1; transform: translateY(0);
     }
     .welcome-banner.collapsed .wb-content {
-        opacity: 0; transform: translateY(-6px); pointer-events: none;
+        opacity: 0; transform: translateY(-8px); pointer-events: none;
     }
     .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; font-weight: 700; }
     .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.9rem; margin: 0; }
-    .wb-date {
-        color: rgba(255,255,255,0.7);
-        font-size: 0.8rem; font-weight: 600; margin-top: 0.625rem;
-    }
+    .wb-date { color: rgba(255,255,255,0.7); font-size: 0.8rem; font-weight: 600; margin-top: 0.625rem; }
     .wb-avatar-zone {
         position: absolute; right: 0; top: 0; bottom: 0; width: 200px;
         display: flex; align-items: flex-end; overflow: hidden; pointer-events: none;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.18s ease;
     }
     .welcome-banner.collapsed .wb-avatar-zone { opacity: 0; }
-    .wb-avatar {
-        height: 140px; width: auto; display: block;
-        position: relative; z-index: 1; margin-left: auto;
-    }
+    .wb-avatar { height: 140px; width: auto; display: block; position: relative; z-index: 1; margin-left: auto; }
     .wb-fade {
         position: absolute; inset: 0;
         background: linear-gradient(to right, var(--wb-color) 0%, transparent 70%);
@@ -657,15 +646,52 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
     var banner = document.getElementById('welcomeBanner');
     var icon   = document.getElementById('wbToggleIcon');
     if (!banner) return;
-    function applyState(collapsed) {
+    var DUR = 380, animating = false;
+    var ease = 'cubic-bezier(0.4,0,0.2,1)';
+
+    function setIcon(c) { icon.style.transform = c ? 'rotate(180deg)' : 'rotate(0deg)'; }
+
+    function applyInstant(collapsed) {
         banner.classList.toggle('collapsed', collapsed);
-        icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        setIcon(collapsed);
     }
-    applyState(localStorage.getItem('wb_hidden') === '1');
-    window.toggleBanner = function() {
-        var collapsed = !banner.classList.contains('collapsed');
-        applyState(collapsed);
+
+    function animateTo(collapsed) {
+        if (animating) return;
+        animating = true;
+        if (collapsed) {
+            // Measure full height, then animate down to strip
+            banner.style.height = banner.offsetHeight + 'px';
+            banner.style.overflow = 'hidden';
+            banner.classList.add('collapsed');
+            void banner.offsetHeight;
+            banner.style.transition = 'height ' + DUR + 'ms ' + ease;
+            banner.style.height = '52px';
+            setIcon(true);
+        } else {
+            // Start at strip height, remove collapsed, measure target, animate up
+            banner.style.height = '52px';
+            banner.style.overflow = 'hidden';
+            banner.classList.remove('collapsed');
+            void banner.offsetHeight;
+            var toH = banner.scrollHeight;
+            banner.style.transition = 'height ' + DUR + 'ms ' + ease;
+            banner.style.height = toH + 'px';
+            setIcon(false);
+        }
+        setTimeout(function() {
+            banner.style.transition = '';
+            banner.style.height = '';
+            banner.style.overflow = '';
+            animating = false;
+        }, DUR);
         localStorage.setItem('wb_hidden', collapsed ? '1' : '0');
+    }
+
+    applyInstant(localStorage.getItem('wb_hidden') === '1');
+
+    window.toggleBanner = function() {
+        animateTo(!banner.classList.contains('collapsed'));
     };
 })();
 </script>
