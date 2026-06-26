@@ -530,6 +530,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var pb = document.getElementById('detPinBar');
     if (pb) pb.style.display = 'none';
 
+    // Default expires_at to 7 days from now for new announcements
+    var df = new Date(); df.setDate(df.getDate() + 7);
+    var pad = function(n) { return n < 10 ? '0'+n : n; };
+    var defaultExpiry = df.getFullYear()+'-'+pad(df.getMonth()+1)+'-'+pad(df.getDate())+'T'+pad(df.getHours())+':'+pad(df.getMinutes());
+    document.getElementById('fExpires').value = defaultExpiry;
+
     var first = document.querySelector('.ann-item.active');
     if (first) selectItem(first);
 
@@ -638,7 +644,10 @@ function openForm(id, title, body, pinned, expires) {
         document.getElementById('fTitle').value    = '';
         document.getElementById('fBody').value     = '';
         document.getElementById('fPinned').checked  = false;
-        document.getElementById('fExpires').value   = '';
+        // restore 7-day default for new announcements
+        var df2 = new Date(); df2.setDate(df2.getDate() + 7);
+        var pad2 = function(n) { return n < 10 ? '0'+n : n; };
+        document.getElementById('fExpires').value = df2.getFullYear()+'-'+pad2(df2.getMonth()+1)+'-'+pad2(df2.getDate())+'T'+pad2(df2.getHours())+':'+pad2(df2.getMinutes());
     }
     document.getElementById('annFormOverlay').classList.add('open');
     document.getElementById('annFormDrawer').classList.add('open');
