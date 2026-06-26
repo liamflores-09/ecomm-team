@@ -171,7 +171,7 @@
         grid-template-rows: auto auto;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        align-items: start;
+        align-items: stretch;
     }
     .bento-ann {
         grid-column: 1; grid-row: 1 / 3;
