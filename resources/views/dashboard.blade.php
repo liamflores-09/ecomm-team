@@ -223,10 +223,11 @@
     .wb-toggle i { transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
     .welcome-banner.collapsed .wb-toggle { top: 50%; transform: translateY(-50%); }
     .wb-collapsed-label {
+        position: absolute; left: 1.25rem; right: 3rem;
         color: rgba(255,255,255,0.9); font-size: 0.82rem; font-weight: 700;
-        flex: 1; opacity: 0; transform: translateY(4px);
+        opacity: 0; transform: translateY(4px);
         transition: opacity 0.25s ease 0.05s, transform 0.25s ease 0.05s;
-        pointer-events: none;
+        pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .welcome-banner.collapsed .wb-collapsed-label {
         opacity: 1; transform: translateY(0); pointer-events: auto;
