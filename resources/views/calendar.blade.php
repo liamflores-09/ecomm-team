@@ -833,6 +833,9 @@ function metaRow(icon, content) {
 }
 function subtaskToggle(id, el, isParent) {
     var row   = el.closest('.cal-sub-row');
+    if (row.dataset.toggling) return;
+    row.dataset.toggling = '1';
+
     var check = row.querySelector('.cal-sub-check');
     var title = row.querySelector('.cal-sub-title');
     var isDone = check.classList.contains('done');
@@ -857,7 +860,12 @@ function subtaskToggle(id, el, isParent) {
 
     fetch('/calendar/tasks/' + id + '/toggle', {
         method: 'PATCH', headers: { 'X-CSRF-TOKEN': _csrf },
-    }).then(function() { _cal.refetchEvents(); });
+    }).then(function() {
+        delete row.dataset.toggling;
+        _cal.refetchEvents();
+    }).catch(function() {
+        delete row.dataset.toggling;
+    });
 }
 
 // ── Popup (events only) ──────────────────────────────────
@@ -1051,10 +1059,18 @@ function saveTask() {
         subtasks:      getSubtaskRows(),
     }, function() { closeTkDrawer(); _cal.refetchEvents(); });
 }
+var _togglingTask = {};
 function toggleTask(id) {
+    if (_togglingTask[id]) return;
+    _togglingTask[id] = true;
     fetch('/calendar/tasks/' + id + '/toggle', {
         method: 'PATCH', headers: { 'X-CSRF-TOKEN': _csrf },
-    }).then(function() { _cal.refetchEvents(); });
+    }).then(function() {
+        delete _togglingTask[id];
+        _cal.refetchEvents();
+    }).catch(function() {
+        delete _togglingTask[id];
+    });
 }
 function delTask(id) {
     showConfirm('Delete Task', 'This task and all its subtasks will be permanently deleted.', 'Delete', function() {
