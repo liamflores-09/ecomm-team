@@ -17,6 +17,7 @@
             <li><a href="{{ route('admin.reports') }}" class="{{ $active === 'admin.reports' ? 'active' : '' }}"><i class="fas fa-chart-pie"></i> Reports</a></li>
             <li><a href="{{ route('admin.brands') }}" class="{{ $active === 'admin.brands' ? 'active' : '' }}"><i class="fas fa-tag"></i> Brands</a></li>
             <li><a href="{{ route('brand-catalogs') }}" class="{{ $active === 'brand-catalogs' ? 'active' : '' }}" style="padding-left:2.25rem;"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
+            <li><a href="{{ route('announcements') }}" class="{{ $active === 'announcements' ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Announcements</a></li>
             <li><a href="{{ route('calendar') }}" class="{{ $active === 'calendar' ? 'active' : '' }}"><i class="fas fa-calendar-days"></i> Calendar</a></li>
         @else
             <li><a href="{{ route('dashboard') }}" class="{{ $active === 'dashboard' ? 'active' : '' }}"><i class="fas fa-grip"></i> Dashboard</a></li>
