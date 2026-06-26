@@ -168,15 +168,16 @@
     .bento-grid {
         display: grid;
         grid-template-columns: 1fr 360px;
-        grid-template-rows: auto auto;
         gap: 1rem;
         margin-bottom: 1.5rem;
         align-items: stretch;
     }
     .bento-ann {
-        grid-column: 1; grid-row: 1 / 3;
         background: var(--card); border: 1px solid var(--border-light);
         border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .bento-right {
+        display: flex; flex-direction: column; gap: 1rem;
     }
     .bento-ann-hd {
         display: flex; align-items: center; justify-content: space-between;
@@ -234,7 +235,7 @@
     }
 
     .bento-quick {
-        grid-column: 2; grid-row: 1;
+        flex: 1;
         background: var(--card); border: 1px solid var(--border-light);
         border-radius: 12px; overflow: hidden;
     }
@@ -263,7 +264,7 @@
 
     /* ── EOD bento card ── */
     .bento-eod {
-        grid-column: 2; grid-row: 2;
+        flex-shrink: 0;
         border-radius: 12px; overflow: hidden;
     }
     .bento-eod-pending {
@@ -433,7 +434,8 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             <div class="bento-ann-empty"><i class="fas fa-bullhorn"></i> No announcements yet.</div>
             @endforelse
         </div>
-        {{-- Quick Access --}}
+        {{-- Right column --}}
+        <div class="bento-right">
         <div class="bento-quick">
             <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
             <a href="{{ route('brand-catalogs') }}" class="bento-ql">
@@ -449,6 +451,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 <div><span class="bento-ql-name">The Team</span><span class="bento-ql-desc">View your colleagues</span></div>
             </a>
         </div>
+        </div>{{-- /.bento-right --}}
     </div>
 
     @else
@@ -483,7 +486,9 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             @endforelse
         </div>
 
-        {{-- Top Right: Quick Access --}}
+        {{-- Right column --}}
+        <div class="bento-right">
+        {{-- Quick Access --}}
         <div class="bento-quick">
             <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
             @if($user->role === 'content')
@@ -523,7 +528,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             @endif
         </div>
 
-        {{-- Bottom Right: EOD Card --}}
+        {{-- EOD Card --}}
         <div class="bento-eod">
             @if($todayLog)
             <div class="bento-eod-submitted">
@@ -549,6 +554,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             </div>
             @endif
         </div>
+        </div>{{-- /.bento-right --}}
 
     </div>
 
