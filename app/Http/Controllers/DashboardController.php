@@ -86,11 +86,12 @@ class DashboardController extends Controller
         $heads = User::where('role', 'head')->get();
         $managers = User::where('role', 'manager')->get();
         $leads = User::where('role', 'lead')->get();
+        $analysts = User::where('role', 'analyst')->get();
         $researchers = User::where('role', 'researcher')->get();
         $content = User::where('role', 'content')->get();
         $graphics = User::where('role', 'graphics')->get();
         $backend = User::where('role', 'backend')->get();
 
-        return view('team', compact('heads', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend'));
+        return view('team', compact('heads', 'managers', 'leads', 'analysts', 'researchers', 'content', 'graphics', 'backend'));
     }
 }

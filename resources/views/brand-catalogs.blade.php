@@ -137,7 +137,7 @@
             <h2>Brand <span class="highlight">Catalogs</span></h2>
             <p>Browse brand catalogs and upcoming product lists</p>
         </div>
-        @if(in_array($user->role, ['head', 'manager', 'researcher']))
+        @if(in_array($user->role, ['head', 'manager', 'analyst', 'researcher']))
         <button type="button" class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="addCatalog()">
             <i class="fas fa-plus"></i> Add Catalog
         </button>
@@ -182,7 +182,7 @@
     @if($catalogs->isEmpty())
     <div class="bc-empty anim-up d2">
         <i class="fas fa-book-open"></i>
-        No catalogs found.@if(in_array($user->role, ['head', 'manager', 'researcher'])) Add one using the button above.@endif
+        No catalogs found.@if(in_array($user->role, ['head', 'manager', 'analyst', 'researcher'])) Add one using the button above.@endif
     </div>
     @else
     @php
@@ -221,7 +221,7 @@
                     <button class="bc-action-btn" title="View full details" onclick="openDetails({{ $catalog->id }})">
                         <i class="fas fa-up-right-and-down-left-from-center"></i>
                     </button>
-                    @if(in_array($user->role, ['head', 'manager', 'researcher']))
+                    @if(in_array($user->role, ['head', 'manager', 'analyst', 'researcher']))
                     <button class="bc-action-btn" title="Edit"
                         onclick="editCatalog(this)"
                         data-id="{{ $catalog->id }}"
@@ -406,7 +406,7 @@ $_catalogJson = $catalogs->getCollection()->map(function($c) {
 })->keyBy('id');
 @endphp
 var catalogData = @json($_catalogJson);
-var canEdit = {{ in_array($user->role, ['head', 'manager', 'researcher']) ? 'true' : 'false' }};
+var canEdit = {{ in_array($user->role, ['head', 'manager', 'analyst', 'researcher']) ? 'true' : 'false' }};
 var _activeDetail = null;
 
 function esc(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

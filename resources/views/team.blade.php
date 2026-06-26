@@ -143,6 +143,7 @@
     .role-badge.content    { background: #0ea5e9; color: #fff; }
     .role-badge.graphics   { background: #f59e0b; color: #fff; }
     .role-badge.backend    { background: #f43f5e; color: #fff; }
+    .role-badge.analyst    { background: #ec4899; color: #fff; }
     .role-badge.researcher { background: #10b981; color: #fff; }
 
     /* ── Empty state ─────────────────────────────────────────────── */
@@ -171,8 +172,8 @@
 
     @php
         $avatarSeed = fn($u) => ($u->gender === 'female') ? $u->username . 'Female' : $u->username;
-        $total      = $heads->count() + $managers->count() + $leads->count() + $researchers->count()
-                    + $content->count() + $graphics->count() + $backend->count();
+        $total      = $heads->count() + $managers->count() + $leads->count() + $analysts->count()
+                    + $researchers->count() + $content->count() + $graphics->count() + $backend->count();
         $viber = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" style="flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>';
     @endphp
 
@@ -194,6 +195,9 @@
         @endif
         @if($leads->count())
         <button class="tm-tab" data-filter="lead">Lead <span class="tm-tab-count">{{ $leads->count() }}</span></button>
+        @endif
+        @if($analysts->count())
+        <button class="tm-tab" data-filter="analyst">Analyst <span class="tm-tab-count">{{ $analysts->count() }}</span></button>
         @endif
         @if($researchers->count())
         <button class="tm-tab" data-filter="researcher">Researcher <span class="tm-tab-count">{{ $researchers->count() }}</span></button>
@@ -284,6 +288,30 @@
                 <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
                 @endif
             </div>
+        </div>
+        @endforeach
+    </div>
+    </div>
+    @endif
+
+    {{-- ════ ANALYST ════ --}}
+    @if($analysts->count())
+    <div class="tm-section" data-role="analyst">
+    <div class="tm-hd anim-up d4">
+        <div class="tm-hd-icon" style="background:#ec4899;"><i class="fas fa-chart-bar"></i></div>
+        <h3>Analyst</h3>
+        <span class="tm-hd-count">{{ $analysts->count() }}</span>
+        <div class="tm-hd-line"></div>
+    </div>
+    <div class="tm-members anim-up d4">
+        @foreach($analysts as $u)
+        <div class="tm-card">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge analyst">Analyst</span>
+            @if($u->mobile_number)
+            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+            @endif
         </div>
         @endforeach
     </div>

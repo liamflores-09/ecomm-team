@@ -20,6 +20,16 @@ class UserSeeder extends Seeder
             'role' => 'head',
         ]);
 
+        // Analyst
+        User::create([
+            'first_name' => 'Allyza',
+            'last_name' => '',
+            'username' => 'allyza',
+            'mobile_number' => '09011234567',
+            'password' => Hash::make('1234'),
+            'role' => 'analyst',
+        ]);
+
         // Manager
         User::create([
             'first_name' => 'Kevin',

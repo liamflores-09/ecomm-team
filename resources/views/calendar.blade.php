@@ -470,6 +470,7 @@
                     @foreach([
                         '#7c3aed' => 'Ecomm Head',
                         '#1e293b' => 'Manager',
+                        '#ec4899' => 'Analyst',
                         '#0ea5e9' => 'Content',
                         '#f59e0b' => 'Graphics',
                         '#f43f5e' => 'Backend',
@@ -623,7 +624,7 @@
         <div class="form-group">
             <label class="form-label">Assign to Role <span style="color:var(--destructive)">*</span></label>
             <x-select name="tk_role" id="tkRole"
-                :options="['head'=>'Ecomm Head','manager'=>'Manager','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher']"
+                :options="['head'=>'Ecomm Head','manager'=>'Manager','analyst'=>'Analyst','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher']"
                 selected="content"
                 placeholder="Select role"
             />
@@ -902,7 +903,7 @@ function row(icon, content) {
     return '<div class="cal-popup-row"><i class="' + icon + '"></i><span>' + content + '</span></div>';
 }
 function roleLabel(role) {
-    return { head:'Ecomm Head', content:'Content', graphics:'Graphics', backend:'Backend', researcher:'Researcher', manager:'Manager' }[role] || role;
+    return { head:'Ecomm Head', manager:'Manager', analyst:'Analyst', content:'Content', graphics:'Graphics', backend:'Backend', researcher:'Researcher' }[role] || role;
 }
 document.addEventListener('click', function(e) {
     if (!e.target.closest('#calPopup') && !e.target.closest('.fc-event')) closePopup();

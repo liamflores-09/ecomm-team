@@ -204,7 +204,7 @@ class AdminController extends Controller
             'badge'         => 'nullable|string|max:50',
             'username'      => 'required|string|max:255|unique:users',
             'password'      => 'required|string|min:6',
-            'role'          => 'required|in:head,manager,content,graphics,backend,researcher',
+            'role'          => 'required|in:head,manager,analyst,content,graphics,backend,researcher',
         ]);
 
         User::create([
@@ -236,7 +236,7 @@ class AdminController extends Controller
             'gender'        => 'required|in:male,female',
             'badge'         => 'nullable|string|max:50',
             'username'      => 'required|string|max:255|unique:users,username,' . $user->id,
-            'role'          => 'required|in:head,manager,content,graphics,backend,researcher',
+            'role'          => 'required|in:head,manager,analyst,content,graphics,backend,researcher',
             'password'      => 'nullable|string|min:6',
         ]);
 
