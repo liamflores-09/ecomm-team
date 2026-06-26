@@ -17,8 +17,8 @@
     @media (max-width: 768px) { .bc-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .bc-grid { grid-template-columns: 1fr; } }
 
-    .bc-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s; }
-    .bc-card:hover { border-color: var(--foreground); }
+    .bc-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s; cursor: pointer; }
+    .bc-card:hover { border-color: var(--primary); }
 
     .bc-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem; }
     .bc-logo { width: 40px; height: 40px; border-radius: 8px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1rem; }
@@ -209,7 +209,7 @@
     <div class="bc-grid anim-up d2">
         @foreach($catalogs as $catalog)
         @php $initColor = $initialColors[ord(strtoupper($catalog->brand->name[0])) % count($initialColors)]; @endphp
-        <div class="bc-card">
+        <div class="bc-card" onclick="openDetails({{ $catalog->id }})" role="button">
             <div class="bc-card-top">
                 <div class="bc-logo" @if(!$catalog->brand->logo) style="background: {{ $initColor }};" @endif>
                     @if($catalog->brand->logo)
@@ -225,7 +225,7 @@
             @if($catalog->notes)
             <div class="bc-notes">{{ $catalog->notes }}</div>
             @endif
-            <div class="bc-meta">
+            <div class="bc-meta" onclick="event.stopPropagation()">
                 <div class="bc-meta-left">
                     @if($catalog->link)
                     <a href="{{ $catalog->link }}" target="_blank" rel="noopener" class="bc-icon-link" title="Open link"><i class="fas fa-link"></i></a>

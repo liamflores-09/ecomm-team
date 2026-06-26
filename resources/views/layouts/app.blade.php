@@ -187,7 +187,7 @@
         }
         .sidebar-nav a:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
         .sidebar-nav a.active { background: var(--primary); color: var(--primary-foreground); font-weight: 600; }
-        .sidebar-nav a i { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-nav a i { width: 16px; text-align: center; font-size: 13px; flex-shrink: 0; }
 
         .dropdown-nav { list-style: none; padding: 0; }
         .dropdown-nav li { margin: 2px 0; }
