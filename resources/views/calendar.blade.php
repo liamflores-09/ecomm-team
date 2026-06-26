@@ -392,7 +392,7 @@
 @section('content')
 @php $user = Auth::user(); @endphp
 
-<x-sidebar :isAdmin="$user->role === 'manager'" active="calendar" />
+<x-sidebar :isAdmin="$user->isAdmin()" active="calendar" />
 
 <div class="main-content">
 
@@ -468,6 +468,7 @@
                 </div>
                 <ul class="cal-cat-list">
                     @foreach([
+                        '#7c3aed' => 'Ecomm Head',
                         '#1e293b' => 'Manager',
                         '#0ea5e9' => 'Content',
                         '#f59e0b' => 'Graphics',
@@ -622,7 +623,7 @@
         <div class="form-group">
             <label class="form-label">Assign to Role <span style="color:var(--destructive)">*</span></label>
             <x-select name="tk_role" id="tkRole"
-                :options="['content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher','manager'=>'Manager']"
+                :options="['head'=>'Ecomm Head','manager'=>'Manager','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher']"
                 selected="content"
                 placeholder="Select role"
             />
@@ -901,7 +902,7 @@ function row(icon, content) {
     return '<div class="cal-popup-row"><i class="' + icon + '"></i><span>' + content + '</span></div>';
 }
 function roleLabel(role) {
-    return { content:'Content', graphics:'Graphics', backend:'Backend', researcher:'Researcher', manager:'Manager' }[role] || role;
+    return { head:'Ecomm Head', content:'Content', graphics:'Graphics', backend:'Backend', researcher:'Researcher', manager:'Manager' }[role] || role;
 }
 document.addEventListener('click', function(e) {
     if (!e.target.closest('#calPopup') && !e.target.closest('.fc-event')) closePopup();

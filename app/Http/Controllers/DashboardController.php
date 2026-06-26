@@ -40,10 +40,10 @@ class DashboardController extends Controller
 
         $loggedTodayIds = DailyLog::where('date', $today)->pluck('user_id')->toArray();
         $missingCount = User::whereNotIn('id', $loggedTodayIds)
-            ->where('role', '!=', 'manager')
+            ->whereNotIn('role', ['manager', 'head'])
             ->count();
 
-        $totalTeam = User::where('role', '!=', 'manager')->count();
+        $totalTeam = User::whereNotIn('role', ['manager', 'head'])->count();
 
         return view('dashboard', compact(
             'user', 'todayLog', 'recentLogs', 'thisWeekTasks', 'thisMonthTasks',
@@ -83,6 +83,7 @@ class DashboardController extends Controller
 
     public function team()
     {
+        $heads = User::where('role', 'head')->get();
         $managers = User::where('role', 'manager')->get();
         $leads = User::where('role', 'lead')->get();
         $researchers = User::where('role', 'researcher')->get();
@@ -90,6 +91,6 @@ class DashboardController extends Controller
         $graphics = User::where('role', 'graphics')->get();
         $backend = User::where('role', 'backend')->get();
 
-        return view('team', compact('managers', 'leads', 'researchers', 'content', 'graphics', 'backend'));
+        return view('team', compact('heads', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend'));
     }
 }

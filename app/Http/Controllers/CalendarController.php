@@ -24,6 +24,7 @@ class CalendarController extends Controller
     }
 
     private const ROLE_COLORS = [
+        'head'       => '#7c3aed',
         'manager'    => '#1e293b',
         'content'    => '#0ea5e9',
         'graphics'   => '#f59e0b',
@@ -43,7 +44,7 @@ class CalendarController extends Controller
             ->when($start,  fn($q) => $q->where('end_datetime', '>=', $start))
             ->when($end,    fn($q) => $q->where('start_datetime', '<=', $end))
             ->when($catIds, fn($q) => $q->whereIn('category_id', (array) $catIds))
-            ->when($user->role !== 'manager', function ($q) use ($user) {
+            ->when(!in_array($user->role, ['manager', 'head']), function ($q) use ($user) {
                 $q->where(function ($inner) use ($user) {
                     $inner->doesntHave('attendees')
                           ->orWhereHas('attendees', fn($a) => $a->where('users.id', $user->id));
@@ -73,7 +74,7 @@ class CalendarController extends Controller
             ->when($start,  fn($q) => $q->where('due_date', '>=', substr($start, 0, 10)))
             ->when($end,    fn($q) => $q->where('due_date', '<=', substr($end,   0, 10)))
             ->when($catIds, fn($q) => $q->whereIn('category_id', (array) $catIds))
-            ->when($user->role !== 'manager', fn($q) => $q->where('assigned_role', $user->role))
+            ->when(!in_array($user->role, ['manager', 'head']), fn($q) => $q->where('assigned_role', $user->role))
             ->get()
             ->map(function ($t) {
                 $subtasks      = $t->subtasks;
@@ -174,7 +175,7 @@ class CalendarController extends Controller
             'category_id'       => 'required|exists:calendar_categories,id',
             'title'             => 'required|string|max:255',
             'due_date'          => 'required|date',
-            'assigned_role'     => 'required|in:content,graphics,backend,researcher,manager',
+            'assigned_role'     => 'required|in:head,content,graphics,backend,researcher,manager',
             'description'       => 'nullable|string',
             'subtasks'          => 'nullable|array',
             'subtasks.*.title'  => 'required|string|max:255',
@@ -200,11 +201,11 @@ class CalendarController extends Controller
             ]);
         }
 
-        // Notify users with the assigned role + managers, excluding creator
+        // Notify users with the assigned role + managers/head, excluding creator
         $creator = Auth::user();
         User::where(function ($q) use ($task) {
                 $q->where('role', $task->assigned_role)
-                  ->orWhere('role', 'manager');
+                  ->orWhereIn('role', ['manager', 'head']);
             })
             ->where('id', '!=', $creator->id)
             ->get()
@@ -219,7 +220,7 @@ class CalendarController extends Controller
             'category_id'   => 'required|exists:calendar_categories,id',
             'title'         => 'required|string|max:255',
             'due_date'      => 'required|date',
-            'assigned_role' => 'required|in:content,graphics,backend,researcher,manager',
+            'assigned_role' => 'required|in:head,content,graphics,backend,researcher,manager',
             'description'   => 'nullable|string',
             'subtasks'      => 'nullable|array',
             'subtasks.*.id'     => 'nullable|integer',
@@ -287,11 +288,11 @@ class CalendarController extends Controller
             $completedTask = $task;
         }
 
-        // Notify managers + creator (if different) when a parent task is completed
+        // Notify managers/head + creator (if different) when a parent task is completed
         if ($completedTask) {
             $actor = Auth::user();
             $recipients = User::where(function ($q) use ($completedTask, $actor) {
-                    $q->where('role', 'manager')
+                    $q->whereIn('role', ['manager', 'head'])
                       ->orWhere('id', $completedTask->created_by);
                 })
                 ->where('id', '!=', $actor->id)

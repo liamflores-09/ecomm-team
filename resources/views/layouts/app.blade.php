@@ -483,6 +483,7 @@
             display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
             font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
         }
+        .role-badge.head    { background: #7c3aed;         color: #fff; }
         .role-badge.manager { background: var(--primary); color: var(--primary-foreground); }
         .role-badge.lead    { background: var(--indigo);  color: #fff; }
         .role-badge.content { background: var(--sky);     color: #fff; }
@@ -664,7 +665,7 @@
                     <div class="user-menu-items">
                         <a href="{{ route('profile') }}" class="user-menu-item"><i class="fas fa-circle-user" style="width:14px;text-align:center;font-size:0.8rem;"></i> View Profile</a>
                         <div class="user-menu-divider"></div>
-                        @if(Auth::user()->role === 'manager')
+                        @if(Auth::user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="user-menu-item"><i class="fas fa-gauge" style="width:14px;text-align:center;font-size:0.8rem;"></i> Admin Dashboard</a>
                         <a href="{{ route('dashboard') }}" class="user-menu-item"><i class="fas fa-grip" style="width:14px;text-align:center;font-size:0.8rem;"></i> User View</a>
                         @else

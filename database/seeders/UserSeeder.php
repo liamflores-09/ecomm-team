@@ -10,6 +10,16 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Head (Ecomm Department Head)
+        User::create([
+            'first_name' => 'Mulawin',
+            'last_name' => 'Galang',
+            'username' => 'awin',
+            'mobile_number' => '09001234567',
+            'password' => Hash::make('1234'),
+            'role' => 'head',
+        ]);
+
         // Manager
         User::create([
             'first_name' => 'Kevin',

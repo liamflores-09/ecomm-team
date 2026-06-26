@@ -36,7 +36,12 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'manager';
+        return in_array($this->role, ['manager', 'head']);
+    }
+
+    public function isHead(): bool
+    {
+        return $this->role === 'head';
     }
 
     public function getFullNameAttribute(): string
@@ -60,6 +65,7 @@ class User extends Authenticatable
             'content' => 'Content',
             'graphics' => 'Graphics',
             'lead' => 'PR',
+            'head' => 'Ecomm Head',
             default => ucfirst($this->role),
         };
     }

@@ -40,7 +40,7 @@ class AdminController extends Controller
 
         // Today's status
         $todayLogged = DailyLog::where('date', now()->toDateString())->pluck('user_id')->unique()->count();
-        $nonManagerUsers = User::where('role', '!=', 'manager')->count();
+        $nonManagerUsers = User::whereNotIn('role', ['manager', 'head'])->count();
         $todayPending = max(0, $nonManagerUsers - $todayLogged);
 
         // Top contributor this month
@@ -105,7 +105,7 @@ class AdminController extends Controller
         $healthPct        = $nonManagerCount > 0 ? round($todayLogged / $nonManagerCount * 100) : 0;
         $healthColor      = $healthPct >= 80 ? 'var(--emerald)' : ($healthPct >= 50 ? 'var(--amber)' : 'var(--rose)');
         $avgTasksPerson   = $nonManagerCount > 0 ? round($thisMonthTasks / $nonManagerCount) : 0;
-        $allMembers       = User::where('role', '!=', 'manager')->get();
+        $allMembers       = User::whereNotIn('role', ['manager', 'head'])->get();
         $loggedUserIds    = $todayLogs->pluck('user_id')->toArray();
 
         // Sparkline — derived from $dailyTotals already in memory, no extra queries
@@ -120,7 +120,7 @@ class AdminController extends Controller
         }
 
         // Per-role breakdown
-        $roleMemberCounts = User::where('role', '!=', 'manager')
+        $roleMemberCounts = User::whereNotIn('role', ['manager', 'head'])
             ->select('role', DB::raw('COUNT(*) as count'))
             ->groupBy('role')
             ->get()->keyBy('role');
@@ -128,7 +128,7 @@ class AdminController extends Controller
         // Per-role daily totals for last 7 days (one query, grouped by role + date)
         $roleWeeklyRaw = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->where('users.role', '!=', 'manager')
+            ->whereNotIn('users.role', ['manager', 'head'])
             ->select(
                 'users.role',
                 'daily_logs.date',
@@ -186,8 +186,8 @@ class AdminController extends Controller
     {
         $users        = User::all();
         $totalCount   = $users->count();
-        $memberCount  = $users->where('role', '!=', 'manager')->count();
-        $managerCount = $users->where('role', 'manager')->count();
+        $memberCount  = $users->whereNotIn('role', ['manager', 'head'])->count();
+        $managerCount = $users->whereIn('role', ['manager', 'head'])->count();
         $roleCount    = $users->pluck('role')->unique()->count();
 
         return view('admin.users', compact('users', 'totalCount', 'memberCount', 'managerCount', 'roleCount'))
@@ -204,7 +204,7 @@ class AdminController extends Controller
             'badge'         => 'nullable|string|max:50',
             'username'      => 'required|string|max:255|unique:users',
             'password'      => 'required|string|min:6',
-            'role'          => 'required|in:manager,content,graphics,backend,researcher',
+            'role'          => 'required|in:head,manager,content,graphics,backend,researcher',
         ]);
 
         User::create([
@@ -236,7 +236,7 @@ class AdminController extends Controller
             'gender'        => 'required|in:male,female',
             'badge'         => 'nullable|string|max:50',
             'username'      => 'required|string|max:255|unique:users,username,' . $user->id,
-            'role'          => 'required|in:manager,content,graphics,backend,researcher',
+            'role'          => 'required|in:head,manager,content,graphics,backend,researcher',
             'password'      => 'nullable|string|min:6',
         ]);
 
@@ -344,7 +344,7 @@ class AdminController extends Controller
         $prodLabels = $userProductivity->pluck('username')->toArray();
         $prodData = $userProductivity->pluck('total_tasks')->toArray();
 
-        $todayLogs = User::where('role', '!=', 'manager');
+        $todayLogs = User::whereNotIn('role', ['manager', 'head']);
         if ($roleFilter) {
             $todayLogs->where('role', $roleFilter);
         }
@@ -383,7 +383,7 @@ class AdminController extends Controller
             ->toArray();
 
         $missingLogs = User::whereNotIn('id', $loggedTodayUserIds)
-            ->where('role', '!=', 'manager');
+            ->whereNotIn('role', ['manager', 'head']);
         if ($roleFilter) {
             $missingLogs->where('role', $roleFilter);
         }
@@ -393,7 +393,7 @@ class AdminController extends Controller
         $missingLogsByRole = $missingLogs->groupBy('role');
 
         // Member log status for role filter
-        $members = User::where('role', '!=', 'manager');
+        $members = User::whereNotIn('role', ['manager', 'head']);
         if ($roleFilter) {
             $members = $members->where('role', $roleFilter);
         }
@@ -478,14 +478,14 @@ class AdminController extends Controller
 
         $dlRoleWeeklyRaw = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->where('users.role', '!=', 'manager')
+            ->whereNotIn('users.role', ['manager', 'head'])
             ->select('users.role', 'daily_logs.date',
                 DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
             ->groupBy('users.role', 'daily_logs.date')
             ->get()->groupBy('role')
             ->map(fn($rows) => $rows->keyBy(fn($r) => $r->date->format('Y-m-d')));
 
-        $dlRoleMemberCounts = User::where('role', '!=', 'manager')
+        $dlRoleMemberCounts = User::whereNotIn('role', ['manager', 'head'])
             ->select('role', DB::raw('COUNT(*) as count'))->groupBy('role')
             ->get()->keyBy('role');
 
@@ -509,7 +509,7 @@ class AdminController extends Controller
         // ── Per-role top contributors (last 7 days) ────────────────────────────
         $dlRoleTopContributors = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->where('users.role', '!=', 'manager')
+            ->whereNotIn('users.role', ['manager', 'head'])
             ->when($roleFilter, fn($q) => $q->where('users.role', $roleFilter))
             ->select('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge',
                 DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))

@@ -137,6 +137,7 @@
         display: inline-block; padding: 0.18rem 0.5rem; border-radius: 8px;
         font-size: 0.59rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
     }
+    .role-badge.head       { background: #7c3aed; color: #fff; }
     .role-badge.manager    { background: #1e293b; color: #fff; }
     .role-badge.lead       { background: #6366f1; color: #fff; }
     .role-badge.content    { background: #0ea5e9; color: #fff; }
@@ -170,7 +171,7 @@
 
     @php
         $avatarSeed = fn($u) => ($u->gender === 'female') ? $u->username . 'Female' : $u->username;
-        $total      = $managers->count() + $leads->count() + $researchers->count()
+        $total      = $heads->count() + $managers->count() + $leads->count() + $researchers->count()
                     + $content->count() + $graphics->count() + $backend->count();
         $viber = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" style="flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>';
     @endphp
@@ -185,6 +186,9 @@
     {{-- Role tabs --}}
     <div class="tm-tabs anim-up d1">
         <button class="tm-tab active" data-filter="all">All <span class="tm-tab-count">{{ $total }}</span></button>
+        @if($heads->count())
+        <button class="tm-tab" data-filter="head">Ecomm Head <span class="tm-tab-count">{{ $heads->count() }}</span></button>
+        @endif
         @if($managers->count())
         <button class="tm-tab" data-filter="manager">Manager <span class="tm-tab-count">{{ $managers->count() }}</span></button>
         @endif
@@ -204,6 +208,33 @@
         <button class="tm-tab" data-filter="backend">Backend <span class="tm-tab-count">{{ $backend->count() }}</span></button>
         @endif
     </div>
+
+    {{-- ════ HEAD ════ --}}
+    @if($heads->count())
+    <div class="tm-section" data-role="head">
+    <div class="tm-hd anim-up d2">
+        <div class="tm-hd-icon" style="background:#7c3aed;"><i class="fas fa-crown"></i></div>
+        <h3>Ecomm Head</h3>
+        <span class="tm-hd-count">{{ $heads->count() }}</span>
+        <div class="tm-hd-line"></div>
+    </div>
+    <div class="tm-leaders anim-up d2">
+        @foreach($heads as $u)
+        <div class="tm-lcard">
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Ecomm Department Head</div>
+                <span class="role-badge head">Ecomm Head</span>
+                @if($u->mobile_number)
+                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
+                @endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+    </div>
+    @endif
 
     {{-- ════ MANAGER ════ --}}
     @if($managers->count())

@@ -71,7 +71,7 @@ class DailyLogController extends Controller
 
         if ($log->wasRecentlyCreated) {
             $submitter = Auth::user();
-            User::where('role', 'manager')->get()
+            User::whereIn('role', ['manager', 'head'])->get()
                 ->each(fn($admin) => $admin->notify(new EodSubmitted($submitter, $validated['date'])));
         }
 

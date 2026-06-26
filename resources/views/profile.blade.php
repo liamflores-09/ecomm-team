@@ -44,7 +44,7 @@
 @endsection
 
 @section('content')
-@php $isAdmin = $user->role === 'manager'; @endphp
+@php $isAdmin = $user->isAdmin(); @endphp
 <x-sidebar :isAdmin="$isAdmin" active="profile" />
 
 <div class="main-content">
