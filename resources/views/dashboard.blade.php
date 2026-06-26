@@ -226,6 +226,26 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
     </div>
 
+    {{-- ── Announcements preview ── --}}
+    @if($recentAnnouncements->count())
+    <div class="anim-up" style="margin-bottom:1.5rem;">
+        @foreach($recentAnnouncements as $ann)
+        <div style="background:var(--card);border:1px solid var(--border-light);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem;{{ $ann->pinned ? 'border-top:3px solid #f59e0b;' : '' }}">
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.375rem;">
+                @if($ann->pinned)<i class="fas fa-thumbtack" style="color:#f59e0b;font-size:0.7rem;margin-top:4px;flex-shrink:0;"></i>@endif
+                <span style="font-weight:800;font-size:0.925rem;flex:1;">{{ $ann->title }}</span>
+                <a href="{{ route('announcements') }}" style="font-size:0.72rem;font-weight:600;color:var(--muted-foreground);text-decoration:none;white-space:nowrap;flex-shrink:0;">View all</a>
+            </div>
+            <div style="font-size:0.82rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ $ann->body }}</div>
+            <div style="font-size:0.7rem;color:var(--gray-400);font-weight:600;margin-top:0.5rem;">
+                {{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}
+                @if($ann->expires_at)<span style="margin-left:0.5rem;color:#f59e0b;"> · Expires {{ $ann->expires_at->format('M d') }}</span>@endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @endif
+
     @if($user->role === 'analyst')
 
     {{-- ── Analyst: Catalog Stats ── --}}

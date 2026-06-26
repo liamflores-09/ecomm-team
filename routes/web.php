@@ -8,6 +8,7 @@ use App\Http\Controllers\BrandCatalogController;
 use App\Http\Controllers\AdminBrandController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,17 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/team', [DashboardController::class, 'team'])->name('team');
+
+    // Announcements — all users can view
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements');
+
+    // Announcements CRUD — head, manager, analyst only
+    Route::middleware(['announcement.poster'])->group(function () {
+        Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+        Route::patch('/announcements/{announcement}/pin', [AnnouncementController::class, 'togglePin'])->name('announcements.pin');
+    });
 
     // Brand Catalogs — all authenticated users can browse
     Route::get('/brand-catalogs', [BrandCatalogController::class, 'index'])->name('brand-catalogs');

@@ -28,6 +28,7 @@
             <li><a href="{{ route('end-of-day') }}" class="{{ $active === 'end-of-day' ? 'active' : '' }}"><i class="fas fa-calendar-check"></i> EOD Report</a></li>
             <li><a href="{{ route('important-links') }}" class="{{ $active === 'important-links' ? 'active' : '' }}"><i class="fas fa-link"></i> Important Links</a></li>
             @endif
+            <li><a href="{{ route('announcements') }}" class="{{ $active === 'announcements' ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Announcements</a></li>
             <li><a href="{{ route('brand-catalogs') }}" class="{{ $active === 'brand-catalogs' ? 'active' : '' }}"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
 
             @if(Auth::user()->role !== 'analyst')

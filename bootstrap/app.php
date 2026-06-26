@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin'            => \App\Http\Middleware\AdminMiddleware::class,
             'catalog.manager'  => \App\Http\Middleware\CatalogManagerMiddleware::class,
-            'not.analyst'      => \App\Http\Middleware\NotAnalystMiddleware::class,
+            'not.analyst'         => \App\Http\Middleware\NotAnalystMiddleware::class,
+            'announcement.poster' => \App\Http\Middleware\AnnouncementPosterMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

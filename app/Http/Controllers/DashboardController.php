@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use App\Models\User;
 use App\Models\DailyLog;
 use App\Models\BrandCatalog;
@@ -57,9 +58,17 @@ class DashboardController extends Controller
 
         $totalTeam = User::whereNotIn('role', ['manager', 'head'])->count();
 
+        $recentAnnouncements = Announcement::with('creator')
+            ->active()
+            ->orderByDesc('pinned')
+            ->orderByDesc('created_at')
+            ->take(2)
+            ->get();
+
         return view('dashboard', compact(
             'user', 'todayLog', 'recentLogs', 'thisWeekTasks', 'thisMonthTasks',
-            'teamLogsToday', 'missingCount', 'totalTeam', 'catalogStats'
+            'teamLogsToday', 'missingCount', 'totalTeam', 'catalogStats',
+            'recentAnnouncements'
         ));
     }
 
