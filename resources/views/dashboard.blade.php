@@ -192,11 +192,51 @@
     }
     .bento-ann-hd h4 { font-size: 0.85rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
     .bento-ann-hd a { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-decoration: none; }
-    .bento-ann-item { padding: 0.875rem 1.25rem; }
-    .bento-ann-item + .bento-ann-item { border-top: 1px solid var(--border-light); }
-    .bento-ann-item.pinned { border-left: 3px solid #f59e0b; }
+    .bento-ann-item {
+        display: block; text-decoration: none; color: inherit;
+        padding: 0.875rem 1.25rem; border-top: 1px solid var(--border-light);
+        transition: background 0.12s; cursor: pointer;
+    }
+    .bento-ann-item:first-of-type { border-top: none; }
+    .bento-ann-item:hover { background: var(--muted); }
+    .bento-ann-item.pinned { border-left: 3px solid #f59e0b; padding-left: calc(1.25rem - 3px); }
+    .bento-ann-item-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .bento-ann-pin-badge {
+        display: inline-flex; align-items: center; gap: 0.2rem;
+        padding: 0.1rem 0.375rem; background: rgba(245,158,11,0.1); color: #d97706;
+        border-radius: 9999px; font-size: 0.57rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0;
+    }
+    .bento-ann-title { font-weight: 700; font-size: 0.875rem; line-height: 1.3; flex: 1; color: var(--fg); }
+    .bento-ann-body {
+        font-size: 0.79rem; color: var(--muted-foreground); font-weight: 500;
+        line-height: 1.55; overflow: hidden; display: -webkit-box;
+        -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 0.375rem;
+    }
+    .bento-ann-foot { display: flex; align-items: center; gap: 0.625rem; }
+    .bento-ann-author { font-size: 0.68rem; font-weight: 600; color: var(--gray-400); }
+    .bento-ann-expiry { font-size: 0.64rem; font-weight: 700; color: #d97706; display: inline-flex; align-items: center; gap: 0.2rem; }
     .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
     .bento-ann-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.25; }
+
+    /* ── Banner toggle ── */
+    .wb-toggle {
+        position: absolute; top: 0.875rem; right: 0.875rem; z-index: 4;
+        width: 28px; height: 28px; border-radius: 7px;
+        background: rgba(255,255,255,0.18); border: none; color: white;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        font-size: 0.72rem; transition: background 0.15s;
+    }
+    .wb-toggle:hover { background: rgba(255,255,255,0.3); }
+    .welcome-banner.collapsed { min-height: unset; padding: 0.75rem 1rem; }
+    .welcome-banner.collapsed .wb-content,
+    .welcome-banner.collapsed .wb-avatar-zone { display: none; }
+    .welcome-banner.collapsed .wb-toggle { top: 50%; transform: translateY(-50%); }
+    .wb-collapsed-label {
+        display: none; color: rgba(255,255,255,0.85); font-size: 0.8rem;
+        font-weight: 600; flex: 1;
+    }
+    .welcome-banner.collapsed .wb-collapsed-label { display: block; }
 
     .bento-quick {
         grid-column: 2; grid-row: 1;
@@ -306,7 +346,11 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
 
 <div class="main-content">
     <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up" style="--wb-color: {{ $roleColor }}; background: var(--wb-color);">
+    <div class="welcome-banner anim-up" id="welcomeBanner" style="--wb-color: {{ $roleColor }}; background: var(--wb-color);">
+        <span class="wb-collapsed-label"><i class="fas fa-hand-wave" style="margin-right:0.4rem;"></i>Welcome back, {{ $user->first_name }}!</span>
+        <button class="wb-toggle" id="wbToggle" title="Toggle banner" onclick="toggleBanner()">
+            <i class="fas fa-chevron-up" id="wbToggleIcon"></i>
+        </button>
         <div class="wb-content">
             <h2>Welcome back, {{ $user->first_name }}!</h2>
             @if($user->role === 'content')
@@ -375,17 +419,21 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 <a href="{{ route('announcements') }}">View all →</a>
             </div>
             @forelse($recentAnnouncements as $ann)
-            <div class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
-                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.3rem;">
-                    @if($ann->pinned)<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.1rem 0.375rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.57rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>@endif
-                    <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;">{{ $ann->title }}</span>
+            <a href="{{ route('announcements') }}" class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                <div class="bento-ann-item-top">
+                    @if($ann->pinned)
+                    <span class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</span>
+                    @endif
+                    <span class="bento-ann-title">{{ $ann->title }}</span>
                 </div>
-                <div style="font-size:0.79rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.35rem;">{{ $ann->body }}</div>
-                <div style="display:flex;align-items:center;gap:0.625rem;">
-                    <span style="font-size:0.68rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
-                    @if($ann->expires_at)<span style="font-size:0.64rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.2rem;"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>@endif
+                <div class="bento-ann-body">{{ $ann->body }}</div>
+                <div class="bento-ann-foot">
+                    <span class="bento-ann-author"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    @if($ann->expires_at)
+                    <span class="bento-ann-expiry"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>
+                    @endif
                 </div>
-            </div>
+            </a>
             @empty
             <div class="bento-ann-empty"><i class="fas fa-bullhorn"></i> No announcements yet.</div>
             @endforelse
@@ -420,17 +468,21 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 <a href="{{ route('announcements') }}">View all →</a>
             </div>
             @forelse($recentAnnouncements as $ann)
-            <div class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
-                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.3rem;">
-                    @if($ann->pinned)<span style="display:inline-flex;align-items:center;gap:0.2rem;padding:0.1rem 0.375rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.57rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>@endif
-                    <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;">{{ $ann->title }}</span>
+            <a href="{{ route('announcements') }}" class="bento-ann-item {{ $ann->pinned ? 'pinned' : '' }}">
+                <div class="bento-ann-item-top">
+                    @if($ann->pinned)
+                    <span class="bento-ann-pin-badge"><i class="fas fa-thumbtack"></i> Pinned</span>
+                    @endif
+                    <span class="bento-ann-title">{{ $ann->title }}</span>
                 </div>
-                <div style="font-size:0.79rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.35rem;">{{ $ann->body }}</div>
-                <div style="display:flex;align-items:center;gap:0.625rem;">
-                    <span style="font-size:0.68rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
-                    @if($ann->expires_at)<span style="font-size:0.64rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.2rem;"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>@endif
+                <div class="bento-ann-body">{{ $ann->body }}</div>
+                <div class="bento-ann-foot">
+                    <span class="bento-ann-author"><i class="fas fa-user" style="font-size:0.58rem;margin-right:2px;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
+                    @if($ann->expires_at)
+                    <span class="bento-ann-expiry"><i class="fas fa-hourglass-half"></i> Exp {{ $ann->expires_at->format('M d') }}</span>
+                    @endif
                 </div>
-            </div>
+            </a>
             @empty
             <div class="bento-ann-empty"><i class="fas fa-bullhorn"></i> No announcements yet.</div>
             @endforelse
@@ -595,6 +647,22 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
 @endsection
 
 @section('scripts')
+<script>
+(function() {
+    var banner = document.getElementById('welcomeBanner');
+    var icon   = document.getElementById('wbToggleIcon');
+    if (!banner) return;
+    if (localStorage.getItem('wb_hidden') === '1') {
+        banner.classList.add('collapsed');
+        icon.className = 'fas fa-chevron-down';
+    }
+    window.toggleBanner = function() {
+        var collapsed = banner.classList.toggle('collapsed');
+        icon.className = collapsed ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+        localStorage.setItem('wb_hidden', collapsed ? '1' : '0');
+    };
+})();
+</script>
 @if($user->role !== 'analyst')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
