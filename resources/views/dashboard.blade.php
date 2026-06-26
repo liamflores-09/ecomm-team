@@ -228,34 +228,24 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
 
     {{-- ── Announcements preview ── --}}
     @if($recentAnnouncements->count())
-    <div class="anim-up" style="margin-bottom:1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.625rem;">
-            <span style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-400);display:flex;align-items:center;gap:0.375rem;">
-                <i class="fas fa-bullhorn" style="font-size:0.65rem;"></i> Announcements
-            </span>
-            <a href="{{ route('announcements') }}" style="font-size:0.72rem;font-weight:700;color:var(--primary);text-decoration:none;">View all →</a>
+    <div class="logs-section anim-up" style="margin-bottom:1.5rem;">
+        <div class="logs-header">
+            <h4><i class="fas fa-bullhorn" style="margin-right:0.5rem;color:var(--primary);"></i>Announcements</h4>
+            <a href="{{ route('announcements') }}">View all →</a>
         </div>
         @foreach($recentAnnouncements as $ann)
-        <div style="background:var(--card);border:1px solid var(--border-light);border-radius:10px;overflow:hidden;margin-bottom:0.625rem;{{ $ann->pinned ? 'border-left:3px solid #f59e0b;' : '' }}">
-            <div style="padding:0.875rem 1rem 0.75rem;">
-                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.4rem;">
-                    @if($ann->pinned)
-                    <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.15rem 0.45rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.58rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;">
-                        <i class="fas fa-thumbtack"></i> Pinned
-                    </span>
-                    @endif
-                    <span style="font-weight:800;font-size:0.875rem;line-height:1.3;flex:1;color:var(--fg);">{{ $ann->title }}</span>
-                </div>
-                <div style="font-size:0.8rem;color:var(--muted-foreground);font-weight:500;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ $ann->body }}</div>
+        <div style="padding:0.875rem 1.25rem;{{ !$loop->last ? 'border-bottom:1px solid var(--border-light);' : '' }}{{ $ann->pinned ? 'border-left:3px solid #f59e0b;' : '' }}">
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.35rem;">
+                @if($ann->pinned)
+                <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.12rem 0.4rem;background:rgba(245,158,11,0.1);color:#d97706;border-radius:9999px;font-size:0.58rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;margin-top:2px;"><i class="fas fa-thumbtack"></i> Pinned</span>
+                @endif
+                <span style="font-weight:700;font-size:0.875rem;line-height:1.3;flex:1;color:var(--fg);">{{ $ann->title }}</span>
             </div>
-            <div style="padding:0.5rem 1rem;background:var(--muted);border-top:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;">
-                <span style="font-size:0.69rem;font-weight:600;color:var(--gray-400);">
-                    <i class="fas fa-user" style="margin-right:3px;font-size:0.6rem;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}
-                </span>
+            <div style="font-size:0.8rem;color:var(--muted-foreground);font-weight:500;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:0.4rem;">{{ $ann->body }}</div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.69rem;font-weight:600;color:var(--gray-400);"><i class="fas fa-user" style="margin-right:2px;font-size:0.6rem;"></i>{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
                 @if($ann->expires_at)
-                <span style="font-size:0.65rem;font-weight:700;color:#d97706;display:flex;align-items:center;gap:0.25rem;">
-                    <i class="fas fa-hourglass-half"></i> Expires {{ $ann->expires_at->format('M d') }}
-                </span>
+                <span style="font-size:0.65rem;font-weight:700;color:#d97706;display:inline-flex;align-items:center;gap:0.25rem;"><i class="fas fa-hourglass-half"></i> Expires {{ $ann->expires_at->format('M d') }}</span>
                 @endif
             </div>
         </div>
