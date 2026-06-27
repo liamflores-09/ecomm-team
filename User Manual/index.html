@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecomm Dept — User Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ── Design Tokens ── */
+:root {
+  --graphite:   #0a0a0a;
+  --pure-black: #000000;
+  --carbon:     #171717;
+  --concrete:   #737373;
+  --ash:        #a1a1a1;
+  --smoke:      #b9b9b9;
+  --hairline:   #e5e5e5;
+  --mist:       #f2f2f2;
+  --chalk:      #ffffff;
+
+  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+
+  --text-caption:  12px;
+  --text-body:     14px;
+  --text-sub:      18px;
+  --text-display:  48px;
+
+  --radius-sm:   4px;
+  --radius-nav:  10px;
+  --radius-card: 14px;
+  --radius-pill: 9999px;
+  --radius-badge:26px;
+  --radius-input:10px;
+  --radius-btn:  10px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 14px; }
+* { scroll-margin-top: 80px; }
+body { font-family: var(--font); background: var(--chalk); color: var(--graphite); line-height: 1.43; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: var(--radius-pill); }
+
+/* ── Reading progress ── */
+#progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: var(--graphite); width: 0; z-index: 1000; transition: width 0.08s linear; }
+
+/* ── Top bar ── */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 57px; z-index: 200;
+  background: var(--chalk); border-bottom: 1px solid var(--hairline);
+  display: flex; align-items: center; gap: 12px; padding: 0 20px;
+}
+.tb-wordmark { display: flex; align-items: center; gap: 8px; }
+.tb-logo { width: 28px; height: 28px; background: var(--graphite); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--chalk); font-size: 10px; font-weight: 600; letter-spacing: -0.3px; flex-shrink: 0; }
+.tb-name { font-size: 14px; font-weight: 600; color: var(--graphite); }
+.tb-sep { color: var(--hairline); font-size: 18px; font-weight: 300; line-height: 1; }
+.tb-doc { font-size: 13px; color: var(--concrete); font-weight: 400; }
+.tb-search { position: relative; margin-left: auto; }
+.tb-search i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--ash); pointer-events: none; }
+#search-input {
+  width: 220px; height: 32px; background: var(--chalk);
+  border: 1px solid var(--hairline); border-radius: var(--radius-input);
+  padding: 0 10px 0 28px; font-size: 13px; font-family: var(--font);
+  color: var(--graphite); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+}
+#search-input::placeholder { color: var(--ash); }
+#search-input:focus { border-color: var(--graphite); box-shadow: 0 0 0 3px rgba(10,10,10,0.06); }
+#search-results {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
+  width: 300px; background: var(--chalk); border: 1px solid var(--hairline);
+  border-radius: var(--radius-card); overflow: hidden;
+  box-shadow: oklab(0.145 -0.00000143796 0.00000340492 / 0.1) 0px 0px 0px 1px,
+              0 8px 24px rgba(0,0,0,0.08);
+}
+#search-results.open { display: block; }
+.sr-empty { padding: 12px 14px; font-size: 13px; color: var(--concrete); }
+.sr-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--hairline); }
+.sr-item:last-child { border-bottom: none; }
+.sr-item:hover { background: var(--mist); }
+.sr-icon { width: 24px; height: 24px; border-radius: var(--radius-sm); background: var(--mist); color: var(--graphite); display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; }
+.sr-title { font-size: 13px; font-weight: 500; color: var(--graphite); }
+.sr-sub { font-size: 11px; color: var(--concrete); }
+#mobile-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--concrete); font-size: 15px; padding: 4px; }
+#toc-toggle { display: none; background: none; border: 1px solid var(--hairline); border-radius: var(--radius-nav); cursor: pointer; color: var(--concrete); font-size: 12px; font-weight: 500; padding: 5px 10px; gap: 5px; align-items: center; margin-left: 8px; }
+
+/* ── Right TOC ── */
+#toc { position: fixed; top: 80px; right: 32px; width: 164px; z-index: 100; }
+.toc-label { font-size: 11px; font-weight: 600; color: var(--ash); text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1px solid var(--hairline); }
+.toc-group { font-size: 10px; font-weight: 600; color: var(--ash); text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 0 3px 10px; }
+.toc-link { display: block; font-size: 12.5px; color: var(--concrete); padding: 3px 0 3px 12px; border-left: 1.5px solid transparent; line-height: 1.4; transition: color 0.1s, border-color 0.1s; }
+.toc-link:hover { color: var(--graphite); }
+.toc-link.active { color: var(--graphite); font-weight: 500; border-left-color: var(--graphite); }
+
+/* Mobile TOC drawer */
+#toc-drawer { display: none; position: fixed; top: 57px; left: 0; right: 0; bottom: 0; z-index: 150; background: var(--chalk); overflow-y: auto; padding: 16px 20px 40px; }
+#toc-drawer.open { display: block; }
+.toc-drawer-close { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid var(--hairline); padding-bottom: 12px; }
+.toc-drawer-close span { font-size: 13px; font-weight: 600; color: var(--graphite); }
+.toc-drawer-close button { background: none; border: none; cursor: pointer; color: var(--concrete); font-size: 14px; }
+.toc-d-group { font-size: 11px; font-weight: 600; color: var(--ash); text-transform: uppercase; letter-spacing: 0.05em; padding: 14px 0 5px; }
+.toc-d-link { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: var(--radius-nav); font-size: 14px; color: var(--concrete); border-bottom: 1px solid var(--hairline); }
+.toc-d-link:last-child { border-bottom: none; }
+.toc-d-link:hover, .toc-d-link.active { background: var(--mist); color: var(--graphite); }
+.toc-d-link i { width: 14px; text-align: center; font-size: 11px; flex-shrink: 0; }
+
+/* ── Main ── */
+#main { margin-top: 57px; padding: 0 48px 80px; display: flex; flex-direction: column; align-items: center; }
+#main > .section, #main > .divider, #main > .footer { width: 100%; max-width: 760px; }
+
+/* ── Hero ── */
+.hero { padding: 64px 0 48px; border-bottom: 1px solid var(--hairline); margin-bottom: 48px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--mist); border-radius: var(--radius-badge); padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--graphite); margin-bottom: 20px; }
+.hero h1 { font-size: var(--text-display); font-weight: 600; letter-spacing: -2.4px; line-height: 1.1; color: var(--graphite); margin-bottom: 16px; }
+.hero-lead { font-size: 16px; color: var(--concrete); line-height: 1.6; max-width: 480px; margin-bottom: 28px; letter-spacing: -0.15px; }
+.hero-actions { display: flex; align-items: center; gap: 8px; margin-bottom: 40px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 500; font-family: var(--font); cursor: pointer; transition: background 0.12s; border: none; text-decoration: none; }
+.btn-primary { background: var(--graphite); color: var(--chalk); }
+.btn-primary:hover { background: #1a1a1a; }
+.btn-ghost { background: transparent; color: var(--graphite); border: 1px solid var(--hairline); }
+.btn-ghost:hover { background: var(--mist); }
+.hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--hairline); border-radius: var(--radius-card); overflow: hidden; }
+.hero-stat { padding: 20px 24px; border-right: 1px solid var(--hairline); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat .n { font-size: 32px; font-weight: 600; letter-spacing: -1.5px; color: var(--graphite); line-height: 1; margin-bottom: 4px; }
+.hero-stat .l { font-size: 12px; color: var(--concrete); }
+
+/* ── Section ── */
+.section { margin-bottom: 48px; }
+.sec-header { margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.sec-title { font-size: 18px; font-weight: 600; color: var(--graphite); letter-spacing: -0.45px; line-height: 1.3; }
+.sec-desc { font-size: 14px; color: var(--concrete); line-height: 1.6; margin-top: 4px; }
+
+/* ── Cards ── */
+.card { background: var(--chalk); border: 1px solid var(--hairline); border-radius: var(--radius-card); overflow: hidden; margin-bottom: 10px; }
+.card-header { padding: 12px 16px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--graphite); }
+.card-body { padding: 16px; }
+.card-sub { font-size: 12px; color: var(--concrete); }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--hairline); margin: 48px 0; }
+
+/* ── Badges / Tags ── */
+.badge { display: inline-flex; align-items: center; gap: 4px; background: var(--mist); color: var(--graphite); border-radius: var(--radius-badge); padding: 3px 10px; font-size: 12px; font-weight: 500; }
+.badge-dark { background: var(--graphite); color: var(--chalk); }
+.badge-outline { background: transparent; border: 1px solid var(--hairline); color: var(--concrete); }
+
+/* ── Role tags — color differentiated ── */
+.role { display: inline-flex; align-items: center; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: var(--radius-badge); border: 1px solid transparent; }
+.role-head       { background: #f3f0ff; color: #7c3aed; border-color: #ddd6fe; }
+.role-manager    { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+.role-lead       { background: #eef2ff; color: #4338ca; border-color: #c7d2fe; }
+.role-analyst    { background: #fdf2f8; color: #be185d; border-color: #fbcfe8; }
+.role-researcher { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.role-content    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.role-graphics   { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+.role-backend    { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
+/* ── Callouts ── */
+.callout { display: flex; gap: 12px; padding: 12px 16px; border-radius: var(--radius-card); font-size: 13px; line-height: 1.6; margin: 12px 0; }
+.callout i { font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+.callout-note   { background: var(--mist); border: 1px solid var(--hairline); color: var(--graphite); }
+.callout-note i { color: var(--concrete); }
+.callout-warn   { background: var(--chalk); border: 1px solid var(--hairline); border-left: 2px solid var(--graphite); color: var(--graphite); }
+.callout-warn i { color: var(--graphite); }
+.callout-danger { background: var(--graphite); color: var(--chalk); border-radius: var(--radius-card); }
+.callout-danger i { color: var(--ash); }
+.callout-dark   { background: var(--carbon); color: rgba(255,255,255,0.75); border-radius: var(--radius-card); }
+.callout-dark i { color: var(--ash); }
+
+/* ── Steps ── */
+.steps { display: flex; flex-direction: column; }
+.step { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ''; position: absolute; left: 11px; top: 26px; bottom: 0; width: 1px; background: var(--hairline); }
+.step:last-child::before { display: none; }
+.step-n { width: 24px; height: 24px; border-radius: var(--radius-pill); background: var(--graphite); color: var(--chalk); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
+.step-body { padding-top: 3px; }
+.step-body h4 { font-size: 14px; font-weight: 600; color: var(--graphite); margin-bottom: 4px; }
+.step-body p { font-size: 13px; color: var(--concrete); line-height: 1.6; }
+.step-body ul { list-style: none; margin-top: 6px; }
+.step-body ul li { font-size: 13px; color: var(--concrete); padding: 2px 0; display: flex; gap: 6px; }
+.step-body ul li::before { content: '—'; color: var(--ash); flex-shrink: 0; }
+
+/* ── Feature rows ── */
+.f-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--hairline); }
+.f-row:last-child { border-bottom: none; }
+.f-icon { width: 28px; height: 28px; border-radius: var(--radius-nav); background: var(--mist); border: 1px solid var(--hairline); color: var(--graphite); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+.f-row h4 { font-size: 14px; font-weight: 500; color: var(--graphite); margin-bottom: 2px; }
+.f-row p { font-size: 13px; color: var(--concrete); line-height: 1.6; }
+
+/* ── Info grid ── */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.info-cell { border: 1px solid var(--hairline); border-radius: var(--radius-nav); padding: 12px; }
+.info-cell .lbl { font-size: 11px; font-weight: 500; color: var(--concrete); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.info-cell .val { font-size: 13px; font-weight: 500; color: var(--graphite); }
+.info-cell .sub { font-size: 12px; color: var(--concrete); margin-top: 2px; }
+
+/* ── Attendance codes ── */
+.att-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.att-item { display: flex; align-items: center; gap: 10px; border: 1px solid var(--hairline); border-radius: var(--radius-nav); padding: 10px 12px; }
+.att-code { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--graphite); background: var(--mist); padding: 2px 7px; border-radius: var(--radius-sm); flex-shrink: 0; letter-spacing: 0.03em; }
+.att-item span { font-size: 12px; color: var(--concrete); }
+
+/* ── Task fields ── */
+.task-row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
+.task-row:last-child { border-bottom: none; }
+.task-n { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--mist); border: 1px solid var(--hairline); font-size: 11px; font-weight: 600; color: var(--graphite); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-mono); }
+.task-row h4 { font-size: 14px; font-weight: 500; color: var(--graphite); margin-bottom: 2px; }
+.task-row p { font-size: 13px; color: var(--concrete); line-height: 1.6; }
+
+/* ── Role card grid ── */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.role-card { border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 16px; }
+.role-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.role-card p { font-size: 13px; color: var(--concrete); line-height: 1.65; }
+
+/* ── Permission table ── */
+.perm-wrap { overflow-x: auto; }
+.perm-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.perm-table thead tr { border-bottom: 1px solid var(--hairline); }
+.perm-table th { padding: 10px 8px; text-align: center; font-size: 11px; font-weight: 500; color: var(--concrete); }
+.perm-table th:first-child { text-align: left; padding-left: 16px; }
+.perm-table td { padding: 9px 8px; text-align: center; border-bottom: 1px solid var(--hairline); color: var(--concrete); }
+.perm-table td:first-child { text-align: left; padding-left: 16px; font-weight: 500; color: var(--graphite); }
+.perm-table tr:hover td { background: var(--mist); }
+.perm-table .g-row td { background: var(--mist); font-size: 11px; font-weight: 600; color: var(--concrete); letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 8px 6px 16px; text-align: left; }
+.perm-yes { color: var(--graphite); font-size: 12px; }
+.perm-no { color: var(--hairline); font-size: 12px; }
+
+/* ── KPI grid ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--hairline); border-radius: var(--radius-card); overflow: hidden; margin: 12px 0; }
+.kpi-cell { padding: 20px 16px; border-right: 1px solid var(--hairline); text-align: center; }
+.kpi-cell:last-child { border-right: none; }
+.kpi-n { font-size: 28px; font-weight: 600; letter-spacing: -1px; color: var(--graphite); line-height: 1; margin-bottom: 4px; }
+.kpi-l { font-size: 12px; color: var(--concrete); }
+
+/* ── Color dot row (banner colors) ── */
+.color-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.color-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--concrete); }
+.color-dot span { width: 8px; height: 8px; border-radius: var(--radius-pill); display: inline-block; }
+
+/* ── View cards ── */
+.view-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.view-card { border: 1px solid var(--hairline); border-radius: var(--radius-nav); padding: 14px 12px; text-align: center; }
+.view-card i { font-size: 16px; color: var(--graphite); margin-bottom: 8px; display: block; }
+.view-card h4 { font-size: 13px; font-weight: 500; color: var(--graphite); margin-bottom: 2px; }
+.view-card p { font-size: 11px; color: var(--concrete); }
+
+/* ── Admin nav ── */
+.admin-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.admin-nav-item { display: flex; align-items: center; gap: 12px; border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 14px 16px; cursor: pointer; transition: background 0.1s, border-color 0.1s; text-decoration: none; color: inherit; }
+.admin-nav-item:hover { background: var(--mist); border-color: var(--ash); }
+.admin-nav-icon { width: 32px; height: 32px; border-radius: var(--radius-nav); background: var(--mist); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--graphite); flex-shrink: 0; }
+.admin-nav-item h4 { font-size: 13px; font-weight: 500; color: var(--graphite); }
+.admin-nav-item p { font-size: 12px; color: var(--concrete); }
+
+/* ── Dark surface card (inverted) ── */
+.surface-dark { background: var(--carbon); border-radius: var(--radius-card); padding: 20px; }
+.surface-dark h3 { font-size: 14px; font-weight: 600; color: var(--chalk); margin-bottom: 6px; }
+.surface-dark p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.65; }
+
+/* ── Status pills ── */
+.status { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--hairline); border-radius: var(--radius-badge); padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--graphite); }
+.status-dot { width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--graphite); flex-shrink: 0; }
+
+/* ── Pulse indicator ── */
+.pulse-row { display: flex; gap: 10px; font-size: 13px; color: var(--concrete); margin: 8px 0; }
+.pulse-indicator { width: 10px; height: 10px; border-radius: var(--radius-pill); border: 1px solid var(--hairline); flex-shrink: 0; margin-top: 3px; }
+.pulse-logged { background: var(--graphite); border-color: var(--graphite); }
+.pulse-pending { background: transparent; }
+
+/* ── Back to top ── */
+#backtop { position: fixed; bottom: 24px; right: 24px; width: 34px; height: 34px; background: var(--chalk); border: 1px solid var(--hairline); border-radius: var(--radius-nav); display: none; align-items: center; justify-content: center; font-size: 12px; color: var(--concrete); cursor: pointer; box-shadow: oklab(0.145 -0.00000143796 0.00000340492 / 0.1) 0px 0px 0px 1px; z-index: 100; }
+#backtop.visible { display: flex; }
+#backtop:hover { background: var(--mist); color: var(--graphite); }
+
+/* ── Fade in ── */
+.fade { opacity: 0; transform: translateY(10px); transition: opacity 0.35s, transform 0.35s; }
+.fade.in { opacity: 1; transform: none; }
+
+/* ── Footer ── */
+.footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; }
+.footer-left { display: flex; align-items: center; gap: 10px; }
+.footer-logo { width: 24px; height: 24px; background: var(--graphite); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--chalk); font-size: 9px; font-weight: 600; }
+.footer-name { font-size: 13px; font-weight: 500; color: var(--graphite); }
+.footer-right { font-size: 12px; color: var(--concrete); }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) { #toc { display: none; } }
+@media (max-width: 900px) {
+  #main { padding: 24px 20px 60px; align-items: stretch; }
+  #toc-toggle { display: inline-flex; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .role-grid { grid-template-columns: 1fr; }
+  .view-grid { grid-template-columns: 1fr 1fr; }
+  .admin-nav { grid-template-columns: 1fr; }
+  .att-grid { grid-template-columns: 1fr 1fr; }
+  #search-input { width: 140px; }
+  .hero h1 { font-size: 36px; letter-spacing: -1.5px; }
+  .hero-stat .n { font-size: 24px; }
+  .footer { flex-direction: column; gap: 8px; text-align: center; }
+}
+@media (max-width: 540px) {
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .att-grid { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- Top Bar -->
+<header id="topbar">
+  <div class="tb-wordmark">
+    <div class="tb-logo">ED</div>
+    <span class="tb-name">Ecomm Dept</span>
+    <span class="tb-sep">/</span>
+    <span class="tb-doc">User Manual</span>
+  </div>
+  <button id="toc-toggle" onclick="toggleDrawer()"><i class="fas fa-list"></i> Contents</button>
+  <div class="tb-search">
+    <i class="fas fa-magnifying-glass"></i>
+    <input id="search-input" type="text" placeholder="Search documentation…" autocomplete="off" oninput="doSearch(this.value)" onfocus="openSR()" onblur="setTimeout(closeSR,180)">
+    <div id="search-results"></div>
+  </div>
+</header>
+
+<!-- Mobile TOC drawer -->
+<div id="toc-drawer">
+  <div class="toc-drawer-close">
+    <span>Contents</span>
+    <button onclick="toggleDrawer()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="toc-d-group">Overview</div>
+  <a class="toc-d-link" href="#introduction" onclick="toggleDrawer()"><i class="fas fa-house"></i> Introduction</a>
+  <a class="toc-d-link" href="#getting-started" onclick="toggleDrawer()"><i class="fas fa-rocket"></i> Getting Started</a>
+  <a class="toc-d-link" href="#roles" onclick="toggleDrawer()"><i class="fas fa-user-group"></i> Roles & Permissions</a>
+  <a class="toc-d-link" href="#navigation" onclick="toggleDrawer()"><i class="fas fa-compass"></i> Navigation</a>
+  <div class="toc-d-group">Features</div>
+  <a class="toc-d-link" href="#dashboard" onclick="toggleDrawer()"><i class="fas fa-table-cells-large"></i> Dashboard</a>
+  <a class="toc-d-link" href="#announcements" onclick="toggleDrawer()"><i class="fas fa-bullhorn"></i> Announcements</a>
+  <a class="toc-d-link" href="#brand-catalogs" onclick="toggleDrawer()"><i class="fas fa-book-open"></i> Brand Catalogs</a>
+  <a class="toc-d-link" href="#eod" onclick="toggleDrawer()"><i class="fas fa-calendar-check"></i> EOD Report</a>
+  <a class="toc-d-link" href="#calendar" onclick="toggleDrawer()"><i class="fas fa-calendar-days"></i> Calendar</a>
+  <a class="toc-d-link" href="#team" onclick="toggleDrawer()"><i class="fas fa-people-group"></i> The Team</a>
+  <a class="toc-d-link" href="#profile" onclick="toggleDrawer()"><i class="fas fa-circle-user"></i> Profile</a>
+  <a class="toc-d-link" href="#notifications" onclick="toggleDrawer()"><i class="fas fa-bell"></i> Notifications</a>
+  <div class="toc-d-group">Tools</div>
+  <a class="toc-d-link" href="#posting-procedure" onclick="toggleDrawer()"><i class="fas fa-list-check"></i> Posting Procedure</a>
+  <a class="toc-d-link" href="#price-calculator" onclick="toggleDrawer()"><i class="fas fa-calculator"></i> Price Calculator</a>
+  <a class="toc-d-link" href="#data-gathering" onclick="toggleDrawer()"><i class="fas fa-magnifying-glass-chart"></i> Data Gathering</a>
+  <a class="toc-d-link" href="#important-links" onclick="toggleDrawer()"><i class="fas fa-bookmark"></i> Important Links</a>
+  <div class="toc-d-group">Admin Panel</div>
+  <a class="toc-d-link" href="#admin-overview" onclick="toggleDrawer()"><i class="fas fa-shield-halved"></i> Admin Overview</a>
+  <a class="toc-d-link" href="#admin-dashboard" onclick="toggleDrawer()"><i class="fas fa-chart-column"></i> Admin Dashboard</a>
+  <a class="toc-d-link" href="#admin-users" onclick="toggleDrawer()"><i class="fas fa-user-group"></i> Manage Users</a>
+  <a class="toc-d-link" href="#admin-logs" onclick="toggleDrawer()"><i class="fas fa-clock-rotate-left"></i> Daily Logs</a>
+  <a class="toc-d-link" href="#admin-reports" onclick="toggleDrawer()"><i class="fas fa-chart-pie"></i> Reports</a>
+  <a class="toc-d-link" href="#admin-brands" onclick="toggleDrawer()"><i class="fas fa-layer-group"></i> Brands</a>
+</div>
+
+<!-- Right TOC -->
+<nav id="toc">
+  <div class="toc-label">On this page</div>
+  <div class="toc-group">Overview</div>
+  <a class="toc-link" href="#introduction">Introduction</a>
+  <a class="toc-link" href="#getting-started">Getting Started</a>
+  <a class="toc-link" href="#roles">Roles & Permissions</a>
+  <a class="toc-link" href="#navigation">Navigation</a>
+  <div class="toc-group">Features</div>
+  <a class="toc-link" href="#dashboard">Dashboard</a>
+  <a class="toc-link" href="#announcements">Announcements</a>
+  <a class="toc-link" href="#brand-catalogs">Brand Catalogs</a>
+  <a class="toc-link" href="#eod">EOD Report</a>
+  <a class="toc-link" href="#calendar">Calendar</a>
+  <a class="toc-link" href="#team">The Team</a>
+  <a class="toc-link" href="#profile">Profile</a>
+  <a class="toc-link" href="#notifications">Notifications</a>
+  <div class="toc-group">Tools</div>
+  <a class="toc-link" href="#posting-procedure">Posting Procedure</a>
+  <a class="toc-link" href="#price-calculator">Price Calculator</a>
+  <a class="toc-link" href="#data-gathering">Data Gathering</a>
+  <a class="toc-link" href="#important-links">Important Links</a>
+  <div class="toc-group">Admin</div>
+  <a class="toc-link" href="#admin-overview">Overview</a>
+  <a class="toc-link" href="#admin-dashboard">Dashboard</a>
+  <a class="toc-link" href="#admin-users">Manage Users</a>
+  <a class="toc-link" href="#admin-logs">Daily Logs</a>
+  <a class="toc-link" href="#admin-reports">Reports</a>
+  <a class="toc-link" href="#admin-brands">Brands</a>
+</nav>
+
+<!-- Main -->
+<main id="main">
+
+  <!-- ─── HERO ─── -->
+  <section id="introduction" class="section fade">
+    <div class="hero">
+      <div class="hero-badge"><i class="fas fa-book-open" style="font-size:10px;color:var(--concrete)"></i> Internal Manual · v1.0</div>
+      <h1>Ecomm Department<br>Hub.</h1>
+      <p class="hero-lead">The team's internal operations platform. Every role, every tool, every workflow — documented in one place.</p>
+      <div class="hero-actions">
+        <a href="#getting-started" class="btn btn-primary">Get Started <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+        <a href="#roles" class="btn btn-ghost">View Roles</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">8</div><div class="l">Team Roles</div></div>
+        <div class="hero-stat"><div class="n">2</div><div class="l">Admin Roles</div></div>
+        <div class="hero-stat"><div class="n">15+</div><div class="l">Features</div></div>
+        <div class="hero-stat"><div class="n">1</div><div class="l">Hub for All</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── GETTING STARTED ─── -->
+  <section id="getting-started" class="section fade">
+    <div class="sec-header">
+      <div><div class="sec-title">Getting Started</div><div class="sec-desc">How to log in, navigate, and set up your account.</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Logging In</span></div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Open the App</h4><p>Navigate to the app URL in your browser. You'll land on the login screen if you're not already signed in.</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Enter Your Credentials</h4><p>Type your <strong>username</strong> and <strong>password</strong> provided by your manager. Usernames are typically your first name in lowercase.</p></div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>You're In</h4><p>You'll land on your Dashboard. The sidebar and available features depend entirely on your assigned role.</p></div></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-circle-info"></i>
+          <span><strong>Forgot your password?</strong> Contact your Manager or Ecomm Head directly via Viber. There is no self-service password reset.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Logging Out</span></div>
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        Click your <strong style="color:var(--graphite)">avatar</strong> in the top-right corner of any page. A dropdown will show a <strong style="color:var(--graphite)">Logout</strong> option. Always log out when using a shared device.
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ROLES ─── -->
+  <section id="roles" class="section fade">
+    <div class="sec-header">
+      <div><div class="sec-title">Roles & Permissions</div><div class="sec-desc">Every account has a role that controls exactly what you can see and do.</div></div>
+    </div>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-head">Head</span><span class="badge badge-outline" style="font-size:11px">Admin</span></div>
+        <p>Ecomm department leader with <strong style="color:var(--graphite)">complete access</strong> — all admin tools, all features, all team data. Can manage users, view all reports, and override decisions.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-manager">Manager</span><span class="badge badge-outline" style="font-size:11px">Admin</span></div>
+        <p>Team manager with <strong style="color:var(--graphite)">full admin access</strong> identical to Head. Manages day-to-day operations, onboards users, and monitors team health.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-lead">Lead</span></div>
+        <p>Team lead overseeing PR and content. Can do everything non-analysts can — EOD reports, calendar, tools, and announcement viewing.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-analyst">Analyst</span></div>
+        <p>Brand catalog specialist. Can <strong style="color:var(--graphite)">create, edit, and delete catalogs</strong> and <strong style="color:var(--graphite)">post announcements</strong>. No EOD reports or calendar access. Dashboard shows catalog KPIs.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-researcher">Researcher</span></div>
+        <p>Product researcher who can <strong style="color:var(--graphite)">manage brand catalogs</strong>. Submits daily EOD reports, uses calendar and tools. Focus is product research and catalog accuracy.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-content">Content</span></div>
+        <p>Content/posting team with access to <strong style="color:var(--graphite)">all posting tools</strong> — Posting Procedure, Data Gathering, Price Calculator. Submits detailed EOD reports tracking SKU counts.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-graphics">Graphics</span></div>
+        <p>Design team handling CVP banners, product images, and visual assets. Submits EOD reports, uses calendar and tools.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-card-top"><span class="role role-backend">Backend</span></div>
+        <p>Backend team handling bulk uploads, cross-listing, and quality control. Submits EOD reports, uses calendar and tools.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Feature Access by Role</span></div>
+      <div class="perm-wrap">
+        <table class="perm-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th><span class="role role-head" style="font-size:11px;padding:2px 8px">Head</span></th>
+              <th><span class="role role-manager" style="font-size:11px;padding:2px 8px">Mgr</span></th>
+              <th><span class="role role-lead" style="font-size:11px;padding:2px 8px">Lead</span></th>
+              <th><span class="role role-analyst" style="font-size:11px;padding:2px 8px">Analyst</span></th>
+              <th><span class="role role-researcher" style="font-size:11px;padding:2px 8px">Resrch</span></th>
+              <th><span class="role role-content" style="font-size:11px;padding:2px 8px">Content</span></th>
+              <th><span class="role role-graphics" style="font-size:11px;padding:2px 8px">Gfx</span></th>
+              <th><span class="role role-backend" style="font-size:11px;padding:2px 8px">Back</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="g-row"><td colspan="9">General</td></tr>
+            <tr><td>Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>View Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Post Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>View Brand Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Manage Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>EOD Report</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Calendar</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr class="g-row"><td colspan="9">Admin Only</td></tr>
+            <tr><td>Admin Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>Manage Users</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>View All Logs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>Reports & Analytics</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── NAVIGATION ─── -->
+  <section id="navigation" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Navigation</div><div class="sec-desc">How to get around the app.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">The Sidebar</span><span class="card-sub">Always visible · role-aware</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The left sidebar is your primary navigation. It only shows links your role has access to.</p>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-table-cells-large"></i></div><div><h4>Dashboard</h4><p>Your home page with daily stats and recent activity.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-bullhorn"></i></div><div><h4>Announcements</h4><p>Team-wide messages, pinned notices, and important updates.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-book-open"></i></div><div><h4>Brand Catalogs</h4><p>Browse and manage product brand catalogs and resources.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-calendar-check"></i></div><div><h4>EOD Report</h4><p>Submit your daily task counts before end of shift.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-people-group"></i></div><div><h4>The Team</h4><p>Team directory with contact details and Viber links.</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Top Bar</span></div>
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        Contains the <strong style="color:var(--graphite)">notification bell</strong> for system alerts and your <strong style="color:var(--graphite)">profile avatar</strong>. Click the avatar to open a dropdown with profile settings and logout.
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── DASHBOARD ─── -->
+  <section id="dashboard" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Dashboard</div><div class="sec-desc">Your home page, personalized to your role.</div></div></div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Welcome Banner</span><span class="badge" style="font-size:11px">All roles</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">A coloured banner at the top of the page greets you by name and shows the current date. The colour changes based on your role. Click the <strong style="color:var(--graphite)">chevron (↑)</strong> in the banner to collapse it — your preference is saved across sessions.</p>
+        <div class="color-row">
+          <div class="color-dot"><span style="background:#7c3aed"></span> Head</div>
+          <div class="color-dot"><span style="background:#1e293b"></span> Manager</div>
+          <div class="color-dot"><span style="background:#4338ca"></span> Lead</div>
+          <div class="color-dot"><span style="background:#be185d"></span> Analyst</div>
+          <div class="color-dot"><span style="background:#15803d"></span> Researcher</div>
+          <div class="color-dot"><span style="background:#0369a1"></span> Content</div>
+          <div class="color-dot"><span style="background:#92400e"></span> Graphics</div>
+          <div class="color-dot"><span style="background:#b91c1c"></span> Backend</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Analyst Dashboard</span><span class="role role-analyst" style="font-size:11px">Analyst only</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">Analysts see a catalog-focused view with 4 live KPI cards and quick access to catalog management.</p>
+        <div class="kpi-grid">
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Total Catalogs</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Available</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Upcoming</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Seasonal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Standard Dashboard</span><span class="card-sub">All non-analyst roles</span></div>
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-bullhorn"></i></div><div><h4>Announcements Bento</h4><p>Shows the 2 most recent active announcements. Click any card to go to the full announcements page.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-bolt"></i></div><div><h4>Quick Access</h4><p>Role-specific shortcut links displayed as clickable cards. Changes based on your role.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-clipboard-check"></i></div><div><h4>EOD Status</h4><p>Shows whether you've submitted today's End-of-Day report.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-chart-bar"></i></div><div><h4>Activity Chart</h4><p>A 7-day bar chart of your task output. Displays Tasks This Week and Tasks This Month stat cards.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-table-list"></i></div><div><h4>Recent Logs</h4><p>Table of your last 5 daily log entries with date, attendance status, and task counts.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ANNOUNCEMENTS ─── -->
+  <section id="announcements" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Announcements</div><div class="sec-desc">Team-wide notices posted by Head, Manager, or Analyst.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Reading Announcements</span><span class="badge" style="font-size:11px">All roles</span></div>
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-list"></i></div><div><h4>Left Panel</h4><p>List of all announcements. Pinned items appear first with an amber pin badge. Click any item to read it.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-file-lines"></i></div><div><h4>Right Panel</h4><p>Full content of the selected announcement — title, creator name, date, and body text.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-magnifying-glass"></i></div><div><h4>Search</h4><p>Filter announcements by title or content text in real time as you type.</p></div></div>
+        <div class="callout callout-note">
+          <i class="fas fa-clock"></i>
+          <span><strong>Expiry dates:</strong> Announcements can have an expiry date. They disappear automatically when expired. An amber badge warns when expiry is approaching.</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Creating an Announcement</span><div style="display:flex;gap:4px"><span class="role role-head" style="font-size:11px">Head</span><span class="role role-manager" style="font-size:11px">Manager</span><span class="role role-analyst" style="font-size:11px">Analyst</span></div></div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Click "New Announcement"</h4><p>The button appears in the top-right of the Announcements page.</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Fill in the form</h4>
+            <ul><li><strong>Title</strong> — Short, clear headline</li><li><strong>Message</strong> — Full announcement body text</li><li><strong>Expires At</strong> — Auto-set to 7 days from now. Clear it for a permanent notice.</li><li><strong>Pin</strong> — Toggle to pin this notice to the top for all team members</li></ul>
+          </div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Submit</h4><p>The announcement is immediately visible to all team members.</p></div></div>
+        </div>
+        <div class="callout callout-warn" style="margin-top:14px">
+          <i class="fas fa-thumbtack"></i>
+          <span><strong>Pinned announcements</strong> stay at the top of the list for everyone. Use sparingly — only for truly time-sensitive notices.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── BRAND CATALOGS ─── -->
+  <section id="brand-catalogs" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Brand Catalogs</div><div class="sec-desc">The team's product catalog library — links, files, notes, and status for every brand.</div></div></div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Browsing & Filtering</span></div>
+      <div class="card-body">
+        <div class="info-grid" style="margin-bottom:14px">
+          <div class="info-cell"><div class="lbl">Classification</div><div class="val">All / Tech / Design / Both</div><div class="sub">Tabs at the top of the page</div></div>
+          <div class="info-cell"><div class="lbl">Brand Filter</div><div class="val">Select a specific brand</div><div class="sub">Dropdown below the tabs</div></div>
+          <div class="info-cell"><div class="lbl">Search</div><div class="val">Title, brand, or notes</div><div class="sub">Auto-submits after typing</div></div>
+          <div class="info-cell"><div class="lbl">Pagination</div><div class="val">6 catalogs per page</div><div class="sub">Prev / Next controls</div></div>
+        </div>
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7">Click anywhere on a catalog card to open the full detail drawer with notes, external links, and file downloads.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Catalog Status</span></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <span class="status"><span class="status-dot"></span>Available</span>
+          <p style="font-size:13px;color:var(--concrete);line-height:1.65">Catalog is active and ready to work with. SKUs from this brand can be posted now.</p>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <span class="status"><span class="status-dot" style="background:transparent;border:1.5px solid var(--ash)"></span>Upcoming</span>
+          <p style="font-size:13px;color:var(--concrete);line-height:1.65">Brand or product line is coming soon but not yet ready for posting.</p>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <span class="status"><span class="status-dot" style="background:var(--ash)"></span>Seasonal</span>
+          <p style="font-size:13px;color:var(--concrete);line-height:1.65">Active only during specific seasons or campaigns. Check the notes field for active date ranges.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Adding a Catalog</span><div style="display:flex;gap:4px"><span class="role role-head" style="font-size:11px">Head</span><span class="role role-manager" style="font-size:11px">Manager</span><span class="role role-analyst" style="font-size:11px">Analyst</span><span class="role role-researcher" style="font-size:11px">Researcher</span></div></div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Click "Add Catalog"</h4><p>Button in the top-right of the Brand Catalogs page.</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Fill in the modal</h4>
+            <ul><li><strong>Brand</strong> — Must be created first by admin in Brands Management</li><li><strong>Title</strong> — Name of this catalog entry (e.g. "Q2 2026 Product List")</li><li><strong>Status</strong> — Available, Upcoming, or Seasonal</li><li><strong>Notes</strong> — Additional context or instructions</li><li><strong>External Link</strong> — Google Drive, Notion, or any URL</li><li><strong>File Upload</strong> — PDF or image, max 10MB</li></ul>
+          </div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Save</h4><p>The catalog appears in the grid immediately and all team members receive a notification.</p></div></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-circle-info"></i>
+          <span>You must provide either an <strong>external link</strong> or a <strong>file upload</strong>. At least one is required before the form can be saved.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── EOD ─── -->
+  <section id="eod" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">End-of-Day Report</div><div class="sec-desc">Submit daily before the end of your shift. Analysts do not submit EOD reports.</div></div></div>
+
+    <div class="callout callout-danger">
+      <i class="fas fa-triangle-exclamation"></i>
+      <span>Submit your EOD every working day. Missing submissions are visible to management in the Admin Dashboard's Today's Pulse section.</span>
+    </div>
+
+    <div class="card" style="margin-top:10px">
+      <div class="card-header"><span class="card-title">Attendance Codes</span></div>
+      <div class="card-body">
+        <div class="att-grid">
+          <div class="att-item"><span class="att-code">—</span><span>Present · leave blank</span></div>
+          <div class="att-item"><span class="att-code">HD</span><span>Half Day</span></div>
+          <div class="att-item"><span class="att-code">VL</span><span>Vacation Leave</span></div>
+          <div class="att-item"><span class="att-code">SL</span><span>Sick Leave</span></div>
+          <div class="att-item"><span class="att-code">A</span><span>Absent</span></div>
+          <div class="att-item"><span class="att-code">UT</span><span>Unpaid Time Off</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Task Fields</span><span class="card-sub">Content team labels · other roles may differ</span></div>
+      <div class="card-body">
+        <div class="task-row"><div class="task-n">T1</div><div><h4>New SKU</h4><p>Count of <strong style="color:var(--graphite)">new parent or single products</strong> posted today. Each unique product = 1. Do not count variations here.</p></div></div>
+        <div class="task-row"><div class="task-n">T2</div><div><h4>Variation SKU</h4><p>Count of <strong style="color:var(--graphite)">child/variant products</strong> posted today. Each colour, size, or variation = 1.</p></div></div>
+        <div class="task-row"><div class="task-n">T3</div><div><h4>Data Gathering</h4><p>Total <strong style="color:var(--graphite)">SKUs researched</strong> — collecting specs, images, and details needed before posting.</p></div></div>
+        <div class="task-row"><div class="task-n">T4</div><div><h4>Update Listings</h4><p>Existing product listings <strong style="color:var(--graphite)">updated</strong> today — photos, descriptions, long descriptions, corrections, etc.</p></div></div>
+        <div class="task-row" style="border:none"><div class="task-n">T5</div><div><h4>Other Tasks</h4><p>Miscellaneous work — Canva design, pending SKU processing, cross-listing, QC. Describe briefly in Remarks.</p></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">How to Submit</span></div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Go to EOD Report in the sidebar</h4></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Select your attendance status</h4><p>Leave blank if you were fully present all day.</p></div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Enter task counts</h4><p>Enter <strong>0</strong> if you had no tasks of that type — don't leave fields empty.</p></div></div>
+          <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Add Remarks (optional but encouraged)</h4><p>Any context, blockers, or notes about your day's work.</p></div></div>
+          <div class="step"><div class="step-n">5</div><div class="step-body"><h4>Click Submit</h4><p>You can edit the same day's report if you need to make corrections.</p></div></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-circle-info"></i>
+          <span><strong>Content team:</strong> Click the "How to count?" button on the EOD page for a detailed tutorial with real counted examples.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── CALENDAR ─── -->
+  <section id="calendar" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Calendar</div><div class="sec-desc">Team events, deadlines, and role-assigned tasks. Not available for Analysts.</div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="card" style="margin:0">
+        <div class="card-header"><span class="card-title">Events</span></div>
+        <div class="card-body">
+          <ul style="list-style:none;font-size:13px;color:var(--concrete);line-height:2">
+            <li>— Title, start &amp; end date/time</li>
+            <li>— Location or virtual meeting link</li>
+            <li>— Description and notes</li>
+            <li>— Attendees (search &amp; select)</li>
+            <li>— Color-coded calendar category</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-header"><span class="card-title">Tasks</span></div>
+        <div class="card-body">
+          <ul style="list-style:none;font-size:13px;color:var(--concrete);line-height:2">
+            <li>— Title &amp; due date</li>
+            <li>— Assigned to a Role (not individual)</li>
+            <li>— Subtasks with checkboxes</li>
+            <li>— Progress bar (X/Y complete)</li>
+            <li>— Toggle subtask completion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Calendar Views</span></div>
+      <div class="card-body">
+        <div class="view-grid">
+          <div class="view-card"><i class="fas fa-calendar"></i><h4>Month</h4><p>Full month overview</p></div>
+          <div class="view-card"><i class="fas fa-calendar-week"></i><h4>Week</h4><p>7-day time grid</p></div>
+          <div class="view-card"><i class="fas fa-calendar-day"></i><h4>Day</h4><p>Hourly single-day</p></div>
+          <div class="view-card"><i class="fas fa-list"></i><h4>List</h4><p>Upcoming events</p></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-palette"></i>
+          <span><strong>Calendar Categories</strong> are color-coded groupings (e.g. "Team Meetings"). Head and Manager can create and delete categories from the left sidebar on the Calendar page.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── TEAM ─── -->
+  <section id="team" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">The Team</div><div class="sec-desc">Team directory with contact details and Viber links.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-user-group"></i></div><div><h4>Role Tabs</h4><p>Members are grouped by role — All, Head, Manager, Lead, Analyst, Researcher, Content, Graphics, Backend.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-id-card"></i></div><div><h4>Member Cards</h4><p>Each card shows avatar, full name, username, role badge, and mobile number. Leadership roles appear in larger 2-column cards.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fab fa-viber"></i></div><div><h4>Viber Contact</h4><p>Click the Viber icon on any card to open a direct chat. Make sure Viber is installed on your device.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── PROFILE ─── -->
+  <section id="profile" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Profile</div><div class="sec-desc">View and update your personal information.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Editable Fields</span></div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-cell"><div class="lbl">First &amp; Last Name</div><div class="val">Display name</div><div class="sub">Visible to the team</div></div>
+          <div class="info-cell"><div class="lbl">Mobile Number</div><div class="val">Viber contact</div><div class="sub">Shown on The Team page</div></div>
+          <div class="info-cell"><div class="lbl">Gender</div><div class="val">Avatar style</div><div class="sub">Affects DiceBear avatar</div></div>
+          <div class="info-cell"><div class="lbl">Password</div><div class="val">Login password</div><div class="sub">Leave blank to keep current</div></div>
+        </div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-circle-info"></i>
+          <span><strong>Avatars</strong> are auto-generated from your username via DiceBear. You can't upload a custom photo, but changing your gender setting will switch the avatar style.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── NOTIFICATIONS ─── -->
+  <section id="notifications" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Notifications</div><div class="sec-desc">System alerts shown via the bell icon in the top bar.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The bell icon shows a badge count of unread notifications. Alerts are triggered by events like new brand catalogs being added.</p>
+        <div class="info-grid">
+          <div class="info-cell"><div class="lbl">Mark All Read</div><div class="sub">Marks every notification as read at once</div></div>
+          <div class="info-cell"><div class="lbl">Clear All</div><div class="sub">Permanently removes all notifications</div></div>
+          <div class="info-cell"><div class="lbl">Delete One</div><div class="sub">Remove a single notification from the list</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── TOOLS ─── -->
+  <section id="posting-procedure" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Posting Procedure</div><div class="sec-desc">Step-by-step reference guide for posting products correctly.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-chevron-down"></i></div><div><h4>Accordion Layout</h4><p>Steps are displayed as collapsible cards — click any step to expand and read the full instructions with examples.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-link"></i></div><div><h4>Resource Links</h4><p>Each step includes embedded resource links and guides relevant to that stage of the posting process.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-users"></i></div><div><h4>Who Uses It</h4><p>Primarily the Content team, but visible and accessible to all roles as a reference document.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="price-calculator" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">Price Calculator</div><div class="sec-desc">Compute Suggested Retail Price (SRP). Available to all non-analyst roles.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-tags"></i></div><div><h4>SKU Type Selector</h4><p>Select the product type (Parent, Variant, etc.) using pill buttons at the top.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-percent"></i></div><div><h4>Cost & Markup</h4><p>Enter the cost price and markup percentages. The SRP is calculated and displayed automatically.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-plus"></i></div><div><h4>Add Row</h4><p>Use the "Add Row" button to calculate prices for multiple products in a single session.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="data-gathering" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">Data Gathering</div><div class="sec-desc">Product research module for the content team.</div></div></div>
+    <div class="callout callout-warn">
+      <i class="fas fa-tools"></i>
+      <span>This module is currently under active development. Content will be added as the feature expands. Check back regularly for updates from management.</span>
+    </div>
+  </section>
+
+  <section id="important-links" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">Important Links</div><div class="sec-desc">Curated resources organized by department. All non-analyst roles.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-folder-open"></i></div><div><h4>Tab Organization</h4><p>Links are grouped in tabs by resource category or department.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-arrow-up-right-from-square"></i></div><div><h4>Open in New Tab</h4><p>Click any link card to open it immediately in a new browser tab.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-plus"></i></div><div><h4>Adding Links</h4><p>New links are added by management. Contact your manager if a resource is missing.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN OVERVIEW ─── -->
+  <section id="admin-overview" class="section fade">
+    <div class="sec-header">
+      <div>
+        <div class="sec-title">Admin Panel <span class="role role-head" style="font-size:12px;margin-left:8px;vertical-align:middle">Head</span><span class="role role-manager" style="font-size:12px;margin-left:4px;vertical-align:middle">Manager</span></div>
+        <div class="sec-desc">Full visibility into team activity, user management, and analytics.</div>
+      </div>
+    </div>
+    <div class="surface-dark" style="margin-bottom:12px">
+      <h3>Accessing the Admin Panel</h3>
+      <p>The Admin Panel is visible only to <strong style="color:rgba(255,255,255,0.85)">Head</strong> and <strong style="color:rgba(255,255,255,0.85)">Manager</strong> roles. Admin navigation items appear at the top of the sidebar when you're logged in with one of these roles. The panel provides full team oversight that regular members cannot access.</p>
+    </div>
+    <div class="admin-nav">
+      <a class="admin-nav-item" href="#admin-dashboard"><div class="admin-nav-icon"><i class="fas fa-chart-column"></i></div><div><h4>Admin Dashboard</h4><p>KPIs, team health pulse, activity feed</p></div></a>
+      <a class="admin-nav-item" href="#admin-users"><div class="admin-nav-icon"><i class="fas fa-user-group"></i></div><div><h4>Manage Users</h4><p>Add, edit, delete team accounts</p></div></a>
+      <a class="admin-nav-item" href="#admin-logs"><div class="admin-nav-icon"><i class="fas fa-clock-rotate-left"></i></div><div><h4>Daily Logs</h4><p>All team EOD submissions</p></div></a>
+      <a class="admin-nav-item" href="#admin-reports"><div class="admin-nav-icon"><i class="fas fa-chart-pie"></i></div><div><h4>Reports</h4><p>Analytics and productivity trends</p></div></a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN DASHBOARD ─── -->
+  <section id="admin-dashboard" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Admin Dashboard</div><div class="sec-desc">The command center for team oversight.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">KPI Cards</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:12px">Four stat cards give an at-a-glance snapshot of the team:</p>
+        <div class="kpi-grid">
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Total Users</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Daily Logs</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Catalogs</div></div>
+          <div class="kpi-cell"><div class="kpi-n">—</div><div class="kpi-l">Announcements</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Today's Pulse</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:12px">A real-time indicator showing who has and hasn't submitted their EOD today. <strong style="color:var(--graphite)">Analysts are excluded</strong> — they don't submit EOD reports.</p>
+        <div class="pulse-row"><div class="pulse-indicator pulse-logged"></div><span>Member has submitted today's EOD report</span></div>
+        <div class="pulse-row"><div class="pulse-indicator"></div><span>Member has not submitted yet</span></div>
+        <p style="font-size:12px;color:var(--concrete);margin-top:10px">Hover any avatar to see the member's name and status. The health bar shows the overall submission rate percentage.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Activity Feed</span></div>
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        A scrollable timeline of the 8 most recent system events — new user registrations, log submissions, catalog additions, and more. Each entry shows a description, actor name, and timestamp.
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN USERS ─── -->
+  <section id="admin-users" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Manage Users</div><div class="sec-desc">Onboard and offboard team members.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Search & Filter</span></div>
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-magnifying-glass"></i></div><div><h4>Search Box</h4><p>Filter the user table by name, username, or role in real time as you type.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-filter"></i></div><div><h4>Role Filter Pills</h4><p>Click a role badge above the table to show only users with that role. All 8 roles have a filter pill, including Analyst.</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Adding a New User</span></div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Click "Add User"</h4><p>Top-right corner of the Manage Users page.</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Fill in the form</h4>
+            <div class="info-grid" style="margin-top:10px">
+              <div class="info-cell"><div class="lbl">First Name</div><div class="sub">Display name</div></div>
+              <div class="info-cell"><div class="lbl">Last Name</div><div class="sub">Display name</div></div>
+              <div class="info-cell"><div class="lbl">Username</div><div class="sub">Login ID (unique)</div></div>
+              <div class="info-cell"><div class="lbl">Role</div><div class="sub">Determines access level</div></div>
+              <div class="info-cell"><div class="lbl">Gender</div><div class="sub">Affects avatar style</div></div>
+              <div class="info-cell"><div class="lbl">Mobile</div><div class="sub">Viber contact number</div></div>
+              <div class="info-cell"><div class="lbl">Password</div><div class="sub">Initial login password</div></div>
+              <div class="info-cell"><div class="lbl">Badge</div><div class="sub">Optional achievement tag</div></div>
+            </div>
+          </div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Save</h4><p>The user can now log in. Share their username and temporary password directly via Viber.</p></div></div>
+        </div>
+        <div class="callout callout-danger" style="margin-top:14px">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span><strong>Deleting a user is permanent.</strong> Their log history remains in the system, but the account is removed. Confirm before deleting.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN LOGS ─── -->
+  <section id="admin-logs" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Daily Logs (Admin)</div><div class="sec-desc">Full view of every team member's EOD submissions across all roles and dates.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-chart-bar"></i></div><div><h4>KPI Cards</h4><p>Total submissions, this month's stats, and average tasks per person at the top of the page.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-trophy"></i></div><div><h4>Contributor Rankings</h4><p>Top performers per role with a bar ranking — shows who's putting in the most output.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-table"></i></div><div><h4>Full Logs Table</h4><p>All entries grouped by role, sorted by date descending. Filter by role via sidebar sub-navigation.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-calendar-days"></i></div><div><h4>Calendar Heatmap</h4><p>Submission history visualized as a heatmap. Click any date to jump to that day's entries.</p></div></div>
+        <div class="callout callout-note">
+          <i class="fas fa-circle-info"></i>
+          <span>Analysts are not included in this view — they do not submit EOD reports.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN REPORTS ─── -->
+  <section id="admin-reports" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Reports</div><div class="sec-desc">Analytics and productivity trends by role and time period.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-chart-line"></i></div><div><h4>Task Trends</h4><p>View task output over the last 7 days, broken down by role and task type (New SKU, Var. SKU, Data Gather, Updates, Other).</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-filter"></i></div><div><h4>Role Filter</h4><p>Filter reports by role using the sidebar sub-navigation — Lead, Content, Researcher, Graphics, Backend.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-ranking-star"></i></div><div><h4>Productivity Rankings</h4><p>Individual rankings across the month. Identifies top contributors and tracks performance over time.</p></div></div>
+        <div class="callout callout-note">
+          <i class="fas fa-circle-info"></i>
+          <span>Sundays are marked <strong>RDO (Rest Day Off)</strong> — no output is expected and they're excluded from daily average calculations.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ─── ADMIN BRANDS ─── -->
+  <section id="admin-brands" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Brands Management</div><div class="sec-desc">Master list of brands for catalog organization. Managed by Head and Manager.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">Brands are the companies whose catalogs are tracked in the system. Every catalog entry must be linked to a brand — create brands first before adding catalogs.</p>
+        <div class="info-grid" style="margin-bottom:14px">
+          <div class="info-cell"><div class="lbl">Name</div><div class="val">Brand's full name</div><div class="sub">e.g. "Samsung", "Xiaomi"</div></div>
+          <div class="info-cell"><div class="lbl">Classification</div><div class="val">Tech / Consumer / Both</div><div class="sub">Used for catalog filter tabs</div></div>
+          <div class="info-cell"><div class="lbl">Logo</div><div class="val">Brand image upload</div><div class="sub">Shown on catalog cards</div></div>
+        </div>
+        <div class="callout callout-warn">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span><strong>Order of operations:</strong> Always create the Brand first in this page, then add catalogs linked to it. Catalogs cannot exist without a brand.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-logo">ED</div>
+      <span class="footer-name">Ecomm Department Hub</span>
+    </div>
+    <div class="footer-right">Internal User Manual · v1.0 · 2026</div>
+  </div>
+
+</main>
+
+<button id="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+// ── Search ──
+var idx = [
+  { id:'introduction',      icon:'fa-house',               title:'Introduction',          sub:'What is this app' },
+  { id:'getting-started',   icon:'fa-rocket',              title:'Getting Started',       sub:'Login & logout' },
+  { id:'roles',             icon:'fa-user-group',          title:'Roles & Permissions',   sub:'All 8 roles explained' },
+  { id:'navigation',        icon:'fa-compass',             title:'Navigation',            sub:'Sidebar & top bar guide' },
+  { id:'dashboard',         icon:'fa-table-cells-large',   title:'Dashboard',             sub:'Your home page' },
+  { id:'announcements',     icon:'fa-bullhorn',            title:'Announcements',         sub:'Team-wide notices' },
+  { id:'brand-catalogs',    icon:'fa-book-open',           title:'Brand Catalogs',        sub:'Product catalog library' },
+  { id:'eod',               icon:'fa-calendar-check',      title:'EOD Report',            sub:'Daily task submission' },
+  { id:'calendar',          icon:'fa-calendar-days',       title:'Calendar',              sub:'Events, tasks, deadlines' },
+  { id:'team',              icon:'fa-people-group',        title:'The Team',              sub:'Team directory' },
+  { id:'profile',           icon:'fa-circle-user',         title:'Profile',               sub:'Edit personal info' },
+  { id:'notifications',     icon:'fa-bell',                title:'Notifications',         sub:'System alerts' },
+  { id:'posting-procedure', icon:'fa-list-check',          title:'Posting Procedure',     sub:'Product posting guide' },
+  { id:'price-calculator',  icon:'fa-calculator',          title:'Price Calculator',      sub:'Compute SRP' },
+  { id:'data-gathering',    icon:'fa-magnifying-glass-chart', title:'Data Gathering',     sub:'Product research module' },
+  { id:'important-links',   icon:'fa-bookmark',            title:'Important Links',       sub:'Curated resources' },
+  { id:'admin-overview',    icon:'fa-shield-halved',       title:'Admin Overview',        sub:'Head & Manager only' },
+  { id:'admin-dashboard',   icon:'fa-chart-column',        title:'Admin Dashboard',       sub:'KPIs, pulse, activity' },
+  { id:'admin-users',       icon:'fa-user-group',          title:'Manage Users',          sub:'Add, edit, delete accounts' },
+  { id:'admin-logs',        icon:'fa-clock-rotate-left',   title:'Daily Logs (Admin)',    sub:'All team submissions' },
+  { id:'admin-reports',     icon:'fa-chart-pie',           title:'Reports',               sub:'Analytics and trends' },
+  { id:'admin-brands',      icon:'fa-layer-group',         title:'Brands Management',     sub:'Brand master list' },
+];
+
+function doSearch(v) {
+  var q = v.trim().toLowerCase();
+  var box = document.getElementById('search-results');
+  if (!q) { box.innerHTML = ''; box.classList.remove('open'); return; }
+  var r = idx.filter(function(s){ return s.title.toLowerCase().includes(q) || s.sub.toLowerCase().includes(q); });
+  box.innerHTML = r.length
+    ? r.map(function(m){ return '<a class="sr-item" href="#'+m.id+'" onclick="closeSR()"><div class="sr-icon"><i class="fas '+m.icon+'"></i></div><div><div class="sr-title">'+m.title+'</div><div class="sr-sub">'+m.sub+'</div></div></a>'; }).join('')
+    : '<div class="sr-empty">No results for "'+v+'"</div>';
+  box.classList.add('open');
+}
+function openSR() { if(document.getElementById('search-input').value.trim()) document.getElementById('search-results').classList.add('open'); }
+function closeSR() { document.getElementById('search-results').classList.remove('open'); }
+
+// ── Mobile drawer ──
+function toggleDrawer() {
+  document.getElementById('toc-drawer').classList.toggle('open');
+}
+
+// ── Active TOC link ──
+var secs  = Array.from(document.querySelectorAll('section[id]'));
+var links = Array.from(document.querySelectorAll('.toc-link[href^="#"]'));
+function updateActive() {
+  var y = window.scrollY + 90, cur = secs[0].id;
+  secs.forEach(function(s){ if(s.offsetTop <= y) cur = s.id; });
+  links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === '#'+cur); });
+}
+window.addEventListener('scroll', updateActive, {passive:true});
+updateActive();
+
+// ── Progress bar ──
+window.addEventListener('scroll', function() {
+  var h = document.documentElement;
+  document.getElementById('progress').style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, {passive:true});
+
+// ── Back to top ──
+window.addEventListener('scroll', function(){ document.getElementById('backtop').classList.toggle('visible', window.scrollY > 400); }, {passive:true});
+
+// ── Fade in ──
+var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }}); }, {threshold:0.04});
+document.querySelectorAll('.fade').forEach(function(el){ io.observe(el); });
+
+</script>
+</body>
+</html>

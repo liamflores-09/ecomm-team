@@ -636,7 +636,13 @@
                 <div class="notif-panel" id="notifPanel">
                     <div class="notif-panel-header">
                         <span class="notif-panel-title">Notifications</span>
-                        <button class="notif-clear-btn" onclick="clearAllNotifs()">Clear all</button>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            @if(in_array(Auth::user()->role, ['head','manager','analyst']))
+                            <button class="notif-clear-btn" onclick="openAnnModal(event)" style="color:var(--primary);display:flex;align-items:center;gap:4px;"><i class="fas fa-plus" style="font-size:0.6rem;"></i> Post</button>
+                            <span style="color:var(--border-light);">·</span>
+                            @endif
+                            <button class="notif-clear-btn" onclick="clearAllNotifs()">Clear all</button>
+                        </div>
                     </div>
                     <div class="notif-list" id="notifList">
                         <div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications yet</div>
@@ -928,6 +934,46 @@
     <!-- Toast container -->
     <div id="appToastWrap" class="app-toast-wrap"></div>
 
+    {{-- Quick Announcement Modal --}}
+    @if(Auth::check() && in_array(Auth::user()->role, ['head','manager','analyst']))
+    <div id="annQuickOverlay" onclick="closeAnnModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:8000;"></div>
+    <div id="annQuickModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;max-width:calc(100vw - 32px);background:var(--card);border:1px solid var(--border-light);border-radius:12px;z-index:8001;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.125rem;border-bottom:1px solid var(--border-light);">
+            <span style="font-size:0.875rem;font-weight:700;color:var(--foreground);">New Announcement</span>
+            <button onclick="closeAnnModal()" style="background:none;border:none;cursor:pointer;color:var(--muted-foreground);font-size:0.9rem;padding:4px;line-height:1;"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div style="padding:1.125rem;">
+            <form id="annQuickForm" method="POST" action="{{ route('announcements.store') }}">
+                @csrf
+                <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <div>
+                        <label style="font-size:0.72rem;font-weight:600;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Title</label>
+                        <input type="text" name="title" class="form-input" placeholder="Announcement title" required>
+                    </div>
+                    <div>
+                        <label style="font-size:0.72rem;font-weight:600;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Message</label>
+                        <textarea name="body" class="form-textarea" placeholder="Write your announcement…" required style="min-height:90px;resize:vertical;"></textarea>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-end;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.72rem;font-weight:600;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px;">Expires At <span style="text-transform:none;font-weight:400;letter-spacing:0;color:var(--gray-400);">(optional)</span></label>
+                            <input type="datetime-local" name="expires_at" id="annQuickExpires" class="form-input">
+                        </div>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding-bottom:10px;font-size:0.8rem;color:var(--foreground);white-space:nowrap;">
+                            <input type="checkbox" name="pinned" value="1">
+                            <i class="fas fa-thumbtack" style="color:#f59e0b;font-size:0.72rem;"></i> Pin
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="padding:0.75rem 1.125rem;border-top:1px solid var(--border-light);display:flex;gap:8px;">
+            <button type="submit" form="annQuickForm" class="btn-flat-primary" style="flex:1;height:38px;font-size:0.8rem;">Post Announcement</button>
+            <button type="button" onclick="closeAnnModal()" class="btn-flat-secondary" style="height:38px;padding:0 0.875rem;font-size:0.8rem;">Cancel</button>
+        </div>
+    </div>
+    @endif
+
     <!-- Global Confirm Dialog -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box" style="max-width: 380px;">
@@ -1080,6 +1126,34 @@
     })();
     </script>
     @endif
+
+    <script>
+    // Quick Announcement Modal
+    function openAnnModal(e) {
+        if (e) e.stopPropagation();
+        var overlay = document.getElementById('annQuickOverlay');
+        var modal   = document.getElementById('annQuickModal');
+        if (!modal) return;
+        // Default expiry to 7 days from now
+        var df = new Date(); df.setDate(df.getDate() + 7);
+        var pad = function(n){ return n < 10 ? '0'+n : n; };
+        var el = document.getElementById('annQuickExpires');
+        if (el) el.value = df.getFullYear()+'-'+pad(df.getMonth()+1)+'-'+pad(df.getDate())+'T'+pad(df.getHours())+':'+pad(df.getMinutes());
+        overlay.style.display = 'block';
+        modal.style.display   = 'block';
+        // Close notif panel if open
+        var np = document.getElementById('notifPanel');
+        if (np) np.classList.remove('open');
+    }
+    function closeAnnModal() {
+        var overlay = document.getElementById('annQuickOverlay');
+        var modal   = document.getElementById('annQuickModal');
+        if (overlay) overlay.style.display = 'none';
+        if (modal)   modal.style.display   = 'none';
+        var form = document.getElementById('annQuickForm');
+        if (form) form.reset();
+    }
+    </script>
 
     <script>
     // App Dropdown (x-select component)
