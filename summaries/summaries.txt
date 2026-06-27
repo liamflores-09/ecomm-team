@@ -103,3 +103,79 @@ Reports page (admin/reports.blade.php) — Lead role may still appear in data if
 User-facing (non-admin) pages — EOD report, team page, etc. may still reference Lead role	Not checked
 getDepartmentAttribute on User.php — still has 'lead' => 'PR' in the match	Minor, low impact
 Search command palette items — confirm all links are accurate and Lead pages aren't listed	Not verified
+
+────────────────────────────────────────────────────────────────
+Session — 2026-06-27
+────────────────────────────────────────────────────────────────
+
+1. Sidebar Icons (components/sidebar.blade.php)
+Item	Status
+Replaced all nav icons with a uniform semantic FA icon set	✅ Done
+Icons sized at 13px / 16px width with flex-shrink:0	✅ Done
+
+2. Brand Catalog Cards (brand-catalogs.blade.php)
+Item	Status
+Made entire .bc-card div clickable via onclick="openDetails(id)"	✅ Done
+Added onclick="event.stopPropagation()" on .bc-meta row so action buttons still work independently	✅ Done
+
+3. User Manual (User Manual/index.html) — Created from scratch
+Design System
+Item	Status
+Brutalist Swiss grid / shadcn-style design — zero chromatic color, border-first	✅ Done
+Inter font (400/500/600) from Google Fonts; 48px display heading with -2.4px tracking	✅ Done
+White canvas (#ffffff), 1px #e5e5e5 hairline borders as sole structural element, no shadows	✅ Done
+Cards: white bg, 1px #e5e5e5 border, 14px radius	✅ Done
+Role badges color-coded: Head=purple, Manager=slate, Lead=indigo, Analyst=pink, Researcher=green, Content=blue, Graphics=amber, Backend=red	✅ Done
+Content column centered in viewport	✅ Done
+
+Navigation — switched from left sidebar to right-side TOC
+Item	Status
+Left sidebar removed entirely	✅ Done
+Right-side TOC (164px) fixed to right edge, grouped Overview/Features/Tools/Admin	✅ Done
+Active section highlighted with graphite left-border indicator on scroll (IntersectionObserver + scroll event)	✅ Done
+TOC hidden below 1200px viewport width	✅ Done
+Mobile: "Contents" button in topbar opens full-screen drawer with all links	✅ Done
+
+Content Coverage
+Item	Status
+Introduction, Getting Started (login/logout steps)	✅ Done
+Roles & Permissions — all 8 roles with descriptions + full feature-access permission table	✅ Done
+Dashboard (welcome banner, analyst KPI view, standard view with charts)	✅ Done
+Announcements (reading + creating, who can post)	✅ Done
+Brand Catalogs (filtering, status meanings, adding a catalog)	✅ Done
+EOD Report (attendance codes, task field definitions T1–T5, submit steps)	✅ Done
+Calendar (views, events, tasks, categories)	✅ Done
+The Team, Profile, Notifications	✅ Done
+Tools: Posting Procedure, Price Calculator, Data Gathering, Important Links	✅ Done
+Admin Panel: Overview, Dashboard (KPIs, Today's Pulse, Activity Feed), Manage Users, Daily Logs, Reports, Brands Management	✅ Done
+
+Interactive Features
+Item	Status
+Reading progress bar (2px graphite line at top)	✅ Done
+Live search dropdown with section index (22 sections indexed)	✅ Done
+Fade-in animation on sections (IntersectionObserver)	✅ Done
+Back-to-top button (appears after 400px scroll)	✅ Done
+Smooth scroll with scroll-margin-top:80px on all anchors	✅ Done
+
+4. Quick Announcement Modal in Notifications (layouts/app.blade.php)
+Item	Status
+"+ Post" button added to notif panel header — visible only to head/manager/analyst	✅ Done
+Centered modal (480px, 12px radius, box-shadow) with full announcement form	✅ Done
+Fields: Title, Message, Expires At (datetime-local, auto-set to +7 days), Pin toggle	✅ Done
+Posts to existing route('announcements.store') — no backend changes needed	✅ Done
+Clicking overlay or Cancel closes modal and resets form	✅ Done
+Opening modal auto-closes the notification panel	✅ Done
+
+Files Changed This Session
+resources/views/components/sidebar.blade.php
+resources/views/brand-catalogs.blade.php
+resources/views/layouts/app.blade.php
+User Manual/index.html  (new file)
+
+Commit: 70ef1f7 — "add quick announcement modal to notifications panel, add user manual"
+
+Pending / Review Items
+Item	Notes
+User Manual content accuracy — review each section against actual app behavior	For next session
+Navigation section still mentions "sidebar" — update wording since sidebar was removed in the manual	Minor
+Reports page Lead role exclusion — flagged in previous session, still not verified	Carry-over
