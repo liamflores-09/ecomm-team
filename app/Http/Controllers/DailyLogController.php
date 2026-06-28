@@ -16,7 +16,10 @@ class DailyLogController extends Controller
     {
         $user = Auth::user();
         $today = now()->toDateString();
-        $taskLabels = TaskLabels::get($user->role);
+        $effectiveRole = ($user->isAdmin() && session()->has('preview_role'))
+            ? session('preview_role')
+            : $user->role;
+        $taskLabels = TaskLabels::get($effectiveRole);
 
         $existingLog = DailyLog::where('user_id', $user->id)
             ->where('date', $today)

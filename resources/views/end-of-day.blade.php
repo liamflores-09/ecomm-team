@@ -234,7 +234,7 @@
             <h2>End-of-Day <span class="highlight">Report</span></h2>
             <p>Log your daily tasks and activities</p>
         </div>
-        @if($user->role === 'content')
+        @if(($isPreview ? $previewRole : $user->role) === 'content')
         <button type="button" class="btn-flat-secondary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openModal('tutorialModal')">
             <i class="fas fa-circle-info"></i> How to Fill
         </button>
