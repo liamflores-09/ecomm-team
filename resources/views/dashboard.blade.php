@@ -555,7 +555,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             @if(now()->dayOfWeek === 0)
             <div class="bento-eod-submitted">
                 <div class="bento-eod-submitted-top">
-                    <div class="bento-eod-done-icon" style="background:#d97706;"><i class="fas fa-umbrella-beach"></i></div>
+                    <div class="bento-eod-done-icon"><i class="fas fa-umbrella-beach"></i></div>
                     <div>
                         <div class="bento-eod-done-title" style="color:#d97706;">Rest Day (RDO)</div>
                         <div class="bento-eod-done-sub">No EOD expected today</div>
