@@ -1269,6 +1269,7 @@
             }
         }
         window.toggleUserMenu = toggleUserMenu;
+        window.closeUserMenu = closeUserMenu;
 
         function closeUserMenu() {
             var wrap = document.getElementById('userMenuWrap');
