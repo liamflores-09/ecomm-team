@@ -345,6 +345,7 @@ a { text-decoration: none; color: inherit; }
   </div>
   <div class="toc-d-group">Overview</div>
   <a class="toc-d-link" href="#introduction" onclick="toggleDrawer()"><i class="fas fa-house"></i> Introduction</a>
+  <a class="toc-d-link" href="#whats-new" onclick="toggleDrawer()"><i class="fas fa-sparkles"></i> What's New v2.0</a>
   <a class="toc-d-link" href="#getting-started" onclick="toggleDrawer()"><i class="fas fa-rocket"></i> Getting Started</a>
   <a class="toc-d-link" href="#roles" onclick="toggleDrawer()"><i class="fas fa-user-group"></i> Roles & Permissions</a>
   <a class="toc-d-link" href="#navigation" onclick="toggleDrawer()"><i class="fas fa-compass"></i> Navigation</a>
@@ -376,6 +377,7 @@ a { text-decoration: none; color: inherit; }
   <div class="toc-label">On this page</div>
   <div class="toc-group">Overview</div>
   <a class="toc-link" href="#introduction">Introduction</a>
+  <a class="toc-link" href="#whats-new">What's New v2.0</a>
   <a class="toc-link" href="#getting-started">Getting Started</a>
   <a class="toc-link" href="#roles">Roles & Permissions</a>
   <a class="toc-link" href="#navigation">Navigation</a>
@@ -408,7 +410,7 @@ a { text-decoration: none; color: inherit; }
   <!-- ─── HERO ─── -->
   <section id="introduction" class="section fade">
     <div class="hero">
-      <div class="hero-badge"><i class="fas fa-book-open" style="font-size:10px;color:var(--concrete)"></i> Internal Manual · v1.0</div>
+      <div class="hero-badge"><i class="fas fa-book-open" style="font-size:10px;color:var(--concrete)"></i> Internal Manual · v2.0</div>
       <h1>Ecomm Department<br>Hub.</h1>
       <p class="hero-lead">The team's internal operations platform. Every role, every tool, every workflow — documented in one place.</p>
       <div class="hero-actions">
@@ -416,13 +418,30 @@ a { text-decoration: none; color: inherit; }
         <a href="#roles" class="btn btn-ghost">View Roles</a>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><div class="n">8</div><div class="l">Team Roles</div></div>
+        <div class="hero-stat"><div class="n">7</div><div class="l">Team Roles</div></div>
         <div class="hero-stat"><div class="n">2</div><div class="l">Admin Roles</div></div>
         <div class="hero-stat"><div class="n">15+</div><div class="l">Features</div></div>
         <div class="hero-stat"><div class="n">1</div><div class="l">Hub for All</div></div>
       </div>
     </div>
   </section>
+
+  <!-- ─── WHAT'S NEW ─── -->
+  <section id="whats-new" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">What's New in v2.0</div><div class="sec-desc">Recent updates and improvements to the platform.</div></div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-sidebar"></i></div><div><h4>Reorganized Sidebar</h4><p>Both admin and member sidebars now have labeled groups — <strong style="color:var(--graphite)">Analytics, Brand Management, General</strong> for admin; <strong style="color:var(--graphite)">Work, Tools, Resources, Team</strong> for members. Brand Catalogs and Calendar moved under the Team group for members.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-terminal"></i></div><div><h4>Enhanced Command Palette</h4><p>Press <strong style="color:var(--graphite)">Ctrl+K</strong> to open the command palette. Now fully role-aware with two groups: <strong style="color:var(--graphite)">Navigation</strong> (pages for your role) and <strong style="color:var(--graphite)">Actions</strong> (toggle theme, notifications, logout, and more).</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-image"></i></div><div><h4>Welcome Banner Redesign</h4><p>The dashboard banner now features a richer look — a two-tone gradient, subtle dot grid, and decorative background shapes instead of a flat solid color.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-umbrella-beach"></i></div><div><h4>RDO State on EOD Card</h4><p>On Sundays, the EOD bento card on the dashboard now shows a <strong style="color:var(--graphite)">Rest Day (RDO)</strong> indicator instead of prompting you to submit a report.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-arrow-right-from-bracket"></i></div><div><h4>Member View in Profile Dropdown</h4><p>Admins can now open the Member View (role preview) directly from the profile dropdown in the top-right corner.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-user-minus"></i></div><div><h4>Lead Role Removed</h4><p>The Lead role has been discontinued. Existing Lead accounts have been reassigned. The role no longer appears in the system.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
 
   <!-- ─── GETTING STARTED ─── -->
   <section id="getting-started" class="section fade">
@@ -471,10 +490,6 @@ a { text-decoration: none; color: inherit; }
         <p>Team manager with <strong style="color:var(--graphite)">full admin access</strong> identical to Head. Manages day-to-day operations, onboards users, and monitors team health.</p>
       </div>
       <div class="role-card">
-        <div class="role-card-top"><span class="role role-lead">Lead</span></div>
-        <p>Team lead overseeing PR and content. Can do everything non-analysts can — EOD reports, calendar, tools, and announcement viewing.</p>
-      </div>
-      <div class="role-card">
         <div class="role-card-top"><span class="role role-analyst">Analyst</span></div>
         <p>Brand catalog specialist. Can <strong style="color:var(--graphite)">create, edit, and delete catalogs</strong> and <strong style="color:var(--graphite)">post announcements</strong>. No EOD reports or calendar access. Dashboard shows catalog KPIs.</p>
       </div>
@@ -505,7 +520,6 @@ a { text-decoration: none; color: inherit; }
               <th>Feature</th>
               <th><span class="role role-head" style="font-size:11px;padding:2px 8px">Head</span></th>
               <th><span class="role role-manager" style="font-size:11px;padding:2px 8px">Mgr</span></th>
-              <th><span class="role role-lead" style="font-size:11px;padding:2px 8px">Lead</span></th>
               <th><span class="role role-analyst" style="font-size:11px;padding:2px 8px">Analyst</span></th>
               <th><span class="role role-researcher" style="font-size:11px;padding:2px 8px">Resrch</span></th>
               <th><span class="role role-content" style="font-size:11px;padding:2px 8px">Content</span></th>
@@ -515,18 +529,18 @@ a { text-decoration: none; color: inherit; }
           </thead>
           <tbody>
             <tr class="g-row"><td colspan="9">General</td></tr>
-            <tr><td>Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
-            <tr><td>View Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
-            <tr><td>Post Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
-            <tr><td>View Brand Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
-            <tr><td>Manage Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
-            <tr><td>EOD Report</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
-            <tr><td>Calendar</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>View Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Post Announcements</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>View Brand Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Manage Catalogs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>EOD Report</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
+            <tr><td>Calendar</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td></tr>
             <tr class="g-row"><td colspan="9">Admin Only</td></tr>
-            <tr><td>Admin Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
-            <tr><td>Manage Users</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
-            <tr><td>View All Logs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
-            <tr><td>Reports & Analytics</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>Admin Dashboard</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>Manage Users</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>View All Logs</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
+            <tr><td>Reports & Analytics</td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-yes"><i class="fas fa-check"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td><td class="perm-no"><i class="fas fa-minus"></i></td></tr>
           </tbody>
         </table>
       </div>
@@ -539,20 +553,32 @@ a { text-decoration: none; color: inherit; }
   <section id="navigation" class="section fade">
     <div class="sec-header"><div><div class="sec-title">Navigation</div><div class="sec-desc">How to get around the app.</div></div></div>
     <div class="card">
-      <div class="card-header"><span class="card-title">The Sidebar</span><span class="card-sub">Always visible · role-aware</span></div>
+      <div class="card-header"><span class="card-title">The Sidebar</span><span class="card-sub">Always visible · role-aware · grouped</span></div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The left sidebar is your primary navigation. It only shows links your role has access to.</p>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-table-cells-large"></i></div><div><h4>Dashboard</h4><p>Your home page with daily stats and recent activity.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-bullhorn"></i></div><div><h4>Announcements</h4><p>Team-wide messages, pinned notices, and important updates.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-book-open"></i></div><div><h4>Brand Catalogs</h4><p>Browse and manage product brand catalogs and resources.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-calendar-check"></i></div><div><h4>EOD Report</h4><p>Submit your daily task counts before end of shift.</p></div></div>
-        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-people-group"></i></div><div><h4>The Team</h4><p>Team directory with contact details and Viber links.</p></div></div>
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The left sidebar is your primary navigation. Links are organized into labeled groups and only show what your role has access to.</p>
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--ash);margin-bottom:8px;">Member Groups</p>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-briefcase"></i></div><div><h4>Work</h4><p>EOD Report, Posting Procedure, Requirements. Not shown for Analysts.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-wrench"></i></div><div><h4>Tools</h4><p>Data Gathering (Content only), Price Calculator. Not shown for Analysts.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-bookmark"></i></div><div><h4>Resources</h4><p>Important Links. Not shown for Analysts.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-people-group"></i></div><div><h4>Team</h4><p>Announcements, Brand Catalogs, Calendar (non-analyst), The Team. Visible to all roles.</p></div></div>
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--ash);margin:14px 0 8px;">Admin Groups</p>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-chart-column"></i></div><div><h4>Analytics</h4><p>Daily Logs, Reports.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-layer-group"></i></div><div><h4>Brand Management</h4><p>Brands, Brand Catalogs.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-globe"></i></div><div><h4>General</h4><p>Announcements, Calendar, The Team. Plus a Member View shortcut at the bottom.</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Command Palette</span><span class="badge" style="font-size:11px">Ctrl+K</span></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">Press <strong style="color:var(--graphite)">Ctrl+K</strong> anywhere in the app to open the command palette. Type to search or use <strong style="color:var(--graphite)">↑↓</strong> to navigate, <strong style="color:var(--graphite)">Enter</strong> to confirm, <strong style="color:var(--graphite)">Esc</strong> to close.</p>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-compass"></i></div><div><h4>Navigation group</h4><p>All pages available for your role. Analysts see a trimmed list (no EOD, no calculator).</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-bolt"></i></div><div><h4>Actions group</h4><p>Toggle Theme, open Notifications, go to Profile, Logout. Admins also see Member View and New Announcement shortcuts.</p></div></div>
       </div>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-title">Top Bar</span></div>
       <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
-        Contains the <strong style="color:var(--graphite)">notification bell</strong> for system alerts and your <strong style="color:var(--graphite)">profile avatar</strong>. Click the avatar to open a dropdown with profile settings and logout.
+        Contains the <strong style="color:var(--graphite)">notification bell</strong> for system alerts and your <strong style="color:var(--graphite)">profile avatar</strong>. Click the avatar to open a dropdown with profile settings, logout, and — for admins — a <strong style="color:var(--graphite)">Member View</strong> shortcut that opens the role preview picker.
       </div>
     </div>
   </section>
@@ -566,7 +592,7 @@ a { text-decoration: none; color: inherit; }
     <div class="card">
       <div class="card-header"><span class="card-title">Welcome Banner</span><span class="badge" style="font-size:11px">All roles</span></div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">A coloured banner at the top of the page greets you by name and shows the current date. The colour changes based on your role. Click the <strong style="color:var(--graphite)">chevron (↑)</strong> in the banner to collapse it — your preference is saved across sessions.</p>
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">A banner at the top of the page greets you by name and shows the current date. It features a role-colored gradient, a subtle dot pattern, and decorative background shapes. Click the <strong style="color:var(--graphite)">chevron (↑)</strong> in the banner to collapse it — your preference is saved across sessions.</p>
         <div class="color-row">
           <div class="color-dot"><span style="background:#7c3aed"></span> Head</div>
           <div class="color-dot"><span style="background:#1e293b"></span> Manager</div>
@@ -598,7 +624,7 @@ a { text-decoration: none; color: inherit; }
       <div class="card-body">
         <div class="f-row"><div class="f-icon"><i class="fas fa-bullhorn"></i></div><div><h4>Announcements Bento</h4><p>Shows the 2 most recent active announcements. Click any card to go to the full announcements page.</p></div></div>
         <div class="f-row"><div class="f-icon"><i class="fas fa-bolt"></i></div><div><h4>Quick Access</h4><p>Role-specific shortcut links displayed as clickable cards. Changes based on your role.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-clipboard-check"></i></div><div><h4>EOD Status</h4><p>Shows whether you've submitted today's End-of-Day report.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-clipboard-check"></i></div><div><h4>EOD Status</h4><p>Shows whether you've submitted today's report. On <strong style="color:var(--graphite)">Sundays</strong>, this displays a Rest Day (RDO) indicator instead — no submission is expected.</p></div></div>
         <div class="f-row"><div class="f-icon"><i class="fas fa-chart-bar"></i></div><div><h4>Activity Chart</h4><p>A 7-day bar chart of your task output. Displays Tasks This Week and Tasks This Month stat cards.</p></div></div>
         <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-table-list"></i></div><div><h4>Recent Logs</h4><p>Table of your last 5 daily log entries with date, attendance status, and task counts.</p></div></div>
       </div>
@@ -840,8 +866,14 @@ a { text-decoration: none; color: inherit; }
     <div class="sec-header"><div><div class="sec-title">Notifications</div><div class="sec-desc">System alerts shown via the bell icon in the top bar.</div></div></div>
     <div class="card">
       <div class="card-body">
-        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The bell icon shows a badge count of unread notifications. Alerts are triggered by events like new brand catalogs being added.</p>
-        <div class="info-grid">
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7;margin-bottom:14px">The bell icon shows a badge count of unread notifications. The panel auto-refreshes every 30 seconds. Opening it marks all as read.</p>
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--ash);margin-bottom:8px;">Notification Types</p>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-calendar-check"></i></div><div><h4>EOD Submitted</h4><p><em>Admins only.</em> Triggered when any member submits their end-of-day report.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-calendar-days"></i></div><div><h4>Calendar Event</h4><p>Sent to attendees (or everyone if no specific attendees set) when a new calendar event is created.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-list-check"></i></div><div><h4>Calendar Task Assigned</h4><p>Sent to members of the assigned role when a new calendar task is created for them.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-circle-check"></i></div><div><h4>Calendar Task Completed</h4><p>Sent to managers/heads and the task creator when a parent task is marked complete.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-book-open"></i></div><div><h4>New Brand Catalog</h4><p>Sent to all users when a new brand catalog is added to the system.</p></div></div>
+        <div class="info-grid" style="margin-top:14px">
           <div class="info-cell"><div class="lbl">Mark All Read</div><div class="sub">Marks every notification as read at once</div></div>
           <div class="info-cell"><div class="lbl">Clear All</div><div class="sub">Permanently removes all notifications</div></div>
           <div class="info-cell"><div class="lbl">Delete One</div><div class="sub">Remove a single notification from the list</div></div>
@@ -1053,7 +1085,7 @@ a { text-decoration: none; color: inherit; }
       <div class="footer-logo">ED</div>
       <span class="footer-name">Ecomm Department Hub</span>
     </div>
-    <div class="footer-right">Internal User Manual · v1.0 · 2026</div>
+    <div class="footer-right">Internal User Manual · v2.0 · 2026</div>
   </div>
 
 </main>
@@ -1066,6 +1098,7 @@ a { text-decoration: none; color: inherit; }
 // ── Search ──
 var idx = [
   { id:'introduction',      icon:'fa-house',               title:'Introduction',          sub:'What is this app' },
+  { id:'whats-new',         icon:'fa-star',                title:"What's New in v2.0",    sub:'Recent updates and changes' },
   { id:'getting-started',   icon:'fa-rocket',              title:'Getting Started',       sub:'Login & logout' },
   { id:'roles',             icon:'fa-user-group',          title:'Roles & Permissions',   sub:'All 8 roles explained' },
   { id:'navigation',        icon:'fa-compass',             title:'Navigation',            sub:'Sidebar & top bar guide' },
