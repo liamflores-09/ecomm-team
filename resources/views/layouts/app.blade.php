@@ -703,7 +703,7 @@
                         <div class="user-menu-divider"></div>
                         @if(Auth::user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="user-menu-item"><i class="fas fa-gauge" style="width:14px;text-align:center;font-size:0.8rem;"></i> Admin Dashboard</a>
-                        <button type="button" onclick="closeUserMenu();openModal('rolePickerModal');" class="user-menu-item"><i class="fas fa-arrow-right-from-bracket" style="width:14px;text-align:center;font-size:0.8rem;"></i> Member View</button>
+                        <a href="#" onclick="closeUserMenu();setTimeout(function(){openModal('rolePickerModal');},50);return false;" class="user-menu-item"><i class="fas fa-arrow-right-from-bracket" style="width:14px;text-align:center;font-size:0.8rem;"></i> Member View</a>
                         @else
                         <a href="{{ route('dashboard') }}" class="user-menu-item"><i class="fas fa-grip" style="width:14px;text-align:center;font-size:0.8rem;"></i> Dashboard</a>
                         @endif
