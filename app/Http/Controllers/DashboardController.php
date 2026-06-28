@@ -36,8 +36,11 @@ class DashboardController extends Controller
             ->sum(DB::raw('task_1 + task_2 + task_3 + task_4 + task_5'));
 
         // Analyst-specific: brand catalog stats
+        $effectiveRole = ($user->isAdmin() && session()->has('preview_role'))
+            ? session('preview_role')
+            : $user->role;
         $catalogStats = null;
-        if ($user->role === 'analyst') {
+        if ($effectiveRole === 'analyst') {
             $catalogStats = [
                 'total'     => BrandCatalog::count(),
                 'available' => BrandCatalog::where('status', 'available')->count(),

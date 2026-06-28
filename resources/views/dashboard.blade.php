@@ -342,7 +342,8 @@
 
 @section('content')
 @php
-$roleColor = match($user->role) {
+$effectiveRole = $isPreview ? $previewRole : $user->role;
+$roleColor = match($effectiveRole) {
     'content'    => '#0ea5e9',
     'lead'       => '#6366f1',
     'researcher' => '#10b981',
@@ -364,17 +365,17 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </button>
         <div class="wb-content">
             <h2>Welcome back, {{ $user->first_name }}!</h2>
-            @if($user->role === 'content')
+            @if($effectiveRole === 'content')
             <p>Your content workspace — posting, data gathering, and daily logs.</p>
-            @elseif($user->role === 'lead')
+            @elseif($effectiveRole === 'lead')
             <p>PR leadership — product research, team coordination, and task oversight.</p>
-            @elseif($user->role === 'researcher')
+            @elseif($effectiveRole === 'researcher')
             <p>Product research hub — advance PR, trade-in tracking, and vendor data.</p>
-            @elseif($user->role === 'graphics')
+            @elseif($effectiveRole === 'graphics')
             <p>Design dashboard — CVP, banners, drafts, and visual assets.</p>
-            @elseif($user->role === 'backend')
+            @elseif($effectiveRole === 'backend')
             <p>Backend operations — bulk uploads, cross-listing, QC, and Q&A.</p>
-            @elseif($user->role === 'analyst')
+            @elseif($effectiveRole === 'analyst')
             <p>Brand catalog hub — manage and update product catalogs across brands.</p>
             @endif
             <div class="wb-date">{{ now()->format('l, F j') }}</div>
@@ -385,7 +386,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
     </div>
 
-    @if($user->role === 'analyst')
+    @if($effectiveRole === 'analyst')
 
     {{-- ── Analyst: Catalog Stats ── --}}
     <div class="anim-up d1">
@@ -512,7 +513,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         {{-- Quick Access --}}
         <div class="bento-quick">
             <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
-            @if($user->role === 'content')
+            @if($effectiveRole === 'content')
             <a href="{{ route('posting-procedure') }}" class="bento-ql">
                 <div class="bento-ql-icon"><i class="fas fa-book-open"></i></div>
                 <div><span class="bento-ql-name">Posting Procedure</span><span class="bento-ql-desc">8-step product posting guide</span></div>
@@ -634,7 +635,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
             <a href="{{ route('end-of-day') }}">View EOD <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></a>
         </div>
         @if($recentLogs->count())
-        @php $tl = \App\Support\TaskLabels::get($user->role); @endphp
+        @php $tl = \App\Support\TaskLabels::get($effectiveRole); @endphp
         <table class="logs-table">
             <thead>
                 <tr>
@@ -723,7 +724,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
     };
 })();
 </script>
-@if($user->role !== 'analyst')
+@if($effectiveRole !== 'analyst')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var el = document.getElementById('weeklyChart');
