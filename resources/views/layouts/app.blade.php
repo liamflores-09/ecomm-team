@@ -875,22 +875,75 @@
             { name: 'The Team',        desc: 'Team directory',     icon: 'fa-people-group',       url: '{{ route("team") }}' },
         ];
 
-        var pages = isAdmin ? adminPages : memberPages;
+        var actions = [
+            { name: 'Toggle Theme',  desc: 'Switch dark/light mode', icon: 'fa-moon',                   color: '#6366f1', fn: 'toggleTheme' },
+            { name: 'Profile',       desc: 'Your profile',           icon: 'fa-user',                   color: '#0ea5e9', url: '{{ route("profile") }}' },
+            { name: 'Notifications', desc: 'Open notifications',     icon: 'fa-bell',                   color: '#f59e0b', fn: 'openNotifPanel' },
+            { name: 'Logout',        desc: 'Sign out',               icon: 'fa-right-from-bracket',     color: '#ef4444', fn: 'submitLogout' },
+            @if($cmdIsAdmin && !$isPreview)
+            { name: 'Member View',   desc: 'Preview a member role',  icon: 'fa-arrow-right-from-bracket', color: '#10b981', fn: 'openMemberView' },
+            @endif
+            @if(Auth::check() && Auth::user()->isAdmin())
+            { name: 'New Announcement', desc: 'Post an announcement', icon: 'fa-bullhorn',              color: '#f59e0b', url: '{{ route("announcements") }}' },
+            @endif
+        ];
+
+        function openNotifPanel() { toggleNotifPanel(); }
+        function submitLogout()   { document.querySelector('form[action*="logout"]').submit(); }
+        @if($cmdIsAdmin && !$isPreview)
+        function openMemberView() { openModal('rolePickerModal'); }
+        @endif
 
         function render(query) {
             var q = (query || '').toLowerCase();
-            var filtered = pages.filter(function(p) { return p.name.toLowerCase().indexOf(q) !== -1 || p.desc.toLowerCase().indexOf(q) !== -1; });
+            var pages = isAdmin ? adminPages : memberPages;
+            var filteredPages   = pages.filter(function(p) { return p.name.toLowerCase().indexOf(q) !== -1 || p.desc.toLowerCase().indexOf(q) !== -1; });
+            var filteredActions = actions.filter(function(a) { return a.name.toLowerCase().indexOf(q) !== -1 || a.desc.toLowerCase().indexOf(q) !== -1; });
             flatList = [];
-            if (filtered.length === 0) { results.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted-foreground);font-size:14px;">No results</div>'; return; }
-            var html = '<div class="cmd-group-label">Pages</div>';
-            filtered.forEach(function(p, i) {
-                flatList.push(p);
-                html += '<a href="' + p.url + '" class="cmd-item" data-idx="' + i + '">';
-                html += '<div class="ci-icon"><i class="fas ' + p.icon + '"></i></div>';
-                html += '<div style="flex:1;"><div class="ci-name">' + p.name + '</div><div class="ci-desc">' + p.desc + '</div></div>';
-                html += '</a>';
-            });
+
+            if (filteredPages.length === 0 && filteredActions.length === 0) {
+                results.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted-foreground);font-size:14px;">No results' + (q ? ' for "' + q + '"' : '') + '</div>';
+                return;
+            }
+
+            var html = '';
+
+            if (filteredPages.length > 0) {
+                html += '<div class="cmd-group-label">Navigation</div>';
+                filteredPages.forEach(function(p) {
+                    flatList.push(p);
+                    html += '<a href="' + p.url + '" class="cmd-item" data-idx="' + (flatList.length - 1) + '">';
+                    html += '<div class="ci-icon"><i class="fas ' + p.icon + '"></i></div>';
+                    html += '<div style="flex:1;"><div class="ci-name">' + p.name + '</div><div class="ci-desc">' + p.desc + '</div></div>';
+                    html += '</a>';
+                });
+            }
+
+            if (filteredActions.length > 0) {
+                html += '<div class="cmd-group-label" style="margin-top:4px;">Actions</div>';
+                filteredActions.forEach(function(a) {
+                    flatList.push(a);
+                    var idx = flatList.length - 1;
+                    if (a.fn) {
+                        html += '<div class="cmd-item" data-idx="' + idx + '" data-action="' + a.fn + '" style="cursor:pointer;">';
+                    } else {
+                        html += '<a href="' + a.url + '" class="cmd-item" data-idx="' + idx + '">';
+                    }
+                    html += '<div class="ci-icon" style="background:' + a.color + ';color:white;"><i class="fas ' + a.icon + '"></i></div>';
+                    html += '<div style="flex:1;"><div class="ci-name">' + a.name + '</div><div class="ci-desc">' + a.desc + '</div></div>';
+                    html += a.fn ? '</div>' : '</a>';
+                });
+            }
+
             results.innerHTML = html;
+
+            results.querySelectorAll('.cmd-item[data-action]').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    var fn = this.getAttribute('data-action');
+                    closePalette();
+                    if (window[fn]) window[fn]();
+                });
+            });
         }
         window._cmdRender = render;
 
@@ -911,8 +964,15 @@
             }
             if (e.key === 'Enter' && overlay.classList.contains('open')) {
                 e.preventDefault();
-                var items = results.querySelectorAll('.cmd-item');
-                if (items.length > 0 && activeIndex >= 0) window.location.href = flatList[activeIndex].url;
+                if (activeIndex >= 0 && flatList[activeIndex]) {
+                    var item = flatList[activeIndex];
+                    closePalette();
+                    if (item.fn && window[item.fn]) {
+                        window[item.fn]();
+                    } else if (item.url) {
+                        window.location.href = item.url;
+                    }
+                }
             }
         });
 
