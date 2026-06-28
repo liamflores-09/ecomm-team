@@ -883,7 +883,7 @@
             @if($cmdIsAdmin && !$isPreview)
             { name: 'Member View',   desc: 'Preview a member role',  icon: 'fa-arrow-right-from-bracket', color: '#10b981', fn: 'openMemberView' },
             @endif
-            @if(Auth::check() && Auth::user()->isAdmin())
+            @if($cmdIsAdmin && !$isPreview)
             { name: 'New Announcement', desc: 'Post an announcement', icon: 'fa-bullhorn',              color: '#f59e0b', url: '{{ route("announcements") }}' },
             @endif
         ];
@@ -902,7 +902,11 @@
             flatList = [];
 
             if (filteredPages.length === 0 && filteredActions.length === 0) {
-                results.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted-foreground);font-size:14px;">No results' + (q ? ' for "' + q + '"' : '') + '</div>';
+                var noResult = document.createElement('div');
+                noResult.style.cssText = 'text-align:center;padding:32px;color:var(--muted-foreground);font-size:14px;';
+                noResult.textContent = 'No results' + (q ? ' for "' + q + '"' : '');
+                results.innerHTML = '';
+                results.appendChild(noResult);
                 return;
             }
 

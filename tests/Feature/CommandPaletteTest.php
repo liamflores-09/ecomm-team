@@ -56,5 +56,6 @@ class CommandPaletteTest extends TestCase
             ->withSession(['preview_role' => 'content'])
             ->get(route('dashboard'));
         $response->assertDontSee('openMemberView', false);
+        $response->assertDontSee('Post an announcement', false);
     }
 }
