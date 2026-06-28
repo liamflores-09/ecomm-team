@@ -1,13 +1,19 @@
 @props(['active' => '', 'isAdmin' => false])
 
-@php $role = Auth::user()->role ?? ''; @endphp
+@php
+    $role = Auth::user()->role ?? '';
+    if ($isPreview) {
+        $role = $previewRole;
+        $isAdmin = false;
+    }
+@endphp
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <div class="brand-icon">ED</div>
         <div>
             <h5>Ecomm Dept</h5>
-            <span>{{ $isAdmin ? 'Admin Panel' : 'PR x Content' }}</span>
+            <span>{{ $isPreview ? 'Previewing: ' . ucfirst($previewRole) : ($isAdmin ? 'Admin Panel' : 'PR x Content') }}</span>
         </div>
     </div>
 
@@ -29,7 +35,7 @@
             {{-- ── General ── --}}
             <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li><a href="{{ route('team') }}"             class="{{ $active === 'team'            ? 'active' : '' }}"><i class="fas fa-people-group"></i> The Team</a></li>
-            <li><a href="{{ route('dashboard') }}"        class="{{ $active === 'dashboard'       ? 'active' : '' }}"><i class="fas fa-arrow-right-from-bracket"></i> Member View</a></li>
+            <li><a href="#" onclick="openModal('rolePickerModal');return false;" class="{{ $active === 'dashboard' ? 'active' : '' }}"><i class="fas fa-arrow-right-from-bracket"></i> Member View</a></li>
 
         @else
             {{-- ── Dashboard (all roles) ── --}}
