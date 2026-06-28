@@ -290,7 +290,7 @@
             <h2><span class="highlight">Announcements</span></h2>
             <p>Updates and notices from the team</p>
         </div>
-        @if(in_array($user->role, ['head', 'manager', 'analyst']))
+        @if(in_array($user->role, ['head', 'manager', 'analyst']) && !$isPreview)
         <button class="btn-flat-primary" style="height:36px;padding:0 1rem;font-size:0.8rem;" onclick="openForm()">
             <i class="fas fa-plus"></i> New Announcement
         </button>
