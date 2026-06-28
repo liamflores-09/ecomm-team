@@ -610,10 +610,39 @@
         .app-toast-item.t-info    .t-icon { color: #0ea5e9; }
         .app-toast-item.t-hiding  { opacity: 0; transform: translateX(14px); }
         @keyframes toastIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Preview mode */
+        .preview-banner {
+            position: fixed;
+            top: 64px; left: 0; right: 0;
+            height: 40px;
+            background: #fef3c7;
+            border-bottom: 1px solid #f59e0b;
+            z-index: 45;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px 0 280px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #92400e;
+        }
+        [data-theme="dark"] .preview-banner {
+            background: #1c1100;
+            border-bottom-color: #92400e;
+            color: #fde68a;
+        }
+        body.preview-mode .sidebar { top: 104px; height: calc(100vh - 104px); }
+        body.preview-mode .main-content { padding-top: 136px; }
+        @media (max-width: 1024px) {
+            .preview-banner { padding-left: 20px; }
+            body.preview-mode .main-content { padding-top: 136px; margin-left: 0; }
+        }
+        .preview-locked { pointer-events: none; opacity: 0.55; user-select: none; }
     </style>
     @yield('styles')
 </head>
-<body class="bg-background text-foreground">
+<body class="bg-background text-foreground {{ $isPreview ? 'preview-mode' : '' }}">
     <!-- Top Header -->
     <header class="top-header">
         <div class="logo-section">
@@ -689,6 +718,33 @@
             @endif
         </div>
     </header>
+
+    @if($isPreview)
+    <div class="preview-banner">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-eye" style="color:#f59e0b;font-size:12px;"></i>
+            <span>Viewing as:</span>
+            <span class="role-badge {{ $previewRole }}">{{ ucfirst($previewRole) }}</span>
+            <span style="color:#b45309;font-size:12px;">— read-only, no submissions</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <button onclick="openModal('rolePickerModal')"
+                style="height:28px;padding:0 10px;border:1px solid #f59e0b;border-radius:var(--radius);background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:#92400e;font-family:Inter,sans-serif;transition:background 0.15s;"
+                onmouseover="this.style.background='rgba(245,158,11,0.1)'" onmouseout="this.style.background='transparent'">
+                <i class="fas fa-arrows-rotate" style="font-size:10px;margin-right:4px;"></i>Switch Role
+            </button>
+            <form method="POST" action="{{ route('admin.preview-role.clear') }}" style="margin:0;">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                    style="height:28px;padding:0 10px;border:none;border-radius:var(--radius);background:#f59e0b;cursor:pointer;font-size:12px;font-weight:600;color:white;font-family:Inter,sans-serif;transition:opacity 0.15s;"
+                    onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-arrow-left" style="font-size:10px;margin-right:4px;"></i>Return to Admin
+                </button>
+            </form>
+        </div>
+    </div>
+    @endif
 
     <!-- Mobile Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -970,6 +1026,33 @@
         <div style="padding:0.75rem 1.125rem;border-top:1px solid var(--border-light);display:flex;gap:8px;">
             <button type="submit" form="annQuickForm" class="btn-flat-primary" style="flex:1;height:38px;font-size:0.8rem;">Post Announcement</button>
             <button type="button" onclick="closeAnnModal()" class="btn-flat-secondary" style="height:38px;padding:0 0.875rem;font-size:0.8rem;">Cancel</button>
+        </div>
+    </div>
+    @endif
+
+    {{-- Role Picker Modal --}}
+    @if(Auth::check() && Auth::user()->isAdmin())
+    <div class="modal-overlay" id="rolePickerModal">
+        <div class="modal-box" style="max-width:460px;">
+            <div class="modal-header">
+                <h5><i class="fas fa-eye" style="color:var(--primary);margin-right:6px;font-size:0.9rem;"></i>{{ $isPreview ? 'Switch Preview Role' : 'Preview as Role' }}</h5>
+                <button class="modal-close" onclick="closeModal('rolePickerModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.82rem;color:var(--muted-foreground);margin:0 0 14px;">Select a role to preview the member experience. All inputs will be read-only.</p>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+                    @foreach(['lead' => 'Lead', 'content' => 'Content', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend', 'analyst' => 'Analyst'] as $roleKey => $roleLabel)
+                    <form method="POST" action="{{ route('admin.preview-role.set') }}" style="margin:0;">
+                        @csrf
+                        <input type="hidden" name="role" value="{{ $roleKey }}">
+                        <button type="submit" style="width:100%;padding:10px 12px;border:1.5px solid {{ ($previewRole ?? '') === $roleKey ? 'var(--primary)' : 'var(--border-light)' }};border-radius:var(--radius);background:{{ ($previewRole ?? '') === $roleKey ? 'var(--primary)' : 'var(--card)' }};cursor:pointer;text-align:left;transition:all 0.15s;color:{{ ($previewRole ?? '') === $roleKey ? 'white' : 'var(--foreground)' }};">
+                            <span class="role-badge {{ $roleKey }}">{{ $roleLabel }}</span>
+                            <div style="margin-top:5px;font-size:0.78rem;font-weight:500;font-family:Inter,sans-serif;">{{ $roleLabel }} member view</div>
+                        </button>
+                    </form>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </div>
     @endif
