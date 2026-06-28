@@ -166,7 +166,7 @@
 @endsection
 
 @section('content')
-<x-sidebar active="team" />
+<x-sidebar :isAdmin="Auth::user()->isAdmin()" active="team" />
 
 <div class="main-content">
 
