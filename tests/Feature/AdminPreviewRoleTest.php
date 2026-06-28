@@ -59,4 +59,25 @@ class AdminPreviewRoleTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_preview_variables_shared_when_session_set(): void
+    {
+        $admin = $this->makeAdmin();
+        session(['preview_role' => 'lead']);
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+
+        $response->assertViewHas('isPreview', true);
+        $response->assertViewHas('previewRole', 'lead');
+    }
+
+    public function test_preview_variables_false_when_session_empty(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+
+        $response->assertViewHas('isPreview', false);
+        $response->assertViewHas('previewRole', null);
+    }
 }
