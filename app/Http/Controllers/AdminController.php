@@ -881,7 +881,7 @@ class AdminController extends Controller
     public function setPreviewRole(Request $request)
     {
         $request->validate([
-            'role' => 'required|in:lead,content,researcher,graphics,backend,analyst',
+            'role' => 'required|in:content,researcher,graphics,backend,analyst',
         ]);
         session(['preview_role' => $request->role]);
         return redirect()->route('dashboard');

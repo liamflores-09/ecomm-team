@@ -1041,7 +1041,7 @@
             <div class="modal-body">
                 <p style="font-size:0.82rem;color:var(--muted-foreground);margin:0 0 14px;">Select a role to preview the member experience. All inputs will be read-only.</p>
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
-                    @foreach(['lead' => 'Lead', 'content' => 'Content', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend', 'analyst' => 'Analyst'] as $roleKey => $roleLabel)
+                    @foreach(['content' => 'Content', 'researcher' => 'Researcher', 'graphics' => 'Graphics', 'backend' => 'Backend', 'analyst' => 'Analyst'] as $roleKey => $roleLabel)
                     <form method="POST" action="{{ route('admin.preview-role.set') }}" style="margin:0;">
                         @csrf
                         <input type="hidden" name="role" value="{{ $roleKey }}">
