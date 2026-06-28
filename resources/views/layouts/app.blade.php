@@ -832,37 +832,51 @@
         window.addEventListener('resize', update);
     })();
 
+    @php
+        $cmdIsAdmin = !$isPreview && Auth::check() && Auth::user()->isAdmin();
+        $cmdRole    = $isPreview ? $previewRole : (Auth::check() ? Auth::user()->role : '');
+    @endphp
+
+    <script>
     (function() {
         var overlay = document.getElementById('cmdOverlay');
         var input = document.getElementById('cmdInput');
         var results = document.getElementById('cmdResults');
         var activeIndex = -1;
-        var flatList = [];
-        var isAdmin = window.location.pathname.startsWith('/admin');
-
-        var userPages = [
-            { name: 'Dashboard', desc: 'Overview', icon: 'fa-grip', url: '{{ route("dashboard") }}' },
-            @if(Auth::check() && Auth::user()->role === 'content')
-            { name: 'Posting Procedure', desc: 'Product posting guide', icon: 'fa-list-check', url: '{{ route("posting-procedure") }}' },
-            { name: 'Data Gathering', desc: 'Collect product info', icon: 'fa-folder-open', url: '{{ route("data-gathering") }}' },
-            { name: 'E-commerce Requirements', desc: 'Platform rules', icon: 'fa-clipboard-list', url: '{{ route("ecommerce-requirements") }}' },
-            @endif
-            { name: 'Price Calculator', desc: 'Compute SRP', icon: 'fa-calculator', url: '{{ route("price-calculator") }}' },
-            { name: 'End-of-Day Report', desc: 'Log daily tasks', icon: 'fa-calendar-check', url: '{{ route("end-of-day") }}' },
-            { name: 'Important Links', desc: 'Quick access', icon: 'fa-link', url: '{{ route("important-links") }}' },
-            { name: 'The Team', desc: 'Team directory', icon: 'fa-users', url: '{{ route("team") }}' },
-            { name: 'Brand Catalogs', desc: 'Browse brand catalogs', icon: 'fa-book-open', url: '{{ route("brand-catalogs") }}' }
-        ];
+        var flatList    = [];
+        var isAdmin     = {{ $cmdIsAdmin ? 'true' : 'false' }};
 
         var adminPages = [
-            { name: 'Admin Dashboard', desc: 'Overview', icon: 'fa-grip', url: '{{ route("admin.dashboard") }}' },
-            { name: 'Manage Users', desc: 'User management', icon: 'fa-users', url: '{{ route("admin.users") }}' },
-            { name: 'Daily Logs', desc: 'Team activity', icon: 'fa-clipboard-list', url: '{{ route("admin.daily-logs") }}' },
-            { name: 'Brands', desc: 'Manage brands', icon: 'fa-tag', url: '{{ route("admin.brands") }}' },
-            { name: 'User Dashboard', desc: 'Switch view', icon: 'fa-arrow-right-from-bracket', url: '{{ route("dashboard") }}' }
+            { name: 'Admin Dashboard', desc: 'Overview',          icon: 'fa-table-cells-large',  url: '{{ route("admin.dashboard") }}' },
+            { name: 'Users',           desc: 'User management',   icon: 'fa-user-group',          url: '{{ route("admin.users") }}' },
+            { name: 'Daily Logs',      desc: 'Team activity',     icon: 'fa-clock-rotate-left',   url: '{{ route("admin.daily-logs") }}' },
+            { name: 'Reports',         desc: 'Role reports',      icon: 'fa-chart-column',        url: '{{ route("admin.reports") }}' },
+            { name: 'Brands',          desc: 'Manage brands',     icon: 'fa-layer-group',         url: '{{ route("admin.brands") }}' },
+            { name: 'Brand Catalogs',  desc: 'Browse catalogs',   icon: 'fa-book-open',           url: '{{ route("brand-catalogs") }}' },
+            { name: 'Announcements',   desc: 'Team announcements',icon: 'fa-bullhorn',            url: '{{ route("announcements") }}' },
+            { name: 'Calendar',        desc: 'Team calendar',     icon: 'fa-calendar-days',       url: '{{ route("calendar") }}' },
+            { name: 'The Team',        desc: 'Team directory',    icon: 'fa-people-group',        url: '{{ route("team") }}' },
         ];
 
-        var pages = isAdmin ? adminPages : userPages;
+        var memberPages = [
+            { name: 'Dashboard',      desc: 'Overview',            icon: 'fa-table-cells-large', url: '{{ route("dashboard") }}' },
+            @if($cmdRole !== 'analyst')
+            { name: 'EOD Report',     desc: 'Log daily tasks',     icon: 'fa-calendar-check',    url: '{{ route("end-of-day") }}' },
+            { name: 'Price Calculator', desc: 'Compute SRP',       icon: 'fa-calculator',        url: '{{ route("price-calculator") }}' },
+            { name: 'Important Links',  desc: 'Quick access',      icon: 'fa-bookmark',          url: '{{ route("important-links") }}' },
+            { name: 'Calendar',         desc: 'Team calendar',     icon: 'fa-calendar-days',     url: '{{ route("calendar") }}' },
+            @endif
+            @if($cmdRole === 'content')
+            { name: 'Posting Procedure',  desc: 'Product posting guide', icon: 'fa-list-check',           url: '{{ route("posting-procedure") }}' },
+            { name: 'Requirements',       desc: 'Platform rules',        icon: 'fa-clipboard-list',       url: '{{ route("ecommerce-requirements") }}' },
+            { name: 'Data Gathering',     desc: 'Collect product info',  icon: 'fa-magnifying-glass-chart', url: '{{ route("data-gathering") }}' },
+            @endif
+            { name: 'Brand Catalogs',  desc: 'Browse catalogs',    icon: 'fa-book-open',         url: '{{ route("brand-catalogs") }}' },
+            { name: 'Announcements',   desc: 'Team announcements', icon: 'fa-bullhorn',           url: '{{ route("announcements") }}' },
+            { name: 'The Team',        desc: 'Team directory',     icon: 'fa-people-group',       url: '{{ route("team") }}' },
+        ];
+
+        var pages = isAdmin ? adminPages : memberPages;
 
         function render(query) {
             var q = (query || '').toLowerCase();
