@@ -24,16 +24,19 @@
             <li><a href="{{ route('admin.users') }}"      class="{{ $active === 'admin.users'      ? 'active' : '' }}"><i class="fas fa-user-group"></i> Users</a></li>
 
             {{-- ── Analytics ── --}}
+            <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">Analytics</li>
             <li><a href="{{ route('admin.daily-logs') }}" class="{{ $active === 'admin.daily-logs' ? 'active' : '' }}"><i class="fas fa-clock-rotate-left"></i> Daily Logs</a></li>
             <li><a href="{{ route('admin.reports') }}"    class="{{ $active === 'admin.reports'    ? 'active' : '' }}"><i class="fas fa-chart-column"></i> Reports</a></li>
 
             {{-- ── Brand Management ── --}}
+            <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">Brand Management</li>
             <li><a href="{{ route('admin.brands') }}"     class="{{ $active === 'admin.brands'    ? 'active' : '' }}"><i class="fas fa-layer-group"></i> Brands</a></li>
             <li><a href="{{ route('brand-catalogs') }}"   class="{{ $active === 'brand-catalogs'  ? 'active' : '' }}"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
 
             {{-- ── General ── --}}
+            <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">General</li>
             <li><a href="{{ route('announcements') }}"    class="{{ $active === 'announcements'   ? 'active' : '' }}"><i class="fas fa-bullhorn"></i> Announcements</a></li>
             <li><a href="{{ route('calendar') }}"         class="{{ $active === 'calendar'        ? 'active' : '' }}"><i class="fas fa-calendar-days"></i> Calendar</a></li>
