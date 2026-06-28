@@ -91,5 +91,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/brands', [AdminBrandController::class, 'store'])->name('admin.brands.store');
         Route::put('/brands/{brand}', [AdminBrandController::class, 'update'])->name('admin.brands.update');
         Route::delete('/brands/{brand}', [AdminBrandController::class, 'destroy'])->name('admin.brands.destroy');
+        Route::post('/preview-role', [AdminController::class, 'setPreviewRole'])->name('admin.preview-role.set');
+        Route::delete('/preview-role', [AdminController::class, 'clearPreviewRole'])->name('admin.preview-role.clear');
     });
 });

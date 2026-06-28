@@ -877,4 +877,19 @@ class AdminController extends Controller
             'shareData', 'memberNames', 'roleGroupedData', 'roleColorMap', 'roleNameMap'
         ));
     }
+
+    public function setPreviewRole(Request $request)
+    {
+        $request->validate([
+            'role' => 'required|in:lead,content,researcher,graphics,backend,analyst',
+        ]);
+        session(['preview_role' => $request->role]);
+        return redirect()->route('dashboard');
+    }
+
+    public function clearPreviewRole()
+    {
+        session()->forget('preview_role');
+        return redirect()->route('admin.dashboard');
+    }
 }
