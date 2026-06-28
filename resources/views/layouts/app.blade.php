@@ -837,7 +837,6 @@
         $cmdRole    = $isPreview ? $previewRole : (Auth::check() ? Auth::user()->role : '');
     @endphp
 
-    <script>
     (function() {
         var overlay = document.getElementById('cmdOverlay');
         var input = document.getElementById('cmdInput');
