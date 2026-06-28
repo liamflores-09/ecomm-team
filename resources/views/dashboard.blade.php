@@ -18,7 +18,17 @@
         display: flex;
         align-items: center;
         min-height: 140px;
+        background:
+            radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px) 0 0 / 20px 20px,
+            linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.22) 100%),
+            var(--wb-color);
     }
+    .wb-deco {
+        position: absolute; border-radius: 50%; pointer-events: none; z-index: 1;
+    }
+    .wb-deco-1 { width: 210px; height: 210px; top: -75px; right: 150px; background: rgba(255,255,255,0.07); }
+    .wb-deco-2 { width: 120px; height: 120px; bottom: -45px; right: 310px; background: rgba(255,255,255,0.06); }
+    .wb-deco-3 { width: 65px; height: 65px; top: 18px; right: 390px; background: transparent; border: 1.5px solid rgba(255,255,255,0.18); }
     .welcome-banner.collapsed {
         min-height: unset;
         padding: 0 1.25rem;
@@ -358,7 +368,10 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
 
 <div class="main-content">
     <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up" id="welcomeBanner" style="--wb-color: {{ $roleColor }}; background: var(--wb-color);">
+    <div class="welcome-banner anim-up" id="welcomeBanner" style="--wb-color: {{ $roleColor }};">
+        <div class="wb-deco wb-deco-1"></div>
+        <div class="wb-deco wb-deco-2"></div>
+        <div class="wb-deco wb-deco-3"></div>
         <span class="wb-collapsed-label"><i class="fas fa-hand-wave" style="margin-right:0.4rem;"></i>Welcome back, {{ $user->first_name }}!</span>
         <button class="wb-toggle" id="wbToggle" title="Toggle banner" onclick="toggleBanner()">
             <i class="fas fa-chevron-up" id="wbToggleIcon"></i>
