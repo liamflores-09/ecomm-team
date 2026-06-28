@@ -305,7 +305,9 @@
                 <div class="ann-list-hd-row">
                     <span class="ann-list-hd-label">All Posts</span>
                     @if(in_array($user->role, ['head', 'manager', 'analyst']))
+                    @if(!$isPreview)
                     <button class="ann-new-btn" onclick="openForm()"><i class="fas fa-plus"></i> New</button>
+                    @endif
                     @endif
                 </div>
                 <div class="ann-search-wrap">
@@ -474,7 +476,7 @@
 {{-- ══ Form drawer ══ --}}
 @if(in_array($user->role, ['head', 'manager', 'analyst']))
 <div class="ann-form-overlay" id="annFormOverlay" onclick="closeForm()"></div>
-<div class="ann-form-drawer" id="annFormDrawer">
+<div class="ann-form-drawer {{ $isPreview ? 'preview-locked' : '' }}" id="annFormDrawer">
     <div class="ann-form-hd">
         <span class="ann-form-hd-title" id="formTitle">New Announcement</span>
         <button class="ann-form-close" onclick="closeForm()"><i class="fas fa-xmark"></i></button>

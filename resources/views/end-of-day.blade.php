@@ -250,7 +250,10 @@
     @endif
 
     <!-- Log Form -->
-    <div class="eod-card anim-up d1">
+    @if($isPreview)
+    <div class="alert-flat anim-fade" style="background:#fef3c7;color:#92400e;border:1px solid #f59e0b;margin-bottom:12px;"><i class="fas fa-eye"></i> Admin preview — form is read-only</div>
+    @endif
+    <div class="eod-card anim-up d1 {{ $isPreview ? 'preview-locked' : '' }}">
         <div class="eod-card-header">
             <div class="t-icon"><i class="fas fa-pen"></i></div>
             {{ $existingLog ? 'Edit Today\'s Log' : 'Log Today\'s Tasks' }} — {{ now()->format('F j, Y') }}

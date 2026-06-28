@@ -482,7 +482,7 @@
     </div>
 
     <!-- Add Row Card -->
-    <div class="add-card anim-up d1">
+    <div class="add-card anim-up d1 {{ $isPreview ? 'preview-locked' : '' }}">
         <div class="add-card-title">
             <div class="title-icon"><i class="fas fa-plus"></i></div>
             Add Row

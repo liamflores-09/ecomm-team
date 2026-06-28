@@ -539,7 +539,7 @@
 
 {{-- ── Create / Edit event drawer ───────────────────────── --}}
 <div class="cal-drawer-backdrop" id="evDrawerBackdrop" onclick="closeEvDrawer()"></div>
-<div class="cal-ev-drawer" id="evDrawer">
+<div class="cal-ev-drawer {{ $isPreview ? 'preview-locked' : '' }}" id="evDrawer">
     <div class="cal-drawer-hd">
         <div class="cal-drawer-hd-title" id="evDrawerTitle">Create Event</div>
         <button class="cal-drawer-hd-x" onclick="closeEvDrawer()"><i class="fas fa-times"></i></button>
