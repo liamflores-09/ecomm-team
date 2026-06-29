@@ -192,32 +192,30 @@
         background: linear-gradient(to bottom, #888, #555);
         border-radius: 2px; margin-bottom: -2px;
     }
-    .idm-flip-card { width: 260px; cursor: pointer; perspective: 1200px; }
+    .idm-flip-card { width: 300px; cursor: pointer; perspective: 1200px; }
     .idm-flip-inner {
         display: grid; grid-template-columns: 1fr;
         transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
         transform-style: preserve-3d;
     }
     .idm-face {
-        grid-area: 1/1; border-radius: 14px; overflow: hidden;
+        grid-area: 1/1; border-radius: 18px; overflow: hidden;
         backface-visibility: hidden; -webkit-backface-visibility: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.2);
+        position: relative;
     }
     .idm-back { transform: rotateY(180deg); }
     .idm-flip-card.flipped .idm-flip-inner { transform: rotateY(180deg); }
 
     /* Front face */
-    .idm-front {
-        background: #fff; display: flex; flex-direction: column; align-items: center; padding-bottom: 18px;
-    }
+    .idm-front { background: #fff; display: flex; flex-direction: column; align-items: center; padding-bottom: 22px; }
     .idm-hole {
-        width: 13px; height: 13px; border-radius: 50%;
-        background: #e5e7eb; border: 1.5px solid #d1d5db;
-        margin: 9px auto 0;
+        width: 14px; height: 14px; border-radius: 50%;
+        background: #e5e7eb; border: 1.5px solid #d1d5db; margin: 10px auto 0;
     }
     .idm-header {
-        width: 100%; padding: 11px 14px 13px; margin-top: 5px;
-        position: relative; display: flex; align-items: center; gap: 10px;
+        width: 100%; padding: 13px 16px 15px; margin-top: 5px;
+        position: relative; display: flex; align-items: center; gap: 11px;
     }
     .idm-header-dots {
         position: absolute; inset: 0;
@@ -225,49 +223,72 @@
         background-size: 11px 11px;
     }
     .idm-header-logo {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem;
+        width: 36px; height: 36px; border-radius: 50%;
+        background: rgba(255,255,255,0.2); color: white; font-size: 1rem;
         display: flex; align-items: center; justify-content: center;
         position: relative; z-index: 1; flex-shrink: 0;
     }
     .idm-header-text { position: relative; z-index: 1; text-align: left; }
-    .idm-header-company { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.95); line-height: 1.2; }
-    .idm-header-sub { font-size: 0.58rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .idm-header-company { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.95); line-height: 1.2; }
+    .idm-header-sub { font-size: 0.6rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
     .idm-photo-ring {
-        width: 88px; height: 88px; border-radius: 50%;
+        width: 100px; height: 100px; border-radius: 50%;
         background: white; padding: 4px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        margin: 14px auto 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        margin: 16px auto 12px; flex-shrink: 0; position: relative; z-index: 1;
     }
     .idm-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-    .idm-fullname { font-weight: 800; font-size: 1rem; color: #0f172a; text-align: center; padding: 0 14px; line-height: 1.25; margin-bottom: 3px; }
-    .idm-desg { font-size: 0.7rem; color: #64748b; font-weight: 500; margin-bottom: 8px; }
-    .idm-front-hint { font-size: 0.62rem; color: #94a3b8; margin-top: 14px; display: flex; align-items: center; gap: 4px; }
+    .idm-fullname { font-weight: 800; font-size: 1.1rem; color: #0f172a; text-align: center; padding: 0 16px; line-height: 1.25; margin-bottom: 4px; position: relative; z-index: 1; }
+    .idm-desg { font-size: 0.73rem; color: #64748b; font-weight: 500; margin-bottom: 9px; position: relative; z-index: 1; }
+    .idm-front .role-badge { position: relative; z-index: 1; }
+    .idm-front-hint { font-size: 0.63rem; color: #94a3b8; margin-top: 16px; display: flex; align-items: center; gap: 5px; position: relative; z-index: 1; }
+    /* Watermark */
+    .idm-watermark {
+        position: absolute; bottom: -8px; right: -8px;
+        font-size: 90px; opacity: 0.05; pointer-events: none; line-height: 1;
+    }
+    /* Role tint on front */
+    .idr-head      .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(124,58,237,0.07) 100%); }
+    .idr-manager   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(30,41,59,0.07) 100%); }
+    .idr-lead      .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(99,102,241,0.07) 100%); }
+    .idr-analyst   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(236,72,153,0.07) 100%); }
+    .idr-researcher .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(16,185,129,0.07) 100%); }
+    .idr-content   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(14,165,233,0.07) 100%); }
+    .idr-graphics  .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(245,158,11,0.07) 100%); }
+    .idr-backend   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(244,63,94,0.07) 100%); }
 
     /* Back face */
-    .idm-back { background: #f8fafc; display: flex; flex-direction: column; }
+    .idm-back { display: flex; flex-direction: column; }
+    .idr-head      .idm-back { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
+    .idr-manager   .idm-back { background: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 100%); }
+    .idr-lead      .idm-back { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
+    .idr-analyst   .idm-back { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
+    .idr-researcher .idm-back { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
+    .idr-content   .idm-back { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .idr-graphics  .idm-back { background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%); }
+    .idr-backend   .idm-back { background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 100%); }
     .idm-back-header {
-        padding: 14px 16px; position: relative;
+        padding: 16px 18px; position: relative;
         display: flex; align-items: center; justify-content: center;
     }
-    .idm-back-company { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: rgba(255,255,255,0.9); text-transform: uppercase; position: relative; z-index: 1; }
-    .idm-back-body { padding: 10px 16px; flex: 1; }
+    .idm-back-company { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: rgba(255,255,255,0.9); text-transform: uppercase; position: relative; z-index: 1; }
+    .idm-back-body { padding: 10px 18px; flex: 1; }
     .idm-back-row {
         display: flex; align-items: center; justify-content: space-between;
-        padding: 9px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.75rem;
+        padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.78rem;
     }
     .idm-back-row:last-child { border-bottom: none; }
-    .idm-lbl { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.05em; }
-    .idm-val { font-weight: 700; color: #0f172a; text-align: right; max-width: 60%; }
+    .idm-lbl { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.05em; }
+    .idm-val { font-weight: 700; color: #0f172a; text-align: right; max-width: 62%; word-break: break-all; }
     .idm-viber-val { text-decoration: none; transition: opacity 0.15s; color: #0f172a; font-weight: 700; }
     .idm-viber-val:hover { opacity: 0.65; }
     .idm-back-footer {
-        padding: 10px 16px 14px; border-top: 1px solid #e2e8f0;
+        padding: 11px 18px 15px; border-top: 1px solid rgba(0,0,0,0.08);
         display: flex; align-items: center; justify-content: space-between;
     }
-    .idm-barcode { width: 76px; height: 20px; fill: #1e293b; opacity: 0.3; }
-    .idm-idnum { font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
-    .idm-tap-hint { color: rgba(255,255,255,0.45); font-size: 0.68rem; margin-top: 12px; }
+    .idm-barcode { width: 80px; height: 22px; fill: #1e293b; opacity: 0.3; }
+    .idm-idnum { font-family: monospace; font-size: 0.65rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
+    .idm-tap-hint { color: rgba(255,255,255,0.45); font-size: 0.7rem; margin-top: 14px; }
 </style>
 @endsection
 
@@ -570,6 +591,7 @@
                 <div id="idmDesg" class="idm-desg"></div>
                 <span id="idmBadge" class="role-badge"></span>
                 <div class="idm-front-hint"><i class="fas fa-rotate" style="font-size:0.6rem"></i> Tap to flip</div>
+                <div class="idm-watermark"><i id="idmWatermark" class="fas fa-crown"></i></div>
             </div>
             {{-- Back --}}
             <div class="idm-face idm-back">
@@ -621,8 +643,12 @@ window.openIdCard = function(el) {
     badge.textContent = d.roleLabel;
     badge.className = 'role-badge ' + d.role;
     document.getElementById('idmIcon').className = 'fas ' + d.icon;
+    document.getElementById('idmWatermark').className = 'fas ' + d.icon;
+    document.getElementById('idmWatermark').style.color = d.color;
     document.getElementById('idmHeader').style.background = d.color;
     document.getElementById('idmBackHeader').style.background = d.color;
+    var flipCard = document.getElementById('idFlipCard');
+    flipCard.className = flipCard.className.replace(/\bidr-\w+/g, '').trim() + ' idr-' + d.role;
     document.getElementById('idmBackName').textContent = d.name;
     document.getElementById('idmBackUser').textContent = '@' + d.username;
     document.getElementById('idmBackDesg').textContent = d.designation;
