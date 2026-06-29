@@ -273,12 +273,20 @@
     .idm-front-hint { font-size: 0.6rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
 
     /* ── BACK ── */
-    .idm-back { background: #fff; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .idm-back-face { background: #f8fafc; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .idr-head      .idm-back-face { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
+    .idr-manager   .idm-back-face { background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 100%); }
+    .idr-lead      .idm-back-face { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
+    .idr-analyst   .idm-back-face { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
+    .idr-researcher .idm-back-face { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
+    .idr-content   .idm-back-face { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .idr-graphics  .idm-back-face { background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%); }
+    .idr-backend   .idm-back-face { background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 100%); }
 
     /* Big faded watermark in back body */
     .idm-back-wm {
         position: absolute; bottom: 30px; right: -20px;
-        font-size: 130px; color: var(--idm-color); opacity: 0.05;
+        font-size: 130px; color: var(--idm-color); opacity: 0.08;
         pointer-events: none; line-height: 1; z-index: 0;
     }
 
@@ -297,21 +305,21 @@
     }
     .idm-back-row {
         display: flex; align-items: flex-start; justify-content: space-between;
-        padding: 9px 0; border-bottom: 1px solid #f1f5f9;
+        padding: 9px 0; border-bottom: 1px solid #cbd5e1;
     }
     .idm-back-row:last-child { border-bottom: none; }
-    .idm-lbl { color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.06em; padding-top: 1px; }
+    .idm-lbl { color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.06em; padding-top: 1px; }
     .idm-val { font-weight: 700; color: #0f172a; font-size: 0.78rem; text-align: right; max-width: 58%; word-break: break-all; }
     .idm-viber-val { text-decoration: none; color: #0f172a; font-weight: 700; transition: opacity 0.15s; }
     .idm-viber-val:hover { opacity: 0.6; }
 
     /* Back footer */
     .idm-back-foot {
-        padding: 10px 18px 15px; border-top: 1px solid #f1f5f9;
+        padding: 10px 18px 15px; border-top: 1px solid #cbd5e1;
         display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 1; position: relative;
     }
-    .idm-barcode { width: 82px; height: 22px; fill: #1e293b; opacity: 0.25; }
-    .idm-idnum { font-family: monospace; font-size: 0.65rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
+    .idm-barcode { width: 82px; height: 22px; fill: #1e293b; opacity: 0.35; }
+    .idm-idnum { font-family: monospace; font-size: 0.65rem; font-weight: 700; color: #64748b; letter-spacing: 0.04em; }
 
     .idm-tap-hint { color: rgba(255,255,255,0.4); font-size: 0.68rem; margin-top: 14px; letter-spacing: 0.02em; }
 
