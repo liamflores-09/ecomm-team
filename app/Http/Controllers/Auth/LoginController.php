@@ -28,11 +28,15 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            if (Auth::user()->isAdmin()) {
-                return redirect()->intended(route('admin.dashboard'));
+            $intended = session()->pull('url.intended');
+            if ($intended && str_starts_with(parse_url($intended, PHP_URL_PATH), '/notifications')) {
+                $intended = null;
             }
 
-            return redirect()->intended(route('dashboard'));
+            $admin = Auth::user()->isAdmin();
+            $default = route($admin ? 'admin.dashboard' : 'dashboard');
+
+            return redirect($intended ?? $default);
         }
 
         return back()->withErrors([
