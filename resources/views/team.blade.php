@@ -192,103 +192,128 @@
         background: linear-gradient(to bottom, #888, #555);
         border-radius: 2px; margin-bottom: -2px;
     }
-    .idm-flip-card { width: 300px; cursor: pointer; perspective: 1200px; }
+    .idm-flip-card { width: 300px; cursor: pointer; perspective: 1200px; --idm-color: #7c3aed; }
     .idm-flip-inner {
         display: grid; grid-template-columns: 1fr;
-        transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+        transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
         transform-style: preserve-3d;
     }
     .idm-face {
-        grid-area: 1/1; border-radius: 18px; overflow: hidden;
+        grid-area: 1/1; border-radius: 20px; overflow: hidden;
         backface-visibility: hidden; -webkit-backface-visibility: hidden;
-        box-shadow: 0 24px 64px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.2);
+        box-shadow: 0 28px 72px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.25);
         position: relative;
     }
-    .idm-back { transform: rotateY(180deg); }
+    .idm-back-face { transform: rotateY(180deg); }
     .idm-flip-card.flipped .idm-flip-inner { transform: rotateY(180deg); }
 
-    /* Front face */
-    .idm-front { background: #fff; display: flex; flex-direction: column; align-items: center; padding-bottom: 22px; }
+    /* ── FRONT ── */
+    .idm-front { background: #fff; display: flex; flex-direction: column; }
+
+    /* Colored top section */
+    .idm-top {
+        height: 155px; position: relative; flex-shrink: 0;
+        display: flex; flex-direction: column; padding: 14px 18px 0; overflow: visible;
+    }
+    .idm-top-dots {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+        background-size: 14px 14px;
+    }
+    /* Large background icon */
+    .idm-top-icon-bg {
+        position: absolute; bottom: -14px; right: -8px;
+        font-size: 110px; color: rgba(255,255,255,0.1); pointer-events: none; line-height: 1;
+    }
+    /* Lanyard hole inside the top */
     .idm-hole {
+        position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
         width: 14px; height: 14px; border-radius: 50%;
-        background: #e5e7eb; border: 1.5px solid #d1d5db; margin: 10px auto 0;
+        background: rgba(255,255,255,0.25); border: 1.5px solid rgba(255,255,255,0.5);
+        z-index: 2;
     }
-    .idm-header {
-        width: 100%; padding: 13px 16px 15px; margin-top: 5px;
-        position: relative; display: flex; align-items: center; gap: 11px;
-    }
-    .idm-header-dots {
-        position: absolute; inset: 0;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1px, transparent 1px);
-        background-size: 11px 11px;
-    }
-    .idm-header-logo {
-        width: 36px; height: 36px; border-radius: 50%;
-        background: rgba(255,255,255,0.2); color: white; font-size: 1rem;
+    /* Company row */
+    .idm-co-row { display: flex; align-items: center; gap: 9px; position: relative; z-index: 1; margin-top: 18px; }
+    .idm-co-icon {
+        width: 32px; height: 32px; border-radius: 9px;
+        background: rgba(255,255,255,0.18); backdrop-filter: blur(4px);
         display: flex; align-items: center; justify-content: center;
-        position: relative; z-index: 1; flex-shrink: 0;
+        color: white; font-size: 0.85rem; flex-shrink: 0;
     }
-    .idm-header-text { position: relative; z-index: 1; text-align: left; }
-    .idm-header-company { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.95); line-height: 1.2; }
-    .idm-header-sub { font-size: 0.6rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-    .idm-photo-ring {
-        width: 100px; height: 100px; border-radius: 50%;
+    .idm-co-name { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; color: white; text-transform: uppercase; line-height: 1.15; }
+    .idm-co-sub { font-size: 0.58rem; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* Avatar — overlaps split */
+    .idm-avatar-wrap {
+        position: absolute; bottom: -52px; left: 50%; transform: translateX(-50%);
+        z-index: 4; width: 104px; height: 104px; border-radius: 50%;
         background: white; padding: 4px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        margin: 16px auto 12px; flex-shrink: 0; position: relative; z-index: 1;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.22);
     }
     .idm-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-    .idm-fullname { font-weight: 800; font-size: 1.1rem; color: #0f172a; text-align: center; padding: 0 16px; line-height: 1.25; margin-bottom: 4px; position: relative; z-index: 1; }
-    .idm-desg { font-size: 0.73rem; color: #64748b; font-weight: 500; margin-bottom: 9px; position: relative; z-index: 1; }
-    .idm-front .role-badge { position: relative; z-index: 1; }
-    .idm-front-hint { font-size: 0.63rem; color: #94a3b8; margin-top: 16px; display: flex; align-items: center; gap: 5px; position: relative; z-index: 1; }
-    /* Watermark */
-    .idm-watermark {
-        position: absolute; bottom: -8px; right: -8px;
-        font-size: 90px; opacity: 0.05; pointer-events: none; line-height: 1;
-    }
-    /* Role tint on front */
-    .idr-head      .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(124,58,237,0.07) 100%); }
-    .idr-manager   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(30,41,59,0.07) 100%); }
-    .idr-lead      .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(99,102,241,0.07) 100%); }
-    .idr-analyst   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(236,72,153,0.07) 100%); }
-    .idr-researcher .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(16,185,129,0.07) 100%); }
-    .idr-content   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(14,165,233,0.07) 100%); }
-    .idr-graphics  .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(245,158,11,0.07) 100%); }
-    .idr-backend   .idm-front { background: linear-gradient(145deg, #fff 55%, rgba(244,63,94,0.07) 100%); }
 
-    /* Back face */
-    .idm-back { display: flex; flex-direction: column; }
-    .idr-head      .idm-back { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
-    .idr-manager   .idm-back { background: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 100%); }
-    .idr-lead      .idm-back { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
-    .idr-analyst   .idm-back { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
-    .idr-researcher .idm-back { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
-    .idr-content   .idm-back { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
-    .idr-graphics  .idm-back { background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%); }
-    .idr-backend   .idm-back { background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 100%); }
-    .idm-back-header {
-        padding: 16px 18px; position: relative;
-        display: flex; align-items: center; justify-content: center;
+    /* White info section */
+    .idm-info {
+        padding: 62px 20px 0; /* 62px to clear avatar */
+        display: flex; flex-direction: column; align-items: center; flex: 1;
     }
-    .idm-back-company { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: rgba(255,255,255,0.9); text-transform: uppercase; position: relative; z-index: 1; }
-    .idm-back-body { padding: 10px 18px; flex: 1; }
-    .idm-back-row {
+    .idm-fullname { font-weight: 800; font-size: 1.08rem; color: #0f172a; text-align: center; line-height: 1.25; margin-bottom: 3px; }
+    .idm-desg { font-size: 0.7rem; color: #64748b; font-weight: 500; margin-bottom: 10px; letter-spacing: 0.01em; }
+
+    /* Divider line */
+    .idm-rule { width: 40px; height: 3px; border-radius: 99px; background: var(--idm-color); margin: 10px auto 14px; opacity: 0.6; }
+
+    /* Front footer */
+    .idm-front-foot {
+        margin-top: auto; width: 100%; padding: 12px 18px 16px;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.78rem;
+        border-top: 1px solid #f1f5f9;
+    }
+    .idm-front-org { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #cbd5e1; }
+    .idm-front-hint { font-size: 0.6rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+
+    /* ── BACK ── */
+    .idm-back { background: #fff; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+    /* Big faded watermark in back body */
+    .idm-back-wm {
+        position: absolute; bottom: 30px; right: -20px;
+        font-size: 130px; color: var(--idm-color); opacity: 0.05;
+        pointer-events: none; line-height: 1; z-index: 0;
+    }
+
+    /* Colored header strip */
+    .idm-back-head {
+        padding: 14px 18px; position: relative; flex-shrink: 0;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .idm-back-co { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; color: rgba(255,255,255,0.92); text-transform: uppercase; position: relative; z-index: 1; }
+
+    /* Left accent bar on body */
+    .idm-back-body {
+        padding: 6px 18px 6px 22px; flex: 1; position: relative; z-index: 1;
+        border-left: 3px solid var(--idm-color);
+        margin: 12px 18px; border-radius: 0 0 0 4px;
+    }
+    .idm-back-row {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        padding: 9px 0; border-bottom: 1px solid #f1f5f9;
     }
     .idm-back-row:last-child { border-bottom: none; }
-    .idm-lbl { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.05em; }
-    .idm-val { font-weight: 700; color: #0f172a; text-align: right; max-width: 62%; word-break: break-all; }
-    .idm-viber-val { text-decoration: none; transition: opacity 0.15s; color: #0f172a; font-weight: 700; }
-    .idm-viber-val:hover { opacity: 0.65; }
-    .idm-back-footer {
-        padding: 11px 18px 15px; border-top: 1px solid rgba(0,0,0,0.08);
-        display: flex; align-items: center; justify-content: space-between;
+    .idm-lbl { color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.06em; padding-top: 1px; }
+    .idm-val { font-weight: 700; color: #0f172a; font-size: 0.78rem; text-align: right; max-width: 58%; word-break: break-all; }
+    .idm-viber-val { text-decoration: none; color: #0f172a; font-weight: 700; transition: opacity 0.15s; }
+    .idm-viber-val:hover { opacity: 0.6; }
+
+    /* Back footer */
+    .idm-back-foot {
+        padding: 10px 18px 15px; border-top: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 1; position: relative;
     }
-    .idm-barcode { width: 80px; height: 22px; fill: #1e293b; opacity: 0.3; }
+    .idm-barcode { width: 82px; height: 22px; fill: #1e293b; opacity: 0.25; }
     .idm-idnum { font-family: monospace; font-size: 0.65rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
-    .idm-tap-hint { color: rgba(255,255,255,0.45); font-size: 0.7rem; margin-top: 14px; }
+
+    .idm-tap-hint { color: rgba(255,255,255,0.4); font-size: 0.68rem; margin-top: 14px; letter-spacing: 0.02em; }
 </style>
 @endsection
 
@@ -575,37 +600,46 @@
         <div class="idm-flip-inner">
             {{-- Front --}}
             <div class="idm-face idm-front">
-                <div class="idm-hole"></div>
-                <div class="idm-header" id="idmHeader">
-                    <div class="idm-header-dots"></div>
-                    <div class="idm-header-logo"><i id="idmIcon" class="fas fa-crown"></i></div>
-                    <div class="idm-header-text">
-                        <div class="idm-header-company">Ecomm Dept</div>
-                        <div class="idm-header-sub">ID Card</div>
+                <div class="idm-top" id="idmColorTop">
+                    <div class="idm-top-dots"></div>
+                    <div class="idm-hole"></div>
+                    <div class="idm-co-row">
+                        <div class="idm-co-icon"><i id="idmIcon" class="fas fa-crown"></i></div>
+                        <div>
+                            <div class="idm-co-name">Ecomm Dept</div>
+                            <div class="idm-co-sub">Employee ID</div>
+                        </div>
+                    </div>
+                    <i id="idmBgIcon" class="fas fa-crown idm-top-icon-bg"></i>
+                    <div class="idm-avatar-wrap">
+                        <img id="idmPhoto" src="" class="idm-photo" alt="">
                     </div>
                 </div>
-                <div class="idm-photo-ring">
-                    <img id="idmPhoto" src="" class="idm-photo" alt="">
+                <div class="idm-info">
+                    <div id="idmName" class="idm-fullname"></div>
+                    <div id="idmDesg" class="idm-desg"></div>
+                    <span id="idmBadge" class="role-badge"></span>
+                    <div class="idm-rule"></div>
+                    <div class="idm-front-foot">
+                        <span class="idm-front-org">Ecomm Team</span>
+                        <span class="idm-front-hint"><i class="fas fa-rotate" style="font-size:0.55rem"></i> Tap to flip</span>
+                    </div>
                 </div>
-                <div id="idmName" class="idm-fullname"></div>
-                <div id="idmDesg" class="idm-desg"></div>
-                <span id="idmBadge" class="role-badge"></span>
-                <div class="idm-front-hint"><i class="fas fa-rotate" style="font-size:0.6rem"></i> Tap to flip</div>
-                <div class="idm-watermark"><i id="idmWatermark" class="fas fa-crown"></i></div>
             </div>
             {{-- Back --}}
-            <div class="idm-face idm-back">
-                <div class="idm-back-header" id="idmBackHeader">
-                    <div class="idm-header-dots"></div>
-                    <div class="idm-back-company">Ecomm Dept</div>
+            <div class="idm-face idm-back-face">
+                <div class="idm-back-head" id="idmBackHeader">
+                    <div class="idm-top-dots"></div>
+                    <div class="idm-back-co">Ecomm Dept — ID Card</div>
                 </div>
+                <i id="idmBackIcon" class="fas fa-crown idm-back-wm"></i>
                 <div class="idm-back-body">
                     <div class="idm-back-row"><span class="idm-lbl">Full Name</span><span id="idmBackName" class="idm-val"></span></div>
                     <div class="idm-back-row"><span class="idm-lbl">Username</span><span id="idmBackUser" class="idm-val"></span></div>
                     <div class="idm-back-row" id="idmViberRow"><span class="idm-lbl">Viber</span><a id="idmViberLink" href="#" class="idm-val idm-viber-val" onclick="event.stopPropagation()"></a></div>
                     <div class="idm-back-row"><span class="idm-lbl">Designation</span><span id="idmBackDesg" class="idm-val"></span></div>
                 </div>
-                <div class="idm-back-footer">
+                <div class="idm-back-foot">
                     <svg class="idm-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
                     <div id="idmIdnum" class="idm-idnum"></div>
                 </div>
@@ -635,20 +669,21 @@
 
 window.openIdCard = function(el) {
     var d = el.dataset;
-    var avatarUrl = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + d.seed;
-    document.getElementById('idmPhoto').src = avatarUrl;
+    document.getElementById('idmPhoto').src = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + d.seed;
     document.getElementById('idmName').textContent = d.name;
     document.getElementById('idmDesg').textContent = d.designation;
     var badge = document.getElementById('idmBadge');
     badge.textContent = d.roleLabel;
     badge.className = 'role-badge ' + d.role;
-    document.getElementById('idmIcon').className = 'fas ' + d.icon;
-    document.getElementById('idmWatermark').className = 'fas ' + d.icon;
-    document.getElementById('idmWatermark').style.color = d.color;
-    document.getElementById('idmHeader').style.background = d.color;
+    var iconCls = 'fas ' + d.icon;
+    document.getElementById('idmIcon').className = iconCls;
+    document.getElementById('idmBgIcon').className = iconCls + ' idm-top-icon-bg';
+    document.getElementById('idmBackIcon').className = iconCls + ' idm-back-wm';
+    document.getElementById('idmColorTop').style.background = d.color;
     document.getElementById('idmBackHeader').style.background = d.color;
     var flipCard = document.getElementById('idFlipCard');
     flipCard.className = flipCard.className.replace(/\bidr-\w+/g, '').trim() + ' idr-' + d.role;
+    flipCard.style.setProperty('--idm-color', d.color);
     document.getElementById('idmBackName').textContent = d.name;
     document.getElementById('idmBackUser').textContent = '@' + d.username;
     document.getElementById('idmBackDesg').textContent = d.designation;
@@ -662,7 +697,7 @@ window.openIdCard = function(el) {
     } else {
         viberRow.style.display = 'none';
     }
-    document.getElementById('idFlipCard').classList.remove('flipped');
+    flipCard.classList.remove('flipped');
     document.getElementById('idCardModal').classList.add('open');
 };
 
