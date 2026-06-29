@@ -162,6 +162,70 @@
     @media (max-width: 540px) {
         .tm-members { grid-template-columns: 1fr; }
     }
+
+    /* ── Flip card ───────────────────────────────────────────────── */
+    .flip-card { cursor: pointer; perspective: 1000px; }
+    .flip-card-inner {
+        display: grid; grid-template-columns: 1fr;
+        transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+        transform-style: preserve-3d;
+    }
+    .flip-card-front, .flip-card-back {
+        grid-area: 1 / 1;
+        backface-visibility: hidden; -webkit-backface-visibility: hidden;
+        border-radius: 8px; overflow: hidden;
+    }
+    .flip-card-back { transform: rotateY(180deg); }
+    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+    /* ── ID card back ────────────────────────────────────────────── */
+    .tm-idback {
+        background: var(--card); border: 1px solid var(--border-light);
+        display: flex; flex-direction: column; align-items: center;
+        padding-bottom: 0.875rem; text-align: center;
+    }
+    .tm-id-header {
+        width: 100%; height: 52px; flex-shrink: 0;
+        position: relative; display: flex; align-items: center; justify-content: center;
+        margin-bottom: 0.625rem;
+    }
+    .tm-id-dots {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
+        background-size: 12px 12px;
+    }
+    .tm-id-icon { position: relative; z-index: 1; color: rgba(255,255,255,0.9); font-size: 1.15rem; }
+    .tm-id-avatar {
+        width: 56px; height: 56px; border-radius: 50%;
+        border: 2.5px solid rgba(255,255,255,0.3);
+        object-fit: cover; background: var(--muted); display: block; margin: 0 auto 0.4rem;
+    }
+    .flip-leader .tm-id-avatar { width: 68px; height: 68px; }
+    .tm-id-name { font-weight: 800; font-size: 0.88rem; line-height: 1.2; margin-bottom: 0.2rem; padding: 0 0.75rem; }
+    .tm-id-uname { font-size: 0.68rem; color: var(--muted-foreground); font-weight: 500; margin-bottom: 0.45rem; }
+    .tm-id-viber {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        font-size: 0.7rem; font-weight: 600; color: var(--gray-400);
+        text-decoration: none; margin-top: 0.4rem; transition: color 0.15s;
+    }
+    .tm-id-viber:hover { color: var(--foreground); }
+    .tm-id-org {
+        font-size: 0.58rem; font-weight: 800; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--gray-400); margin-top: auto; padding-top: 0.625rem;
+    }
+    .idc-head      .tm-id-header { background: #7c3aed; }
+    .idc-manager   .tm-id-header { background: #1e293b; }
+    .idc-lead      .tm-id-header { background: #6366f1; }
+    .idc-analyst   .tm-id-header { background: #ec4899; }
+    .idc-researcher .tm-id-header { background: #10b981; }
+    .idc-content   .tm-id-header { background: #0ea5e9; }
+    .idc-graphics  .tm-id-header { background: #f59e0b; }
+    .idc-backend   .tm-id-header { background: #f43f5e; }
+    .tm-flip-hint {
+        font-size: 0.62rem; color: var(--gray-400); opacity: 0.7;
+        margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem;
+    }
+    .tm-flip-hint i { font-size: 0.6rem; }
 </style>
 @endsection
 
@@ -224,15 +288,28 @@
     </div>
     <div class="tm-leaders anim-up d2">
         @foreach($heads as $u)
-        <div class="tm-lcard">
-            <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                <div class="tm-lcard-sub">Ecomm Department Head</div>
-                <span class="role-badge head">Ecomm Head</span>
-                @if($u->mobile_number)
-                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-                @endif
+        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-lcard">
+                    <div class="tm-lcard-body">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                        <div class="tm-lcard-sub">Ecomm Department Head</div>
+                        <span class="role-badge head">Ecomm Head</span>
+                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                    </div>
+                </div>
+                <div class="flip-card-back tm-idback idc-head">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-crown tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge head">Ecomm Head</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
             </div>
         </div>
         @endforeach
@@ -251,15 +328,28 @@
     </div>
     <div class="tm-leaders anim-up d2">
         @foreach($managers as $u)
-        <div class="tm-lcard">
-            <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                <div class="tm-lcard-sub">Ecomm Department</div>
-                <span class="role-badge manager">Manager</span>
-                @if($u->mobile_number)
-                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-                @endif
+        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-lcard">
+                    <div class="tm-lcard-body">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                        <div class="tm-lcard-sub">Ecomm Department</div>
+                        <span class="role-badge manager">Manager</span>
+                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                    </div>
+                </div>
+                <div class="flip-card-back tm-idback idc-manager">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-crown tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge manager">Manager</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
             </div>
         </div>
         @endforeach
@@ -278,15 +368,28 @@
     </div>
     <div class="tm-leaders anim-up d3">
         @foreach($leads as $u)
-        <div class="tm-lcard">
-            <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                <div class="tm-lcard-sub">Content &amp; PR Lead</div>
-                <span class="role-badge lead">Lead</span>
-                @if($u->mobile_number)
-                <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-                @endif
+        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-lcard">
+                    <div class="tm-lcard-body">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                        <div class="tm-lcard-sub">Content &amp; PR Lead</div>
+                        <span class="role-badge lead">Lead</span>
+                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                    </div>
+                </div>
+                <div class="flip-card-back tm-idback idc-lead">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-star tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge lead">Lead</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
             </div>
         </div>
         @endforeach
@@ -305,13 +408,26 @@
     </div>
     <div class="tm-members anim-up d4">
         @foreach($analysts as $u)
-        <div class="tm-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-            <div class="tm-name">{{ $u->full_name }}</div>
-            <span class="role-badge analyst">Analyst</span>
-            @if($u->mobile_number)
-            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-            @endif
+        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-card">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-name">{{ $u->full_name }}</div>
+                    <span class="role-badge analyst">Analyst</span>
+                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                </div>
+                <div class="flip-card-back tm-idback idc-analyst">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-chart-bar tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge analyst">Analyst</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
+            </div>
         </div>
         @endforeach
     </div>
@@ -329,13 +445,26 @@
     </div>
     <div class="tm-members anim-up d4">
         @foreach($researchers as $u)
-        <div class="tm-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-            <div class="tm-name">{{ $u->full_name }}</div>
-            <span class="role-badge researcher">Researcher</span>
-            @if($u->mobile_number)
-            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-            @endif
+        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-card">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-name">{{ $u->full_name }}</div>
+                    <span class="role-badge researcher">Researcher</span>
+                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                </div>
+                <div class="flip-card-back tm-idback idc-researcher">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-magnifying-glass tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge researcher">Researcher</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
+            </div>
         </div>
         @endforeach
     </div>
@@ -353,13 +482,26 @@
     @if($content->count())
     <div class="tm-members anim-up d4">
         @foreach($content as $u)
-        <div class="tm-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-            <div class="tm-name">{{ $u->full_name }}</div>
-            <span class="role-badge content">Content</span>
-            @if($u->mobile_number)
-            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-            @endif
+        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-card">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-name">{{ $u->full_name }}</div>
+                    <span class="role-badge content">Content</span>
+                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                </div>
+                <div class="flip-card-back tm-idback idc-content">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-pen-nib tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge content">Content</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
+            </div>
         </div>
         @endforeach
     </div>
@@ -379,13 +521,26 @@
     @if($graphics->count())
     <div class="tm-members anim-up d5">
         @foreach($graphics as $u)
-        <div class="tm-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-            <div class="tm-name">{{ $u->full_name }}</div>
-            <span class="role-badge graphics">Graphics</span>
-            @if($u->mobile_number)
-            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-            @endif
+        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-card">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-name">{{ $u->full_name }}</div>
+                    <span class="role-badge graphics">Graphics</span>
+                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                </div>
+                <div class="flip-card-back tm-idback idc-graphics">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-palette tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge graphics">Graphics</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
+            </div>
         </div>
         @endforeach
     </div>
@@ -405,13 +560,26 @@
     @if($backend->count())
     <div class="tm-members anim-up d5">
         @foreach($backend as $u)
-        <div class="tm-card">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-            <div class="tm-name">{{ $u->full_name }}</div>
-            <span class="role-badge backend">Backend</span>
-            @if($u->mobile_number)
-            <div><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-viber-link">{!! $viber !!} {{ $u->mobile_number }}</a></div>
-            @endif
+        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front tm-card">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-name">{{ $u->full_name }}</div>
+                    <span class="role-badge backend">Backend</span>
+                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
+                </div>
+                <div class="flip-card-back tm-idback idc-backend">
+                    <div class="tm-id-header"><div class="tm-id-dots"></div><i class="fas fa-server tm-id-icon"></i></div>
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-avatar" alt="{{ $u->full_name }}">
+                    <div class="tm-id-name">{{ $u->full_name }}</div>
+                    <div class="tm-id-uname">{{ '@' . $u->username }}</div>
+                    <span class="role-badge backend">Backend</span>
+                    @if($u->mobile_number)
+                    <a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-viber" onclick="event.stopPropagation()">{!! $viber !!} {{ $u->mobile_number }}</a>
+                    @endif
+                    <div class="tm-id-org">Ecomm Dept</div>
+                </div>
+            </div>
         </div>
         @endforeach
     </div>
