@@ -163,100 +163,111 @@
         .tm-members { grid-template-columns: 1fr; }
     }
 
-    /* ── Flip card ───────────────────────────────────────────────── */
-    .flip-card { cursor: pointer; perspective: 1000px; }
-    .flip-card-inner {
-        display: grid; grid-template-columns: 1fr;
-        transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
-        transform-style: preserve-3d;
-    }
-    .flip-card-front, .flip-card-back {
-        grid-area: 1 / 1;
-        backface-visibility: hidden; -webkit-backface-visibility: hidden;
-        border-radius: 8px; overflow: hidden;
-    }
-    .flip-card-back { transform: rotateY(180deg); }
-    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-
-    /* ── ID card back ────────────────────────────────────────────── */
-    .tm-idback {
-        background: var(--card); border: 1px solid var(--border-light);
-        display: flex; flex-direction: column; align-items: center;
-        text-align: center;
-    }
-    .tm-id-hole {
-        width: 12px; height: 12px; border-radius: 50%;
-        background: var(--background); border: 1.5px solid rgba(0,0,0,0.12);
-        margin: 7px auto 0; flex-shrink: 0;
-    }
-    .tm-id-header {
-        width: 100%; padding: 8px 12px 10px; margin-top: 4px;
-        position: relative; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-    }
-    .tm-id-dots {
-        position: absolute; inset: 0;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
-        background-size: 12px 12px;
-    }
-    .tm-id-logo-circle {
-        width: 28px; height: 28px; border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0; position: relative; z-index: 1;
-        color: white; font-size: 0.75rem;
-    }
-    .tm-id-header-text { position: relative; z-index: 1; text-align: left; }
-    .tm-id-company-name {
-        font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
-        text-transform: uppercase; color: rgba(255,255,255,0.95); line-height: 1.2;
-    }
-    .tm-id-company-sub {
-        font-size: 0.55rem; color: rgba(255,255,255,0.65);
-        font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
-    }
-    .tm-id-photo-ring {
-        width: 72px; height: 72px; border-radius: 50%;
-        background: white; padding: 3px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-        margin: 10px auto 8px; flex-shrink: 0;
-    }
-    .flip-leader .tm-id-photo-ring { width: 80px; height: 80px; }
-    .tm-id-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-    .tm-id-fullname { font-weight: 800; font-size: 0.9rem; line-height: 1.2; padding: 0 12px; margin-bottom: 3px; }
-    .tm-id-designation { font-size: 0.65rem; color: var(--muted-foreground); font-weight: 500; margin-bottom: 6px; }
-    .tm-id-divider { width: 75%; height: 1px; background: var(--border); margin: 6px auto; flex-shrink: 0; }
-    .tm-id-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 2px 14px; width: 100%; font-size: 0.67rem;
-    }
-    .tm-id-lbl {
-        color: var(--muted-foreground); font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.6rem;
-    }
-    .tm-id-val { font-weight: 600; color: var(--foreground); }
-    .tm-id-viber-link { color: var(--foreground); text-decoration: none; font-weight: 600; transition: opacity 0.15s; }
-    .tm-id-viber-link:hover { opacity: 0.7; }
-    .tm-id-footer {
-        margin-top: auto; width: 100%;
-        border-top: 1px solid var(--border-light);
-        padding: 7px 12px 9px;
-        display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-    }
-    .tm-id-barcode { width: 70px; height: 18px; opacity: 0.45; fill: var(--foreground); }
-    .tm-id-idnum { font-size: 0.58rem; font-weight: 700; color: var(--muted-foreground); font-family: monospace; letter-spacing: 0.04em; }
-    .idc-head      .tm-id-header { background: #7c3aed; }
-    .idc-manager   .tm-id-header { background: #1e293b; }
-    .idc-lead      .tm-id-header { background: #6366f1; }
-    .idc-analyst   .tm-id-header { background: #ec4899; }
-    .idc-researcher .tm-id-header { background: #10b981; }
-    .idc-content   .tm-id-header { background: #0ea5e9; }
-    .idc-graphics  .tm-id-header { background: #f59e0b; }
-    .idc-backend   .tm-id-header { background: #f43f5e; }
-    .tm-flip-hint {
-        font-size: 0.62rem; color: var(--gray-400); opacity: 0.7;
+    /* ── Clickable card hint ─────────────────────────────────────── */
+    .tm-card, .tm-lcard { cursor: pointer; }
+    .tm-id-hint {
+        font-size: 0.62rem; color: var(--gray-400); opacity: 0.65;
         margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem;
     }
-    .tm-flip-hint i { font-size: 0.6rem; }
+    .tm-id-hint i { font-size: 0.6rem; }
+
+    /* ── ID card modal ───────────────────────────────────────────── */
+    .idm-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .idm-overlay.open { opacity: 1; pointer-events: all; }
+    .idm-close {
+        position: absolute; top: 18px; right: 18px;
+        width: 36px; height: 36px; border-radius: 50%;
+        background: rgba(255,255,255,0.15); border: none; color: white;
+        font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s;
+    }
+    .idm-close:hover { background: rgba(255,255,255,0.25); }
+    .idm-lanyard {
+        width: 3px; height: 56px;
+        background: linear-gradient(to bottom, #888, #555);
+        border-radius: 2px; margin-bottom: -2px;
+    }
+    .idm-flip-card { width: 260px; cursor: pointer; perspective: 1200px; }
+    .idm-flip-inner {
+        display: grid; grid-template-columns: 1fr;
+        transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+        transform-style: preserve-3d;
+    }
+    .idm-face {
+        grid-area: 1/1; border-radius: 14px; overflow: hidden;
+        backface-visibility: hidden; -webkit-backface-visibility: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .idm-back { transform: rotateY(180deg); }
+    .idm-flip-card.flipped .idm-flip-inner { transform: rotateY(180deg); }
+
+    /* Front face */
+    .idm-front {
+        background: #fff; display: flex; flex-direction: column; align-items: center; padding-bottom: 18px;
+    }
+    .idm-hole {
+        width: 13px; height: 13px; border-radius: 50%;
+        background: #e5e7eb; border: 1.5px solid #d1d5db;
+        margin: 9px auto 0;
+    }
+    .idm-header {
+        width: 100%; padding: 11px 14px 13px; margin-top: 5px;
+        position: relative; display: flex; align-items: center; gap: 10px;
+    }
+    .idm-header-dots {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1px, transparent 1px);
+        background-size: 11px 11px;
+    }
+    .idm-header-logo {
+        width: 32px; height: 32px; border-radius: 50%;
+        background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem;
+        display: flex; align-items: center; justify-content: center;
+        position: relative; z-index: 1; flex-shrink: 0;
+    }
+    .idm-header-text { position: relative; z-index: 1; text-align: left; }
+    .idm-header-company { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.95); line-height: 1.2; }
+    .idm-header-sub { font-size: 0.58rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .idm-photo-ring {
+        width: 88px; height: 88px; border-radius: 50%;
+        background: white; padding: 4px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        margin: 14px auto 10px;
+    }
+    .idm-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+    .idm-fullname { font-weight: 800; font-size: 1rem; color: #0f172a; text-align: center; padding: 0 14px; line-height: 1.25; margin-bottom: 3px; }
+    .idm-desg { font-size: 0.7rem; color: #64748b; font-weight: 500; margin-bottom: 8px; }
+    .idm-front-hint { font-size: 0.62rem; color: #94a3b8; margin-top: 14px; display: flex; align-items: center; gap: 4px; }
+
+    /* Back face */
+    .idm-back { background: #f8fafc; display: flex; flex-direction: column; }
+    .idm-back-header {
+        padding: 14px 16px; position: relative;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .idm-back-company { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: rgba(255,255,255,0.9); text-transform: uppercase; position: relative; z-index: 1; }
+    .idm-back-body { padding: 10px 16px; flex: 1; }
+    .idm-back-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 9px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.75rem;
+    }
+    .idm-back-row:last-child { border-bottom: none; }
+    .idm-lbl { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.05em; }
+    .idm-val { font-weight: 700; color: #0f172a; text-align: right; max-width: 60%; }
+    .idm-viber-val { text-decoration: none; transition: opacity 0.15s; color: #0f172a; font-weight: 700; }
+    .idm-viber-val:hover { opacity: 0.65; }
+    .idm-back-footer {
+        padding: 10px 16px 14px; border-top: 1px solid #e2e8f0;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .idm-barcode { width: 76px; height: 20px; fill: #1e293b; opacity: 0.3; }
+    .idm-idnum { font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
+    .idm-tap-hint { color: rgba(255,255,255,0.45); font-size: 0.68rem; margin-top: 12px; }
 </style>
 @endsection
 
@@ -321,35 +332,17 @@
     </div>
     <div class="tm-leaders anim-up d2">
         @foreach($heads as $u)
-        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-lcard">
-                    <div class="tm-lcard-body">
-                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                        <div class="tm-lcard-sub">Ecomm Department Head</div>
-                        <span class="role-badge head">Ecomm Head</span>
-                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                    </div>
-                </div>
-                <div class="flip-card-back tm-idback idc-head">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-crown"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Ecomm Department Head</div>
-                    <span class="role-badge head">Ecomm Head</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
+        <div class="tm-lcard" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="head" data-role-label="Ecomm Head" data-designation="Ecomm Department Head"
+             data-icon="fa-crown" data-color="#7c3aed" data-idnum="{{ $idNum($u) }}">
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Ecomm Department Head</div>
+                <span class="role-badge head">Ecomm Head</span>
+                <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
             </div>
         </div>
         @endforeach
@@ -368,35 +361,17 @@
     </div>
     <div class="tm-leaders anim-up d2">
         @foreach($managers as $u)
-        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-lcard">
-                    <div class="tm-lcard-body">
-                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                        <div class="tm-lcard-sub">Ecomm Department</div>
-                        <span class="role-badge manager">Manager</span>
-                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                    </div>
-                </div>
-                <div class="flip-card-back tm-idback idc-manager">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-crown"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Department Manager</div>
-                    <span class="role-badge manager">Manager</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
+        <div class="tm-lcard" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="manager" data-role-label="Manager" data-designation="Department Manager"
+             data-icon="fa-crown" data-color="#1e293b" data-idnum="{{ $idNum($u) }}">
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Ecomm Department</div>
+                <span class="role-badge manager">Manager</span>
+                <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
             </div>
         </div>
         @endforeach
@@ -415,35 +390,17 @@
     </div>
     <div class="tm-leaders anim-up d3">
         @foreach($leads as $u)
-        <div class="flip-card flip-leader" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-lcard">
-                    <div class="tm-lcard-body">
-                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                        <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                        <div class="tm-lcard-sub">Content &amp; PR Lead</div>
-                        <span class="role-badge lead">Lead</span>
-                        <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                    </div>
-                </div>
-                <div class="flip-card-back tm-idback idc-lead">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-star"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Team Lead</div>
-                    <span class="role-badge lead">Lead</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
+        <div class="tm-lcard" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="lead" data-role-label="Lead" data-designation="Team Lead"
+             data-icon="fa-star" data-color="#6366f1" data-idnum="{{ $idNum($u) }}">
+            <div class="tm-lcard-body">
+                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <div class="tm-lcard-name">{{ $u->full_name }}</div>
+                <div class="tm-lcard-sub">Content &amp; PR Lead</div>
+                <span class="role-badge lead">Lead</span>
+                <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
             </div>
         </div>
         @endforeach
@@ -462,33 +419,15 @@
     </div>
     <div class="tm-members anim-up d4">
         @foreach($analysts as $u)
-        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-card">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-                    <div class="tm-name">{{ $u->full_name }}</div>
-                    <span class="role-badge analyst">Analyst</span>
-                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                </div>
-                <div class="flip-card-back tm-idback idc-analyst">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-chart-bar"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Data Analyst</div>
-                    <span class="role-badge analyst">Analyst</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
-            </div>
+        <div class="tm-card" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="analyst" data-role-label="Analyst" data-designation="Data Analyst"
+             data-icon="fa-chart-bar" data-color="#ec4899" data-idnum="{{ $idNum($u) }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge analyst">Analyst</span>
+            <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
         </div>
         @endforeach
     </div>
@@ -506,33 +445,15 @@
     </div>
     <div class="tm-members anim-up d4">
         @foreach($researchers as $u)
-        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-card">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-                    <div class="tm-name">{{ $u->full_name }}</div>
-                    <span class="role-badge researcher">Researcher</span>
-                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                </div>
-                <div class="flip-card-back tm-idback idc-researcher">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-magnifying-glass"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Product Researcher</div>
-                    <span class="role-badge researcher">Researcher</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
-            </div>
+        <div class="tm-card" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="researcher" data-role-label="Researcher" data-designation="Product Researcher"
+             data-icon="fa-magnifying-glass" data-color="#10b981" data-idnum="{{ $idNum($u) }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge researcher">Researcher</span>
+            <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
         </div>
         @endforeach
     </div>
@@ -550,33 +471,15 @@
     @if($content->count())
     <div class="tm-members anim-up d4">
         @foreach($content as $u)
-        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-card">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-                    <div class="tm-name">{{ $u->full_name }}</div>
-                    <span class="role-badge content">Content</span>
-                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                </div>
-                <div class="flip-card-back tm-idback idc-content">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-pen-nib"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Content Creator</div>
-                    <span class="role-badge content">Content</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
-            </div>
+        <div class="tm-card" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="content" data-role-label="Content" data-designation="Content Creator"
+             data-icon="fa-pen-nib" data-color="#0ea5e9" data-idnum="{{ $idNum($u) }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge content">Content</span>
+            <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
         </div>
         @endforeach
     </div>
@@ -596,33 +499,15 @@
     @if($graphics->count())
     <div class="tm-members anim-up d5">
         @foreach($graphics as $u)
-        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-card">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-                    <div class="tm-name">{{ $u->full_name }}</div>
-                    <span class="role-badge graphics">Graphics</span>
-                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                </div>
-                <div class="flip-card-back tm-idback idc-graphics">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-palette"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Graphic Designer</div>
-                    <span class="role-badge graphics">Graphics</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
-            </div>
+        <div class="tm-card" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="graphics" data-role-label="Graphics" data-designation="Graphic Designer"
+             data-icon="fa-palette" data-color="#f59e0b" data-idnum="{{ $idNum($u) }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge graphics">Graphics</span>
+            <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
         </div>
         @endforeach
     </div>
@@ -642,33 +527,15 @@
     @if($backend->count())
     <div class="tm-members anim-up d5">
         @foreach($backend as $u)
-        <div class="flip-card flip-member" onclick="this.classList.toggle('flipped')">
-            <div class="flip-card-inner">
-                <div class="flip-card-front tm-card">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
-                    <div class="tm-name">{{ $u->full_name }}</div>
-                    <span class="role-badge backend">Backend</span>
-                    <div class="tm-flip-hint"><i class="fas fa-id-card"></i> Tap for ID card</div>
-                </div>
-                <div class="flip-card-back tm-idback idc-backend">
-                    <div class="tm-id-hole"></div>
-                    <div class="tm-id-header">
-                        <div class="tm-id-dots"></div>
-                        <div class="tm-id-logo-circle"><i class="fas fa-server"></i></div>
-                        <div class="tm-id-header-text"><div class="tm-id-company-name">Ecomm Dept</div><div class="tm-id-company-sub">ID Card</div></div>
-                    </div>
-                    <div class="tm-id-photo-ring"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-id-photo" alt="{{ $u->full_name }}"></div>
-                    <div class="tm-id-fullname">{{ $u->full_name }}</div>
-                    <div class="tm-id-designation">Backend Developer</div>
-                    <span class="role-badge backend">Backend</span>
-                    <div class="tm-id-divider"></div>
-                    <div class="tm-id-row"><span class="tm-id-lbl">Username</span><span class="tm-id-val">{{ '@'.$u->username }}</span></div>
-                    @if($u->mobile_number)
-                    <div class="tm-id-row"><span class="tm-id-lbl">Viber</span><a href="viber://chat?number={{ $u->mobile_number }}" class="tm-id-val tm-id-viber-link" onclick="event.stopPropagation()">{{ $u->mobile_number }}</a></div>
-                    @endif
-                    <div class="tm-id-footer">{!! $barcode !!}<div class="tm-id-idnum">{{ $idNum($u) }}</div></div>
-                </div>
-            </div>
+        <div class="tm-card" onclick="openIdCard(this)"
+             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
+             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-role="backend" data-role-label="Backend" data-designation="Backend Developer"
+             data-icon="fa-server" data-color="#f43f5e" data-idnum="{{ $idNum($u) }}">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <div class="tm-name">{{ $u->full_name }}</div>
+            <span class="role-badge backend">Backend</span>
+            <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
         </div>
         @endforeach
     </div>
@@ -678,6 +545,54 @@
     </div>
 
 </div>
+
+{{-- ID Card Modal --}}
+<div id="idCardModal" class="idm-overlay" onclick="if(event.target===this)closeIdModal()">
+    <button class="idm-close" onclick="closeIdModal()"><i class="fas fa-times"></i></button>
+    <div class="idm-lanyard"></div>
+    <div class="idm-flip-card" id="idFlipCard" onclick="this.classList.toggle('flipped')">
+        <div class="idm-flip-inner">
+            {{-- Front --}}
+            <div class="idm-face idm-front">
+                <div class="idm-hole"></div>
+                <div class="idm-header" id="idmHeader">
+                    <div class="idm-header-dots"></div>
+                    <div class="idm-header-logo"><i id="idmIcon" class="fas fa-crown"></i></div>
+                    <div class="idm-header-text">
+                        <div class="idm-header-company">Ecomm Dept</div>
+                        <div class="idm-header-sub">ID Card</div>
+                    </div>
+                </div>
+                <div class="idm-photo-ring">
+                    <img id="idmPhoto" src="" class="idm-photo" alt="">
+                </div>
+                <div id="idmName" class="idm-fullname"></div>
+                <div id="idmDesg" class="idm-desg"></div>
+                <span id="idmBadge" class="role-badge"></span>
+                <div class="idm-front-hint"><i class="fas fa-rotate" style="font-size:0.6rem"></i> Tap to flip</div>
+            </div>
+            {{-- Back --}}
+            <div class="idm-face idm-back">
+                <div class="idm-back-header" id="idmBackHeader">
+                    <div class="idm-header-dots"></div>
+                    <div class="idm-back-company">Ecomm Dept</div>
+                </div>
+                <div class="idm-back-body">
+                    <div class="idm-back-row"><span class="idm-lbl">Full Name</span><span id="idmBackName" class="idm-val"></span></div>
+                    <div class="idm-back-row"><span class="idm-lbl">Username</span><span id="idmBackUser" class="idm-val"></span></div>
+                    <div class="idm-back-row" id="idmViberRow"><span class="idm-lbl">Viber</span><a id="idmViberLink" href="#" class="idm-val idm-viber-val" onclick="event.stopPropagation()"></a></div>
+                    <div class="idm-back-row"><span class="idm-lbl">Designation</span><span id="idmBackDesg" class="idm-val"></span></div>
+                </div>
+                <div class="idm-back-footer">
+                    <svg class="idm-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
+                    <div id="idmIdnum" class="idm-idnum"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="idm-tap-hint">Click the card to flip</div>
+</div>
+
 <script>
 (function () {
     var tabs = document.querySelectorAll('.tm-tab');
@@ -695,5 +610,42 @@
         });
     });
 }());
+
+window.openIdCard = function(el) {
+    var d = el.dataset;
+    var avatarUrl = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + d.seed;
+    document.getElementById('idmPhoto').src = avatarUrl;
+    document.getElementById('idmName').textContent = d.name;
+    document.getElementById('idmDesg').textContent = d.designation;
+    var badge = document.getElementById('idmBadge');
+    badge.textContent = d.roleLabel;
+    badge.className = 'role-badge ' + d.role;
+    document.getElementById('idmIcon').className = 'fas ' + d.icon;
+    document.getElementById('idmHeader').style.background = d.color;
+    document.getElementById('idmBackHeader').style.background = d.color;
+    document.getElementById('idmBackName').textContent = d.name;
+    document.getElementById('idmBackUser').textContent = '@' + d.username;
+    document.getElementById('idmBackDesg').textContent = d.designation;
+    document.getElementById('idmIdnum').textContent = d.idnum;
+    var viberRow = document.getElementById('idmViberRow');
+    var viberLink = document.getElementById('idmViberLink');
+    if (d.mobile) {
+        viberRow.style.display = '';
+        viberLink.textContent = d.mobile;
+        viberLink.href = 'viber://chat?number=' + d.mobile;
+    } else {
+        viberRow.style.display = 'none';
+    }
+    document.getElementById('idFlipCard').classList.remove('flipped');
+    document.getElementById('idCardModal').classList.add('open');
+};
+
+window.closeIdModal = function() {
+    document.getElementById('idCardModal').classList.remove('open');
+};
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeIdModal();
+});
 </script>
 @endsection
