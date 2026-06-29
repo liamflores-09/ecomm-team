@@ -314,6 +314,40 @@
     .idm-idnum { font-family: monospace; font-size: 0.65rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; }
 
     .idm-tap-hint { color: rgba(255,255,255,0.4); font-size: 0.68rem; margin-top: 14px; letter-spacing: 0.02em; }
+
+    /* ── Dark mode ── */
+    [data-theme="dark"] .idm-front { background: #1c1c1c; }
+    [data-theme="dark"] .idm-fullname { color: #ebebeb; }
+    [data-theme="dark"] .idm-desg { color: #999999; }
+    [data-theme="dark"] .idm-front-foot { border-top-color: #2e2e2e; }
+    [data-theme="dark"] .idm-front-org { color: #444444; }
+    [data-theme="dark"] .idm-front-hint { color: #555555; }
+    [data-theme="dark"] .idm-avatar-wrap { background: #2a2a2a; }
+    [data-theme="dark"] .idm-back-face { background: #1c1c1c; }
+    [data-theme="dark"] .idm-back-body { border-left-color: var(--idm-color); }
+    [data-theme="dark"] .idm-back-row { border-bottom-color: #2e2e2e; }
+    [data-theme="dark"] .idm-lbl { color: #555555; }
+    [data-theme="dark"] .idm-val { color: #ebebeb; }
+    [data-theme="dark"] .idm-viber-val { color: #ebebeb; }
+    [data-theme="dark"] .idm-back-foot { border-top-color: #2e2e2e; }
+    [data-theme="dark"] .idm-barcode { fill: #ebebeb; opacity: 0.15; }
+    [data-theme="dark"] .idm-idnum { color: #555555; }
+    [data-theme="dark"] .idr-head      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
+    [data-theme="dark"] .idr-manager   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
+    [data-theme="dark"] .idr-lead      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
+    [data-theme="dark"] .idr-analyst   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(236,72,153,0.12) 100%); }
+    [data-theme="dark"] .idr-researcher .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(16,185,129,0.12) 100%); }
+    [data-theme="dark"] .idr-content   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(14,165,233,0.12) 100%); }
+    [data-theme="dark"] .idr-graphics  .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(245,158,11,0.12) 100%); }
+    [data-theme="dark"] .idr-backend   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(244,63,94,0.12) 100%); }
+    [data-theme="dark"] .idr-head      .idm-back-face { background: linear-gradient(160deg, #1e1a2e 0%, #251a3a 100%); }
+    [data-theme="dark"] .idr-manager   .idm-back-face { background: linear-gradient(160deg, #1a1c22 0%, #1e2028 100%); }
+    [data-theme="dark"] .idr-lead      .idm-back-face { background: linear-gradient(160deg, #1a1a2e 0%, #211a38 100%); }
+    [data-theme="dark"] .idr-analyst   .idm-back-face { background: linear-gradient(160deg, #2a1a22 0%, #311a2a 100%); }
+    [data-theme="dark"] .idr-researcher .idm-back-face { background: linear-gradient(160deg, #141e1a 0%, #162218 100%); }
+    [data-theme="dark"] .idr-content   .idm-back-face { background: linear-gradient(160deg, #121e26 0%, #152330 100%); }
+    [data-theme="dark"] .idr-graphics  .idm-back-face { background: linear-gradient(160deg, #261e10 0%, #2e2210 100%); }
+    [data-theme="dark"] .idr-backend   .idm-back-face { background: linear-gradient(160deg, #261212 0%, #2e1212 100%); }
 </style>
 @endsection
 
