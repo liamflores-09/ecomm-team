@@ -49,76 +49,81 @@
     .att-legend-item { display: inline-flex; align-items: center; gap: 5px; }
 
     /* ── Scroll wrapper ──────────────────────────────────────────── */
-    .att-scroll { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    .att-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
     /* ── Table ───────────────────────────────────────────────────── */
     .att-table { border-collapse: collapse; width: 100%; min-width: max-content; }
     .att-table th, .att-table td { border: 1px solid var(--border); padding: 0; white-space: nowrap; }
 
+    /* Header row */
+    .att-table thead tr th { background: var(--muted) !important; }
+    .att-table thead tr { border-bottom: 2px solid var(--border); }
+
     /* Sticky name column */
     .att-name-col {
         position: sticky; left: 0; z-index: 2;
         background: var(--card);
-        min-width: 180px; max-width: 220px;
-        padding: 0.5rem 0.75rem;
+        min-width: 170px; max-width: 210px;
+        padding: 0.55rem 0.9rem;
         font-size: 0.78rem; font-weight: 600;
+        box-shadow: 3px 0 8px -3px rgba(0,0,0,0.1);
     }
-    .att-table thead .att-name-col { z-index: 3; }
+    .att-table thead .att-name-col {
+        z-index: 3;
+        background: var(--muted) !important;
+        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--muted-foreground); font-weight: 700;
+    }
 
-    /* User name with initials avatar */
-    .att-user-name { display: flex; align-items: center; gap: 8px; }
-    .att-avatar {
-        width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 0.58rem; font-weight: 800; color: #fff; letter-spacing: 0.02em;
+    /* Row hover — entire row lights up */
+    .att-table tbody tr:not(.att-role-row):hover td,
+    .att-table tbody tr:not(.att-role-row):hover .att-name-col {
+        background: rgba(99,102,241,0.05) !important;
     }
 
     /* Day header */
     .att-day-th {
-        text-align: center; vertical-align: top;
-        min-width: 44px; padding: 0.3rem 0.2rem 0.2rem;
-        background: var(--card);
+        text-align: center; vertical-align: middle;
+        min-width: 46px; padding: 0.55rem 0.2rem 0.4rem;
     }
-    .att-day-th.att-weekend     { background: var(--muted); }
-    .att-day-th.att-today-col   { background: rgba(99,102,241,0.07); border-top: 2px solid #6366f1 !important; }
-    .att-day-dow { font-size: 0.55rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.65; letter-spacing: 0.04em; line-height: 1; margin-bottom: 2px; }
-    .att-day-num { font-size: 0.68rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 2px; }
+    .att-day-th.att-weekend     { background: rgba(0,0,0,0.03) !important; }
+    .att-day-th.att-today-col   { background: rgba(99,102,241,0.09) !important; border-top: 2px solid #6366f1 !important; }
+    .att-day-dow { font-size: 0.54rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.55; letter-spacing: 0.05em; line-height: 1; margin-bottom: 3px; }
+    .att-day-num { font-size: 0.75rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 3px; }
     .att-today-col .att-day-dow,
     .att-today-col .att-day-num { color: #6366f1; opacity: 1; }
     .att-holiday-btn {
         display: flex; align-items: center; justify-content: center;
-        width: 20px; height: 15px; margin: 2px auto 0;
+        width: 20px; height: 16px; margin: 0 auto;
         border: none; background: transparent; cursor: pointer;
-        color: var(--muted-foreground); font-size: 0.57rem; padding: 0;
-        border-radius: 3px; transition: all 0.15s;
+        color: var(--muted-foreground); font-size: 0.56rem; padding: 0;
+        border-radius: 3px; transition: all 0.15s; opacity: 0.5;
     }
-    .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.12); }
+    .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.12); opacity: 1; }
 
     /* Role section row */
     .att-role-row td {
-        background: var(--muted); padding: 0.3rem 0.75rem;
-        font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
-        letter-spacing: 0.08em; color: var(--muted-foreground);
-        border-left-width: 3px;
+        background: var(--muted) !important;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.62rem; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--muted-foreground);
+        border-left-width: 3px; border-top: 2px solid var(--border);
     }
 
     /* Data cells */
     .att-cell {
         display: flex; align-items: center; justify-content: center;
         min-height: 40px; cursor: pointer; padding: 4px;
-        transition: background 0.12s;
+        transition: background 0.1s;
     }
-    .att-cell:hover          { background: rgba(99,102,241,0.07); }
-    .att-weekend-cell        { background: rgba(0,0,0,0.018); }
-    .att-weekend-cell:hover  { background: rgba(99,102,241,0.07); }
-    .att-today-cell          { background: rgba(99,102,241,0.04); }
-    .att-today-cell:hover    { background: rgba(99,102,241,0.1); }
-    .att-cell--loading       { opacity: 0.4; pointer-events: none; cursor: wait; }
+    .att-weekend-cell { background: rgba(0,0,0,0.018); }
+    .att-today-cell   { background: rgba(99,102,241,0.04); }
+    .att-cell--loading { opacity: 0.35; pointer-events: none; cursor: wait; }
 
     /* Status chips */
     .att-chip {
         display: inline-flex; align-items: center; justify-content: center;
-        padding: 3px 6px; border-radius: 4px;
+        padding: 3px 6px; border-radius: 5px;
         font-size: 0.62rem; font-weight: 800; letter-spacing: 0.02em;
         color: #fff; line-height: 1;
     }
@@ -134,13 +139,13 @@
     .att-dropdown {
         position: fixed; z-index: 9999;
         background: var(--card); border: 1px solid var(--border);
-        border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        padding: 4px; min-width: 160px;
+        border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+        padding: 4px; min-width: 164px;
     }
     .att-dd-item {
         display: flex; align-items: center; gap: 8px;
-        width: 100%; padding: 6px 10px; border: none;
-        background: transparent; cursor: pointer; border-radius: 5px;
+        width: 100%; padding: 7px 10px; border: none;
+        background: transparent; cursor: pointer; border-radius: 6px;
         font-size: 0.78rem; font-weight: 600; color: var(--foreground);
         font-family: var(--p-font-family-sans); text-align: left;
         transition: background 0.1s;
@@ -188,21 +193,21 @@
 
     {{-- Precompute day metadata --}}
     @php
-        $today        = now()->format('Y-m-d');
-        $dowLabels    = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        $roleColors   = [
+        $today      = now()->format('Y-m-d');
+        $dowLabels  = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        $roleColors = [
             'content'    => '#10b981',
             'researcher' => '#0ea5e9',
             'graphics'   => '#f59e0b',
             'backend'    => '#6366f1',
         ];
-        $chipLabels   = [
-            'present'  => 'Present',  'half_day' => 'Half Day',
-            'vl'       => 'Vacation Leave', 'sl' => 'Sick Leave',
-            'absent'   => 'Absent',   'ut'       => 'Undertime',
+        $chipLabels = [
+            'present'  => 'Present',       'half_day' => 'Half Day',
+            'vl'       => 'Vacation Leave', 'sl'       => 'Sick Leave',
+            'absent'   => 'Absent',         'ut'       => 'Undertime',
             'holiday'  => 'Holiday',
         ];
-        $chipAbbrev   = [
+        $chipAbbrev = [
             'present'  => 'P',  'half_day' => 'HD', 'vl' => 'VL',
             'sl'       => 'SL', 'absent'   => 'A',  'ut' => 'UT',
             'holiday'  => 'H',
@@ -244,17 +249,8 @@
                     <td colspan="{{ $daysInMonth + 1 }}" style="border-left-color:{{ $roleColor }}">{{ ucfirst($role) }}</td>
                 </tr>
                 @foreach ($users as $u)
-                @php
-                    $initials    = strtoupper(substr($u->first_name, 0, 1) . substr($u->last_name, 0, 1));
-                    $avatarColor = $roleColors[$u->role] ?? '#94a3b8';
-                @endphp
                 <tr>
-                    <td class="att-name-col">
-                        <div class="att-user-name">
-                            <span class="att-avatar" style="background:{{ $avatarColor }}">{{ $initials }}</span>
-                            {{ $u->first_name }} {{ $u->last_name }}
-                        </div>
-                    </td>
+                    <td class="att-name-col">{{ $u->first_name }} {{ $u->last_name }}</td>
                     @foreach ($dayMeta as $d => $meta)
                     @php $status = $attendanceJson[$u->id][$meta['date']] ?? null; @endphp
                     <td>
@@ -305,10 +301,25 @@ function openDropdown(event, cell) {
     event.stopPropagation();
     activeCell = cell;
     dropdown.style.display = 'block';
-    var rect = cell.getBoundingClientRect();
-    var top  = rect.bottom + window.scrollY + 4;
-    var left = rect.left  + window.scrollX;
-    if (left + 170 > window.innerWidth) left = window.innerWidth - 174;
+
+    var rect       = cell.getBoundingClientRect();
+    var ddHeight   = dropdown.offsetHeight;
+    var ddWidth    = dropdown.offsetWidth;
+    var margin     = 6;
+    var top, left;
+
+    // Flip above if not enough space below
+    if (rect.bottom + ddHeight + margin > window.innerHeight && rect.top - ddHeight - margin > 0) {
+        top = rect.top + window.scrollY - ddHeight - margin;
+    } else {
+        top = rect.bottom + window.scrollY + margin;
+    }
+
+    // Clamp horizontally
+    left = rect.left + window.scrollX;
+    if (left + ddWidth + 4 > window.innerWidth) left = window.innerWidth - ddWidth - 4;
+    if (left < 4) left = 4;
+
     dropdown.style.top  = top  + 'px';
     dropdown.style.left = left + 'px';
 }
