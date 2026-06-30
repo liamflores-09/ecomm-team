@@ -473,7 +473,7 @@
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .anim-up { animation: fadeInUp 0.25s ease-out both; }
+        .anim-up { animation: fadeInUp 0.25s ease-out backwards; }
         .anim-fade { animation: fadeIn 0.25s ease-out both; }
         .d1 { animation-delay: 0.03s; } .d2 { animation-delay: 0.06s; } .d3 { animation-delay: 0.09s; }
         .d4 { animation-delay: 0.12s; } .d5 { animation-delay: 0.15s; }
