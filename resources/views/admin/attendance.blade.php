@@ -16,8 +16,8 @@
 
     /* ── Month switcher ──────────────────────────────────────────── */
     .att-month-bar {
-        display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;
-        padding: 0.75rem 1rem;
+        display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+        padding: 0.6rem 1rem;
         background: var(--card); border: 1px solid var(--border); border-radius: 8px;
     }
     .att-month-btn {
@@ -27,64 +27,99 @@
         color: var(--muted-foreground); text-decoration: none; font-size: 0.85rem;
         transition: all 0.15s;
     }
-    .att-month-btn:hover { background: var(--muted); color: var(--fg); }
-    .att-month-label { font-size: 1rem; font-weight: 800; }
+    .att-month-btn:hover { background: var(--muted); color: var(--foreground); }
+    .att-month-label { font-size: 1rem; font-weight: 800; min-width: 130px; text-align: center; }
+    .att-today-pill {
+        margin-left: auto;
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 5px 12px; border-radius: 6px;
+        border: 1px solid var(--border); background: transparent;
+        font-size: 0.75rem; font-weight: 700; color: var(--muted-foreground);
+        text-decoration: none; transition: all 0.15s;
+    }
+    .att-today-pill:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* ── Legend ──────────────────────────────────────────────────── */
+    .att-legend {
+        display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1.1rem;
+        margin-bottom: 1.25rem; padding: 0.65rem 1rem;
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+        font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground);
+    }
+    .att-legend-item { display: inline-flex; align-items: center; gap: 5px; }
 
     /* ── Scroll wrapper ──────────────────────────────────────────── */
     .att-scroll { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
 
     /* ── Table ───────────────────────────────────────────────────── */
     .att-table { border-collapse: collapse; width: 100%; min-width: max-content; }
-    .att-table th, .att-table td {
-        border: 1px solid var(--border);
-        padding: 0; white-space: nowrap;
-    }
+    .att-table th, .att-table td { border: 1px solid var(--border); padding: 0; white-space: nowrap; }
 
     /* Sticky name column */
     .att-name-col {
         position: sticky; left: 0; z-index: 2;
         background: var(--card);
-        min-width: 160px; max-width: 200px;
+        min-width: 180px; max-width: 220px;
         padding: 0.5rem 0.75rem;
         font-size: 0.78rem; font-weight: 600;
     }
     .att-table thead .att-name-col { z-index: 3; }
 
+    /* User name with initials avatar */
+    .att-user-name { display: flex; align-items: center; gap: 8px; }
+    .att-avatar {
+        width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 0.58rem; font-weight: 800; color: #fff; letter-spacing: 0.02em;
+    }
+
     /* Day header */
     .att-day-th {
         text-align: center; vertical-align: top;
-        min-width: 48px; padding: 0.25rem 0.2rem 0.2rem;
+        min-width: 44px; padding: 0.3rem 0.2rem 0.2rem;
         background: var(--card);
     }
-    .att-day-num { font-size: 0.7rem; font-weight: 700; color: var(--muted-foreground); line-height: 1; margin-bottom: 2px; }
+    .att-day-th.att-weekend     { background: var(--muted); }
+    .att-day-th.att-today-col   { background: rgba(99,102,241,0.07); border-top: 2px solid #6366f1 !important; }
+    .att-day-dow { font-size: 0.55rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.65; letter-spacing: 0.04em; line-height: 1; margin-bottom: 2px; }
+    .att-day-num { font-size: 0.68rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 2px; }
+    .att-today-col .att-day-dow,
+    .att-today-col .att-day-num { color: #6366f1; opacity: 1; }
     .att-holiday-btn {
-        display: block; margin: 0 auto;
+        display: flex; align-items: center; justify-content: center;
+        width: 20px; height: 15px; margin: 2px auto 0;
         border: none; background: transparent; cursor: pointer;
-        color: var(--muted-foreground); font-size: 0.6rem; padding: 2px 4px;
-        border-radius: 3px; line-height: 1; transition: all 0.15s;
+        color: var(--muted-foreground); font-size: 0.57rem; padding: 0;
+        border-radius: 3px; transition: all 0.15s;
     }
-    .att-holiday-btn:hover { color: var(--indigo); background: rgba(99,102,241,0.1); }
+    .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.12); }
 
     /* Role section row */
     .att-role-row td {
         background: var(--muted); padding: 0.3rem 0.75rem;
-        font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
-        letter-spacing: 0.07em; color: var(--muted-foreground);
+        font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--muted-foreground);
+        border-left-width: 3px;
     }
 
     /* Data cells */
     .att-cell {
         display: flex; align-items: center; justify-content: center;
-        min-height: 36px; cursor: pointer; padding: 4px;
+        min-height: 40px; cursor: pointer; padding: 4px;
         transition: background 0.12s;
     }
-    .att-cell:hover { background: var(--muted); }
+    .att-cell:hover          { background: rgba(99,102,241,0.07); }
+    .att-weekend-cell        { background: rgba(0,0,0,0.018); }
+    .att-weekend-cell:hover  { background: rgba(99,102,241,0.07); }
+    .att-today-cell          { background: rgba(99,102,241,0.04); }
+    .att-today-cell:hover    { background: rgba(99,102,241,0.1); }
+    .att-cell--loading       { opacity: 0.4; pointer-events: none; cursor: wait; }
 
     /* Status chips */
     .att-chip {
         display: inline-flex; align-items: center; justify-content: center;
-        padding: 2px 5px; border-radius: 4px;
-        font-size: 0.6rem; font-weight: 800; letter-spacing: 0.03em;
+        padding: 3px 6px; border-radius: 4px;
+        font-size: 0.62rem; font-weight: 800; letter-spacing: 0.02em;
         color: #fff; line-height: 1;
     }
     .att-chip.present  { background: #10b981; }
@@ -106,7 +141,7 @@
         display: flex; align-items: center; gap: 8px;
         width: 100%; padding: 6px 10px; border: none;
         background: transparent; cursor: pointer; border-radius: 5px;
-        font-size: 0.78rem; font-weight: 600; color: var(--fg);
+        font-size: 0.78rem; font-weight: 600; color: var(--foreground);
         font-family: var(--p-font-family-sans); text-align: left;
         transition: background 0.1s;
     }
@@ -128,54 +163,111 @@
 
     {{-- Month switcher --}}
     <div class="att-month-bar anim-up d1">
-        <a href="{{ route('admin.attendance', ['month' => $prevMonth]) }}" class="att-month-btn">
+        <a href="{{ route('admin.attendance', ['month' => $prevMonth]) }}" class="att-month-btn" title="Previous month">
             <i class="fas fa-chevron-left"></i>
         </a>
         <span class="att-month-label">{{ $month->format('F Y') }}</span>
-        <a href="{{ route('admin.attendance', ['month' => $nextMonth]) }}" class="att-month-btn">
+        <a href="{{ route('admin.attendance', ['month' => $nextMonth]) }}" class="att-month-btn" title="Next month">
             <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('admin.attendance') }}" class="att-today-pill" title="Jump to current month">
+            <i class="fas fa-calendar-day"></i> Today
         </a>
     </div>
 
+    {{-- Status legend --}}
+    <div class="att-legend anim-up d2">
+        <span class="att-legend-item"><span class="att-chip present">P</span> Present</span>
+        <span class="att-legend-item"><span class="att-chip half_day">HD</span> Half Day</span>
+        <span class="att-legend-item"><span class="att-chip vl">VL</span> Vacation Leave</span>
+        <span class="att-legend-item"><span class="att-chip sl">SL</span> Sick Leave</span>
+        <span class="att-legend-item"><span class="att-chip absent">A</span> Absent</span>
+        <span class="att-legend-item"><span class="att-chip ut">UT</span> Undertime</span>
+        <span class="att-legend-item"><span class="att-chip holiday">H</span> Holiday</span>
+    </div>
+
+    {{-- Precompute day metadata --}}
+    @php
+        $today        = now()->format('Y-m-d');
+        $dowLabels    = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        $roleColors   = [
+            'content'    => '#10b981',
+            'researcher' => '#0ea5e9',
+            'graphics'   => '#f59e0b',
+            'backend'    => '#6366f1',
+        ];
+        $chipLabels   = [
+            'present'  => 'Present',  'half_day' => 'Half Day',
+            'vl'       => 'Vacation Leave', 'sl' => 'Sick Leave',
+            'absent'   => 'Absent',   'ut'       => 'Undertime',
+            'holiday'  => 'Holiday',
+        ];
+        $chipAbbrev   = [
+            'present'  => 'P',  'half_day' => 'HD', 'vl' => 'VL',
+            'sl'       => 'SL', 'absent'   => 'A',  'ut' => 'UT',
+            'holiday'  => 'H',
+        ];
+        $dayMeta = [];
+        for ($d = 1; $d <= $daysInMonth; $d++) {
+            $ds  = $month->format('Y-m') . '-' . str_pad($d, 2, '0', STR_PAD_LEFT);
+            $dow = \Carbon\Carbon::parse($ds)->dayOfWeek;
+            $dayMeta[$d] = [
+                'date'    => $ds,
+                'dow'     => $dowLabels[$dow],
+                'weekend' => in_array($dow, [0, 6]),
+                'today'   => $ds === $today,
+            ];
+        }
+    @endphp
+
     {{-- Grid --}}
-    <div class="att-scroll anim-up d2">
+    <div class="att-scroll anim-up d3">
         <table class="att-table">
             <thead>
                 <tr>
                     <th class="att-name-col">Member</th>
-                    @for ($d = 1; $d <= $daysInMonth; $d++)
-                    @php $dateStr = $month->format('Y-m') . '-' . str_pad($d, 2, '0', STR_PAD_LEFT); @endphp
-                    <th class="att-day-th">
+                    @foreach ($dayMeta as $d => $meta)
+                    <th class="att-day-th{{ $meta['weekend'] ? ' att-weekend' : '' }}{{ $meta['today'] ? ' att-today-col' : '' }}">
+                        <div class="att-day-dow">{{ $meta['dow'] }}</div>
                         <div class="att-day-num">{{ $d }}</div>
-                        <button class="att-holiday-btn" title="Mark all Holiday" onclick="markHoliday('{{ $dateStr }}')">
+                        <button class="att-holiday-btn" title="Mark all Holiday — {{ $meta['date'] }}" onclick="markHoliday('{{ $meta['date'] }}')">
                             <i class="fas fa-flag"></i>
                         </button>
                     </th>
-                    @endfor
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach ($usersByRole as $role => $users)
+                @php $roleColor = $roleColors[$role] ?? 'var(--border)'; @endphp
                 <tr class="att-role-row">
-                    <td colspan="{{ $daysInMonth + 1 }}">{{ ucfirst($role) }}</td>
+                    <td colspan="{{ $daysInMonth + 1 }}" style="border-left-color:{{ $roleColor }}">{{ ucfirst($role) }}</td>
                 </tr>
                 @foreach ($users as $u)
+                @php
+                    $initials    = strtoupper(substr($u->first_name, 0, 1) . substr($u->last_name, 0, 1));
+                    $avatarColor = $roleColors[$u->role] ?? '#94a3b8';
+                @endphp
                 <tr>
-                    <td class="att-name-col">{{ $u->first_name }} {{ $u->last_name }}</td>
-                    @for ($d = 1; $d <= $daysInMonth; $d++)
-                    @php $dateStr = $month->format('Y-m') . '-' . str_pad($d, 2, '0', STR_PAD_LEFT); @endphp
+                    <td class="att-name-col">
+                        <div class="att-user-name">
+                            <span class="att-avatar" style="background:{{ $avatarColor }}">{{ $initials }}</span>
+                            {{ $u->first_name }} {{ $u->last_name }}
+                        </div>
+                    </td>
+                    @foreach ($dayMeta as $d => $meta)
+                    @php $status = $attendanceJson[$u->id][$meta['date']] ?? null; @endphp
                     <td>
-                        <div class="att-cell"
+                        <div class="att-cell{{ $meta['weekend'] ? ' att-weekend-cell' : '' }}{{ $meta['today'] ? ' att-today-cell' : '' }}"
                              data-uid="{{ $u->id }}"
-                             data-date="{{ $dateStr }}"
+                             data-date="{{ $meta['date'] }}"
                              onclick="openDropdown(event, this)">
-                            @php $status = $attendanceJson[$u->id][$dateStr] ?? null; @endphp
                             @if ($status)
-                            <span class="att-chip {{ $status }}">{{ strtoupper(str_replace('_', '', ['present'=>'P','half_day'=>'HD','vl'=>'VL','sl'=>'SL','absent'=>'A','ut'=>'UT','holiday'=>'H'][$status] ?? $status)) }}</span>
+                            <span class="att-chip {{ $status }}" title="{{ $chipLabels[$status] ?? $status }}">{{ $chipAbbrev[$status] ?? $status }}</span>
                             @endif
                         </div>
                     </td>
-                    @endfor
+                    @endforeach
                 </tr>
                 @endforeach
                 @endforeach
@@ -187,27 +279,13 @@
 
 {{-- Dropdown --}}
 <div id="attDropdown" class="att-dropdown" style="display:none;">
-    <button class="att-dd-item" data-status="present">
-        <span class="att-chip present">P</span> Present
-    </button>
-    <button class="att-dd-item" data-status="half_day">
-        <span class="att-chip half_day">HD</span> Half Day
-    </button>
-    <button class="att-dd-item" data-status="vl">
-        <span class="att-chip vl">VL</span> Vacation Leave
-    </button>
-    <button class="att-dd-item" data-status="sl">
-        <span class="att-chip sl">SL</span> Sick Leave
-    </button>
-    <button class="att-dd-item" data-status="absent">
-        <span class="att-chip absent">A</span> Absent
-    </button>
-    <button class="att-dd-item" data-status="ut">
-        <span class="att-chip ut">UT</span> Undertime
-    </button>
-    <button class="att-dd-item" data-status="holiday">
-        <span class="att-chip holiday">H</span> Holiday
-    </button>
+    <button class="att-dd-item" data-status="present"><span class="att-chip present">P</span> Present</button>
+    <button class="att-dd-item" data-status="half_day"><span class="att-chip half_day">HD</span> Half Day</button>
+    <button class="att-dd-item" data-status="vl"><span class="att-chip vl">VL</span> Vacation Leave</button>
+    <button class="att-dd-item" data-status="sl"><span class="att-chip sl">SL</span> Sick Leave</button>
+    <button class="att-dd-item" data-status="absent"><span class="att-chip absent">A</span> Absent</button>
+    <button class="att-dd-item" data-status="ut"><span class="att-chip ut">UT</span> Undertime</button>
+    <button class="att-dd-item" data-status="holiday"><span class="att-chip holiday">H</span> Holiday</button>
     <div class="att-dd-sep"></div>
     <button class="att-dd-item att-dd-clear" data-status="">
         <i class="fas fa-xmark" style="width:18px;text-align:center;"></i> Clear
@@ -217,21 +295,21 @@
 
 @section('scripts')
 <script>
-var CSRF = '{{ csrf_token() }}';
+var CSRF     = '{{ csrf_token() }}';
 var CHIP_MAP = { present:'P', half_day:'HD', vl:'VL', sl:'SL', absent:'A', ut:'UT', holiday:'H' };
+var CHIP_LBL = { present:'Present', half_day:'Half Day', vl:'Vacation Leave', sl:'Sick Leave', absent:'Absent', ut:'Undertime', holiday:'Holiday' };
 var activeCell = null;
 var dropdown   = document.getElementById('attDropdown');
 
 function openDropdown(event, cell) {
     event.stopPropagation();
     activeCell = cell;
-    var rect = cell.getBoundingClientRect();
     dropdown.style.display = 'block';
+    var rect = cell.getBoundingClientRect();
     var top  = rect.bottom + window.scrollY + 4;
-    var left = rect.left + window.scrollX;
-    // Keep dropdown within viewport
+    var left = rect.left  + window.scrollX;
     if (left + 170 > window.innerWidth) left = window.innerWidth - 174;
-    dropdown.style.top  = top + 'px';
+    dropdown.style.top  = top  + 'px';
     dropdown.style.left = left + 'px';
 }
 
@@ -244,9 +322,9 @@ dropdown.querySelectorAll('.att-dd-item').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
         e.stopPropagation();
         if (!activeCell) return;
-        var status = this.dataset.status;
-        var uid    = activeCell.dataset.uid;
-        var date   = activeCell.dataset.date;
+        var status    = this.dataset.status;
+        var uid       = activeCell.dataset.uid;
+        var date      = activeCell.dataset.date;
         var savedCell = activeCell;
         closeDropdown();
         saveStatus(uid, date, status, savedCell);
@@ -258,33 +336,39 @@ document.addEventListener('click', function(e) {
 });
 
 function saveStatus(uid, date, status, cell) {
+    cell.classList.add('att-cell--loading');
     fetch('{{ route("admin.attendance.upsert") }}', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-        body: JSON.stringify({ user_id: uid, date: date, status: status || null }),
+        body:    JSON.stringify({ user_id: uid, date: date, status: status || null }),
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
+        cell.classList.remove('att-cell--loading');
         if (data.success) updateCell(cell, status);
     })
-    .catch(function(e) { console.error('Attendance save failed:', e); });
+    .catch(function(e) {
+        cell.classList.remove('att-cell--loading');
+        console.error('Attendance save failed:', e);
+    });
 }
 
 function updateCell(cell, status) {
     cell.innerHTML = '';
     if (status) {
         var chip = document.createElement('span');
-        chip.className = 'att-chip ' + status;
-        chip.textContent = CHIP_MAP[status] || status;
+        chip.className   = 'att-chip ' + status;
+        chip.title       = CHIP_LBL[status] || status;
+        chip.textContent = CHIP_MAP[status]  || status;
         cell.appendChild(chip);
     }
 }
 
 function markHoliday(date) {
     fetch('{{ route("admin.attendance.holiday") }}', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-        body: JSON.stringify({ date: date }),
+        body:    JSON.stringify({ date: date }),
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
