@@ -361,8 +361,10 @@ $greeting = match(true) {
                         <i class="fas {{ $roleIcon }} mini-back-wm"></i>
                         <div class="mini-back-body">
                             <div class="mini-back-row"><span class="mini-lbl">Name</span><span class="mini-val">{{ $user->full_name }}</span></div>
-                            <div class="mini-back-row"><span class="mini-lbl">Username</span><span class="mini-val">{{ '@'.$user->username }}</span></div>
-                            <div class="mini-back-row"><span class="mini-lbl">Role</span><span class="mini-val">{{ $designation }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">Nickname</span><span class="mini-val">{{ $user->nickname ?: $user->first_name }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">ID No.</span><span class="mini-val">{{ $user->id_number ?: $idNum }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">TIN</span><span class="mini-val">{{ $user->tin ?: '—' }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">SSS</span><span class="mini-val">{{ $user->sss ?: '—' }}</span></div>
                         </div>
                         <div class="mini-back-foot">
                             <svg class="mini-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>

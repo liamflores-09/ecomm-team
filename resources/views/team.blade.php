@@ -367,6 +367,12 @@
     @php
         $avatarUrl = fn($u) => $u->avatarUrl();
         $idNum  = fn($u) => 'ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT);
+        $extraData = fn($u) => implode(' ', [
+            'data-nickname="'  . e($u->nickname  ?: $u->first_name) . '"',
+            'data-idnumber="'  . e($u->id_number ?: ('ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT))) . '"',
+            'data-tin="'       . e($u->tin  ?: '—') . '"',
+            'data-sss="'       . e($u->sss  ?: '—') . '"',
+        ]);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
         $total      = $heads->count() + $managers->count() + $leads->count() + $analysts->count()
                     + $researchers->count() + $content->count() + $graphics->count() + $backend->count();
@@ -424,7 +430,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="head" data-role-label="Ecomm Head" data-designation="Ecomm Department Head"
-             data-icon="fa-crown" data-color="#7c3aed" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-crown" data-color="#7c3aed" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <div class="tm-lcard-body">
                 <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
@@ -453,7 +459,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="manager" data-role-label="Manager" data-designation="Department Manager"
-             data-icon="fa-crown" data-color="#1e293b" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-crown" data-color="#1e293b" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <div class="tm-lcard-body">
                 <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
@@ -482,7 +488,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="lead" data-role-label="Lead" data-designation="Team Lead"
-             data-icon="fa-star" data-color="#6366f1" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-star" data-color="#6366f1" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <div class="tm-lcard-body">
                 <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
@@ -511,7 +517,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="analyst" data-role-label="Analyst" data-designation="Data Analyst"
-             data-icon="fa-chart-bar" data-color="#ec4899" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-chart-bar" data-color="#ec4899" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge analyst">Analyst</span>
@@ -537,7 +543,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="researcher" data-role-label="Researcher" data-designation="Product Researcher"
-             data-icon="fa-magnifying-glass" data-color="#10b981" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-magnifying-glass" data-color="#10b981" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge researcher">Researcher</span>
@@ -563,7 +569,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="content" data-role-label="Content" data-designation="Content Associate"
-             data-icon="fa-pen-nib" data-color="#0ea5e9" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-pen-nib" data-color="#0ea5e9" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge content">Content</span>
@@ -591,7 +597,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="graphics" data-role-label="Graphics" data-designation="Graphic Designer"
-             data-icon="fa-palette" data-color="#f59e0b" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-palette" data-color="#f59e0b" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge graphics">Graphics</span>
@@ -619,7 +625,7 @@
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="backend" data-role-label="Backend" data-designation="Backend Developer"
-             data-icon="fa-server" data-color="#f43f5e" data-idnum="{{ $idNum($u) }}">
+             data-icon="fa-server" data-color="#f43f5e" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge backend">Backend</span>
@@ -677,9 +683,12 @@
                 <i id="idmBackIcon" class="fas fa-crown idm-back-wm"></i>
                 <div class="idm-back-body">
                     <div class="idm-back-row"><span class="idm-lbl">Full Name</span><span id="idmBackName" class="idm-val"></span></div>
+                    <div class="idm-back-row"><span class="idm-lbl">Nickname</span><span id="idmBackNickname" class="idm-val"></span></div>
                     <div class="idm-back-row"><span class="idm-lbl">Username</span><span id="idmBackUser" class="idm-val"></span></div>
                     <div class="idm-back-row" id="idmViberRow"><span class="idm-lbl">Viber</span><a id="idmViberLink" href="#" class="idm-val idm-viber-val" onclick="event.stopPropagation()"></a></div>
-                    <div class="idm-back-row"><span class="idm-lbl">Designation</span><span id="idmBackDesg" class="idm-val"></span></div>
+                    <div class="idm-back-row"><span class="idm-lbl">ID No.</span><span id="idmBackIdnum" class="idm-val"></span></div>
+                    <div class="idm-back-row"><span class="idm-lbl">TIN</span><span id="idmBackTin" class="idm-val"></span></div>
+                    <div class="idm-back-row"><span class="idm-lbl">SSS</span><span id="idmBackSss" class="idm-val"></span></div>
                 </div>
                 <div class="idm-back-foot">
                     <svg class="idm-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
@@ -727,9 +736,12 @@ window.openIdCard = function(el) {
     flipCard.className = flipCard.className.replace(/\bidr-\w+/g, '').trim() + ' idr-' + d.role;
     flipCard.style.setProperty('--idm-color', d.color);
     document.getElementById('idmBackName').textContent = d.name;
+    document.getElementById('idmBackNickname').textContent = d.nickname || d.name.split(' ')[0];
     document.getElementById('idmBackUser').textContent = '@' + d.username;
-    document.getElementById('idmBackDesg').textContent = d.designation;
-    document.getElementById('idmIdnum').textContent = d.idnum;
+    document.getElementById('idmBackIdnum').textContent = d.idnumber || d.idnum;
+    document.getElementById('idmBackTin').textContent = d.tin || '—';
+    document.getElementById('idmBackSss').textContent = d.sss || '—';
+    document.getElementById('idmIdnum').textContent = d.idnumber || d.idnum;
     var viberRow = document.getElementById('idmViberRow');
     var viberLink = document.getElementById('idmViberLink');
     if (d.mobile) {
