@@ -64,7 +64,7 @@
         position: sticky; left: 0; z-index: 2;
         background: var(--card);
         width: 155px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        padding: 0.55rem 0.9rem;
+        padding: 0.55rem 0.9rem 0.55rem 1.25rem;
         font-size: 0.78rem; font-weight: 600;
         border-right: 1px solid var(--border);
     }
@@ -74,18 +74,26 @@
         letter-spacing: 0.06em; color: var(--muted-foreground); font-weight: 700;
     }
 
-    /* Row hover — entire row lights up, like Reports */
+    /* Striped rows */
+    .att-stripe td         { background: rgba(0,0,0,0.018); }
+    .att-stripe .att-name-col { background: rgba(0,0,0,0.018); }
+    [data-theme="dark"] .att-stripe td,
+    [data-theme="dark"] .att-stripe .att-name-col { background: rgba(255,255,255,0.025); }
+
+    /* Row hover — use var(--muted) so it works in dark mode too */
     .att-table tbody tr:not(.att-role-row):hover td,
-    .att-table tbody tr:not(.att-role-row):hover .att-name-col { background: #FAFAFA; }
+    .att-table tbody tr:not(.att-role-row):hover .att-name-col { background: var(--muted) !important; }
 
     /* Day header */
     .att-day-th { text-align: center; vertical-align: middle; padding: 0.45rem 0.15rem 0.35rem; white-space: nowrap; }
-    .att-day-th.att-weekend   { background: rgba(0,0,0,0.025); }
     .att-day-th.att-today-col { background: rgba(99,102,241,0.08); border-top: 2px solid #6366f1 !important; }
+    .att-day-th.att-sunday-col { background: rgba(245,158,11,0.07); }
     .att-day-dow { font-size: 0.5rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.5; letter-spacing: 0.04em; line-height: 1; margin-bottom: 2px; }
     .att-day-num { font-size: 0.72rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 2px; }
     .att-today-col .att-day-dow,
     .att-today-col .att-day-num { color: #6366f1; opacity: 1; }
+    .att-sunday-col .att-day-dow,
+    .att-sunday-col .att-day-num { color: #d97706; opacity: 1; }
     .att-holiday-btn {
         display: flex; align-items: center; justify-content: center;
         width: 100%; height: 14px; margin: 0 auto;
@@ -94,6 +102,7 @@
         border-radius: 3px; transition: all 0.15s; opacity: 0.4;
     }
     .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.1); opacity: 1; }
+    .att-rdo-icon { font-size: 0.55rem; color: #d97706; opacity: 0.7; display: block; }
 
     /* Role section row */
     .att-role-row td {
@@ -110,8 +119,9 @@
         min-height: 36px; cursor: pointer; padding: 3px;
         transition: background 0.1s;
     }
-    .att-weekend-cell { background: rgba(0,0,0,0.018); }
-    .att-today-cell   { background: rgba(99,102,241,0.04); }
+    .att-today-cell { background: rgba(99,102,241,0.04); }
+    .att-rdo-cell   { background: rgba(245,158,11,0.06); cursor: default; }
+    .att-rdo-cell i { color: #d97706; font-size: 0.75rem; }
     .att-cell--loading { opacity: 0.35; pointer-events: none; cursor: wait; }
 
     /* Status chips */
@@ -183,6 +193,7 @@
         <span class="att-legend-item"><span class="att-chip absent">A</span> Absent</span>
         <span class="att-legend-item"><span class="att-chip ut">UT</span> Undertime</span>
         <span class="att-legend-item"><span class="att-chip holiday">H</span> Holiday</span>
+        <span class="att-legend-item" style="color:#d97706;"><i class="fas fa-umbrella-beach" style="color:#d97706;"></i> RDO (Sunday)</span>
     </div>
 
     {{-- Precompute day metadata --}}
@@ -211,10 +222,10 @@
             $ds  = $month->format('Y-m') . '-' . str_pad($d, 2, '0', STR_PAD_LEFT);
             $dow = \Carbon\Carbon::parse($ds)->dayOfWeek;
             $dayMeta[$d] = [
-                'date'    => $ds,
-                'dow'     => $dowLabels[$dow],
-                'weekend' => in_array($dow, [0, 6]),
-                'today'   => $ds === $today,
+                'date'   => $ds,
+                'dow'    => $dowLabels[$dow],
+                'sunday' => $dow === 0,
+                'today'  => $ds === $today,
             ];
         }
     @endphp
@@ -226,29 +237,39 @@
                 <tr>
                     <th class="att-name-col">Member</th>
                     @foreach ($dayMeta as $d => $meta)
-                    <th class="att-day-th{{ $meta['weekend'] ? ' att-weekend' : '' }}{{ $meta['today'] ? ' att-today-col' : '' }}">
+                    <th class="att-day-th{{ $meta['sunday'] ? ' att-sunday-col' : '' }}{{ $meta['today'] ? ' att-today-col' : '' }}">
                         <div class="att-day-dow">{{ $meta['dow'] }}</div>
                         <div class="att-day-num">{{ $d }}</div>
+                        @if ($meta['sunday'])
+                        <i class="fas fa-umbrella-beach att-rdo-icon" title="Sunday — Rest Day (RDO)"></i>
+                        @else
                         <button class="att-holiday-btn" title="Mark all Holiday — {{ $meta['date'] }}" onclick="markHoliday('{{ $meta['date'] }}')">
                             <i class="fas fa-flag"></i>
                         </button>
+                        @endif
                     </th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach ($usersByRole as $role => $users)
-                @php $roleColor = $roleColors[$role] ?? 'var(--border)'; @endphp
+                @php $roleColor = $roleColors[$role] ?? 'var(--border)'; $stripe = false; @endphp
                 <tr class="att-role-row">
                     <td colspan="{{ $daysInMonth + 1 }}" style="border-left-color:{{ $roleColor }};border-left-width:3px">{{ ucfirst($role) }}</td>
                 </tr>
                 @foreach ($users as $u)
-                <tr>
+                @php $stripe = !$stripe; @endphp
+                <tr class="{{ $stripe ? '' : 'att-stripe' }}">
                     <td class="att-name-col">{{ $u->first_name }} {{ $u->last_name }}</td>
                     @foreach ($dayMeta as $d => $meta)
                     @php $status = $attendanceJson[$u->id][$meta['date']] ?? null; @endphp
                     <td>
-                        <div class="att-cell{{ $meta['weekend'] ? ' att-weekend-cell' : '' }}{{ $meta['today'] ? ' att-today-cell' : '' }}"
+                        @if ($meta['sunday'])
+                        <div class="att-cell att-rdo-cell" title="Sunday — Rest Day (RDO)">
+                            <i class="fas fa-umbrella-beach"></i>
+                        </div>
+                        @else
+                        <div class="att-cell{{ $meta['today'] ? ' att-today-cell' : '' }}"
                              data-uid="{{ $u->id }}"
                              data-date="{{ $meta['date'] }}"
                              onclick="openDropdown(event, this)">
@@ -256,6 +277,7 @@
                             <span class="att-chip {{ $status }}" title="{{ $chipLabels[$status] ?? $status }}">{{ $chipAbbrev[$status] ?? $status }}</span>
                             @endif
                         </div>
+                        @endif
                     </td>
                     @endforeach
                 </tr>
@@ -296,20 +318,18 @@ function openDropdown(event, cell) {
     activeCell = cell;
     dropdown.style.display = 'block';
 
-    var rect       = cell.getBoundingClientRect();
-    var ddHeight   = dropdown.offsetHeight;
-    var ddWidth    = dropdown.offsetWidth;
-    var margin     = 6;
+    var rect     = cell.getBoundingClientRect();
+    var ddHeight = dropdown.offsetHeight;
+    var ddWidth  = dropdown.offsetWidth;
+    var margin   = 6;
     var top, left;
 
-    // Flip above if not enough space below
     if (rect.bottom + ddHeight + margin > window.innerHeight && rect.top - ddHeight - margin > 0) {
         top = rect.top + window.scrollY - ddHeight - margin;
     } else {
         top = rect.bottom + window.scrollY + margin;
     }
 
-    // Clamp horizontally
     left = rect.left + window.scrollX;
     if (left + ddWidth + 4 > window.innerWidth) left = window.innerWidth - ddWidth - 4;
     if (left < 4) left = 4;
