@@ -348,7 +348,7 @@ class AdminController extends Controller
         $prodLabels = $userProductivity->pluck('username')->toArray();
         $prodData = $userProductivity->pluck('total_tasks')->toArray();
 
-        $todayLogs = User::whereNotIn('role', ['manager', 'head']);
+        $todayLogs = User::whereNotIn('role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $todayLogs->where('role', $roleFilter);
         }
@@ -387,14 +387,14 @@ class AdminController extends Controller
             ->toArray();
 
         $missingLogs = User::whereNotIn('id', $loggedTodayUserIds)
-            ->whereNotIn('role', ['manager', 'head']);
+            ->whereNotIn('role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $missingLogs->where('role', $roleFilter);
         }
         $missingLogs = $missingLogs->get();
 
         // Member log status for role filter
-        $members = User::whereNotIn('role', ['manager', 'head']);
+        $members = User::whereNotIn('role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $members = $members->where('role', $roleFilter);
         }
@@ -434,6 +434,7 @@ class AdminController extends Controller
         if ($selectedDay) {
             $selectedDayLogs = DailyLog::where('daily_logs.date', $selectedDay)
                 ->join('users', 'daily_logs.user_id', '=', 'users.id')
+                ->whereNotIn('users.role', ['manager', 'head', 'analyst'])
                 ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar')
                 ->orderBy('users.role')->orderBy('users.first_name');
             if ($roleFilter) {
@@ -444,7 +445,8 @@ class AdminController extends Controller
 
         // Day-by-day history (last 14 days)
         $historyQuery = DailyLog::where('daily_logs.date', '>=', now()->subDays(14)->startOfDay())
-            ->join('users', 'daily_logs.user_id', '=', 'users.id');
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $historyQuery->where('users.role', $roleFilter);
         }
@@ -479,14 +481,14 @@ class AdminController extends Controller
 
         $dlRoleWeeklyRaw = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->whereNotIn('users.role', ['manager', 'head'])
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst'])
             ->select('users.role', 'daily_logs.date',
                 DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
             ->groupBy('users.role', 'daily_logs.date')
             ->get()->groupBy('role')
             ->map(fn($rows) => $rows->keyBy(fn($r) => $r->date->format('Y-m-d')));
 
-        $dlRoleMemberCounts = User::whereNotIn('role', ['manager', 'head'])
+        $dlRoleMemberCounts = User::whereNotIn('role', ['manager', 'head', 'analyst'])
             ->select('role', DB::raw('COUNT(*) as count'))->groupBy('role')
             ->get()->keyBy('role');
 
@@ -510,7 +512,7 @@ class AdminController extends Controller
         // ── Per-role top contributors (last 7 days) ────────────────────────────
         $dlRoleTopContributors = DailyLog::where('daily_logs.date', '>=', now()->subDays(6)->startOfDay())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
-            ->whereNotIn('users.role', ['manager', 'head'])
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst'])
             ->when($roleFilter, fn($q) => $q->where('users.role', $roleFilter))
             ->select('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar',
                 DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
@@ -522,6 +524,7 @@ class AdminController extends Controller
 
         // ── Calendar month logs pre-loaded for client-side rendering ───────────
         $monthLogsFull = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst'])
             ->whereMonth('daily_logs.date', $calendarMonth->month)
             ->whereYear('daily_logs.date', $calendarMonth->year)
             ->select('daily_logs.date', 'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
@@ -564,7 +567,8 @@ class AdminController extends Controller
         $roleFilter = request()->query('role');
         $month = request()->query('month', now()->format('Y-m'));
 
-        $logQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        $logQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $logQuery->where('users.role', $roleFilter);
         }
@@ -572,7 +576,8 @@ class AdminController extends Controller
         $rolesWithData = $logQuery->clone()->distinct()->pluck('users.role')->sort()->values()->toArray();
 
         // Available months
-        $availableMonthsQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        $availableMonthsQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $availableMonthsQuery->where('users.role', $roleFilter);
         }
@@ -588,6 +593,7 @@ class AdminController extends Controller
         $monthEnd = $monthStart->copy()->endOfMonth();
 
         $weeklyLogs = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst'])
             ->whereBetween('daily_logs.date', [$monthStart, $monthEnd]);
         if ($roleFilter) {
             $weeklyLogs->where('users.role', $roleFilter);
@@ -681,7 +687,8 @@ class AdminController extends Controller
         $allMonths = collect($availableMonths)->map(function ($m) use ($roleFilter) {
             $start = \Carbon\Carbon::parse($m)->startOfMonth();
             $end = $start->copy()->endOfMonth();
-            $totalsQuery = DailyLog::whereBetween('date', [$start, $end]);
+            $totalsQuery = DailyLog::whereBetween('date', [$start, $end])
+                ->whereHas('user', fn($q) => $q->whereNotIn('role', ['manager', 'head', 'analyst']));
             if ($roleFilter) {
                 $totalsQuery->whereHas('user', fn($q) => $q->where('role', $roleFilter));
             }
@@ -702,7 +709,8 @@ class AdminController extends Controller
         })->sortBy('month')->values();
 
         // Per-member monthly breakdown: each member's task_1..task_5 per month
-        $memberMonthlyQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id');
+        $memberMonthlyQuery = DailyLog::join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereNotIn('users.role', ['manager', 'head', 'analyst']);
         if ($roleFilter) {
             $memberMonthlyQuery->where('users.role', $roleFilter);
         }
