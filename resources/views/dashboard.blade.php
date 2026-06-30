@@ -302,9 +302,7 @@ $greeting = match(true) {
             <div class="dh-designation">{{ $designation }}</div>
             <div class="dh-divider"></div>
             <div class="dh-meta">
-                <span class="role-badge {{ $user->role }}">{{ ucfirst($user->role) }}</span>
-                <span class="dh-sep">·</span>
-                <span class="dh-username">@{{ $user->username }}</span>
+                <span class="dh-username">{{ '@'.$user->username }}</span>
                 <span class="dh-sep">·</span>
                 <span class="dh-date">{{ now()->format('D, M j') }}</span>
             </div>
