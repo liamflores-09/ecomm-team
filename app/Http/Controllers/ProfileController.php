@@ -20,16 +20,26 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'first_name'    => 'required|string|max:255',
             'last_name'     => 'required|string|max:255',
+            'nickname'      => 'nullable|string|max:100',
             'mobile_number' => 'nullable|string|max:20',
             'gender'        => 'required|in:male,female',
+            'id_number'     => 'nullable|string|max:100',
+            'tin'           => 'nullable|string|max:50',
+            'sss'           => 'nullable|string|max:50',
+            'address'       => 'nullable|string|max:500',
             'password'      => 'nullable|min:6|confirmed',
         ]);
 
         $data = [
             'first_name'    => $validated['first_name'],
             'last_name'     => $validated['last_name'],
+            'nickname'      => $validated['nickname'] ?? null,
             'mobile_number' => $validated['mobile_number'] ?? null,
             'gender'        => $validated['gender'],
+            'id_number'     => $validated['id_number'] ?? null,
+            'tin'           => $validated['tin'] ?? null,
+            'sss'           => $validated['sss'] ?? null,
+            'address'       => $validated['address'] ?? null,
         ];
 
         if (!empty($validated['password'])) {

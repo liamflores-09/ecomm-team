@@ -117,6 +117,14 @@
     <!-- Info grid -->
     <div class="profile-info-grid anim-up d2">
         <div class="info-card">
+            <div class="info-card-label"><i class="fas fa-at" style="margin-right:0.375rem;"></i>Username</div>
+            <div class="info-card-value">{{ $user->username }}</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-label"><i class="fas fa-face-smile" style="margin-right:0.375rem;"></i>Nickname</div>
+            <div class="info-card-value {{ $user->nickname ? '' : 'muted' }}">{{ $user->nickname ?: 'Not set' }}</div>
+        </div>
+        <div class="info-card">
             <div class="info-card-label"><i class="fas fa-mobile-screen" style="margin-right:0.375rem;"></i>Mobile</div>
             <div class="info-card-value {{ $user->mobile_number ? '' : 'muted' }}">{{ $user->mobile_number ?: 'Not set' }}</div>
         </div>
@@ -125,19 +133,31 @@
             <div class="info-card-value">{{ ucfirst($user->gender ?? 'Not set') }}</div>
         </div>
         <div class="info-card">
-            <div class="info-card-label"><i class="fas fa-at" style="margin-right:0.375rem;"></i>Username</div>
-            <div class="info-card-value">{{ $user->username }}</div>
+            <div class="info-card-label"><i class="fas fa-id-card" style="margin-right:0.375rem;"></i>ID No.</div>
+            <div class="info-card-value {{ $user->id_number ? '' : 'muted' }}">{{ $user->id_number ?: 'Not set' }}</div>
         </div>
         <div class="info-card">
             <div class="info-card-label"><i class="fas fa-calendar" style="margin-right:0.375rem;"></i>Member Since</div>
             <div class="info-card-value">{{ $user->created_at->format('M d, Y') }}</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-label"><i class="fas fa-file-invoice" style="margin-right:0.375rem;"></i>TIN</div>
+            <div class="info-card-value {{ $user->tin ? '' : 'muted' }}">{{ $user->tin ?: 'Not set' }}</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-label"><i class="fas fa-shield-halved" style="margin-right:0.375rem;"></i>SSS</div>
+            <div class="info-card-value {{ $user->sss ? '' : 'muted' }}">{{ $user->sss ?: 'Not set' }}</div>
+        </div>
+        <div class="info-card" style="grid-column: span 2;">
+            <div class="info-card-label"><i class="fas fa-location-dot" style="margin-right:0.375rem;"></i>Address</div>
+            <div class="info-card-value {{ $user->address ? '' : 'muted' }}">{{ $user->address ?: 'Not set' }}</div>
         </div>
     </div>
 </div>
 
 <!-- Edit Profile Modal -->
 <div class="modal-overlay" id="editProfileModal">
-    <div class="modal-box" style="max-width:480px;">
+    <div class="modal-box" style="max-width:560px;">
         <div class="modal-header">
             <h5 style="font-weight:700;font-size:1rem;margin:0;">Edit Profile</h5>
             <button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fas fa-times"></i></button>
@@ -160,9 +180,16 @@
 
                 <div class="pf-grid">
                     <div class="pf-group">
+                        <label class="pf-label">Nickname</label>
+                        <input type="text" name="nickname" class="pf-input" value="{{ old('nickname', $user->nickname) }}" placeholder="e.g. Jay">
+                    </div>
+                    <div class="pf-group">
                         <label class="pf-label">Mobile Number</label>
                         <input type="text" name="mobile_number" class="pf-input" value="{{ old('mobile_number', $user->mobile_number) }}" placeholder="e.g. 09171234567">
                     </div>
+                </div>
+
+                <div class="pf-grid">
                     <div class="pf-group">
                         <label class="pf-label">Gender</label>
                         <select name="gender" class="pf-select" required>
@@ -170,6 +197,26 @@
                             <option value="female" {{ ($user->gender ?? '') === 'female' ? 'selected' : '' }}>Female</option>
                         </select>
                     </div>
+                    <div class="pf-group">
+                        <label class="pf-label">ID No.</label>
+                        <input type="text" name="id_number" class="pf-input" value="{{ old('id_number', $user->id_number) }}" placeholder="Company / Gov't ID">
+                    </div>
+                </div>
+
+                <div class="pf-grid">
+                    <div class="pf-group">
+                        <label class="pf-label">TIN</label>
+                        <input type="text" name="tin" class="pf-input" value="{{ old('tin', $user->tin) }}" placeholder="Tax Identification No.">
+                    </div>
+                    <div class="pf-group">
+                        <label class="pf-label">SSS</label>
+                        <input type="text" name="sss" class="pf-input" value="{{ old('sss', $user->sss) }}" placeholder="SSS Number">
+                    </div>
+                </div>
+
+                <div class="pf-group">
+                    <label class="pf-label">Address</label>
+                    <input type="text" name="address" class="pf-input" value="{{ old('address', $user->address) }}" placeholder="Home address">
                 </div>
 
                 <hr style="border:none;border-top:1px solid var(--border-light);margin:0;">
