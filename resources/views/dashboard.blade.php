@@ -9,340 +9,227 @@
 
 @section('styles')
 <style>
-    .welcome-banner {
-        border-radius: 12px;
-        padding: 2.5rem;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        min-height: 140px;
-        background:
-            radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px) 0 0 / 20px 20px,
-            linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.22) 100%),
-            var(--wb-color);
+    /* ── Hero Card ── */
+    .dash-hero {
+        background: var(--card); border: 1px solid var(--border-light);
+        border-left: 5px solid var(--hero-color, #5757f8);
+        border-radius: 16px; padding: 2rem 2.25rem 2rem 2.25rem;
+        display: flex; align-items: center; gap: 2.5rem;
+        margin-bottom: 1.25rem; position: relative; overflow: hidden;
+        min-height: 168px;
     }
-    .wb-deco {
-        position: absolute; border-radius: 50%; pointer-events: none; z-index: 1;
+    .dh-bg-dots {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: radial-gradient(circle, var(--border-light) 1.2px, transparent 1.2px);
+        background-size: 22px 22px; opacity: 0.7;
     }
-    .wb-deco-1 { width: 210px; height: 210px; top: -75px; right: 150px; background: rgba(255,255,255,0.07); }
-    .wb-deco-2 { width: 120px; height: 120px; bottom: -45px; right: 310px; background: rgba(255,255,255,0.06); }
-    .wb-deco-3 { width: 65px; height: 65px; top: 18px; right: 390px; background: transparent; border: 1.5px solid rgba(255,255,255,0.18); }
-    .welcome-banner.collapsed {
-        min-height: unset;
-        padding: 0 1.25rem;
-        height: 52px;
+    .dh-bg-circle {
+        position: absolute; border-radius: 50%; pointer-events: none;
+        background: var(--hero-color, #5757f8);
     }
-    .wb-content {
-        position: relative; z-index: 3;
-        transition: opacity 0.22s ease, transform 0.25s ease;
-        opacity: 1; transform: translateY(0);
+    .dh-bg-c1 { width: 280px; height: 280px; opacity: 0.07; top: -110px; right: 230px; }
+    .dh-bg-c2 { width: 130px; height: 130px; opacity: 0.045; bottom: -55px; right: 195px; }
+    .dh-bg-c3 {
+        width: 60px; height: 60px; top: 18px; right: 370px;
+        background: transparent; opacity: 1;
+        border: 1.5px solid var(--hero-color, #5757f8); opacity: 0.14;
     }
-    .welcome-banner.collapsed .wb-content {
-        opacity: 0; transform: translateY(-8px); pointer-events: none;
+    .dh-bg-icon {
+        position: absolute; font-size: 200px; line-height: 1;
+        color: var(--hero-color, #5757f8); opacity: 0.04;
+        right: 148px; top: 50%; transform: translateY(-50%);
+        pointer-events: none;
     }
-    .welcome-banner h2 { color: white; font-size: 1.5rem; margin-bottom: 0.375rem; font-weight: 700; }
-    .welcome-banner p { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.9rem; margin: 0; }
-    .wb-date { color: rgba(255,255,255,0.7); font-size: 0.8rem; font-weight: 600; margin-top: 0.625rem; }
-    .wb-avatar-zone {
-        position: absolute; right: 0; top: 0; bottom: 0; width: 200px;
-        display: flex; align-items: flex-end; overflow: hidden; pointer-events: none;
-        transition: opacity 0.18s ease;
+    .dh-info { flex: 1; min-width: 0; z-index: 1; }
+    .dh-eyebrow {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--hero-color, #5757f8);
+        margin-bottom: 0.45rem;
     }
-    .welcome-banner.collapsed .wb-avatar-zone { opacity: 0; }
-    .wb-avatar { height: 140px; width: auto; display: block; position: relative; z-index: 1; margin-left: auto; }
-    .wb-fade {
-        position: absolute; inset: 0;
-        background: linear-gradient(to right, var(--wb-color) 0%, transparent 70%);
-        z-index: 2;
+    .dh-eyebrow-line { width: 28px; height: 1.5px; background: var(--hero-color, #5757f8); opacity: 0.5; border-radius: 99px; flex-shrink: 0; }
+    .dh-greeting-label { font-size: 0.76rem; font-weight: 500; color: var(--muted-foreground); margin-bottom: 0.1rem; }
+    .dh-name {
+        font-size: 2.8rem; font-weight: 900; color: var(--foreground);
+        line-height: 1; margin-bottom: 0.3rem;
+        font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em;
     }
-    @media (max-width: 480px) { .wb-avatar-zone { display: none; } }
+    .dh-designation { font-size: 0.9rem; font-weight: 600; color: var(--muted-foreground); margin-bottom: 0.875rem; }
+    .dh-divider {
+        width: 52px; height: 3px; border-radius: 99px; margin-bottom: 0.875rem;
+        background: linear-gradient(90deg, var(--hero-color, #5757f8) 0%, transparent 100%);
+    }
+    .dh-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .dh-sep { color: var(--border-strong); font-size: 0.75rem; }
+    .dh-username { font-size: 0.78rem; color: var(--muted-foreground); font-weight: 600; }
+    .dh-date { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; }
+    .dh-eod { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.875rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; text-decoration: none; transition: opacity 0.15s; }
+    .dh-eod:hover { opacity: 0.85; }
+    .dh-eod.done { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+    .dh-eod.pending { background: var(--hero-color, #5757f8); color: white; box-shadow: 0 3px 14px rgba(0,0,0,0.18); }
+    .dh-eod.rdo { background: rgba(245,158,11,0.1); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
+    .dh-eod-edit { font-size: 0.72rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; padding: 0.3rem 0.75rem; border: 1px solid var(--border-light); border-radius: 9999px; transition: all 0.15s; }
+    .dh-eod-edit:hover { border-color: var(--foreground); color: var(--foreground); }
+    .dh-eod-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .dh-id-wrap { flex-shrink: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .dh-id-hint { font-size: 0.6rem; color: var(--muted-foreground); text-align: center; }
+    /* Dark mode — hero */
+    [data-theme="dark"] .dh-bg-dots { opacity: 0.2; }
+    [data-theme="dark"] .dh-bg-c1 { opacity: 0.1; }
+    [data-theme="dark"] .dh-bg-c2 { opacity: 0.07; }
+    [data-theme="dark"] .dh-bg-icon { opacity: 0.06; }
 
-    .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem; }
+    /* ── Inline Mini ID Card ── */
+    .mini-flip { width: 155px; cursor: pointer; perspective: 800px; --mini-color: #5757f8; }
+    .mini-flip-inner { display: grid; grid-template-columns: 1fr; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .mini-flip-inner.flipped { transform: rotateY(180deg); }
+    .mini-face { grid-area: 1/1; border-radius: 14px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 10px 36px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.12); position: relative; }
+    .mini-back { transform: rotateY(180deg); }
+
+    /* Mini Front */
+    .mini-front { background: #fff; display: flex; flex-direction: column; }
+    .mini-top { height: 86px; position: relative; flex-shrink: 0; display: flex; flex-direction: column; padding: 10px 12px 0; overflow: visible; }
+    .mini-top-dots { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 10px 10px; }
+    .mini-hole { position: absolute; top: 7px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); z-index: 2; }
+    .mini-co-row { display: flex; align-items: center; gap: 6px; position: relative; z-index: 1; margin-top: 14px; }
+    .mini-co-icon { width: 22px; height: 22px; border-radius: 6px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; flex-shrink: 0; }
+    .mini-co-name { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.06em; color: white; text-transform: uppercase; line-height: 1.1; }
+    .mini-co-sub { font-size: 0.44rem; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .mini-bg-icon { position: absolute; bottom: -10px; right: -5px; font-size: 70px; color: rgba(255,255,255,0.1); pointer-events: none; line-height: 1; z-index: 0; }
+    .mini-avatar-wrap { position: absolute; bottom: -34px; left: 50%; transform: translateX(-50%); z-index: 4; width: 68px; height: 68px; border-radius: 50%; background: white; padding: 3px; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+    .mini-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+    .mini-info-section { padding: 40px 12px 0; display: flex; flex-direction: column; align-items: center; flex: 1; }
+    .mini-fullname { font-weight: 800; font-size: 0.76rem; color: #0f172a; text-align: center; line-height: 1.25; margin-bottom: 2px; }
+    .mini-desg { font-size: 0.54rem; color: #64748b; font-weight: 500; margin-bottom: 6px; }
+    .mini-rule { width: 28px; height: 2px; border-radius: 99px; background: var(--mini-color, #5757f8); margin: 5px auto 8px; opacity: 0.6; }
+    .mini-front-foot { margin-top: auto; width: 100%; padding: 7px 12px 10px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; }
+    .mini-front-org { font-size: 0.44rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #cbd5e1; }
+    .mini-flip-hint { font-size: 0.46rem; color: #94a3b8; display: flex; align-items: center; gap: 3px; }
+
+    /* Role tints — mini front */
+    .mini-idr-head      .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(124,58,237,0.07) 100%); }
+    .mini-idr-manager   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(30,41,59,0.07) 100%); }
+    .mini-idr-lead      .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(99,102,241,0.07) 100%); }
+    .mini-idr-analyst   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(236,72,153,0.07) 100%); }
+    .mini-idr-researcher .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(16,185,129,0.07) 100%); }
+    .mini-idr-content   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(14,165,233,0.07) 100%); }
+    .mini-idr-graphics  .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(245,158,11,0.07) 100%); }
+    .mini-idr-backend   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(244,63,94,0.07) 100%); }
+
+    /* Mini Back */
+    .mini-back-face { background: #f8fafc; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .mini-idr-head      .mini-back-face { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
+    .mini-idr-manager   .mini-back-face { background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 100%); }
+    .mini-idr-lead      .mini-back-face { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
+    .mini-idr-analyst   .mini-back-face { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
+    .mini-idr-researcher .mini-back-face { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
+    .mini-idr-content   .mini-back-face { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .mini-idr-graphics  .mini-back-face { background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%); }
+    .mini-idr-backend   .mini-back-face { background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 100%); }
+    .mini-back-wm { position: absolute; bottom: 10px; right: -14px; font-size: 80px; color: var(--mini-color, #5757f8); opacity: 0.06; pointer-events: none; line-height: 1; z-index: 0; }
+    .mini-back-head { padding: 10px 12px; position: relative; flex-shrink: 0; display: flex; align-items: center; }
+    .mini-back-co { font-size: 0.56rem; font-weight: 800; letter-spacing: 0.07em; color: rgba(255,255,255,0.92); text-transform: uppercase; position: relative; z-index: 1; }
+    .mini-back-body { padding: 3px 12px 3px 16px; flex: 1; position: relative; z-index: 1; border-left: 2px solid var(--mini-color, #5757f8); margin: 8px 12px; }
+    .mini-back-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .mini-back-row:last-child { border-bottom: none; }
+    .mini-lbl { color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.44rem; letter-spacing: 0.05em; }
+    .mini-val { font-weight: 700; color: #0f172a; font-size: 0.58rem; text-align: right; max-width: 55%; word-break: break-all; }
+    .mini-back-foot { padding: 6px 12px 10px; border-top: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; z-index: 1; position: relative; }
+    .mini-barcode { width: 56px; height: 14px; fill: #1e293b; opacity: 0.3; }
+    .mini-idnum { font-family: monospace; font-size: 0.5rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.03em; }
+
+    /* Dark mode — hero */
+    [data-theme="dark"] .dh-bg-dots { opacity: 0.15; }
+    /* Dark mode — mini card */
+    [data-theme="dark"] .mini-front { background: #1c1c1c; }
+    [data-theme="dark"] .mini-fullname { color: #ebebeb; }
+    [data-theme="dark"] .mini-desg { color: #999999; }
+    [data-theme="dark"] .mini-front-foot { border-top-color: #2e2e2e; }
+    [data-theme="dark"] .mini-avatar-wrap { background: #2a2a2a; }
+    [data-theme="dark"] .mini-back-face { background: #1c1c1c; }
+    [data-theme="dark"] .mini-back-row { border-bottom-color: #2e2e2e; }
+    [data-theme="dark"] .mini-lbl { color: #555555; }
+    [data-theme="dark"] .mini-val { color: #ebebeb; }
+    [data-theme="dark"] .mini-back-foot { border-top-color: #2e2e2e; }
+    [data-theme="dark"] .mini-barcode { fill: #ebebeb; opacity: 0.15; }
+    [data-theme="dark"] .mini-idr-head      .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-manager   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
+    [data-theme="dark"] .mini-idr-lead      .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-analyst   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(236,72,153,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-researcher .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(16,185,129,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-content   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(14,165,233,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-graphics  .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(245,158,11,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-backend   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(244,63,94,0.12) 100%); }
+    [data-theme="dark"] .mini-idr-head      .mini-back-face { background: linear-gradient(160deg, #1e1a2e 0%, #251a3a 100%); }
+    [data-theme="dark"] .mini-idr-manager   .mini-back-face { background: linear-gradient(160deg, #1a1c22 0%, #1e2028 100%); }
+    [data-theme="dark"] .mini-idr-lead      .mini-back-face { background: linear-gradient(160deg, #1a1a2e 0%, #211a38 100%); }
+    [data-theme="dark"] .mini-idr-analyst   .mini-back-face { background: linear-gradient(160deg, #2a1a22 0%, #311a2a 100%); }
+    [data-theme="dark"] .mini-idr-researcher .mini-back-face { background: linear-gradient(160deg, #141e1a 0%, #162218 100%); }
+    [data-theme="dark"] .mini-idr-content   .mini-back-face { background: linear-gradient(160deg, #121e26 0%, #152330 100%); }
+    [data-theme="dark"] .mini-idr-graphics  .mini-back-face { background: linear-gradient(160deg, #261e10 0%, #2e2210 100%); }
+    [data-theme="dark"] .mini-idr-backend   .mini-back-face { background: linear-gradient(160deg, #261212 0%, #2e1212 100%); }
+
+    /* ── Stats ── */
+    .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.5rem 0 1rem; }
     .section-divider .sd-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; background: var(--primary); font-size: 0.75rem; flex-shrink: 0; }
     .section-divider h4 { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 0; font-family: 'Space Grotesk', sans-serif; }
     .section-divider .sd-line { flex: 1; height: 1px; background: var(--border-light); }
 
-    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 0.25rem; }
-    .stat-card { background: var(--card); border-radius: 8px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.2s; border: 1px solid var(--border-light); }
-    .stat-card:hover { border-color: var(--foreground); }
-    .stat-icon { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; font-size: 1.1rem; flex-shrink: 0; }
-    .stat-count { font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.125rem; font-family: 'Space Grotesk', sans-serif; }
-    .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); }
-
-    .eod-status-strip {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 8px;
-        margin-bottom: 1.25rem;
-        gap: 1rem;
-    }
-    .eod-status-strip.pending {
-        background: var(--primary);
-        border: 1px solid var(--primary);
-        padding: 1.5rem 1.25rem;
-    }
-    .eod-status-strip.pending .ess-icon {
-        background: rgba(255,255,255,0.2);
-        color: white;
-    }
-    .eod-status-strip.pending .ess-title {
-        color: white;
-        font-size: 0.95rem;
-        font-weight: 700;
-    }
-    .eod-status-strip.pending .ess-sub {
-        color: rgba(255,255,255,0.75);
-        font-size: 0.8rem;
-        margin-top: 0.125rem;
-    }
-    .eod-status-strip.submitted {
-        background: var(--card);
-        border: 1px solid var(--border-light);
-        border-left: 4px solid var(--success);
-        padding: 1rem 1.25rem;
-    }
-    .eod-status-strip.submitted .ess-title {
-        color: var(--success);
-        font-size: 0.9rem;
-        font-weight: 700;
-    }
-    .ess-left {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-    .ess-icon {
-        width: 36px;
-        height: 36px;
-        background: var(--success);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.875rem;
-        flex-shrink: 0;
-    }
-    .ess-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0 1rem;
-        height: 36px;
-        border-radius: 8px;
-        border: 1.5px solid rgba(255,255,255,0.6);
-        color: white;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
-        transition: border-color 0.15s, background 0.15s;
-        font-family: inherit;
-    }
-    .ess-btn:hover {
-        border-color: white;
-        background: rgba(255,255,255,0.1);
-        color: white;
-    }
-    .ess-edit {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--muted-foreground);
-        text-decoration: none;
-        white-space: nowrap;
-    }
-    .ess-edit:hover { color: var(--foreground); }
-
-    .chart-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
-    .chart-section #weeklyChart { width: 100% !important; }
-
-    .quick-section { background: var(--card); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-light); }
-    .quick-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .quick-link { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--background); border-radius: 8px; text-decoration: none; color: var(--foreground); transition: border-color 0.2s; border: 1px solid var(--border-light); }
-    .quick-link:hover { border-color: var(--foreground); }
-    .quick-link:hover .ql-icon { background: var(--foreground); }
-    .ql-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: var(--primary); color: white; flex-shrink: 0; transition: background 0.2s; }
-    .ql-name { display: block; font-weight: 600; font-size: 0.875rem; color: var(--foreground); }
-    .ql-desc { display: block; font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.125rem; }
-
-    .logs-section { background: var(--card); border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 2rem; overflow: hidden; }
-    .logs-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); }
-    .logs-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; color: var(--foreground); }
-    .logs-header a { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; }
-    .logs-header a:hover { color: var(--foreground); }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+    .stat-card { background: var(--card); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border-light); transition: border-color 0.2s, box-shadow 0.2s; }
+    .stat-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; flex-shrink: 0; }
+    .stat-count { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.125rem; font-family: 'Space Grotesk', sans-serif; }
+    .stat-label { font-size: 0.78rem; font-weight: 600; color: var(--muted-foreground); }
 
     /* ── Bento grid ── */
-    .bento-grid {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        align-items: stretch;
-    }
-    .bento-ann {
-        flex: 1; min-width: 0;
-        background: var(--card); border: 1px solid var(--border-light);
-        border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
-    }
-    .bento-right {
-        width: 360px; flex-shrink: 0;
-        display: flex; flex-direction: column; gap: 1rem;
-    }
-    .bento-ann-hd {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); flex-shrink: 0;
-    }
+    .bento-grid { display: flex; gap: 1rem; margin-bottom: 1.25rem; align-items: stretch; }
+    .bento-ann { flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+    .bento-right { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .bento-ann-hd { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
     .bento-ann-hd h4 { font-size: 0.85rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
     .bento-ann-hd a { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-decoration: none; }
-    .bento-ann-item {
-        flex: 1; display: flex; flex-direction: column;
-        text-decoration: none; color: inherit;
-        padding: 1.125rem 1.25rem; border-top: 1px solid var(--border-light);
-        transition: background 0.15s;
-    }
+    .bento-ann-item { flex: 1; display: flex; flex-direction: column; text-decoration: none; color: inherit; padding: 1.125rem 1.25rem; border-top: 1px solid var(--border-light); transition: background 0.15s; }
     .bento-ann-item:first-of-type { border-top: none; }
     .bento-ann-item:hover { background: var(--muted); }
     .bento-ann-item.pinned { border-left: 3px solid #f59e0b; padding-left: calc(1.25rem - 3px); }
-    .bento-ann-pin-badge {
-        display: inline-flex; align-items: center; gap: 0.25rem;
-        color: #d97706; font-size: 0.65rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;
-    }
+    .bento-ann-pin-badge { display: inline-flex; align-items: center; gap: 0.25rem; color: #d97706; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
     .bento-ann-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
     .bento-ann-title { font-weight: 700; font-size: 0.925rem; line-height: 1.35; flex: 1; color: var(--fg); letter-spacing: -0.01em; }
-    .bento-ann-chevron {
-        color: var(--muted-foreground); font-size: 0.6rem; margin-top: 3px;
-        flex-shrink: 0; opacity: 0; transition: opacity 0.15s, transform 0.15s;
-    }
+    .bento-ann-chevron { color: var(--muted-foreground); font-size: 0.6rem; margin-top: 3px; flex-shrink: 0; opacity: 0; transition: opacity 0.15s, transform 0.15s; }
     .bento-ann-item:hover .bento-ann-chevron { opacity: 1; transform: translateX(2px); }
-    .bento-ann-body {
-        font-size: 0.8rem; color: var(--muted-foreground); font-weight: 400;
-        line-height: 1.65; overflow: hidden; display: -webkit-box;
-        -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-    }
+    .bento-ann-body { font-size: 0.8rem; color: var(--muted-foreground); font-weight: 400; line-height: 1.65; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
     .bento-ann-foot { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; padding-top: 0.75rem; }
-    .bento-ann-avatar {
-        width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-        background: var(--muted); object-fit: cover;
-        border: 1px solid var(--border-light);
-    }
+    .bento-ann-avatar { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; background: var(--muted); object-fit: cover; border: 1px solid var(--border-light); }
     .bento-ann-author { font-size: 0.7rem; font-weight: 600; color: var(--muted-foreground); flex: 1; }
-    .bento-ann-expiry {
-        display: inline-flex; align-items: center; gap: 0.2rem;
-        font-size: 0.65rem; font-weight: 700; color: #d97706;
-        background: rgba(245,158,11,0.1); padding: 0.15rem 0.4rem; border-radius: 9999px;
-    }
+    .bento-ann-expiry { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.65rem; font-weight: 700; color: #d97706; background: rgba(245,158,11,0.1); padding: 0.15rem 0.4rem; border-radius: 9999px; }
     .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
     .bento-ann-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.25; }
-
-    /* ── Banner toggle ── */
-    .wb-toggle {
-        position: absolute; top: 0.875rem; right: 0.875rem; z-index: 4;
-        width: 28px; height: 28px; border-radius: 7px;
-        background: rgba(255,255,255,0.18); border: none; color: white;
-        cursor: pointer; display: flex; align-items: center; justify-content: center;
-        font-size: 0.72rem; transition: background 0.15s, top 0.35s cubic-bezier(0.4,0,0.2,1);
-    }
-    .wb-toggle:hover { background: rgba(255,255,255,0.3); }
-    .wb-toggle i { transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
-    .welcome-banner.collapsed .wb-toggle { top: 50%; transform: translateY(-50%); }
-    .wb-collapsed-label {
-        position: absolute; left: 1.25rem; right: 3rem;
-        color: rgba(255,255,255,0.9); font-size: 0.82rem; font-weight: 700;
-        opacity: 0; transform: translateY(4px);
-        transition: opacity 0.25s ease 0.05s, transform 0.25s ease 0.05s;
-        pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .welcome-banner.collapsed .wb-collapsed-label {
-        opacity: 1; transform: translateY(0); pointer-events: auto;
-    }
-
-    .bento-quick {
-        flex: 1;
-        background: var(--card); border: 1px solid var(--border-light);
-        border-radius: 12px; overflow: hidden;
-    }
-    .bento-quick-hd {
-        display: flex; align-items: center; gap: 0.5rem;
-        padding: 0.875rem 1.125rem; border-bottom: 1px solid var(--border-light);
-        font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
-        letter-spacing: 0.06em; color: var(--gray-400);
-    }
-    .bento-ql {
-        display: flex; align-items: center; gap: 0.75rem;
-        padding: 0.75rem 1.125rem; text-decoration: none; color: var(--fg);
-        transition: background 0.12s; border-bottom: 1px solid var(--border-light);
-    }
+    .bento-quick { flex: 1; background: var(--card); border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden; }
+    .bento-quick-hd { display: flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.125rem; border-bottom: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); }
+    .bento-ql { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.125rem; text-decoration: none; color: var(--fg); transition: background 0.12s; border-bottom: 1px solid var(--border-light); }
     .bento-ql:last-child { border-bottom: none; }
     .bento-ql:hover { background: var(--muted); }
-    .bento-ql-icon {
-        width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
-        background: var(--primary); color: white; display: flex;
-        align-items: center; justify-content: center; font-size: 0.82rem;
-        transition: background 0.12s;
-    }
+    .bento-ql-icon { width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; transition: background 0.12s; }
     .bento-ql:hover .bento-ql-icon { background: var(--fg); }
     .bento-ql-name { font-size: 0.8rem; font-weight: 700; display: block; }
     .bento-ql-desc { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; }
 
-    /* ── EOD bento card ── */
-    .bento-eod {
-        flex-shrink: 0;
-        border-radius: 12px; overflow: hidden;
-    }
-    .bento-eod-pending {
-        background: var(--primary); padding: 1.25rem;
-        display: flex; flex-direction: column; gap: 0.875rem;
-    }
-    .bento-eod-pending-top { display: flex; align-items: center; gap: 0.75rem; }
-    .bento-eod-icon {
-        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-        background: rgba(255,255,255,0.18); display: flex;
-        align-items: center; justify-content: center; color: white; font-size: 1rem;
-    }
-    .bento-eod-title { font-size: 0.9rem; font-weight: 800; color: white; line-height: 1.2; }
-    .bento-eod-sub { font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; margin-top: 0.2rem; }
-    .bento-eod-btn {
-        display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        width: 100%; height: 38px; border-radius: 8px;
-        border: 1.5px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.12);
-        color: white; font-family: var(--p-font-family-sans);
-        font-size: 0.82rem; font-weight: 700; text-decoration: none;
-        transition: background 0.15s, border-color 0.15s;
-    }
-    .bento-eod-btn:hover { background: rgba(255,255,255,0.22); border-color: white; color: white; }
-
-    .bento-eod-submitted {
-        background: var(--card); border: 1px solid var(--border-light);
-        border-left: 4px solid #10b981; padding: 1.25rem;
-        display: flex; flex-direction: column; gap: 0.75rem;
-    }
-    .bento-eod-submitted-top { display: flex; align-items: center; gap: 0.75rem; }
-    .bento-eod-done-icon {
-        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-        background: rgba(16,185,129,0.12); display: flex;
-        align-items: center; justify-content: center; color: #10b981; font-size: 1rem;
-    }
-    .bento-eod-done-title { font-size: 0.9rem; font-weight: 800; color: #10b981; }
-    .bento-eod-done-sub { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; margin-top: 0.15rem; }
-    .bento-eod-edit {
-        display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-        width: 100%; height: 34px; border-radius: 8px;
-        border: 1px solid var(--border-light); background: transparent;
-        color: var(--muted-foreground); font-family: var(--p-font-family-sans);
-        font-size: 0.78rem; font-weight: 700; text-decoration: none;
-        transition: all 0.15s;
-    }
-    .bento-eod-edit:hover { border-color: var(--fg); color: var(--fg); }
+    /* ── Chart / Logs ── */
+    .chart-section { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; border: 1px solid var(--border-light); }
+    .chart-section #weeklyChart { width: 100% !important; }
+    .logs-section { background: var(--card); border-radius: 12px; border: 1px solid var(--border-light); margin-bottom: 2rem; overflow: hidden; }
+    .logs-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); }
+    .logs-header h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+    .logs-header a { font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; }
+    .logs-header a:hover { color: var(--foreground); }
     .logs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .logs-table thead tr { border-bottom: 1px solid var(--border-light); }
     .logs-table th { padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); }
     .logs-table td { padding: 0.75rem 1rem; color: var(--foreground); border-bottom: 1px solid var(--border-light); }
     .logs-table tbody tr:last-child td { border-bottom: none; }
     .logs-table tbody tr:hover td { background: var(--background); }
-    .date-cell { font-weight: 600; color: var(--foreground); white-space: nowrap; }
+    .date-cell { font-weight: 600; white-space: nowrap; }
     .num { text-align: center; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
     .empty-state { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted-foreground); font-size: 0.875rem; }
     .empty-state i { display: block; font-size: 1.5rem; margin-bottom: 0.75rem; opacity: 0.4; }
@@ -363,39 +250,130 @@ $roleColor = match($effectiveRole) {
     default      => '#5757f8',
 };
 $avatarUrl = $user->avatarUrl();
+$idNum = 'ECD-' . str_pad(abs(crc32($user->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT);
+$roleIcon = match($user->role) {
+    'head'       => 'fa-crown',
+    'manager'    => 'fa-chart-bar',
+    'lead'       => 'fa-star',
+    'analyst'    => 'fa-magnifying-glass',
+    'researcher' => 'fa-magnifying-glass',
+    'content'    => 'fa-pen-nib',
+    'graphics'   => 'fa-palette',
+    'backend'    => 'fa-server',
+    default      => 'fa-user',
+};
+$designation = match($user->role) {
+    'head'       => 'Ecomm Head',
+    'manager'    => 'Manager',
+    'lead'       => 'Lead',
+    'analyst'    => 'Analyst',
+    'researcher' => 'Researcher',
+    'content'    => 'Content Creator',
+    'graphics'   => 'Graphics Designer',
+    'backend'    => 'Backend Ops',
+    default      => ucfirst($user->role),
+};
+$greeting = match(true) {
+    now()->hour < 12 => 'Good morning',
+    now()->hour < 17 => 'Good afternoon',
+    default          => 'Good evening',
+};
 @endphp
 <x-sidebar active="dashboard" />
 
 <div class="main-content">
-    <!-- Welcome Banner -->
-    <div class="welcome-banner anim-up" id="welcomeBanner" style="--wb-color: {{ $roleColor }};">
-        <div class="wb-deco wb-deco-1"></div>
-        <div class="wb-deco wb-deco-2"></div>
-        <div class="wb-deco wb-deco-3"></div>
-        <span class="wb-collapsed-label"><i class="fas fa-hand-wave" style="margin-right:0.4rem;"></i>Welcome back, {{ $user->first_name }}!</span>
-        <button class="wb-toggle" id="wbToggle" title="Toggle banner" onclick="toggleBanner()">
-            <i class="fas fa-chevron-up" id="wbToggleIcon"></i>
-        </button>
-        <div class="wb-content">
-            <h2>Welcome back, {{ $user->first_name }}!</h2>
-            @if($effectiveRole === 'content')
-            <p>Your content workspace — posting, data gathering, and daily logs.</p>
-            @elseif($effectiveRole === 'lead')
-            <p>PR leadership — product research, team coordination, and task oversight.</p>
-            @elseif($effectiveRole === 'researcher')
-            <p>Product research hub — advance PR, trade-in tracking, and vendor data.</p>
-            @elseif($effectiveRole === 'graphics')
-            <p>Design dashboard — CVP, banners, drafts, and visual assets.</p>
-            @elseif($effectiveRole === 'backend')
-            <p>Backend operations — bulk uploads, cross-listing, QC, and Q&A.</p>
-            @elseif($effectiveRole === 'analyst')
-            <p>Brand catalog hub — manage and update product catalogs across brands.</p>
+    <!-- Hero Card -->
+    <div class="dash-hero anim-up" style="--hero-color: {{ $roleColor }};">
+        <!-- Background layers -->
+        <div class="dh-bg-dots"></div>
+        <div class="dh-bg-circle dh-bg-c1"></div>
+        <div class="dh-bg-circle dh-bg-c2"></div>
+        <div class="dh-bg-circle dh-bg-c3"></div>
+        <i class="fas {{ $roleIcon }} dh-bg-icon"></i>
+
+        <!-- Info block -->
+        <div class="dh-info">
+            <div class="dh-eyebrow">
+                <span class="dh-eyebrow-line"></span>
+                Ecomm Team &middot; Dashboard
+            </div>
+            <div class="dh-greeting-label">{{ $greeting }},</div>
+            <div class="dh-name">{{ $user->first_name }}!</div>
+            <div class="dh-designation">{{ $designation }}</div>
+            <div class="dh-divider"></div>
+            <div class="dh-meta">
+                <span class="role-badge {{ $user->role }}">{{ ucfirst($user->role) }}</span>
+                <span class="dh-sep">·</span>
+                <span class="dh-username">@{{ $user->username }}</span>
+                <span class="dh-sep">·</span>
+                <span class="dh-date">{{ now()->format('D, M j') }}</span>
+            </div>
+            @if($effectiveRole !== 'analyst')
+            <div class="dh-eod-row">
+                @if(now()->dayOfWeek === 0)
+                <span class="dh-eod rdo"><i class="fas fa-umbrella-beach"></i> Rest Day (RDO)</span>
+                @elseif($todayLog)
+                <span class="dh-eod done"><i class="fas fa-circle-check"></i> EOD Submitted</span>
+                <a href="{{ route('end-of-day') }}" class="dh-eod-edit">Edit report <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
+                @else
+                <a href="{{ route('end-of-day') }}" class="dh-eod pending"><i class="fas fa-clipboard-list"></i> Submit EOD Report</a>
+                @endif
+            </div>
             @endif
-            <div class="wb-date">{{ now()->format('l, F j') }}</div>
         </div>
-        <div class="wb-avatar-zone">
-            <div class="wb-fade"></div>
-            <img src="{{ $avatarUrl }}" class="wb-avatar" alt="{{ $user->full_name }}" style="object-fit:cover;border-radius:50%;">
+
+        <!-- Mini ID Card -->
+        <div class="dh-id-wrap">
+            <div class="mini-flip" style="--mini-color: {{ $roleColor }};" onclick="this.querySelector('.mini-flip-inner').classList.toggle('flipped')">
+                <div class="mini-flip-inner mini-idr-{{ $user->role }}">
+                    <!-- Front -->
+                    <div class="mini-face mini-front">
+                        <div class="mini-top" style="background: {{ $roleColor }};">
+                            <div class="mini-top-dots"></div>
+                            <div class="mini-hole"></div>
+                            <div class="mini-co-row">
+                                <div class="mini-co-icon"><i class="fas {{ $roleIcon }}"></i></div>
+                                <div>
+                                    <div class="mini-co-name">Ecomm Dept</div>
+                                    <div class="mini-co-sub">Employee ID</div>
+                                </div>
+                            </div>
+                            <i class="fas {{ $roleIcon }} mini-bg-icon"></i>
+                            <div class="mini-avatar-wrap">
+                                <img src="{{ $avatarUrl }}" alt="{{ $user->full_name }}" class="mini-photo">
+                            </div>
+                        </div>
+                        <div class="mini-info-section">
+                            <div class="mini-fullname">{{ $user->full_name }}</div>
+                            <div class="mini-desg">{{ $designation }}</div>
+                            <span class="role-badge {{ $user->role }}" style="font-size:0.5rem;padding:2px 7px;">{{ ucfirst($user->role) }}</span>
+                            <div class="mini-rule"></div>
+                            <div class="mini-front-foot">
+                                <span class="mini-front-org">Ecomm Team</span>
+                                <span class="mini-flip-hint"><i class="fas fa-rotate"></i> Flip</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Back -->
+                    <div class="mini-face mini-back-face mini-back">
+                        <div class="mini-back-head" style="background: {{ $roleColor }};">
+                            <div class="mini-top-dots"></div>
+                            <div class="mini-back-co">Ecomm — ID Card</div>
+                        </div>
+                        <i class="fas {{ $roleIcon }} mini-back-wm"></i>
+                        <div class="mini-back-body">
+                            <div class="mini-back-row"><span class="mini-lbl">Name</span><span class="mini-val">{{ $user->full_name }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">Username</span><span class="mini-val">@{{ $user->username }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">Role</span><span class="mini-val">{{ $designation }}</span></div>
+                        </div>
+                        <div class="mini-back-foot">
+                            <svg class="mini-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
+                            <div class="mini-idnum">{{ $idNum }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dh-id-hint">Click to flip</div>
         </div>
     </div>
 
@@ -691,60 +669,6 @@ $avatarUrl = $user->avatarUrl();
 @endsection
 
 @section('scripts')
-<script>
-(function() {
-    var banner = document.getElementById('welcomeBanner');
-    var icon   = document.getElementById('wbToggleIcon');
-    if (!banner) return;
-    var DUR = 380, animating = false;
-    var ease = 'cubic-bezier(0.4,0,0.2,1)';
-
-    function setIcon(c) { icon.style.transform = c ? 'rotate(180deg)' : 'rotate(0deg)'; }
-
-    function applyInstant(collapsed) {
-        banner.classList.toggle('collapsed', collapsed);
-        setIcon(collapsed);
-    }
-
-    function animateTo(collapsed) {
-        if (animating) return;
-        animating = true;
-        if (collapsed) {
-            // Measure full height, then animate down to strip
-            banner.style.height = banner.offsetHeight + 'px';
-            banner.style.overflow = 'hidden';
-            banner.classList.add('collapsed');
-            void banner.offsetHeight;
-            banner.style.transition = 'height ' + DUR + 'ms ' + ease;
-            banner.style.height = '52px';
-            setIcon(true);
-        } else {
-            // Start at strip height, remove collapsed, measure target, animate up
-            banner.style.height = '52px';
-            banner.style.overflow = 'hidden';
-            banner.classList.remove('collapsed');
-            void banner.offsetHeight;
-            var toH = banner.scrollHeight;
-            banner.style.transition = 'height ' + DUR + 'ms ' + ease;
-            banner.style.height = toH + 'px';
-            setIcon(false);
-        }
-        setTimeout(function() {
-            banner.style.transition = '';
-            banner.style.height = '';
-            banner.style.overflow = '';
-            animating = false;
-        }, DUR);
-        localStorage.setItem('wb_hidden', collapsed ? '1' : '0');
-    }
-
-    applyInstant(localStorage.getItem('wb_hidden') === '1');
-
-    window.toggleBanner = function() {
-        animateTo(!banner.classList.contains('collapsed'));
-    };
-})();
-</script>
 @if($effectiveRole !== 'analyst')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
