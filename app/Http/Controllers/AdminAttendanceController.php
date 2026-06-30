@@ -14,7 +14,10 @@ class AdminAttendanceController extends Controller
 
     public function index()
     {
-        $month = Carbon::parse(request()->query('month', now()->format('Y-m')) . '-01');
+        $rawMonth = request()->query('month', now()->format('Y-m'));
+        $month = preg_match('/^\d{4}-\d{2}$/', $rawMonth)
+            ? Carbon::parse($rawMonth . '-01')
+            : now()->startOfMonth();
 
         $users = User::whereNotIn('role', self::EXCLUDED_ROLES)
             ->orderBy('role')

@@ -168,7 +168,7 @@
                         <div class="att-cell"
                              data-uid="{{ $u->id }}"
                              data-date="{{ $dateStr }}"
-                             onclick="openDropdown(this)">
+                             onclick="openDropdown(event, this)">
                             @php $status = $attendanceJson[$u->id][$dateStr] ?? null; @endphp
                             @if ($status)
                             <span class="att-chip {{ $status }}">{{ strtoupper(str_replace('_', '', ['present'=>'P','half_day'=>'HD','vl'=>'VL','sl'=>'SL','absent'=>'A','ut'=>'UT','holiday'=>'H'][$status] ?? $status)) }}</span>
@@ -222,7 +222,8 @@ var CHIP_MAP = { present:'P', half_day:'HD', vl:'VL', sl:'SL', absent:'A', ut:'U
 var activeCell = null;
 var dropdown   = document.getElementById('attDropdown');
 
-function openDropdown(cell) {
+function openDropdown(event, cell) {
+    event.stopPropagation();
     activeCell = cell;
     var rect = cell.getBoundingClientRect();
     dropdown.style.display = 'block';
