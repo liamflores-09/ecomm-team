@@ -61,13 +61,6 @@
         grid-column: 1 / -1;
     }
 
-    .form-group.attendance-row {
-        grid-column: 1 / -1;
-    }
-    .form-group.attendance-row select {
-        max-width: 240px;
-    }
-
     .form-label {
         font-size: 0.7rem;
         font-weight: 700;
@@ -268,17 +261,6 @@
                 <input type="hidden" name="date" value="{{ now()->toDateString() }}">
 
                 <div class="form-grid">
-                    <!-- Attendance -->
-                    <div class="form-group attendance-row">
-                        <label class="form-label">Attendance</label>
-                        <x-select
-                            name="attendance"
-                            :options="['' => '— Present —', 'HD' => 'Half Day (HD)', 'VL' => 'Vacation Leave (VL)', 'SL' => 'Sick Leave (SL)', 'A' => 'Absent (A)', 'UT' => 'Unpaid (UT)']"
-                            :selected="$existingLog?->attendance ?? ''"
-                            placeholder="— Present —"
-                        />
-                    </div>
-
                     <!-- Task counts — 5 columns -->
                     <div class="form-group">
                         <label class="form-label">{{ $taskLabels['task_1'] }}</label>
@@ -329,7 +311,6 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Attendance</th>
                         <th style="text-align: center;">New SKU</th>
                         <th style="text-align: center;">Var. SKU</th>
                         <th style="text-align: center;">Data Gather</th>
@@ -343,13 +324,6 @@
                     @foreach($recentLogs as $log)
                     <tr>
                         <td style="font-weight: 700;">{{ $log->date->format('M d, Y') }}</td>
-                        <td>
-                            @if($log->attendance)
-                            <span style="display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 700; background: #FEF3C7; color: #92400E;">{{ $log->attendance }}</span>
-                            @else
-                            <span style="color: var(--gray-300);">—</span>
-                            @endif
-                        </td>
                     <td class="num">{{ $log->task_1 }}</td>
                     <td class="num">{{ $log->task_2 }}</td>
                     <td class="num">{{ $log->task_3 }}</td>
