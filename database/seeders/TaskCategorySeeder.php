@@ -17,13 +17,6 @@ class TaskCategorySeeder extends Seeder
             ['department' => 'content', 'column_key' => 'task_4', 'label' => 'Update Listings', 'description' => 'Old SKUs updated'],
             ['department' => 'content', 'column_key' => 'task_5', 'label' => 'Other Tasks', 'description' => 'Canva, etc.'],
 
-            // Lead
-            ['department' => 'lead', 'column_key' => 'task_1', 'label' => 'New PR SKU', 'description' => 'New product research'],
-            ['department' => 'lead', 'column_key' => 'task_2', 'label' => 'Advance PR', 'description' => 'Advance product research'],
-            ['department' => 'lead', 'column_key' => 'task_3', 'label' => 'PR Project', 'description' => 'PR project tasks'],
-            ['department' => 'lead', 'column_key' => 'task_4', 'label' => 'JG Used & Trade-in', 'description' => 'JG trade-in tasks'],
-            ['department' => 'lead', 'column_key' => 'task_5', 'label' => 'Others', 'description' => 'Other tasks'],
-
             // Researcher
             ['department' => 'researcher', 'column_key' => 'task_1', 'label' => 'New PR SKU', 'description' => 'New product research'],
             ['department' => 'researcher', 'column_key' => 'task_2', 'label' => 'Advance PR', 'description' => 'Advance product research'],

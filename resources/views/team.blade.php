@@ -139,7 +139,6 @@
     }
     .role-badge.head       { background: #7c3aed; color: #fff; }
     .role-badge.manager    { background: #1e293b; color: #fff; }
-    .role-badge.lead       { background: #6366f1; color: #fff; }
     .role-badge.content    { background: #0ea5e9; color: #fff; }
     .role-badge.graphics   { background: #f59e0b; color: #fff; }
     .role-badge.backend    { background: #f43f5e; color: #fff; }
@@ -276,7 +275,6 @@
     .idm-back-face { background: #f8fafc; display: flex; flex-direction: column; position: relative; overflow: hidden; }
     .idr-head      .idm-back-face { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
     .idr-manager   .idm-back-face { background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 100%); }
-    .idr-lead      .idm-back-face { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
     .idr-analyst   .idm-back-face { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
     .idr-researcher .idm-back-face { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
     .idr-content   .idm-back-face { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
@@ -355,7 +353,6 @@
     .idm-perm-lock { font-size: 0.55rem; opacity: 0.35; margin-left: 4px; flex-shrink: 0; }
     [data-theme="dark"] .idr-head      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
     [data-theme="dark"] .idr-manager   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
-    [data-theme="dark"] .idr-lead      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
     [data-theme="dark"] .idr-analyst   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(236,72,153,0.12) 100%); }
     [data-theme="dark"] .idr-researcher .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(16,185,129,0.12) 100%); }
     [data-theme="dark"] .idr-content   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(14,165,233,0.12) 100%); }
@@ -363,7 +360,6 @@
     [data-theme="dark"] .idr-backend   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(244,63,94,0.12) 100%); }
     [data-theme="dark"] .idr-head      .idm-back-face { background: linear-gradient(160deg, #1e1a2e 0%, #251a3a 100%); }
     [data-theme="dark"] .idr-manager   .idm-back-face { background: linear-gradient(160deg, #1a1c22 0%, #1e2028 100%); }
-    [data-theme="dark"] .idr-lead      .idm-back-face { background: linear-gradient(160deg, #1a1a2e 0%, #211a38 100%); }
     [data-theme="dark"] .idr-analyst   .idm-back-face { background: linear-gradient(160deg, #2a1a22 0%, #311a2a 100%); }
     [data-theme="dark"] .idr-researcher .idm-back-face { background: linear-gradient(160deg, #141e1a 0%, #162218 100%); }
     [data-theme="dark"] .idr-content   .idm-back-face { background: linear-gradient(160deg, #121e26 0%, #152330 100%); }
@@ -389,7 +385,7 @@
             'data-ssshidden="'  . ($u->sss_hidden  ? '1' : '0') . '"',
         ]);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
-        $total      = $heads->count() + $managers->count() + $leads->count() + $analysts->count()
+        $total      = $heads->count() + $managers->count() + $analysts->count()
                     + $researchers->count() + $content->count() + $graphics->count() + $backend->count();
         $viber = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" style="flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 13.6c-.24.68-1.18 1.26-1.92 1.44-.52.12-1.2.18-3.48-.74-2.92-1.18-4.8-4.08-4.94-4.28-.14-.2-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.26-.28.56-.36.76-.36h.54c.18 0 .42-.06.66.52.24.58.82 2 .88 2.16.06.16.1.34.02.54-.08.2-.12.32-.24.48-.12.16-.24.36-.34.48-.12.14-.24.28-.1.54.14.26.62 1.02 1.34 1.64.92.8 1.68 1.04 1.94 1.16.26.12.42.1.56-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.08.06.48-.18 1.16z" fill="currentColor"/></svg>';
     @endphp
@@ -409,9 +405,6 @@
         @endif
         @if($managers->count())
         <button class="tm-tab" data-filter="manager">Manager <span class="tm-tab-count">{{ $managers->count() }}</span></button>
-        @endif
-        @if($leads->count())
-        <button class="tm-tab" data-filter="lead">Lead <span class="tm-tab-count">{{ $leads->count() }}</span></button>
         @endif
         @if($analysts->count())
         <button class="tm-tab" data-filter="analyst">Analyst <span class="tm-tab-count">{{ $analysts->count() }}</span></button>
@@ -480,35 +473,6 @@
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
                 <div class="tm-lcard-sub">Ecomm Department</div>
                 <span class="role-badge manager">Manager</span>
-                <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-    </div>
-    @endif
-
-    {{-- ════ LEAD ════ --}}
-    @if($leads->count())
-    <div class="tm-section" data-role="lead">
-    <div class="tm-hd anim-up d3">
-        <div class="tm-hd-icon" style="background:#6366f1;"><i class="fas fa-star"></i></div>
-        <h3>Lead</h3>
-        <span class="tm-hd-count">{{ $leads->count() }}</span>
-        <div class="tm-hd-line"></div>
-    </div>
-    <div class="tm-leaders anim-up d3">
-        @foreach($leads as $u)
-        <div class="tm-lcard" onclick="openIdCard(this)"
-             data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
-             data-role="lead" data-role-label="Lead" data-designation="Team Lead"
-             data-icon="fa-star" data-color="#6366f1" data-idnum="{{ $idNum($u) }}" {!! $extraData($u) !!}>
-            <div class="tm-lcard-body">
-                <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
-                <div class="tm-lcard-name">{{ $u->full_name }}</div>
-                <div class="tm-lcard-sub">Content &amp; PR Lead</div>
-                <span class="role-badge lead">Lead</span>
                 <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
             </div>
         </div>

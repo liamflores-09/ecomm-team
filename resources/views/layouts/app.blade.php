@@ -486,7 +486,6 @@
         .role-badge.head       { background: #7c3aed; color: #fff; }
         .role-badge.manager    { background: #1e293b; color: #fff; }
         .role-badge.analyst    { background: #ec4899; color: #fff; }
-        .role-badge.lead       { background: var(--indigo);  color: #fff; }
         .role-badge.content    { background: var(--sky);     color: #fff; }
         .role-badge.graphics   { background: var(--amber);   color: #fff; }
         .role-badge.backend    { background: var(--rose);    color: #fff; }

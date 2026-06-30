@@ -17,7 +17,6 @@ class AdminController extends Controller
         $user = Auth::user();
         $totalUsers = User::count();
         $managers = User::where('role', 'manager')->count();
-        $leads = User::where('role', 'lead')->count();
         $researchers = User::where('role', 'researcher')->count();
         $content = User::where('role', 'content')->count();
         $graphics = User::where('role', 'graphics')->count();
@@ -154,7 +153,7 @@ class AdminController extends Controller
             }
         }
 
-        $roleBreakdown = collect(['lead', 'content', 'graphics', 'backend', 'researcher'])
+        $roleBreakdown = collect(['content', 'graphics', 'backend', 'researcher'])
             ->map(function ($role) use ($roleMemberCounts, $roleWeeklyRaw, $weekLabels) {
                 $members  = (int) ($roleMemberCounts->get($role)->count ?? 0);
                 $roleData = $roleWeeklyRaw->get($role) ?? collect();
@@ -174,7 +173,7 @@ class AdminController extends Controller
             ->values();
 
         return view('admin.dashboard', compact(
-            'user', 'totalUsers', 'managers', 'leads', 'researchers', 'content', 'graphics', 'backend',
+            'user', 'totalUsers', 'managers', 'researchers', 'content', 'graphics', 'backend',
             'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
             'todayLogged', 'todayPending', 'topContributor',
             'recentActivity',
@@ -393,9 +392,6 @@ class AdminController extends Controller
             $missingLogs->where('role', $roleFilter);
         }
         $missingLogs = $missingLogs->get();
-
-        // Group missingLogs by role
-        $missingLogsByRole = $missingLogs->groupBy('role');
 
         // Member log status for role filter
         $members = User::whereNotIn('role', ['manager', 'head']);
@@ -745,8 +741,8 @@ class AdminController extends Controller
         });
 
         // Per-role grouped data for All Roles view
-        $roleColorMap = ['lead'=>'#6366f1','researcher'=>'#10b981','content'=>'#0ea5e9','graphics'=>'#f59e0b','backend'=>'#f43f5e'];
-        $roleNameMap  = ['lead'=>'Lead','researcher'=>'Researcher','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend'];
+        $roleColorMap = ['researcher'=>'#10b981','content'=>'#0ea5e9','graphics'=>'#f59e0b','backend'=>'#f43f5e'];
+        $roleNameMap  = ['researcher'=>'Researcher','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend'];
 
         $roleGroupedData = collect();
         if (!$roleFilter) {

@@ -32,7 +32,7 @@ class TaskLabels
 
     public static function clearCache(): void
     {
-        $roles = ['content', 'lead', 'researcher', 'graphics', 'backend'];
+        $roles = ['content', 'researcher', 'graphics', 'backend'];
         foreach ($roles as $role) {
             Cache::forget('task_labels_' . $role);
         }

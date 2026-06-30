@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
             'username' => 'milo',
             'mobile_number' => '09181234567',
             'password' => Hash::make('1234'),
-            'role' => 'lead',
+            'role' => 'researcher',
         ]);
 
         // Product Researcher (under PR)

@@ -175,7 +175,6 @@
             <button class="filter-pill active" onclick="filterByRole('all', this)">All</button>
             <button class="filter-pill" onclick="filterByRole('head', this)">Ecomm Head</button>
             <button class="filter-pill" onclick="filterByRole('manager', this)">Manager</button>
-            <button class="filter-pill" onclick="filterByRole('lead', this)">Lead</button>
             <button class="filter-pill" onclick="filterByRole('analyst', this)">Analyst</button>
             <button class="filter-pill" onclick="filterByRole('content', this)">Content</button>
             <button class="filter-pill" onclick="filterByRole('graphics', this)">Graphics</button>
@@ -603,7 +602,7 @@ function openProfileModal(btn) {
     document.getElementById('vpJoined').textContent = d.joined || '—';
 
     var badges = document.getElementById('vpBadges');
-    var roleColors = { head:'#7c3aed', manager:'#1e293b', lead:'#6366f1', analyst:'#ec4899', content:'#0ea5e9', graphics:'#f59e0b', backend:'#f43f5e', researcher:'#10b981' };
+    var roleColors = { head:'#7c3aed', manager:'#1e293b', analyst:'#ec4899', content:'#0ea5e9', graphics:'#f59e0b', backend:'#f43f5e', researcher:'#10b981' };
     var badgeHtml = '<span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;background:' + (roleColors[d.role] || '#5757f8') + ';color:white;">' + (d.role ? d.role.charAt(0).toUpperCase() + d.role.slice(1) : '') + '</span>';
     if (d.badge) {
         badgeHtml += '<span style="display:inline-flex;align-items:center;padding:2px 8px;background:#f0f0ff;border:1px solid #a5a5fc;border-radius:9999px;font-size:0.6rem;font-weight:700;color:#5757f8;">' + d.badge + '</span>';

@@ -109,7 +109,6 @@
     /* Role tints — mini front */
     .mini-idr-head      .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(124,58,237,0.07) 100%); }
     .mini-idr-manager   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(30,41,59,0.07) 100%); }
-    .mini-idr-lead      .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(99,102,241,0.07) 100%); }
     .mini-idr-analyst   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(236,72,153,0.07) 100%); }
     .mini-idr-researcher .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(16,185,129,0.07) 100%); }
     .mini-idr-content   .mini-front { background: linear-gradient(145deg, #fff 55%, rgba(14,165,233,0.07) 100%); }
@@ -120,7 +119,6 @@
     .mini-back-face { background: #f8fafc; display: flex; flex-direction: column; position: relative; overflow: hidden; }
     .mini-idr-head      .mini-back-face { background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%); }
     .mini-idr-manager   .mini-back-face { background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 100%); }
-    .mini-idr-lead      .mini-back-face { background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%); }
     .mini-idr-analyst   .mini-back-face { background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%); }
     .mini-idr-researcher .mini-back-face { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); }
     .mini-idr-content   .mini-back-face { background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%); }
@@ -161,7 +159,6 @@
     [data-theme="dark"] .mini-barcode { fill: #ebebeb; opacity: 0.15; }
     [data-theme="dark"] .mini-idr-head      .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
     [data-theme="dark"] .mini-idr-manager   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
-    [data-theme="dark"] .mini-idr-lead      .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
     [data-theme="dark"] .mini-idr-analyst   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(236,72,153,0.12) 100%); }
     [data-theme="dark"] .mini-idr-researcher .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(16,185,129,0.12) 100%); }
     [data-theme="dark"] .mini-idr-content   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(14,165,233,0.12) 100%); }
@@ -169,7 +166,6 @@
     [data-theme="dark"] .mini-idr-backend   .mini-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(244,63,94,0.12) 100%); }
     [data-theme="dark"] .mini-idr-head      .mini-back-face { background: linear-gradient(160deg, #1e1a2e 0%, #251a3a 100%); }
     [data-theme="dark"] .mini-idr-manager   .mini-back-face { background: linear-gradient(160deg, #1a1c22 0%, #1e2028 100%); }
-    [data-theme="dark"] .mini-idr-lead      .mini-back-face { background: linear-gradient(160deg, #1a1a2e 0%, #211a38 100%); }
     [data-theme="dark"] .mini-idr-analyst   .mini-back-face { background: linear-gradient(160deg, #2a1a22 0%, #311a2a 100%); }
     [data-theme="dark"] .mini-idr-researcher .mini-back-face { background: linear-gradient(160deg, #141e1a 0%, #162218 100%); }
     [data-theme="dark"] .mini-idr-content   .mini-back-face { background: linear-gradient(160deg, #121e26 0%, #152330 100%); }
@@ -249,7 +245,6 @@
 $effectiveRole = $isPreview ? $previewRole : $user->role;
 $roleColor = match($effectiveRole) {
     'content'    => '#0ea5e9',
-    'lead'       => '#6366f1',
     'researcher' => '#10b981',
     'graphics'   => '#f59e0b',
     'backend'    => '#f43f5e',
@@ -261,7 +256,6 @@ $idNum = 'ECD-' . str_pad(abs(crc32($user->username)) % 9999 + 1, 4, '0', STR_PA
 $roleIcon = match($user->role) {
     'head'       => 'fa-crown',
     'manager'    => 'fa-chart-bar',
-    'lead'       => 'fa-star',
     'analyst'    => 'fa-magnifying-glass',
     'researcher' => 'fa-magnifying-glass',
     'content'    => 'fa-pen-nib',
@@ -272,7 +266,6 @@ $roleIcon = match($user->role) {
 $designation = match($user->role) {
     'head'       => 'Ecomm Head',
     'manager'    => 'Manager',
-    'lead'       => 'Lead',
     'analyst'    => 'Analyst',
     'researcher' => 'Researcher',
     'content'    => 'Content Associate',

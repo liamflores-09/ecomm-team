@@ -166,8 +166,8 @@
 
 <div class="main-content">
     @php
-        $roleColors = ['lead'=>'var(--indigo)','content'=>'var(--sky)','graphics'=>'var(--amber)','backend'=>'var(--rose)','researcher'=>'var(--emerald)'];
-        $roleNames  = ['lead'=>'Lead','content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher'];
+        $roleColors = ['content'=>'var(--sky)','graphics'=>'var(--amber)','backend'=>'var(--rose)','researcher'=>'var(--emerald)'];
+        $roleNames  = ['content'=>'Content','graphics'=>'Graphics','backend'=>'Backend','researcher'=>'Researcher'];
         $todayStr   = now()->format('Y-m-d');
         $todayFmt   = now()->format('l, M d, Y');
     @endphp
@@ -511,8 +511,8 @@
 <script>
 // ── Pre-loaded calendar data ──────────────────────────────────────────────────
 var calendarLogs  = {!! json_encode($calendarLogsJson) !!};
-var roleColors    = { lead:'var(--indigo)',content:'var(--sky)',graphics:'var(--amber)',backend:'var(--rose)',researcher:'var(--emerald)' };
-var roleNames     = { lead:'Lead',content:'Content',graphics:'Graphics',backend:'Backend',researcher:'Researcher' };
+var roleColors    = { content:'var(--sky)',graphics:'var(--amber)',backend:'var(--rose)',researcher:'var(--emerald)' };
+var roleNames     = { content:'Content',graphics:'Graphics',backend:'Backend',researcher:'Researcher' };
 var activeDay     = null;
 
 // ── Today's Logs table filter ─────────────────────────────────────────────────
@@ -625,7 +625,6 @@ function clearDaySelection() {
 document.addEventListener('DOMContentLoaded', function() {
     var style    = getComputedStyle(document.documentElement);
     var colorMap = {
-        lead:       style.getPropertyValue('--indigo').trim(),
         content:    style.getPropertyValue('--sky').trim(),
         graphics:   style.getPropertyValue('--amber').trim(),
         backend:    style.getPropertyValue('--rose').trim(),

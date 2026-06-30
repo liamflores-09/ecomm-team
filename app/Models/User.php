@@ -107,7 +107,6 @@ class User extends Authenticatable
         return match ($this->role) {
             'content' => 'Content',
             'graphics' => 'Graphics',
-            'lead' => 'PR',
             'head' => 'Ecomm Head',
             default => ucfirst($this->role),
         };

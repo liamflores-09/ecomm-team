@@ -317,7 +317,6 @@
     </div>
     @php
         $roleColors = [
-            'lead'       => 'var(--indigo)',
             'content'    => 'var(--sky)',
             'graphics'   => 'var(--amber)',
             'backend'    => 'var(--rose)',
@@ -435,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var sundayIndices    = {!! json_encode($weekSundayIndices) !!};
     var roleCharts       = {!! json_encode($roleBreakdown->map(fn($r) => ['role' => $r['role'], 'series' => $r['series']])) !!};
     var roleColorMap     = {
-        lead: colors[0], content: colors[1], graphics: colors[3], backend: colors[4], researcher: colors[2]
+        content: colors[1], graphics: colors[3], backend: colors[4], researcher: colors[2]
     };
 
     // Build label color array — Sunday labels shown in rose/red as RDO
