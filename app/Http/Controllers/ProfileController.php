@@ -25,7 +25,9 @@ class ProfileController extends Controller
             'gender'        => 'required|in:male,female',
             'id_number'     => 'nullable|string|max:100',
             'tin'           => 'nullable|string|max:50',
+            'tin_hidden'    => 'nullable|boolean',
             'sss'           => 'nullable|string|max:50',
+            'sss_hidden'    => 'nullable|boolean',
             'address'       => 'nullable|string|max:500',
             'password'      => 'nullable|min:6|confirmed',
         ]);
@@ -38,7 +40,9 @@ class ProfileController extends Controller
             'gender'        => $validated['gender'],
             'id_number'     => $validated['id_number'] ?? null,
             'tin'           => $validated['tin'] ?? null,
+            'tin_hidden'    => isset($validated['tin_hidden']) ? (bool) $validated['tin_hidden'] : false,
             'sss'           => $validated['sss'] ?? null,
+            'sss_hidden'    => isset($validated['sss_hidden']) ? (bool) $validated['sss_hidden'] : false,
             'address'       => $validated['address'] ?? null,
         ];
 

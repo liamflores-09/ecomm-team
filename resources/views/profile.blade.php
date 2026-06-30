@@ -50,6 +50,16 @@
         color: var(--muted-foreground); transition: all 0.15s; pointer-events: none;
     }
     .info-card-secret:hover .secret-pill { border-color: var(--foreground); color: var(--foreground); }
+    .secret-privacy-badge {
+        display: inline-flex; align-items: center; gap: 0.25rem;
+        margin-top: 0.4rem; margin-left: 0.4rem;
+        font-size: 0.6rem; font-weight: 600; color: var(--muted-foreground);
+        opacity: 0.6;
+    }
+    .secret-privacy-badge.is-hidden { color: #f59e0b; opacity: 0.85; }
+    .pf-check-row { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.35rem; }
+    .pf-check-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+    .pf-check-row label { font-size: 0.72rem; color: var(--muted-foreground); cursor: pointer; }
 
     /* Form group in modal */
     .pf-group { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -159,7 +169,13 @@
         <div class="info-card info-card-secret" onclick="toggleSecret(this)">
             <div class="info-card-label"><i class="fas fa-file-invoice" style="margin-right:0.375rem;"></i>TIN<i class="fas fa-lock ic-lock"></i></div>
             <div class="info-card-value secret-blurred">{{ $user->tin }}</div>
-            <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;">
+                <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+                <span class="secret-privacy-badge {{ $user->tin_hidden ? 'is-hidden' : '' }}">
+                    <i class="fas {{ $user->tin_hidden ? 'fa-eye-slash' : 'fa-users' }}"></i>
+                    {{ $user->tin_hidden ? 'Hidden from team' : 'Visible to team' }}
+                </span>
+            </div>
         </div>
         @else
         <div class="info-card">
@@ -171,7 +187,13 @@
         <div class="info-card info-card-secret" onclick="toggleSecret(this)">
             <div class="info-card-label"><i class="fas fa-shield-halved" style="margin-right:0.375rem;"></i>SSS<i class="fas fa-lock ic-lock"></i></div>
             <div class="info-card-value secret-blurred">{{ $user->sss }}</div>
-            <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;">
+                <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+                <span class="secret-privacy-badge {{ $user->sss_hidden ? 'is-hidden' : '' }}">
+                    <i class="fas {{ $user->sss_hidden ? 'fa-eye-slash' : 'fa-users' }}"></i>
+                    {{ $user->sss_hidden ? 'Hidden from team' : 'Visible to team' }}
+                </span>
+            </div>
         </div>
         @else
         <div class="info-card">
@@ -238,10 +260,18 @@
                     <div class="pf-group">
                         <label class="pf-label">TIN</label>
                         <input type="text" name="tin" class="pf-input" value="{{ old('tin', $user->tin) }}" placeholder="Tax Identification No.">
+                        <div class="pf-check-row">
+                            <input type="checkbox" name="tin_hidden" value="1" id="chkTinHidden" {{ old('tin_hidden', $user->tin_hidden) ? 'checked' : '' }}>
+                            <label for="chkTinHidden">Hide from team members</label>
+                        </div>
                     </div>
                     <div class="pf-group">
                         <label class="pf-label">SSS</label>
                         <input type="text" name="sss" class="pf-input" value="{{ old('sss', $user->sss) }}" placeholder="SSS Number">
+                        <div class="pf-check-row">
+                            <input type="checkbox" name="sss_hidden" value="1" id="chkSssHidden" {{ old('sss_hidden', $user->sss_hidden) ? 'checked' : '' }}>
+                            <label for="chkSssHidden">Hide from team members</label>
+                        </div>
                     </div>
                 </div>
 

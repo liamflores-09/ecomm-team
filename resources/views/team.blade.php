@@ -349,6 +349,11 @@
     .idm-seye { font-size: 0.58rem; opacity: 0.35; margin-left: 4px; flex-shrink: 0; transition: opacity 0.15s; }
     .idm-secret-row:hover .idm-seye { opacity: 0.65; }
     .idm-slock { font-size: 0.42rem; opacity: 0.3; vertical-align: middle; margin-left: 2px; }
+    /* Permanently hidden — owner set this as private */
+    .idm-secret-row.idm-perm-hidden { cursor: default; pointer-events: none; }
+    .idm-secret-row.idm-perm-hidden:hover { background: none; }
+    .idm-secret-row.idm-perm-hidden .idm-seye { display: none; }
+    .idm-perm-lock { font-size: 0.55rem; opacity: 0.35; margin-left: 4px; flex-shrink: 0; }
     [data-theme="dark"] .idr-head      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
     [data-theme="dark"] .idr-manager   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
     [data-theme="dark"] .idr-lead      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
@@ -377,10 +382,12 @@
         $avatarUrl = fn($u) => $u->avatarUrl();
         $idNum  = fn($u) => 'ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT);
         $extraData = fn($u) => implode(' ', [
-            'data-nickname="'  . e($u->nickname  ?: $u->first_name) . '"',
-            'data-idnumber="'  . e($u->id_number ?: ('ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT))) . '"',
-            'data-tin="'       . e($u->tin  ?: '—') . '"',
-            'data-sss="'       . e($u->sss  ?: '—') . '"',
+            'data-nickname="'   . e($u->nickname  ?: $u->first_name) . '"',
+            'data-idnumber="'   . e($u->id_number ?: ('ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT))) . '"',
+            'data-tin="'        . e($u->tin  ?: '—') . '"',
+            'data-tinhidden="'  . ($u->tin_hidden  ? '1' : '0') . '"',
+            'data-sss="'        . e($u->sss  ?: '—') . '"',
+            'data-ssshidden="'  . ($u->sss_hidden  ? '1' : '0') . '"',
         ]);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
         $total      = $heads->count() + $managers->count() + $leads->count() + $analysts->count()
@@ -701,6 +708,7 @@
                         <span class="idm-val" style="display:flex;align-items:center;">
                             <span id="idmBackTin" class="idm-sblur"></span>
                             <i class="fas fa-eye idm-seye"></i>
+                            <i class="fas fa-lock idm-perm-lock" style="display:none;"></i>
                         </span>
                     </div>
                     <div class="idm-back-row idm-secret-row" onclick="toggleIdmSecret(this, event)">
@@ -708,6 +716,7 @@
                         <span class="idm-val" style="display:flex;align-items:center;">
                             <span id="idmBackSss" class="idm-sblur"></span>
                             <i class="fas fa-eye idm-seye"></i>
+                            <i class="fas fa-lock idm-perm-lock" style="display:none;"></i>
                         </span>
                     </div>
                 </div>
@@ -767,6 +776,17 @@ window.openIdCard = function(el) {
     tinEl.classList.remove('revealed');
     sssEl.classList.remove('revealed');
     document.querySelectorAll('.idm-seye').forEach(function(el) { el.className = 'fas fa-eye idm-seye'; });
+    // Apply or remove permanently-hidden class based on owner's privacy settings
+    var tinRow = tinEl.closest('.idm-secret-row');
+    var sssRow = sssEl.closest('.idm-secret-row');
+    [
+        { row: tinRow, hidden: d.tinhidden === '1' },
+        { row: sssRow, hidden: d.ssshidden === '1' },
+    ].forEach(function(item) {
+        item.row.classList.toggle('idm-perm-hidden', item.hidden);
+        var permLock = item.row.querySelector('.idm-perm-lock');
+        if (permLock) permLock.style.display = item.hidden ? '' : 'none';
+    });
     document.getElementById('idmIdnum').textContent = d.idnumber || d.idnum;
     var viberRow = document.getElementById('idmViberRow');
     var viberLink = document.getElementById('idmViberLink');
@@ -783,6 +803,7 @@ window.openIdCard = function(el) {
 
 window.toggleIdmSecret = function(row, e) {
     e.stopPropagation();
+    if (row.classList.contains('idm-perm-hidden')) return;
     var blur = row.querySelector('.idm-sblur');
     var eye  = row.querySelector('.idm-seye');
     var isRevealing = !blur.classList.contains('revealed');

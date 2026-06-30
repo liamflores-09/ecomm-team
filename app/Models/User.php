@@ -22,7 +22,9 @@ class User extends Authenticatable
         'avatar',
         'id_number',
         'tin',
+        'tin_hidden',
         'sss',
+        'sss_hidden',
         'address',
         'badge',
         'password',
@@ -37,7 +39,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password' => 'hashed',
+            'password'   => 'hashed',
+            'tin_hidden' => 'boolean',
+            'sss_hidden' => 'boolean',
         ];
     }
 
