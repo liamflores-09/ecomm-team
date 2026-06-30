@@ -205,15 +205,15 @@
     .bento-ann-expiry { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.65rem; font-weight: 700; color: #d97706; background: rgba(245,158,11,0.1); padding: 0.15rem 0.4rem; border-radius: 9999px; }
     .bento-ann-empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted-foreground); font-size: 0.82rem; }
     .bento-ann-empty i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.25; }
-    .bento-quick { flex: 1; background: var(--card); border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden; }
-    .bento-quick-hd { display: flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.125rem; border-bottom: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); }
-    .bento-ql { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.125rem; text-decoration: none; color: var(--fg); transition: background 0.12s; border-bottom: 1px solid var(--border-light); }
-    .bento-ql:last-child { border-bottom: none; }
-    .bento-ql:hover { background: var(--muted); }
-    .bento-ql-icon { width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; transition: background 0.12s; }
-    .bento-ql:hover .bento-ql-icon { background: var(--fg); }
-    .bento-ql-name { font-size: 0.8rem; font-weight: 700; display: block; }
-    .bento-ql-desc { font-size: 0.7rem; color: var(--muted-foreground); font-weight: 500; }
+    .bento-quick { flex: 1; background: var(--card); border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+    .bento-quick-hd { display: flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.125rem; border-bottom: 1px solid var(--border-light); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); flex-shrink: 0; }
+    .bento-ql-grid { display: grid; grid-template-columns: 1fr 1fr; flex: 1; gap: 1px; background: var(--border-light); }
+    .bento-ql-box { background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 1.375rem 0.75rem; text-decoration: none; color: var(--foreground); text-align: center; transition: background 0.12s; }
+    .bento-ql-box:hover { background: var(--muted); }
+    .bento-ql-box:hover .bento-ql-icon { transform: scale(1.08); }
+    .bento-ql-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; transition: transform 0.15s; flex-shrink: 0; }
+    .bento-ql-name { font-size: 0.72rem; font-weight: 700; line-height: 1.3; }
+    .bento-ql-desc { display: none; }
 
     /* ── Chart / Logs ── */
     .chart-section { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; border: 1px solid var(--border-light); }
@@ -447,18 +447,24 @@ $greeting = match(true) {
         <div class="bento-right">
         <div class="bento-quick">
             <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
-            <a href="{{ route('brand-catalogs') }}" class="bento-ql">
+            <div class="bento-ql-grid">
+            <a href="{{ route('brand-catalogs') }}" class="bento-ql-box">
                 <div class="bento-ql-icon" style="background:#ec4899;"><i class="fas fa-book-open"></i></div>
-                <div><span class="bento-ql-name">Brand Catalogs</span><span class="bento-ql-desc">Manage product catalogs</span></div>
+                <span class="bento-ql-name">Brand Catalogs</span>
             </a>
-            <a href="{{ route('announcements') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-bullhorn"></i></div>
-                <div><span class="bento-ql-name">Announcements</span><span class="bento-ql-desc">Team updates and notices</span></div>
+            <a href="{{ route('announcements') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#6366f1;"><i class="fas fa-bullhorn"></i></div>
+                <span class="bento-ql-name">Announcements</span>
             </a>
-            <a href="{{ route('team') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-users"></i></div>
-                <div><span class="bento-ql-name">The Team</span><span class="bento-ql-desc">View your colleagues</span></div>
+            <a href="{{ route('team') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#0ea5e9;"><i class="fas fa-users"></i></div>
+                <span class="bento-ql-name">The Team</span>
             </a>
+            <a href="{{ route('price-calculator') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#10b981;"><i class="fas fa-calculator"></i></div>
+                <span class="bento-ql-name">Price Calculator</span>
+            </a>
+            </div>
         </div>
         </div>{{-- /.bento-right --}}
     </div>
@@ -502,41 +508,43 @@ $greeting = match(true) {
         {{-- Quick Access --}}
         <div class="bento-quick">
             <div class="bento-quick-hd"><i class="fas fa-bolt" style="color:var(--primary);font-size:0.65rem;"></i> Quick Access</div>
+            <div class="bento-ql-grid">
             @if($effectiveRole === 'content')
-            <a href="{{ route('posting-procedure') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-book-open"></i></div>
-                <div><span class="bento-ql-name">Posting Procedure</span><span class="bento-ql-desc">8-step product posting guide</span></div>
+            <a href="{{ route('posting-procedure') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#0ea5e9;"><i class="fas fa-book-open"></i></div>
+                <span class="bento-ql-name">Posting Procedure</span>
             </a>
-            <a href="{{ route('data-gathering') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-folder-open"></i></div>
-                <div><span class="bento-ql-name">Data Gathering</span><span class="bento-ql-desc">Collect product info</span></div>
+            <a href="{{ route('data-gathering') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#8b5cf6;"><i class="fas fa-folder-open"></i></div>
+                <span class="bento-ql-name">Data Gathering</span>
             </a>
-            <a href="{{ route('price-calculator') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-calculator"></i></div>
-                <div><span class="bento-ql-name">Price Calculator</span><span class="bento-ql-desc">Compute SRP</span></div>
+            <a href="{{ route('price-calculator') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#10b981;"><i class="fas fa-calculator"></i></div>
+                <span class="bento-ql-name">Price Calculator</span>
             </a>
-            <a href="{{ route('important-links') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-link"></i></div>
-                <div><span class="bento-ql-name">Important Links</span><span class="bento-ql-desc">Quick resources</span></div>
+            <a href="{{ route('important-links') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#f59e0b;"><i class="fas fa-link"></i></div>
+                <span class="bento-ql-name">Important Links</span>
             </a>
             @else
-            <a href="{{ route('end-of-day') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-calendar-check"></i></div>
-                <div><span class="bento-ql-name">End-of-Day Report</span><span class="bento-ql-desc">Log your daily tasks</span></div>
+            <a href="{{ route('end-of-day') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#6366f1;"><i class="fas fa-calendar-check"></i></div>
+                <span class="bento-ql-name">End-of-Day Report</span>
             </a>
-            <a href="{{ route('price-calculator') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-calculator"></i></div>
-                <div><span class="bento-ql-name">Price Calculator</span><span class="bento-ql-desc">Compute SRP</span></div>
+            <a href="{{ route('price-calculator') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#10b981;"><i class="fas fa-calculator"></i></div>
+                <span class="bento-ql-name">Price Calculator</span>
             </a>
-            <a href="{{ route('team') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-users"></i></div>
-                <div><span class="bento-ql-name">The Team</span><span class="bento-ql-desc">View your colleagues</span></div>
+            <a href="{{ route('team') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#0ea5e9;"><i class="fas fa-users"></i></div>
+                <span class="bento-ql-name">The Team</span>
             </a>
-            <a href="{{ route('important-links') }}" class="bento-ql">
-                <div class="bento-ql-icon"><i class="fas fa-link"></i></div>
-                <div><span class="bento-ql-name">Important Links</span><span class="bento-ql-desc">Quick resources</span></div>
+            <a href="{{ route('important-links') }}" class="bento-ql-box">
+                <div class="bento-ql-icon" style="background:#f59e0b;"><i class="fas fa-link"></i></div>
+                <span class="bento-ql-name">Important Links</span>
             </a>
             @endif
+            </div>
         </div>
 
         </div>{{-- /.bento-right --}}
