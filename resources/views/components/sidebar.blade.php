@@ -28,6 +28,7 @@
             <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">Analytics</li>
             <li><a href="{{ route('admin.daily-logs') }}" class="{{ $active === 'admin.daily-logs' ? 'active' : '' }}"><i class="fas fa-clock-rotate-left"></i> Daily Logs</a></li>
             <li><a href="{{ route('admin.reports') }}"    class="{{ $active === 'admin.reports'    ? 'active' : '' }}"><i class="fas fa-chart-column"></i> Reports</a></li>
+            <li><a href="{{ route('admin.attendance') }}" class="{{ $active === 'admin.attendance' ? 'active' : '' }}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
 
             {{-- ── Brand Management ── --}}
             <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
