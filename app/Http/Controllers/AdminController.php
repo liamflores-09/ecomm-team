@@ -512,9 +512,9 @@ class AdminController extends Controller
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->whereNotIn('users.role', ['manager', 'head'])
             ->when($roleFilter, fn($q) => $q->where('users.role', $roleFilter))
-            ->select('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge',
+            ->select('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar',
                 DB::raw('SUM(daily_logs.task_1 + daily_logs.task_2 + daily_logs.task_3 + daily_logs.task_4 + daily_logs.task_5) as total'))
-            ->groupBy('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+            ->groupBy('users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar')
             ->orderByDesc('total')
             ->get()
             ->groupBy('role')

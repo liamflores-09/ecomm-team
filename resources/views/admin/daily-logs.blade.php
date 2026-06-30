@@ -269,7 +269,7 @@
                 @foreach($contribs as $i => $c)
                 <div class="contrib-item">
                     <span class="contrib-rank">#{{ $i+1 }}</span>
-                    <img class="contrib-avatar" src="{{ $c->avatarUrl() }}" alt="" style="object-fit:cover;">
+                    <img class="contrib-avatar" src="{{ \App\Models\User::resolveAvatarUrl($c->avatar, $c->first_name, $c->last_name, $c->username) }}" alt="" style="object-fit:cover;">
                     <div style="flex:1;min-width:0;">
                         <span class="contrib-name">{{ $c->first_name }}</span>
                         @if($c->badge)<span style="display:block;font-size:0.55rem;font-weight:700;color:#0369a1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $c->badge }}</span>@endif
