@@ -376,13 +376,14 @@
     @php
         $avatarUrl = fn($u) => $u->avatarUrl();
         $idNum  = fn($u) => 'ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT);
+        $authId = Auth::id();
         $extraData = fn($u) => implode(' ', [
             'data-nickname="'   . e($u->nickname  ?: $u->first_name) . '"',
             'data-idnumber="'   . e($u->id_number ?: ('ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT))) . '"',
-            'data-tin="'        . ($u->tin_hidden  ? '' : e($u->tin  ?: '—')) . '"',
-            'data-tinhidden="'  . ($u->tin_hidden  ? '1' : '0') . '"',
-            'data-sss="'        . ($u->sss_hidden  ? '' : e($u->sss  ?: '—')) . '"',
-            'data-ssshidden="'  . ($u->sss_hidden  ? '1' : '0') . '"',
+            'data-tin="'        . ($u->tin_hidden || $u->id !== $authId ? '' : e($u->tin  ?: '—')) . '"',
+            'data-tinhidden="'  . ($u->tin_hidden || $u->id !== $authId ? '1' : '0') . '"',
+            'data-sss="'        . ($u->sss_hidden || $u->id !== $authId ? '' : e($u->sss  ?: '—')) . '"',
+            'data-ssshidden="'  . ($u->sss_hidden || $u->id !== $authId ? '1' : '0') . '"',
         ]);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
         $total      = $heads->count() + $managers->count() + $analysts->count()
