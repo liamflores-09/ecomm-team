@@ -361,7 +361,7 @@ $greeting = match(true) {
                         <i class="fas {{ $roleIcon }} mini-back-wm"></i>
                         <div class="mini-back-body">
                             <div class="mini-back-row"><span class="mini-lbl">Name</span><span class="mini-val">{{ $user->full_name }}</span></div>
-                            <div class="mini-back-row"><span class="mini-lbl">Username</span><span class="mini-val">@{{ $user->username }}</span></div>
+                            <div class="mini-back-row"><span class="mini-lbl">Username</span><span class="mini-val">{{ '@'.$user->username }}</span></div>
                             <div class="mini-back-row"><span class="mini-lbl">Role</span><span class="mini-val">{{ $designation }}</span></div>
                         </div>
                         <div class="mini-back-foot">
