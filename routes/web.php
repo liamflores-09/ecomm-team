@@ -10,6 +10,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\AdminAttendanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -95,5 +96,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/brands/{brand}', [AdminBrandController::class, 'destroy'])->name('admin.brands.destroy');
         Route::post('/preview-role', [AdminController::class, 'setPreviewRole'])->name('admin.preview-role.set');
         Route::delete('/preview-role', [AdminController::class, 'clearPreviewRole'])->name('admin.preview-role.clear');
+        Route::get('/attendance', [AdminAttendanceController::class, 'index'])->name('admin.attendance');
+        Route::post('/attendance', [AdminAttendanceController::class, 'upsert'])->name('admin.attendance.upsert');
+        Route::post('/attendance/holiday', [AdminAttendanceController::class, 'markHoliday'])->name('admin.attendance.holiday');
     });
 });
