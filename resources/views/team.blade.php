@@ -562,7 +562,7 @@
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
              data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
-             data-role="content" data-role-label="Content" data-designation="Content Creator"
+             data-role="content" data-role-label="Content" data-designation="Content Associate"
              data-icon="fa-pen-nib" data-color="#0ea5e9" data-idnum="{{ $idNum($u) }}">
             <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
