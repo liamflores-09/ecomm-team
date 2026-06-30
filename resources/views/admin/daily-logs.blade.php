@@ -269,7 +269,7 @@
                 @foreach($contribs as $i => $c)
                 <div class="contrib-item">
                     <span class="contrib-rank">#{{ $i+1 }}</span>
-                    <img class="contrib-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $c->gender === 'female' ? $c->username.'Female' : $c->username }}" alt="">
+                    <img class="contrib-avatar" src="{{ $c->avatarUrl() }}" alt="" style="object-fit:cover;">
                     <div style="flex:1;min-width:0;">
                         <span class="contrib-name">{{ $c->first_name }}</span>
                         @if($c->badge)<span style="display:block;font-size:0.55rem;font-weight:700;color:#0369a1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $c->badge }}</span>@endif
@@ -343,7 +343,7 @@
                     <tr data-role="{{ $log->role }}">
                         <td>
                             <div class="user-cell">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $log->gender === 'female' ? $log->username.'Female' : $log->username }}" alt="">
+                                <img src="{{ \App\Models\User::resolveAvatarUrl($log->avatar ?? null, $log->first_name ?? '', $log->last_name ?? '', $log->username ?? '') }}" alt="" style="object-fit:cover;">
                                 <div>
                                     <span class="name">{{ $log->first_name ?? $log->username }}</span>
                                     @if($log->badge)<span style="display:block;font-size:0.6rem;font-weight:700;color:#0369a1;margin-top:1px;">{{ $log->badge }}</span>@endif
@@ -593,10 +593,9 @@ function selectDay(dateStr, btn) {
             + (isSunday ? '<span style="font-size:0.65rem;font-weight:700;color:#ef4444;margin-left:auto;">RDO</span>' : '')
             + '</div>';
         members.forEach(function(m) {
-            var seed = m.gender === 'female' ? m.username + 'Female' : m.username;
             var total = m.tasks.reduce(function(a,b){ return a+b; }, 0);
             html += '<div class="day-item">'
-                + '<img src="https://api.dicebear.com/7.x/notionists/svg?seed=' + seed + '" style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);" alt="">'
+                + '<img src="' + (m.avatar || '') + '" style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);object-fit:cover;" alt="">'
                 + '<div style="flex:1;min-width:0;">'
                 +   '<span style="font-weight:600;font-size:0.8rem;">' + (m.first_name || m.username) + ' ' + (m.last_name || '') + '</span>'
                 +   (m.badge ? '<span style="display:block;font-size:0.6rem;font-weight:700;color:#0369a1;">' + m.badge + '</span>' : '')

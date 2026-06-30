@@ -362,7 +362,7 @@ $roleColor = match($effectiveRole) {
     'analyst'    => '#ec4899',
     default      => '#5757f8',
 };
-$avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user->username;
+$avatarUrl = $user->avatarUrl();
 @endphp
 <x-sidebar active="dashboard" />
 
@@ -395,7 +395,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
         </div>
         <div class="wb-avatar-zone">
             <div class="wb-fade"></div>
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ urlencode($avatarSeed) }}" class="wb-avatar" alt="{{ $user->full_name }}">
+            <img src="{{ $avatarUrl }}" class="wb-avatar" alt="{{ $user->full_name }}" style="object-fit:cover;border-radius:50%;">
         </div>
     </div>
 
@@ -454,8 +454,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 </div>
                 <div class="bento-ann-body">{{ $ann->body }}</div>
                 <div class="bento-ann-foot">
-                    @php $creatorSeed = ($ann->creator->gender === 'female') ? $ann->creator->username . 'Female' : $ann->creator->username; @endphp
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ urlencode($creatorSeed) }}" class="bento-ann-avatar" alt="{{ $ann->creator->first_name }}">
+                    <img src="{{ $ann->creator->avatarUrl() }}" class="bento-ann-avatar" alt="{{ $ann->creator->first_name }}" style="object-fit:cover;">
                     <span class="bento-ann-author">{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
                     @if($ann->expires_at)
                     <span class="bento-ann-expiry"><i class="fas fa-clock"></i> {{ $ann->expires_at->format('M d') }}</span>
@@ -508,8 +507,7 @@ $avatarSeed = ($user->gender === 'female') ? $user->username . 'Female' : $user-
                 </div>
                 <div class="bento-ann-body">{{ $ann->body }}</div>
                 <div class="bento-ann-foot">
-                    @php $creatorSeed = ($ann->creator->gender === 'female') ? $ann->creator->username . 'Female' : $ann->creator->username; @endphp
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ urlencode($creatorSeed) }}" class="bento-ann-avatar" alt="{{ $ann->creator->first_name }}">
+                    <img src="{{ $ann->creator->avatarUrl() }}" class="bento-ann-avatar" alt="{{ $ann->creator->first_name }}" style="object-fit:cover;">
                     <span class="bento-ann-author">{{ $ann->creator->first_name }} · {{ $ann->created_at->diffForHumans() }}</span>
                     @if($ann->expires_at)
                     <span class="bento-ann-expiry"><i class="fas fa-clock"></i> {{ $ann->expires_at->format('M d') }}</span>

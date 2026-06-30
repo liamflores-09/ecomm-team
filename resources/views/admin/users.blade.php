@@ -203,7 +203,7 @@
                 <tr data-role="{{ $u->role }}" data-search="{{ strtolower($u->first_name . ' ' . $u->last_name . ' ' . $u->username . ' ' . $u->role) }}">
                     <td>
                         <div class="user-cell">
-                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $u->gender === 'female' ? $u->username . 'Female' : $u->username }}" alt="">
+                            <img src="{{ $u->avatarUrl() }}" alt="" style="object-fit:cover;">
                             <div>
                                 <div class="name">{{ $u->first_name }} {{ $u->last_name }}</div>
                                 <div class="handle">{{ '@' . $u->username }}</div>
@@ -229,6 +229,7 @@
                                 data-mobile="{{ $u->mobile_number }}"
                                 data-badge="{{ $u->badge }}"
                                 data-joined="{{ $u->created_at->format('M d, Y') }}"
+                                data-avatar="{{ $u->avatarUrl() }}"
                                 onclick="openProfileModal(this)">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -337,7 +338,7 @@
             <div class="modal-body">
 
                 <div class="avatar-preview-wrap">
-                    <img id="addAvatarPreview" class="avatar-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=male" alt="Avatar">
+                    <img id="addAvatarPreview" class="avatar-preview" src="" alt="Avatar" style="object-fit:cover;">
                     <div>
                         <div class="avatar-preview-name" id="addAvatarName">New Member</div>
                         <div class="avatar-preview-hint">Avatar is auto-generated</div>
@@ -431,7 +432,7 @@
             <div class="modal-body">
 
                 <div class="avatar-preview-wrap">
-                    <img id="editAvatarPreview" class="avatar-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=default" alt="Avatar">
+                    <img id="editAvatarPreview" class="avatar-preview" src="" alt="Avatar" style="object-fit:cover;">
                     <div>
                         <div class="avatar-preview-name" id="editAvatarName"></div>
                         <div class="avatar-preview-hint">Avatar is auto-generated</div>
@@ -511,24 +512,28 @@
 
 @section('scripts')
 <script>
-function avatarUrl(username, gender) {
-    var u = (username || '').toLowerCase().trim() || 'default';
-    var seed = gender === 'female' ? u + 'Female' : u;
-    return 'https://api.dicebear.com/7.x/notionists/svg?seed=' + encodeURIComponent(seed);
+function avatarUrl(firstName, lastName, username) {
+    var initials = ((firstName[0] || '') + (lastName[0] || '')).toUpperCase() || (username || 'U').substring(0, 2).toUpperCase();
+    var colors = ['#7c3aed','#6366f1','#ec4899','#10b981','#0ea5e9','#f59e0b','#f43f5e','#1e293b'];
+    var str = (username || firstName || '').toLowerCase();
+    var hash = 0; for (var i = 0; i < str.length; i++) hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    var color = colors[Math.abs(hash) % colors.length];
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="' + color + '"/><text x="20" y="26" font-family="sans-serif" font-size="14" font-weight="700" fill="white" text-anchor="middle">' + initials + '</text></svg>';
+    return 'data:image/svg+xml;base64,' + btoa(svg);
 }
 
 function updateAddAvatar() {
     var username = document.getElementById('addUsername').value;
-    var gender   = document.getElementById('addGender').value;
-    document.getElementById('addAvatarPreview').src = avatarUrl(username, gender);
     var first = document.getElementById('addFirstName').value.trim();
     var last  = document.getElementById('addLastName').value.trim();
+    document.getElementById('addAvatarPreview').src = avatarUrl(first, last, username);
     document.getElementById('addAvatarName').textContent = (first + ' ' + last).trim() || 'New Member';
 }
 function updateEditAvatar() {
     var username = document.getElementById('editUsername').value;
-    var gender   = document.getElementById('editGender').value;
-    document.getElementById('editAvatarPreview').src = avatarUrl(username, gender);
+    var first    = document.getElementById('editFirstName').value.trim();
+    var last     = document.getElementById('editLastName').value.trim();
+    document.getElementById('editAvatarPreview').src = avatarUrl(first, last, username);
 }
 
 ['addFirstName', 'addLastName'].forEach(function(id) {
@@ -566,7 +571,7 @@ function applyFilters() {
 /* ---- Modals ---- */
 function openAddModal() {
     document.getElementById('addUserForm').reset();
-    document.getElementById('addAvatarPreview').src = avatarUrl('', 'male');
+    document.getElementById('addAvatarPreview').src = avatarUrl('', '', '');
     document.getElementById('addAvatarName').textContent = 'New Member';
     openModal('addUserModal');
 }
@@ -581,7 +586,7 @@ function openEditModal(btn) {
     document.getElementById('editRoleSelect').value  = d.role;
     document.getElementById('editGender').value      = d.gender || 'male';
     document.getElementById('editBadge').value       = d.badge || '';
-    document.getElementById('editAvatarPreview').src = avatarUrl(d.username, d.gender || 'male');
+    document.getElementById('editAvatarPreview').src = d.avatar || avatarUrl(d.first, d.last, d.username);
     document.getElementById('editAvatarName').textContent = d.first + ' ' + d.last;
     openModal('editUserModal');
 }
@@ -589,8 +594,7 @@ function openEditModal(btn) {
 /* ---- View Profile ---- */
 function openProfileModal(btn) {
     var d = btn.dataset;
-    var seed = d.gender === 'female' ? d.username + 'Female' : d.username;
-    document.getElementById('vpAvatar').src = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + encodeURIComponent(seed);
+    document.getElementById('vpAvatar').src = d.avatar || avatarUrl(d.first, d.last, d.username);
     document.getElementById('vpName').textContent = d.first + ' ' + d.last;
     document.getElementById('vpHandle').textContent = '@' + d.username;
     document.getElementById('vpMobile').textContent = d.mobile || '—';

@@ -365,7 +365,7 @@
 <div class="main-content">
 
     @php
-        $avatarSeed = fn($u) => ($u->gender === 'female') ? $u->username . 'Female' : $u->username;
+        $avatarUrl = fn($u) => $u->avatarUrl();
         $idNum  = fn($u) => 'ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
         $total      = $heads->count() + $managers->count() + $leads->count() + $analysts->count()
@@ -422,11 +422,11 @@
         @foreach($heads as $u)
         <div class="tm-lcard" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="head" data-role-label="Ecomm Head" data-designation="Ecomm Department Head"
              data-icon="fa-crown" data-color="#7c3aed" data-idnum="{{ $idNum($u) }}">
             <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
                 <div class="tm-lcard-sub">Ecomm Department Head</div>
                 <span class="role-badge head">Ecomm Head</span>
@@ -451,11 +451,11 @@
         @foreach($managers as $u)
         <div class="tm-lcard" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="manager" data-role-label="Manager" data-designation="Department Manager"
              data-icon="fa-crown" data-color="#1e293b" data-idnum="{{ $idNum($u) }}">
             <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
                 <div class="tm-lcard-sub">Ecomm Department</div>
                 <span class="role-badge manager">Manager</span>
@@ -480,11 +480,11 @@
         @foreach($leads as $u)
         <div class="tm-lcard" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="lead" data-role-label="Lead" data-designation="Team Lead"
              data-icon="fa-star" data-color="#6366f1" data-idnum="{{ $idNum($u) }}">
             <div class="tm-lcard-body">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
+                <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-lcard-avatar" alt="{{ $u->full_name }}">
                 <div class="tm-lcard-name">{{ $u->full_name }}</div>
                 <div class="tm-lcard-sub">Content &amp; PR Lead</div>
                 <span class="role-badge lead">Lead</span>
@@ -509,10 +509,10 @@
         @foreach($analysts as $u)
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="analyst" data-role-label="Analyst" data-designation="Data Analyst"
              data-icon="fa-chart-bar" data-color="#ec4899" data-idnum="{{ $idNum($u) }}">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge analyst">Analyst</span>
             <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
@@ -535,10 +535,10 @@
         @foreach($researchers as $u)
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="researcher" data-role-label="Researcher" data-designation="Product Researcher"
              data-icon="fa-magnifying-glass" data-color="#10b981" data-idnum="{{ $idNum($u) }}">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge researcher">Researcher</span>
             <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
@@ -561,10 +561,10 @@
         @foreach($content as $u)
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="content" data-role-label="Content" data-designation="Content Creator"
              data-icon="fa-pen-nib" data-color="#0ea5e9" data-idnum="{{ $idNum($u) }}">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge content">Content</span>
             <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
@@ -589,10 +589,10 @@
         @foreach($graphics as $u)
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="graphics" data-role-label="Graphics" data-designation="Graphic Designer"
              data-icon="fa-palette" data-color="#f59e0b" data-idnum="{{ $idNum($u) }}">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge graphics">Graphics</span>
             <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
@@ -617,10 +617,10 @@
         @foreach($backend as $u)
         <div class="tm-card" onclick="openIdCard(this)"
              data-name="{{ $u->full_name }}" data-username="{{ $u->username }}"
-             data-seed="{{ $avatarSeed($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
+             data-avatar="{{ $avatarUrl($u) }}" data-mobile="{{ $u->mobile_number ?? '' }}"
              data-role="backend" data-role-label="Backend" data-designation="Backend Developer"
              data-icon="fa-server" data-color="#f43f5e" data-idnum="{{ $idNum($u) }}">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($u) }}" class="tm-avatar" alt="{{ $u->full_name }}">
+            <img src="{{ $avatarUrl($u) }}" style="object-fit:cover;" class="tm-avatar" alt="{{ $u->full_name }}">
             <div class="tm-name">{{ $u->full_name }}</div>
             <span class="role-badge backend">Backend</span>
             <div class="tm-id-hint"><i class="fas fa-id-card"></i> View ID card</div>
@@ -711,7 +711,7 @@
 
 window.openIdCard = function(el) {
     var d = el.dataset;
-    document.getElementById('idmPhoto').src = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + d.seed;
+    document.getElementById('idmPhoto').src = d.avatar;
     document.getElementById('idmName').textContent = d.name;
     document.getElementById('idmDesg').textContent = d.designation;
     var badge = document.getElementById('idmBadge');

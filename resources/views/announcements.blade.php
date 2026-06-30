@@ -338,8 +338,7 @@
                      data-expires-label="{{ $ann->expires_at ? $ann->expires_at->format('M d, Y g:i A') : '' }}"
                      data-expired="{{ $expired ? '1' : '0' }}"
                      data-creator="{{ $ann->creator->first_name }} {{ $ann->creator->last_name }}"
-                     data-creator-username="{{ $ann->creator->username }}"
-                     data-creator-gender="{{ $ann->creator->gender }}"
+                     data-creator-avatar="{{ $ann->creator->avatarUrl() }}"
                      data-date="{{ $ann->created_at->format('M d, Y') }}"
                      data-ago="{{ $ann->created_at->diffForHumans() }}"
                      onclick="selectItem(this)">
@@ -375,8 +374,7 @@
                      data-expires-label="{{ $ann->expires_at ? $ann->expires_at->format('M d, Y g:i A') : '' }}"
                      data-expired="{{ $expired ? '1' : '0' }}"
                      data-creator="{{ $ann->creator->first_name }} {{ $ann->creator->last_name }}"
-                     data-creator-username="{{ $ann->creator->username }}"
-                     data-creator-gender="{{ $ann->creator->gender }}"
+                     data-creator-avatar="{{ $ann->creator->avatarUrl() }}"
                      data-date="{{ $ann->created_at->format('M d, Y') }}"
                      data-ago="{{ $ann->created_at->diffForHumans() }}"
                      onclick="selectItem(this)">
@@ -561,8 +559,7 @@ function selectItem(el) {
     document.getElementById('detTitle').textContent = d.title;
     document.getElementById('detBody').textContent  = d.body;
 
-    var seed = d.creatorGender === 'female' ? d.creatorUsername + 'Female' : d.creatorUsername;
-    document.getElementById('detAvatar').src = 'https://api.dicebear.com/7.x/notionists/svg?seed=' + encodeURIComponent(seed);
+    document.getElementById('detAvatar').src = d.creatorAvatar || '';
     document.getElementById('detCreator').textContent = d.creator;
     document.getElementById('detDate').textContent    = d.date + ' · ' + d.ago;
 

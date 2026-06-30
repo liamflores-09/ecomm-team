@@ -269,7 +269,7 @@
     $rowsByRole = $allRows->groupBy('role')->filter(fn($_, $r) => isset($roleColorMap[$r]));
 
     // Avatar seed helper (closure)
-    $avatarSeed = fn($username, $gender) => $gender === 'female' ? $username . 'Female' : $username;
+    $avatarFor = fn($row) => \App\Models\User::resolveAvatarUrl($row['avatar'] ?? null, $row['first_name'] ?? '', $row['last_name'] ?? '', $row['username'] ?? '');
 @endphp
 
     <!-- Header -->
@@ -515,7 +515,7 @@
                             <tr>
                                 <td style="color:var(--gray-300);font-size:0.72rem;">{{ $rdRowNum }}</td>
                                 @if($loop->first)<td rowspan="{{ $dayCount }}" style="white-space:nowrap;font-weight:600;font-size:0.78rem;vertical-align:middle;border-bottom:2px solid var(--border);">{{ \Carbon\Carbon::parse($day['date'])->format('D, M d') }}</td>@endif
-                                <td><div class="user-cell"><img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($m['username'], $m['gender'] ?? 'male') }}" alt=""><span class="name">{{ $m['first_name'] }}</span></div></td>
+                                <td><div class="user-cell"><img src="{{ $avatarFor($m) }}" alt=""><span class="name">{{ $m['first_name'] }}</span></div></td>
                                 <td class="num">{{ $m['task_1'] ?: '—' }}</td>
                                 <td class="num">{{ $m['task_2'] ?: '—' }}</td>
                                 <td class="num">{{ $m['task_3'] ?: '—' }}</td>
@@ -729,7 +729,7 @@
                             @endif
                             <td>
                                 <div class="user-cell">
-                                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($m['username'], $m['gender'] ?? 'male') }}" alt="">
+                                    <img src="{{ $avatarFor($m) }}" alt="">
                                     <span class="name">{{ $m['first_name'] }}</span>
                                 </div>
                             </td>
@@ -966,7 +966,7 @@
                     @endphp
                     <div class="rpt-perf-card">
                         <div class="mpc-top">
-                            <img class="mpc-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($mp['username'], $mp['gender'] ?? 'male') }}" alt="">
+                            <img class="mpc-avatar" src="{{ $avatarFor($mp) }}" alt="">
                             <div class="mpc-info">
                                 <div class="mpc-name">{{ $mp['first_name'] }}</div>
                                 <div class="mpc-total">{{ number_format($mp['total']) }} tasks</div>
@@ -1118,7 +1118,7 @@
                 @endphp
                 <div class="rpt-perf-card">
                     <div class="mpc-top">
-                        <img class="mpc-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $avatarSeed($mp['username'], $mp['gender'] ?? 'male') }}" alt="">
+                        <img class="mpc-avatar" src="{{ $avatarFor($mp) }}" alt="">
                         <div class="mpc-info">
                             <div class="mpc-name">{{ $mp['first_name'] }}</div>
                             <div class="mpc-total">{{ number_format($mp['total']) }} tasks</div>

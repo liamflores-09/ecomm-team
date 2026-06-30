@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
         'last_name',
         'mobile_number',
         'gender',
+        'avatar',
         'badge',
         'password',
         'role',
@@ -32,6 +34,38 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function avatarUrl(): string
+    {
+        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
+            return Storage::url($this->avatar);
+        }
+        return self::initialsAvatar($this->first_name ?? '', $this->last_name ?? '', $this->username ?? '');
+    }
+
+    public static function resolveAvatarUrl(?string $storedPath, string $firstName, string $lastName, string $username = ''): string
+    {
+        if ($storedPath && Storage::disk('public')->exists($storedPath)) {
+            return Storage::url($storedPath);
+        }
+        return self::initialsAvatar($firstName, $lastName, $username);
+    }
+
+    private static function initialsAvatar(string $firstName, string $lastName, string $username = ''): string
+    {
+        $initials = strtoupper(substr($firstName, 0, 1) . substr($lastName, 0, 1))
+            ?: strtoupper(substr($username, 0, 2));
+
+        $colors = ['#7c3aed','#6366f1','#ec4899','#10b981','#0ea5e9','#f59e0b','#f43f5e','#1e293b'];
+        $color  = $colors[abs(crc32($username ?: $firstName)) % count($colors)];
+
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
+            . '<circle cx="20" cy="20" r="20" fill="' . $color . '"/>'
+            . '<text x="20" y="26" font-family="sans-serif" font-size="14" font-weight="700" fill="white" text-anchor="middle">' . htmlspecialchars($initials) . '</text>'
+            . '</svg>';
+
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
 
     public function isAdmin(): bool

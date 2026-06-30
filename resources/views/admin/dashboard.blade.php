@@ -272,8 +272,8 @@
             <div class="health-avatars" style="opacity:0.35;filter:grayscale(1);justify-content:center;">
                 @foreach($allMembers as $m)
                 <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · Off (RDO)">
-                    <img class="health-avatar" style="border-color:var(--gray-200);"
-                         src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $m->gender === 'female' ? $m->username . 'Female' : $m->username }}"
+                    <img class="health-avatar" style="border-color:var(--gray-200);object-fit:cover;"
+                         src="{{ $m->avatarUrl() }}"
                          alt="{{ $m->first_name }}">
                 </span>
                 @endforeach
@@ -293,7 +293,8 @@
                     @php $isLogged = in_array($m->id, $loggedUserIds); @endphp
                     <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $isLogged ? 'Logged' : 'Pending' }}">
                         <img class="health-avatar {{ $isLogged ? 'logged' : 'pending' }}"
-                             src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $m->gender === 'female' ? $m->username . 'Female' : $m->username }}"
+                             src="{{ $m->avatarUrl() }}"
+                             style="object-fit:cover;"
                              alt="{{ $m->first_name }}">
                     </span>
                 @endforeach

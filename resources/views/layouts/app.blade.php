@@ -686,7 +686,7 @@
             {{-- User Menu --}}
             <div class="user-menu-wrap" id="userMenuWrap">
                 <button class="user-menu-btn" onclick="toggleUserMenu()">
-                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ Auth::user()->gender === 'female' ? Auth::user()->username . 'Female' : Auth::user()->username }}" alt="" class="nav-avatar">
+                    <img src="{{ Auth::user()->avatarUrl() }}" alt="" class="nav-avatar" style="object-fit:cover;">
                     <div class="nav-user-info">
                         <span class="nav-user-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                         <span class="nav-user-role">{{ ucfirst(Auth::user()->role) }}</span>

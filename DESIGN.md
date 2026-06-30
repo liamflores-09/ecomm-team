@@ -1,4 +1,5 @@
 # Revenue-Grade Automation — Style Reference
+
 > monochrome engineering blueprint with a violet spark
 
 **Theme:** light

@@ -13,7 +13,17 @@
         padding: 2rem; display: flex; align-items: center; gap: 1.75rem;
         margin-bottom: 1.25rem; position: relative;
     }
-    .profile-avatar { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--border-light); flex-shrink: 0; }
+    .profile-avatar-wrap { position: relative; width: 96px; height: 96px; flex-shrink: 0; cursor: pointer; }
+    .profile-avatar { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--border-light); object-fit: cover; display: block; }
+    .profile-avatar-overlay {
+        position: absolute; inset: 0; border-radius: 50%;
+        background: rgba(0,0,0,0.45); color: white; font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.2s;
+    }
+    .profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 1; }
+    .btn-flat-sm { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--secondary); color: var(--secondary-foreground); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-flat-sm:hover { background: var(--hover); }
     .profile-hero-body { flex: 1; min-width: 0; }
     .profile-hero-name { font-size: 1.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.25rem; font-family: 'Space Grotesk', sans-serif; }
     .profile-hero-handle { font-size: 0.85rem; color: var(--muted-foreground); font-weight: 500; margin-bottom: 0.625rem; }
@@ -64,7 +74,10 @@
 
     <!-- Hero card -->
     <div class="profile-hero anim-up d1">
-        <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ $user->gender === 'female' ? $user->username . 'Female' : $user->username }}" alt="" class="profile-avatar" id="profileAvatar">
+        <div class="profile-avatar-wrap" onclick="document.getElementById('avatarInput').click()" title="Change photo">
+            <img src="{{ $user->avatarUrl() }}" alt="" class="profile-avatar" id="profileAvatar">
+            <div class="profile-avatar-overlay"><i class="fas fa-camera"></i></div>
+        </div>
         <div class="profile-hero-body">
             <div class="profile-hero-name">{{ $user->first_name }} {{ $user->last_name }}</div>
             <div class="profile-hero-handle">{{ '@' . $user->username }}</div>
@@ -74,6 +87,19 @@
                 <span style="display:inline-flex;align-items:center;padding:2px 8px;background:#f0f0ff;border:1px solid #a5a5fc;border-radius:9999px;font-size:0.6rem;font-weight:700;color:#5757f8;">{{ $user->badge }}</span>
                 @endif
             </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">
+                <button class="btn-flat-sm" onclick="document.getElementById('avatarInput').click()" style="font-size:0.72rem;">
+                    <i class="fas fa-camera"></i> Change Photo
+                </button>
+                @if($user->avatar)
+                <form method="POST" action="{{ route('profile.avatar.remove') }}" style="display:inline;">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn-flat-sm" style="font-size:0.72rem;color:var(--destructive);">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </form>
+                @endif
+            </div>
         </div>
         <div class="profile-edit-btn">
             <button class="btn-flat-primary" style="height:38px;padding:0 1rem;font-size:0.82rem;" onclick="openModal('editProfileModal')">
@@ -81,6 +107,12 @@
             </button>
         </div>
     </div>
+
+    {{-- Hidden avatar upload form --}}
+    <form id="avatarForm" method="POST" action="{{ route('profile.avatar') }}" enctype="multipart/form-data" style="display:none;">
+        @csrf
+        <input type="file" id="avatarInput" name="avatar" accept="image/*" onchange="previewAndUpload(this)">
+    </form>
 
     <!-- Info grid -->
     <div class="profile-info-grid anim-up d2">
@@ -163,4 +195,15 @@
 @if($errors->any())
 <script>document.addEventListener('DOMContentLoaded', function() { openModal('editProfileModal'); });</script>
 @endif
+<script>
+function previewAndUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('profileAvatar').src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+    document.getElementById('avatarForm').submit();
+}
+</script>
 @endsection

@@ -438,7 +438,7 @@ class AdminController extends Controller
         if ($selectedDay) {
             $selectedDayLogs = DailyLog::where('daily_logs.date', $selectedDay)
                 ->join('users', 'daily_logs.user_id', '=', 'users.id')
-                ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+                ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar')
                 ->orderBy('users.role')->orderBy('users.first_name');
             if ($roleFilter) {
                 $selectedDayLogs->where('users.role', $roleFilter);
@@ -530,7 +530,7 @@ class AdminController extends Controller
             ->whereYear('daily_logs.date', $calendarMonth->year)
             ->select('daily_logs.date', 'daily_logs.task_1', 'daily_logs.task_2', 'daily_logs.task_3',
                 'daily_logs.task_4', 'daily_logs.task_5', 'daily_logs.remarks',
-                'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge')
+                'users.username', 'users.first_name', 'users.last_name', 'users.role', 'users.gender', 'users.badge', 'users.avatar')
             ->orderBy('users.role')->orderBy('users.first_name')
             ->get()
             ->groupBy(fn($l) => $l->date->format('Y-m-d'));
@@ -542,8 +542,8 @@ class AdminController extends Controller
                     'first_name' => $l->first_name,
                     'last_name'  => $l->last_name,
                     'username'   => $l->username,
-                    'gender'     => $l->gender,
                     'badge'      => $l->badge,
+                    'avatar'     => \App\Models\User::resolveAvatarUrl($l->avatar, $l->first_name, $l->last_name, $l->username),
                     'tasks'      => [(int)$l->task_1,(int)$l->task_2,(int)$l->task_3,(int)$l->task_4,(int)$l->task_5],
                     'remarks'    => $l->remarks,
                 ])->values()->toArray();
