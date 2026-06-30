@@ -458,9 +458,9 @@
         .app-dd .dd-arrow { margin-left: auto; font-size: 0.6rem; color: var(--gray-400); transition: transform 0.2s; flex-shrink: 0; }
         .app-dd.open .dd-arrow { transform: rotate(180deg); }
         .app-dd .dd-menu {
-            display: none; position: fixed;
+            display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 100%;
             background: var(--white); border: 2px solid var(--border); border-radius: 8px;
-            z-index: 9990; max-height: 240px; overflow-y: auto; padding: 0.25rem;
+            z-index: 200; max-height: 240px; overflow-y: auto; padding: 0.25rem;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
         .app-dd.open .dd-menu { display: block; animation: fadeInUp 0.15s ease-out; }
@@ -1317,48 +1317,15 @@
 
     <script>
     // App Dropdown (x-select component)
-    function appDdClose(d) {
-        d.classList.remove('open');
-        var m = d.querySelector('.dd-menu');
-        if (m) { m.style.top = ''; m.style.left = ''; m.style.width = ''; }
-    }
     function appDdToggle(uid) {
-        var dd     = document.getElementById(uid);
+        var dd = document.getElementById(uid);
         var isOpen = dd.classList.contains('open');
-        document.querySelectorAll('.app-dd.open').forEach(appDdClose);
-        if (!isOpen) {
-            var trigger = dd.querySelector('.dd-trigger');
-            var menu    = dd.querySelector('.dd-menu');
-            var rect    = trigger.getBoundingClientRect();
-
-            // Render offscreen to measure real dimensions
-            menu.style.display    = 'block';
-            menu.style.visibility = 'hidden';
-            menu.style.top        = '-9999px';
-            menu.style.left       = '-9999px';
-            menu.style.width      = '';
-
-            var menuH  = menu.offsetHeight;
-            var menuW  = Math.max(rect.width, menu.offsetWidth);
-            var margin = 4;
-            var top    = rect.bottom + margin;
-            var left   = rect.left;
-
-            if (top + menuH > window.innerHeight) top = rect.top - menuH - margin;
-            if (left + menuW > window.innerWidth)  left = window.innerWidth - menuW - 4;
-            if (left < 4) left = 4;
-
-            menu.style.display    = '';
-            menu.style.visibility = '';
-            menu.style.top        = top  + 'px';
-            menu.style.left       = left + 'px';
-            menu.style.width      = menuW + 'px';
-            dd.classList.add('open');
-        }
+        document.querySelectorAll('.app-dd.open').forEach(function(d) { d.classList.remove('open'); });
+        if (!isOpen) dd.classList.add('open');
     }
     function appDdSelect(uid, val, label) {
         var dd = document.getElementById(uid);
-        appDdClose(dd);
+        dd.classList.remove('open');
         document.getElementById(uid + '-label').textContent = label;
         dd.querySelector('input[type="hidden"]').value = val;
         dd.querySelectorAll('.dd-item').forEach(function(item) {
@@ -1383,7 +1350,7 @@
     }
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.app-dd')) {
-            document.querySelectorAll('.app-dd.open').forEach(appDdClose);
+            document.querySelectorAll('.app-dd.open').forEach(function(d) { d.classList.remove('open'); });
         }
     });
     </script>
