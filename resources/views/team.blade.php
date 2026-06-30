@@ -340,6 +340,15 @@
     [data-theme="dark"] .idm-back-foot { border-top-color: #2e2e2e; }
     [data-theme="dark"] .idm-barcode { fill: #ebebeb; opacity: 0.15; }
     [data-theme="dark"] .idm-idnum { color: #555555; }
+    /* Secret rows on ID card back */
+    .idm-secret-row { cursor: pointer; border-radius: 3px; transition: background 0.12s; }
+    .idm-secret-row:hover { background: rgba(0,0,0,0.04); }
+    [data-theme="dark"] .idm-secret-row:hover { background: rgba(255,255,255,0.05); }
+    .idm-sblur { filter: blur(4px); transition: filter 0.28s ease; user-select: none; pointer-events: none; }
+    .idm-sblur.revealed { filter: blur(0); user-select: text; }
+    .idm-seye { font-size: 0.58rem; opacity: 0.35; margin-left: 4px; flex-shrink: 0; transition: opacity 0.15s; }
+    .idm-secret-row:hover .idm-seye { opacity: 0.65; }
+    .idm-slock { font-size: 0.42rem; opacity: 0.3; vertical-align: middle; margin-left: 2px; }
     [data-theme="dark"] .idr-head      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
     [data-theme="dark"] .idr-manager   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
     [data-theme="dark"] .idr-lead      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(99,102,241,0.12) 100%); }
@@ -687,8 +696,20 @@
                     <div class="idm-back-row"><span class="idm-lbl">Username</span><span id="idmBackUser" class="idm-val"></span></div>
                     <div class="idm-back-row" id="idmViberRow"><span class="idm-lbl">Viber</span><a id="idmViberLink" href="#" class="idm-val idm-viber-val" onclick="event.stopPropagation()"></a></div>
                     <div class="idm-back-row"><span class="idm-lbl">ID No.</span><span id="idmBackIdnum" class="idm-val"></span></div>
-                    <div class="idm-back-row"><span class="idm-lbl">TIN</span><span id="idmBackTin" class="idm-val"></span></div>
-                    <div class="idm-back-row"><span class="idm-lbl">SSS</span><span id="idmBackSss" class="idm-val"></span></div>
+                    <div class="idm-back-row idm-secret-row" onclick="toggleIdmSecret(this, event)">
+                        <span class="idm-lbl">TIN <i class="fas fa-lock idm-slock"></i></span>
+                        <span class="idm-val" style="display:flex;align-items:center;">
+                            <span id="idmBackTin" class="idm-sblur"></span>
+                            <i class="fas fa-eye idm-seye"></i>
+                        </span>
+                    </div>
+                    <div class="idm-back-row idm-secret-row" onclick="toggleIdmSecret(this, event)">
+                        <span class="idm-lbl">SSS <i class="fas fa-lock idm-slock"></i></span>
+                        <span class="idm-val" style="display:flex;align-items:center;">
+                            <span id="idmBackSss" class="idm-sblur"></span>
+                            <i class="fas fa-eye idm-seye"></i>
+                        </span>
+                    </div>
                 </div>
                 <div class="idm-back-foot">
                     <svg class="idm-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
@@ -739,8 +760,13 @@ window.openIdCard = function(el) {
     document.getElementById('idmBackNickname').textContent = d.nickname || d.name.split(' ')[0];
     document.getElementById('idmBackUser').textContent = '@' + d.username;
     document.getElementById('idmBackIdnum').textContent = d.idnumber || d.idnum;
-    document.getElementById('idmBackTin').textContent = d.tin || '—';
-    document.getElementById('idmBackSss').textContent = d.sss || '—';
+    var tinEl = document.getElementById('idmBackTin');
+    var sssEl = document.getElementById('idmBackSss');
+    tinEl.textContent = d.tin || '—';
+    sssEl.textContent = d.sss || '—';
+    tinEl.classList.remove('revealed');
+    sssEl.classList.remove('revealed');
+    document.querySelectorAll('.idm-seye').forEach(function(el) { el.className = 'fas fa-eye idm-seye'; });
     document.getElementById('idmIdnum').textContent = d.idnumber || d.idnum;
     var viberRow = document.getElementById('idmViberRow');
     var viberLink = document.getElementById('idmViberLink');
@@ -755,6 +781,14 @@ window.openIdCard = function(el) {
     document.getElementById('idCardModal').classList.add('open');
 };
 
+window.toggleIdmSecret = function(row, e) {
+    e.stopPropagation();
+    var blur = row.querySelector('.idm-sblur');
+    var eye  = row.querySelector('.idm-seye');
+    var isRevealing = !blur.classList.contains('revealed');
+    blur.classList.toggle('revealed', isRevealing);
+    eye.className = isRevealing ? 'fas fa-eye-slash idm-seye' : 'fas fa-eye idm-seye';
+};
 window.closeIdModal = function() {
     document.getElementById('idCardModal').classList.remove('open');
 };

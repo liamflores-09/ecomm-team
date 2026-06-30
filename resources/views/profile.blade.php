@@ -32,9 +32,24 @@
 
     .profile-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
     .info-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem; }
-    .info-card-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); margin-bottom: 0.375rem; }
+    .info-card-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); margin-bottom: 0.375rem; display: flex; align-items: center; }
+    .info-card-label .ic-lock { margin-left: auto; font-size: 0.6rem; opacity: 0.35; }
     .info-card-value { font-size: 0.95rem; font-weight: 600; color: var(--foreground); }
     .info-card-value.muted { color: var(--muted-foreground); font-weight: 500; }
+
+    /* Secret (masked) info cards — TIN / SSS */
+    .info-card-secret { cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+    .info-card-secret:hover { border-color: var(--border-strong); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .info-card-value.secret-blurred { filter: blur(5px); user-select: none; transition: filter 0.3s ease; }
+    .info-card-value.secret-blurred.revealed { filter: blur(0); user-select: text; }
+    .secret-pill {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        margin-top: 0.625rem; padding: 3px 9px;
+        border: 1px solid var(--border-light); border-radius: 9999px;
+        font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+        color: var(--muted-foreground); transition: all 0.15s; pointer-events: none;
+    }
+    .info-card-secret:hover .secret-pill { border-color: var(--foreground); color: var(--foreground); }
 
     /* Form group in modal */
     .pf-group { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -140,14 +155,30 @@
             <div class="info-card-label"><i class="fas fa-calendar" style="margin-right:0.375rem;"></i>Member Since</div>
             <div class="info-card-value">{{ $user->created_at->format('M d, Y') }}</div>
         </div>
+        @if($user->tin)
+        <div class="info-card info-card-secret" onclick="toggleSecret(this)">
+            <div class="info-card-label"><i class="fas fa-file-invoice" style="margin-right:0.375rem;"></i>TIN<i class="fas fa-lock ic-lock"></i></div>
+            <div class="info-card-value secret-blurred">{{ $user->tin }}</div>
+            <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+        </div>
+        @else
         <div class="info-card">
             <div class="info-card-label"><i class="fas fa-file-invoice" style="margin-right:0.375rem;"></i>TIN</div>
-            <div class="info-card-value {{ $user->tin ? '' : 'muted' }}">{{ $user->tin ?: 'Not set' }}</div>
+            <div class="info-card-value muted">Not set</div>
         </div>
+        @endif
+        @if($user->sss)
+        <div class="info-card info-card-secret" onclick="toggleSecret(this)">
+            <div class="info-card-label"><i class="fas fa-shield-halved" style="margin-right:0.375rem;"></i>SSS<i class="fas fa-lock ic-lock"></i></div>
+            <div class="info-card-value secret-blurred">{{ $user->sss }}</div>
+            <div class="secret-pill"><i class="fas fa-eye secret-eye"></i><span class="secret-label">Reveal</span></div>
+        </div>
+        @else
         <div class="info-card">
             <div class="info-card-label"><i class="fas fa-shield-halved" style="margin-right:0.375rem;"></i>SSS</div>
-            <div class="info-card-value {{ $user->sss ? '' : 'muted' }}">{{ $user->sss ?: 'Not set' }}</div>
+            <div class="info-card-value muted">Not set</div>
         </div>
+        @endif
         <div class="info-card" style="grid-column: span 2;">
             <div class="info-card-label"><i class="fas fa-location-dot" style="margin-right:0.375rem;"></i>Address</div>
             <div class="info-card-value {{ $user->address ? '' : 'muted' }}">{{ $user->address ?: 'Not set' }}</div>
@@ -251,6 +282,16 @@ function previewAndUpload(input) {
     };
     reader.readAsDataURL(input.files[0]);
     document.getElementById('avatarForm').submit();
+}
+function toggleSecret(card) {
+    var val = card.querySelector('.secret-blurred');
+    if (!val) return;
+    var eye = card.querySelector('.secret-eye');
+    var label = card.querySelector('.secret-label');
+    var isRevealing = !val.classList.contains('revealed');
+    val.classList.toggle('revealed', isRevealing);
+    if (eye) eye.className = isRevealing ? 'fas fa-eye-slash secret-eye' : 'fas fa-eye secret-eye';
+    if (label) label.textContent = isRevealing ? 'Hide' : 'Reveal';
 }
 </script>
 @endsection

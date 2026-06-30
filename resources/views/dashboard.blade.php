@@ -130,8 +130,15 @@
     .mini-back-head { padding: 10px 12px; position: relative; flex-shrink: 0; display: flex; align-items: center; }
     .mini-back-co { font-size: 0.56rem; font-weight: 800; letter-spacing: 0.07em; color: rgba(255,255,255,0.92); text-transform: uppercase; position: relative; z-index: 1; }
     .mini-back-body { padding: 3px 12px 3px 16px; flex: 1; position: relative; z-index: 1; border-left: 2px solid var(--mini-color, #5757f8); margin: 8px 12px; }
-    .mini-back-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .mini-back-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
     .mini-back-row:last-child { border-bottom: none; }
+    .mini-secret-row { cursor: pointer; border-radius: 3px; transition: background 0.12s; margin: 0 -4px; padding: 6px 4px; }
+    .mini-secret-row:hover { background: rgba(0,0,0,0.05); }
+    [data-theme="dark"] .mini-secret-row:hover { background: rgba(255,255,255,0.04); }
+    .mini-sblur { filter: blur(3.5px); transition: filter 0.28s ease; user-select: none; }
+    .mini-sblur.revealed { filter: blur(0); user-select: text; }
+    .mini-seye { font-size: 0.48rem; opacity: 0.35; margin-left: 3px; flex-shrink: 0; transition: opacity 0.15s; }
+    .mini-secret-row:hover .mini-seye { opacity: 0.65; }
     .mini-lbl { color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.44rem; letter-spacing: 0.05em; }
     .mini-val { font-weight: 700; color: #0f172a; font-size: 0.58rem; text-align: right; max-width: 55%; word-break: break-all; }
     .mini-back-foot { padding: 6px 12px 10px; border-top: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; z-index: 1; position: relative; }
@@ -363,8 +370,20 @@ $greeting = match(true) {
                             <div class="mini-back-row"><span class="mini-lbl">Name</span><span class="mini-val">{{ $user->full_name }}</span></div>
                             <div class="mini-back-row"><span class="mini-lbl">Nickname</span><span class="mini-val">{{ $user->nickname ?: $user->first_name }}</span></div>
                             <div class="mini-back-row"><span class="mini-lbl">ID No.</span><span class="mini-val">{{ $user->id_number ?: $idNum }}</span></div>
-                            <div class="mini-back-row"><span class="mini-lbl">TIN</span><span class="mini-val">{{ $user->tin ?: '—' }}</span></div>
-                            <div class="mini-back-row"><span class="mini-lbl">SSS</span><span class="mini-val">{{ $user->sss ?: '—' }}</span></div>
+                            <div class="mini-back-row mini-secret-row" onclick="toggleMiniSecret(this, event)">
+                                <span class="mini-lbl">TIN <i class="fas fa-lock" style="opacity:0.3;font-size:0.38rem;vertical-align:middle;margin-left:1px;"></i></span>
+                                <span class="mini-val" style="display:flex;align-items:center;">
+                                    <span class="mini-sblur">{{ $user->tin ?: '—' }}</span>
+                                    <i class="fas fa-eye mini-seye"></i>
+                                </span>
+                            </div>
+                            <div class="mini-back-row mini-secret-row" onclick="toggleMiniSecret(this, event)">
+                                <span class="mini-lbl">SSS <i class="fas fa-lock" style="opacity:0.3;font-size:0.38rem;vertical-align:middle;margin-left:1px;"></i></span>
+                                <span class="mini-val" style="display:flex;align-items:center;">
+                                    <span class="mini-sblur">{{ $user->sss ?: '—' }}</span>
+                                    <i class="fas fa-eye mini-seye"></i>
+                                </span>
+                            </div>
                         </div>
                         <div class="mini-back-foot">
                             <svg class="mini-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>
@@ -679,4 +698,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endif
+<script>
+function toggleMiniSecret(row, e) {
+    e.stopPropagation();
+    var blur = row.querySelector('.mini-sblur');
+    var eye  = row.querySelector('.mini-seye');
+    var isRevealing = !blur.classList.contains('revealed');
+    blur.classList.toggle('revealed', isRevealing);
+    eye.className = isRevealing ? 'fas fa-eye-slash mini-seye' : 'fas fa-eye mini-seye';
+}
+</script>
 @endsection
