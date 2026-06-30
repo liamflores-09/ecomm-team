@@ -246,8 +246,9 @@ dropdown.querySelectorAll('.att-dd-item').forEach(function(btn) {
         var status = this.dataset.status;
         var uid    = activeCell.dataset.uid;
         var date   = activeCell.dataset.date;
+        var savedCell = activeCell;
         closeDropdown();
-        saveStatus(uid, date, status, activeCell);
+        saveStatus(uid, date, status, savedCell);
     });
 });
 
@@ -264,7 +265,8 @@ function saveStatus(uid, date, status, cell) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
         if (data.success) updateCell(cell, status);
-    });
+    })
+    .catch(function(e) { console.error('Attendance save failed:', e); });
 }
 
 function updateCell(cell, status) {
@@ -290,7 +292,8 @@ function markHoliday(date) {
                 updateCell(cell, 'holiday');
             });
         }
-    });
+    })
+    .catch(function(e) { console.error('Holiday mark failed:', e); });
 }
 </script>
 @endsection
