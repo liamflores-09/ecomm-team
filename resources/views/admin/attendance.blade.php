@@ -49,71 +49,65 @@
     .att-legend-item { display: inline-flex; align-items: center; gap: 5px; }
 
     /* ── Scroll wrapper ──────────────────────────────────────────── */
-    .att-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .att-scroll { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-    /* ── Table ───────────────────────────────────────────────────── */
-    .att-table { border-collapse: collapse; width: 100%; min-width: max-content; }
-    .att-table th, .att-table td { border: 1px solid var(--border); padding: 0; white-space: nowrap; }
+    /* ── Table — matches Reports page style ──────────────────────── */
+    .att-table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+    .att-table th, .att-table td { padding: 0; border-bottom: 1px solid var(--border); }
+    .att-table tbody tr:last-child td { border-bottom: none; }
 
     /* Header row */
-    .att-table thead tr th { background: var(--muted) !important; }
-    .att-table thead tr { border-bottom: 2px solid var(--border); }
+    .att-table thead th { background: var(--muted); border-bottom: 2px solid var(--border); }
 
     /* Sticky name column */
     .att-name-col {
         position: sticky; left: 0; z-index: 2;
         background: var(--card);
-        min-width: 170px; max-width: 210px;
+        width: 155px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         padding: 0.55rem 0.9rem;
         font-size: 0.78rem; font-weight: 600;
-        box-shadow: 3px 0 8px -3px rgba(0,0,0,0.1);
+        border-right: 1px solid var(--border);
     }
     .att-table thead .att-name-col {
-        z-index: 3;
-        background: var(--muted) !important;
-        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
-        color: var(--muted-foreground); font-weight: 700;
+        z-index: 3; background: var(--muted);
+        font-size: 0.7rem; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--muted-foreground); font-weight: 700;
     }
 
-    /* Row hover — entire row lights up */
+    /* Row hover — entire row lights up, like Reports */
     .att-table tbody tr:not(.att-role-row):hover td,
-    .att-table tbody tr:not(.att-role-row):hover .att-name-col {
-        background: rgba(99,102,241,0.05) !important;
-    }
+    .att-table tbody tr:not(.att-role-row):hover .att-name-col { background: #FAFAFA; }
 
     /* Day header */
-    .att-day-th {
-        text-align: center; vertical-align: middle;
-        min-width: 46px; padding: 0.55rem 0.2rem 0.4rem;
-    }
-    .att-day-th.att-weekend     { background: rgba(0,0,0,0.03) !important; }
-    .att-day-th.att-today-col   { background: rgba(99,102,241,0.09) !important; border-top: 2px solid #6366f1 !important; }
-    .att-day-dow { font-size: 0.54rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.55; letter-spacing: 0.05em; line-height: 1; margin-bottom: 3px; }
-    .att-day-num { font-size: 0.75rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 3px; }
+    .att-day-th { text-align: center; vertical-align: middle; padding: 0.45rem 0.15rem 0.35rem; white-space: nowrap; }
+    .att-day-th.att-weekend   { background: rgba(0,0,0,0.025); }
+    .att-day-th.att-today-col { background: rgba(99,102,241,0.08); border-top: 2px solid #6366f1 !important; }
+    .att-day-dow { font-size: 0.5rem; font-weight: 700; color: var(--muted-foreground); opacity: 0.5; letter-spacing: 0.04em; line-height: 1; margin-bottom: 2px; }
+    .att-day-num { font-size: 0.72rem; font-weight: 800; color: var(--muted-foreground); line-height: 1; margin-bottom: 2px; }
     .att-today-col .att-day-dow,
     .att-today-col .att-day-num { color: #6366f1; opacity: 1; }
     .att-holiday-btn {
         display: flex; align-items: center; justify-content: center;
-        width: 20px; height: 16px; margin: 0 auto;
+        width: 100%; height: 14px; margin: 0 auto;
         border: none; background: transparent; cursor: pointer;
-        color: var(--muted-foreground); font-size: 0.56rem; padding: 0;
-        border-radius: 3px; transition: all 0.15s; opacity: 0.5;
+        color: var(--muted-foreground); font-size: 0.52rem; padding: 0;
+        border-radius: 3px; transition: all 0.15s; opacity: 0.4;
     }
-    .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.12); opacity: 1; }
+    .att-holiday-btn:hover { color: #6366f1; background: rgba(99,102,241,0.1); opacity: 1; }
 
     /* Role section row */
     .att-role-row td {
-        background: var(--muted) !important;
-        padding: 0.45rem 0.9rem;
-        font-size: 0.62rem; font-weight: 800; text-transform: uppercase;
+        background: var(--muted);
+        padding: 0.35rem 0.9rem;
+        font-size: 0.6rem; font-weight: 800; text-transform: uppercase;
         letter-spacing: 0.1em; color: var(--muted-foreground);
-        border-left-width: 3px; border-top: 2px solid var(--border);
+        border-left: 3px solid var(--border); border-top: 2px solid var(--border);
     }
 
     /* Data cells */
     .att-cell {
         display: flex; align-items: center; justify-content: center;
-        min-height: 40px; cursor: pointer; padding: 4px;
+        min-height: 36px; cursor: pointer; padding: 3px;
         transition: background 0.1s;
     }
     .att-weekend-cell { background: rgba(0,0,0,0.018); }
@@ -246,7 +240,7 @@
                 @foreach ($usersByRole as $role => $users)
                 @php $roleColor = $roleColors[$role] ?? 'var(--border)'; @endphp
                 <tr class="att-role-row">
-                    <td colspan="{{ $daysInMonth + 1 }}" style="border-left-color:{{ $roleColor }}">{{ ucfirst($role) }}</td>
+                    <td colspan="{{ $daysInMonth + 1 }}" style="border-left-color:{{ $roleColor }};border-left-width:3px">{{ ucfirst($role) }}</td>
                 </tr>
                 @foreach ($users as $u)
                 <tr>
