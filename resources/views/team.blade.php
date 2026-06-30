@@ -350,9 +350,8 @@
     .idm-secret-row:hover .idm-seye { opacity: 0.65; }
     .idm-slock { font-size: 0.42rem; opacity: 0.3; vertical-align: middle; margin-left: 2px; }
     /* Permanently hidden — owner set this as private */
-    .idm-secret-row.idm-perm-hidden { cursor: default; pointer-events: none; }
-    .idm-secret-row.idm-perm-hidden:hover { background: none; }
-    .idm-secret-row.idm-perm-hidden .idm-seye { display: none; }
+    .idm-perm-hidden { cursor: default !important; }
+    .idm-perm-hidden:hover { background: none !important; }
     .idm-perm-lock { font-size: 0.55rem; opacity: 0.35; margin-left: 4px; flex-shrink: 0; }
     [data-theme="dark"] .idr-head      .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(124,58,237,0.12) 100%); }
     [data-theme="dark"] .idr-manager   .idm-front { background: linear-gradient(145deg, #1c1c1c 55%, rgba(30,41,59,0.2) 100%); }
@@ -384,9 +383,9 @@
         $extraData = fn($u) => implode(' ', [
             'data-nickname="'   . e($u->nickname  ?: $u->first_name) . '"',
             'data-idnumber="'   . e($u->id_number ?: ('ECD-' . str_pad(abs(crc32($u->username)) % 9999 + 1, 4, '0', STR_PAD_LEFT))) . '"',
-            'data-tin="'        . e($u->tin  ?: '—') . '"',
+            'data-tin="'        . ($u->tin_hidden  ? '' : e($u->tin  ?: '—')) . '"',
             'data-tinhidden="'  . ($u->tin_hidden  ? '1' : '0') . '"',
-            'data-sss="'        . e($u->sss  ?: '—') . '"',
+            'data-sss="'        . ($u->sss_hidden  ? '' : e($u->sss  ?: '—')) . '"',
             'data-ssshidden="'  . ($u->sss_hidden  ? '1' : '0') . '"',
         ]);
         $barcode = '<svg class="tm-id-barcode" viewBox="0 0 80 18" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="18"/><rect x="4" y="0" width="1" height="18"/><rect x="7" y="0" width="3" height="18"/><rect x="12" y="0" width="1" height="18"/><rect x="15" y="0" width="2" height="18"/><rect x="19" y="0" width="3" height="18"/><rect x="24" y="0" width="1" height="18"/><rect x="27" y="0" width="2" height="18"/><rect x="31" y="0" width="1" height="18"/><rect x="34" y="0" width="3" height="18"/><rect x="39" y="0" width="2" height="18"/><rect x="43" y="0" width="1" height="18"/><rect x="46" y="0" width="3" height="18"/><rect x="51" y="0" width="1" height="18"/><rect x="54" y="0" width="2" height="18"/><rect x="58" y="0" width="1" height="18"/><rect x="61" y="0" width="3" height="18"/><rect x="66" y="0" width="2" height="18"/><rect x="69" y="0" width="1" height="18"/><rect x="72" y="0" width="2" height="18"/><rect x="76" y="0" width="1" height="18"/><rect x="79" y="0" width="1" height="18"/></svg>';
@@ -771,21 +770,33 @@ window.openIdCard = function(el) {
     document.getElementById('idmBackIdnum').textContent = d.idnumber || d.idnum;
     var tinEl = document.getElementById('idmBackTin');
     var sssEl = document.getElementById('idmBackSss');
-    tinEl.textContent = d.tin || '—';
-    sssEl.textContent = d.sss || '—';
     tinEl.classList.remove('revealed');
     sssEl.classList.remove('revealed');
     document.querySelectorAll('.idm-seye').forEach(function(el) { el.className = 'fas fa-eye idm-seye'; });
-    // Apply or remove permanently-hidden class based on owner's privacy settings
-    var tinRow = tinEl.closest('.idm-secret-row');
-    var sssRow = sssEl.closest('.idm-secret-row');
+    // Apply privacy rules — do this BEFORE setting text content
+    var tinRow = tinEl.closest('.idm-back-row');
+    var sssRow = sssEl.closest('.idm-back-row');
     [
-        { row: tinRow, hidden: d.tinhidden === '1' },
-        { row: sssRow, hidden: d.ssshidden === '1' },
+        { row: tinRow, el: tinEl, val: d.tin, hidden: d.tinhidden === '1' },
+        { row: sssRow, el: sssEl, val: d.sss, hidden: d.ssshidden === '1' },
     ].forEach(function(item) {
-        item.row.classList.toggle('idm-perm-hidden', item.hidden);
-        var permLock = item.row.querySelector('.idm-perm-lock');
-        if (permLock) permLock.style.display = item.hidden ? '' : 'none';
+        if (item.hidden) {
+            item.el.textContent = '●●●●●●●●';
+            item.row.classList.add('idm-perm-hidden');
+            item.row.onclick = null;
+            var eye = item.row.querySelector('.idm-seye');
+            if (eye) eye.style.display = 'none';
+            var permLock = item.row.querySelector('.idm-perm-lock');
+            if (permLock) permLock.style.display = '';
+        } else {
+            item.el.textContent = item.val || '—';
+            item.row.classList.remove('idm-perm-hidden');
+            item.row.onclick = function(e) { toggleIdmSecret(this, e); };
+            var eye = item.row.querySelector('.idm-seye');
+            if (eye) eye.style.display = '';
+            var permLock = item.row.querySelector('.idm-perm-lock');
+            if (permLock) permLock.style.display = 'none';
+        }
     });
     document.getElementById('idmIdnum').textContent = d.idnumber || d.idnum;
     var viberRow = document.getElementById('idmViberRow');
