@@ -539,42 +539,6 @@ $greeting = match(true) {
             @endif
         </div>
 
-        {{-- EOD Card --}}
-        <div class="bento-eod">
-            @if(now()->dayOfWeek === 0)
-            <div class="bento-eod-submitted">
-                <div class="bento-eod-submitted-top">
-                    <div class="bento-eod-done-icon"><i class="fas fa-umbrella-beach"></i></div>
-                    <div>
-                        <div class="bento-eod-done-title" style="color:#d97706;">Rest Day (RDO)</div>
-                        <div class="bento-eod-done-sub">No EOD expected today</div>
-                    </div>
-                </div>
-            </div>
-            @elseif($todayLog)
-            <div class="bento-eod-submitted">
-                <div class="bento-eod-submitted-top">
-                    <div class="bento-eod-done-icon"><i class="fas fa-circle-check"></i></div>
-                    <div>
-                        <div class="bento-eod-done-title">EOD Submitted</div>
-                        <div class="bento-eod-done-sub">{{ now()->format('l, F j') }}</div>
-                    </div>
-                </div>
-                <a href="{{ route('end-of-day') }}" class="bento-eod-edit"><i class="fas fa-pencil"></i> Edit Report</a>
-            </div>
-            @else
-            <div class="bento-eod-pending">
-                <div class="bento-eod-pending-top">
-                    <div class="bento-eod-icon"><i class="fas fa-clipboard-list"></i></div>
-                    <div>
-                        <div class="bento-eod-title">No EOD yet today</div>
-                        <div class="bento-eod-sub">{{ now()->format('l, F j') }}</div>
-                    </div>
-                </div>
-                <a href="{{ route('end-of-day') }}" class="bento-eod-btn"><i class="fas fa-arrow-right"></i> Submit EOD Report</a>
-            </div>
-            @endif
-        </div>
         </div>{{-- /.bento-right --}}
 
     </div>
