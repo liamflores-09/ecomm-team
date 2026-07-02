@@ -217,7 +217,7 @@ class AdminDashboardTest extends TestCase
         $response->assertSee("Today's Pulse", false);
         $response->assertSee('Logged (1)');
         $response->assertSee('Pending (1)');
-        $response->assertSee('4 tasks');
+        $response->assertSee('· 4 tasks');
         $response->assertDontSee('wlt-card');
         $response->assertDontSee('Who Logged Today');
     }
@@ -247,8 +247,8 @@ class AdminDashboardTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSee('dash-body');
-        $response->assertSee('dash-rail');
+        $response->assertSee('class="dash-body anim-up d2"', false);
+        $response->assertSee('class="dash-col dash-rail"', false);
         $response->assertDontSee('dash-2col');
     }
 }
