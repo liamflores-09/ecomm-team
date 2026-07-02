@@ -89,28 +89,17 @@
     opacity: 0; transition: opacity 0.15s; z-index: 20;
 }
 .avatar-tip-wrap:hover::after { opacity: 1; }
-.health-legend { display: flex; gap: 1.25rem; margin-top: 0.75rem; font-size: 0.72rem; color: var(--muted-foreground); font-weight: 500; }
-.health-legend .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; flex-shrink: 0; }
-
-/* ── Who Logged Today ─────────────────────────────────── */
-.wlt-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-.wlt-header { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1.125rem; background: var(--muted); border-bottom: 1px solid var(--border); }
-.wlt-title { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--foreground); }
-.wlt-count { font-size: 0.68rem; font-weight: 700; color: var(--muted-foreground); }
-.wlt-list { max-height: 296px; overflow-y: auto; }
-.wlt-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.575rem 1.125rem; border-bottom: 1px solid var(--border); transition: background 0.12s; }
-.wlt-item:last-child { border-bottom: none; }
-.wlt-item:hover { background: var(--muted); }
-.wlt-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid transparent; }
-.wlt-avatar.logged  { border-color: #10b981; }
-.wlt-avatar.pending { border-color: var(--border); opacity: 0.5; }
-.wlt-meta { flex: 1; min-width: 0; }
-.wlt-name { font-size: 0.8rem; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wlt-role { font-size: 0.6rem; color: var(--muted-foreground); font-weight: 500; }
-.wlt-tasks { font-size: 0.7rem; font-weight: 700; color: var(--muted-foreground); flex-shrink: 0; }
-.wlt-status { font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 9999px; flex-shrink: 0; }
-.wlt-status.logged  { background: #dcfce7; color: #15803d; }
-.wlt-status.pending { background: var(--muted); color: var(--muted-foreground); border: 1px solid var(--border); }
+.pulse-group-label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); margin: 0.875rem 0 0.45rem; }
+.health-bar-wrap + .pulse-group-label { margin-top: 0; }
+.pulse-group-label.rose { color: #f43f5e; }
+.pulse-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+.pulse-row:last-child { border-bottom: none; padding-bottom: 0; }
+.pulse-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--destructive); opacity: 0.6; }
+.pulse-row-meta { flex: 1; min-width: 0; }
+.pulse-row-name { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pulse-row-role { font-size: 0.6rem; color: var(--muted-foreground); font-weight: 500; }
+.pulse-chip { font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 9999px; background: #fee2e2; color: #b91c1c; flex-shrink: 0; }
+.pulse-all-logged { display: flex; align-items: center; gap: 0.45rem; margin-top: 0.875rem; font-size: 0.78rem; font-weight: 600; color: #15803d; }
 
 /* ── Role Overview ────────────────────────────────────── */
 .role-ov-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
@@ -329,7 +318,7 @@ $todayLogMap = $todayLogs->keyBy('user_id');
                 @if(now()->dayOfWeek === 0)
                 <span style="font-size:0.72rem;font-weight:700;color:#d97706;display:flex;align-items:center;gap:5px;"><i class="fas fa-umbrella-beach"></i> Rest Day</span>
                 @else
-                <span style="font-size:0.72rem;font-weight:700;color:{{ $healthColor }};">{{ $healthPct }}% logged in</span>
+                <span style="font-size:0.72rem;font-weight:700;color:{{ $healthColor }};">{{ $healthPct }}% · {{ $todayLogged }}/{{ $nonManagerCount }} logged</span>
                 @endif
             </div>
 
@@ -348,49 +337,35 @@ $todayLogMap = $todayLogs->keyBy('user_id');
             <div class="health-bar-wrap">
                 <div class="health-bar" style="width:{{ $healthPct }}%;background:{{ $healthColor }};"></div>
             </div>
-            <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                <div class="health-avatars">
-                    @foreach($allMembers as $m)
-                    @php $isL = in_array($m->id, $loggedUserIds); @endphp
-                    <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $isL ? 'Logged' : 'Pending' }}">
-                        <img class="health-avatar {{ $isL ? 'logged' : 'pending' }}" src="{{ $m->avatarUrl() }}" style="object-fit:cover;" alt="{{ $m->first_name }}">
-                    </span>
-                    @endforeach
-                </div>
-            </div>
-            <div class="health-legend">
-                <span><div class="dot" style="background:#10b981;"></div> Logged ({{ $todayLogged }})</span>
-                <span><div class="dot" style="background:var(--destructive);"></div> Pending ({{ $todayPending }})</span>
-            </div>
-            @endif
-        </div>
-
-        {{-- Who Logged Today --}}
-        <div class="wlt-card">
-            <div class="wlt-header">
-                <span class="wlt-title">Who Logged Today</span>
-                <span class="wlt-count">{{ $todayLogged }}/{{ $nonManagerCount }}</span>
-            </div>
-            <div class="wlt-list">
-                @foreach($allMembers->sortByDesc(fn($m) => in_array($m->id, $loggedUserIds)) as $m)
+            <div class="pulse-group-label">Logged ({{ $todayLogged }})</div>
+            <div class="health-avatars">
+                @foreach($allMembers->filter(fn($m) => in_array($m->id, $loggedUserIds)) as $m)
                 @php
-                    $isL = in_array($m->id, $loggedUserIds);
-                    $ml  = $todayLogMap->get($m->id);
-                    $mt  = $ml ? ($ml->task_1 + $ml->task_2 + $ml->task_3 + $ml->task_4 + $ml->task_5) : null;
+                    $ml = $todayLogMap->get($m->id);
+                    $mt = $ml ? ($ml->task_1 + $ml->task_2 + $ml->task_3 + $ml->task_4 + $ml->task_5) : null;
                 @endphp
-                <div class="wlt-item">
-                    <img src="{{ $m->avatarUrl() }}" class="wlt-avatar {{ $isL ? 'logged' : 'pending' }}" alt="" style="object-fit:cover;">
-                    <div class="wlt-meta">
-                        <div class="wlt-name">{{ $m->first_name }} {{ $m->last_name }}</div>
-                        <div class="wlt-role">{{ ucfirst($m->role) }}</div>
-                    </div>
-                    @if($isL && $mt !== null)
-                    <span class="wlt-tasks">{{ $mt }} tasks</span>
-                    @endif
-                    <span class="wlt-status {{ $isL ? 'logged' : 'pending' }}">{{ $isL ? 'Logged' : 'Pending' }}</span>
-                </div>
+                <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $mt !== null ? $mt . ' tasks' : 'Logged' }}">
+                    <img class="health-avatar logged" src="{{ $m->avatarUrl() }}" style="object-fit:cover;" alt="{{ $m->first_name }}">
+                </span>
                 @endforeach
             </div>
+
+            @if($todayPending > 0)
+            <div class="pulse-group-label rose">Pending ({{ $todayPending }})</div>
+            @foreach($allMembers->filter(fn($m) => !in_array($m->id, $loggedUserIds)) as $m)
+            <div class="pulse-row">
+                <img class="pulse-avatar" src="{{ $m->avatarUrl() }}" alt="{{ $m->first_name }}">
+                <div class="pulse-row-meta">
+                    <div class="pulse-row-name">{{ $m->first_name }} {{ $m->last_name }}</div>
+                    <div class="pulse-row-role">{{ ucfirst($m->role) }}</div>
+                </div>
+                <span class="pulse-chip">Pending</span>
+            </div>
+            @endforeach
+            @else
+            <div class="pulse-all-logged"><i class="fas fa-check-circle"></i> All members logged in</div>
+            @endif
+            @endif
         </div>
 
     </div>

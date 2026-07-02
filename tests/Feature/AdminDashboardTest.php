@@ -198,4 +198,45 @@ class AdminDashboardTest extends TestCase
         $response->assertSee('No attendance marked yet this week');
         $response->assertDontSee('Out today');
     }
+
+    public function test_merged_pulse_card_renders(): void
+    {
+        $this->travelTo(now()->startOfWeek()->addDays(2)->setTime(10, 0)); // Wednesday
+
+        $admin   = $this->makeAdmin();
+        $logged  = $this->makeMember();
+        $missing = $this->makeMember('graphics');
+        DailyLog::create([
+            'user_id' => $logged->id, 'date' => now()->toDateString(),
+            'task_1' => 4, 'task_2' => 0, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee("Today's Pulse", false);
+        $response->assertSee('Logged (1)');
+        $response->assertSee('Pending (1)');
+        $response->assertSee('4 tasks');
+        $response->assertDontSee('wlt-card');
+        $response->assertDontSee('Who Logged Today');
+    }
+
+    public function test_merged_pulse_card_all_logged(): void
+    {
+        $this->travelTo(now()->startOfWeek()->addDays(2)->setTime(10, 0)); // Wednesday
+
+        $admin  = $this->makeAdmin();
+        $member = $this->makeMember();
+        DailyLog::create([
+            'user_id' => $member->id, 'date' => now()->toDateString(),
+            'task_1' => 2, 'task_2' => 0, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('All members logged in');
+        $response->assertDontSee('Pending (');
+    }
 }
