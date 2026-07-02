@@ -126,4 +126,18 @@ class AdminDashboardTest extends TestCase
         $this->assertSame([0, 0, 0, 0, 0], $bd['researcher']['data']);
         $this->assertSame('New SKU', $bd['researcher']['labels'][0]);
     }
+
+    public function test_task_type_chart_and_role_pills_render(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('id="taskTypeChart"', false);
+        $response->assertSee('data-role="content"', false);
+        $response->assertSee('data-role="graphics"', false);
+        $response->assertSee('data-role="backend"', false);
+        $response->assertSee('data-role="researcher"', false);
+    }
 }

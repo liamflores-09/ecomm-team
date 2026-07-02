@@ -394,6 +394,20 @@ $todayLogMap = $todayLogs->keyBy('user_id');
             <div id="trendChart" style="height:210px;"></div>
         </div>
 
+        {{-- Task Types — this month --}}
+        <div class="insight-card">
+            <div class="insight-header">
+                <h4>Task Types — {{ now()->format('F') }}</h4>
+                <div class="pill-row" id="ttRoles">
+                    <button type="button" class="pill" data-role="content">Content</button>
+                    <button type="button" class="pill" data-role="graphics">Graphics</button>
+                    <button type="button" class="pill" data-role="backend">Backend</button>
+                    <button type="button" class="pill" data-role="researcher">Research</button>
+                </div>
+            </div>
+            <div id="taskTypeChart" style="height:210px;"></div>
+        </div>
+
     </div>
 
     {{-- ── Role Activity ── --}}
@@ -595,6 +609,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('#trendRange .pill').forEach(function (b) { b.classList.remove('active'); });
                 btn.classList.add('active');
                 trendChart.updateOptions(trendOptions(parseInt(btn.dataset.days, 10)));
+            });
+        });
+    }
+
+    // Task-type breakdown (role filter)
+    var ttData = {!! json_encode($taskTypeBreakdown) !!};
+    var ttEl   = document.getElementById('taskTypeChart');
+
+    function ttSetActive(role) {
+        document.querySelectorAll('#ttRoles .pill').forEach(function (b) {
+            var on = b.dataset.role === role;
+            b.classList.toggle('active', on);
+            b.style.background  = on ? roleHexColors[role] : '';
+            b.style.borderColor = on ? roleHexColors[role] : '';
+        });
+    }
+
+    function ttOptions(role) {
+        return {
+            chart: { type: 'bar', height: 210, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#94a3b8' },
+            series: [{ name: 'Tasks', data: ttData[role].data }],
+            colors: [roleHexColors[role] || '#6366f1'],
+            plotOptions: { bar: { horizontal: true, barHeight: '55%', borderRadius: 3, borderRadiusApplication: 'end' } },
+            dataLabels: { enabled: false },
+            xaxis: { categories: ttData[role].labels, labels: { style: { fontSize: '10px', fontWeight: 600 } }, axisBorder: { show: false }, axisTicks: { show: false } },
+            yaxis: { labels: { style: { fontSize: '11px', fontWeight: 600 }, maxWidth: 120 } },
+            grid: { borderColor: 'rgba(148,163,184,0.15)', strokeDashArray: 4, padding: { left: 2, right: 8 } },
+            tooltip: { theme: isDark ? 'dark' : 'light', style: { fontSize: '12px' }, y: { formatter: function (v) { return v + ' tasks'; } } }
+        };
+    }
+
+    if (ttEl && ttData.content) {
+        var ttChart = new ApexCharts(ttEl, ttOptions('content'));
+        ttChart.render();
+        ttSetActive('content');
+        document.querySelectorAll('#ttRoles .pill').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                ttSetActive(btn.dataset.role);
+                ttChart.updateOptions(ttOptions(btn.dataset.role));
             });
         });
     }
