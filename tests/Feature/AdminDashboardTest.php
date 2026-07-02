@@ -239,4 +239,16 @@ class AdminDashboardTest extends TestCase
         $response->assertSee('All members logged in');
         $response->assertDontSee('Pending (');
     }
+
+    public function test_relayout_grid_renders(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('dash-body');
+        $response->assertSee('dash-rail');
+        $response->assertDontSee('dash-2col');
+    }
 }

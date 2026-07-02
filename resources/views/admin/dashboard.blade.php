@@ -52,9 +52,9 @@
 .wb-stat-val { font-size: 1.1rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
 .wb-divider { width: 1px; height: 36px; background: var(--border); }
 
-/* ── Two-col layouts ──────────────────────────────────── */
-.dash-2col      { display: grid; grid-template-columns: 57fr 43fr; gap: 1.125rem; margin-bottom: 1.25rem; align-items: start; }
-.dash-2col-main { display: grid; grid-template-columns: 60fr 40fr; gap: 1.125rem; align-items: start; }
+/* ── Body grid: analytics column + people rail ────────── */
+.dash-body { display: grid; grid-template-columns: 67fr 33fr; gap: 1.125rem; align-items: start; }
+.dash-col { display: flex; flex-direction: column; gap: 1.125rem; min-width: 0; }
 
 /* ── Section heading row ──────────────────────────────── */
 .dash-heading {
@@ -102,7 +102,7 @@
 .pulse-all-logged { display: flex; align-items: center; gap: 0.45rem; margin-top: 0.875rem; font-size: 0.78rem; font-weight: 600; color: #15803d; }
 
 /* ── Role Overview ────────────────────────────────────── */
-.role-ov-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+.role-ov-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .role-ov-card {
     background: var(--card); border-radius: 10px; padding: 1.125rem;
     border: 1px solid var(--border); transition: border-color 0.18s;
@@ -113,8 +113,7 @@
 .role-ov-link { font-size: 0.7rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; margin-top: 0.25rem; }
 .role-ov-link:hover { gap: 7px; }
 
-/* ── Insights row (trend + task types) ─────────────────── */
-.dash-2col-insights { display: grid; grid-template-columns: 60fr 40fr; gap: 1.125rem; margin-bottom: 1.25rem; align-items: start; }
+/* ── Insight cards (trend + task types) ─── */
 .insight-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem 1.25rem; }
 .insight-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
 .insight-header h4 { font-size: 0.88rem; font-weight: 700; margin: 0; }
@@ -147,7 +146,7 @@
 .activity-empty i { font-size: 1.25rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
 
 /* ── Attendance This Week ─────────────────────────────── */
-.att-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem; margin-bottom: 0.875rem; }
+.att-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem; }
 .att-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; }
 .att-title { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); display: flex; align-items: center; gap: 0.35rem; }
 .att-header a { font-size: 0.7rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
@@ -175,12 +174,10 @@
 
 /* ── Responsive ───────────────────────────────────────── */
 @media (max-width: 640px)  { .wb-stats { display: none; } }
-@media (max-width: 1100px) { .role-ov-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px)  { .role-ov-grid { grid-template-columns: 1fr; } }
 @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px)  { .kpi-grid { grid-template-columns: 1fr; } }
-@media (max-width: 900px)  { .dash-2col, .dash-2col-main { grid-template-columns: 1fr; } }
-@media (max-width: 900px)  { .dash-2col-insights { grid-template-columns: 1fr; } }
+@media (max-width: 900px)  { .dash-body { grid-template-columns: 1fr; } .dash-rail { order: -1; } }
 </style>
 @endsection
 
@@ -305,171 +302,167 @@ $todayLogMap = $todayLogs->keyBy('user_id');
 
     </div>
 
-    {{-- ── Team Pulse + Who Logged Today ── --}}
-    <div class="dash-2col anim-up d2">
+    {{-- ── Body: analytics column + people rail ── --}}
+    <div class="dash-body anim-up d2">
 
-        {{-- Team Health --}}
-        <div class="health-card">
-            <div class="health-header">
-                <h4>
-                    @if(now()->dayOfWeek !== 0)<div class="pulse"></div>@endif
-                    Today's Pulse
-                </h4>
-                @if(now()->dayOfWeek === 0)
-                <span style="font-size:0.72rem;font-weight:700;color:#d97706;display:flex;align-items:center;gap:5px;"><i class="fas fa-umbrella-beach"></i> Rest Day</span>
-                @else
-                <span style="font-size:0.72rem;font-weight:700;color:{{ $healthColor }};">{{ $healthPct }}% · {{ $todayLogged }}/{{ $nonManagerCount }} logged</span>
-                @endif
+        <div class="dash-col">
+
+            {{-- Team Output Trend --}}
+            <div class="insight-card">
+                <div class="insight-header">
+                    <h4>Team Output Trend</h4>
+                    <div class="pill-row" id="trendRange">
+                        <button type="button" class="pill" data-days="7">7d</button>
+                        <button type="button" class="pill active" data-days="30">30d</button>
+                    </div>
+                </div>
+                <div id="trendChart" style="height:210px;"></div>
             </div>
 
-            @if(now()->dayOfWeek === 0)
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:0.5rem 0;text-align:center;">
-                <div class="health-avatars" style="opacity:0.3;filter:grayscale(1);justify-content:center;flex-wrap:wrap;gap:4px;">
-                    @foreach($allMembers as $m)
-                    <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} · RDO">
-                        <img class="health-avatar" style="margin-left:0;object-fit:cover;" src="{{ $m->avatarUrl() }}" alt="{{ $m->first_name }}">
+            {{-- Task Types — this month --}}
+            <div class="insight-card">
+                <div class="insight-header">
+                    <h4>Task Types — {{ now()->format('F') }}</h4>
+                    <div class="pill-row" id="ttRoles">
+                        <button type="button" class="pill active" data-role="content">Content</button>
+                        <button type="button" class="pill" data-role="graphics">Graphics</button>
+                        <button type="button" class="pill" data-role="backend">Backend</button>
+                        <button type="button" class="pill" data-role="researcher">Research</button>
+                    </div>
+                </div>
+                <div id="taskTypeChart" style="height:210px;"></div>
+            </div>
+
+            {{-- Role Activity --}}
+            @php
+            $roleHexColors = [
+                'content'    => '#0ea5e9',
+                'graphics'   => '#f59e0b',
+                'backend'    => '#f43f5e',
+                'researcher' => '#10b981',
+            ];
+            @endphp
+            <div>
+                <div class="dash-heading">
+                    <div>
+                        <h4>Role Activity — Last 7 Days</h4>
+                        <p>Total tasks output per role per day. <span style="color:#f43f5e;font-weight:600;">Sunday = RDO</span></p>
+                    </div>
+                    <a href="{{ route('admin.reports') }}">Full Reports <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
+                </div>
+                <div class="role-ov-grid">
+                    @foreach($roleBreakdown as $r)
+                    @php $hex = $roleHexColors[$r['role']] ?? '#6366f1'; @endphp
+                    <div class="role-ov-card" style="border-top:3px solid {{ $hex }};">
+                        <div class="role-ov-header">
+                            <span class="role-badge {{ $r['role'] }}">{{ ucfirst($r['role']) }}</span>
+                            <span class="role-ov-members">{{ $r['members'] }} {{ $r['members'] === 1 ? 'member' : 'members' }}</span>
+                        </div>
+                        <p style="font-size:0.65rem;color:var(--muted-foreground);margin:0.25rem 0 0;font-weight:500;">Daily output — last 7 days</p>
+                        <div id="roleChart-{{ $r['role'] }}" style="height:100px;margin:0 -0.375rem;"></div>
+                        <a href="{{ route('admin.reports') }}?role={{ $r['role'] }}" class="role-ov-link">
+                            View Reports <i class="fas fa-arrow-right" style="font-size:0.58rem;"></i>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Recent Activity --}}
+            <div class="activity-card">
+                <div class="activity-header">
+                    <h4>Recent Activity</h4>
+                    <a href="{{ route('admin.daily-logs') }}">View All <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
+                </div>
+                @forelse($recentActivity as $activity)
+                @php
+                    $actColors = [
+                        'eod_submitted' => '#10b981', 'eod_updated'  => '#3b82f6',
+                        'eod_deleted'   => '#ef4444', 'user_created' => '#8b5cf6',
+                        'user_updated'  => '#f59e0b', 'user_deleted' => '#ef4444',
+                    ];
+                    $ac = $actColors[$activity->type] ?? '#64748b';
+                @endphp
+                <div class="activity-item">
+                    <div class="activity-dot-wrap">
+                        <div class="activity-dot" style="background:{{ $ac }};"></div>
+                        @if(!$loop->last)<div class="activity-line"></div>@endif
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">{{ $activity->description }}</div>
+                        <div class="activity-meta">{{ $activity->user->first_name ?? 'System' }} · {{ ucfirst(str_replace('_', ' ', $activity->type)) }}</div>
+                    </div>
+                    <div class="activity-time">{{ $activity->created_at->diffForHumans() }}</div>
+                </div>
+                @empty
+                <div class="activity-empty"><i class="fas fa-inbox"></i>No activity yet</div>
+                @endforelse
+            </div>
+
+        </div>
+
+        <div class="dash-col dash-rail">
+
+            {{-- Today's Pulse (merged) --}}
+            <div class="health-card">
+                <div class="health-header">
+                    <h4>
+                        @if(now()->dayOfWeek !== 0)<div class="pulse"></div>@endif
+                        Today's Pulse
+                    </h4>
+                    @if(now()->dayOfWeek === 0)
+                    <span style="font-size:0.72rem;font-weight:700;color:#d97706;display:flex;align-items:center;gap:5px;"><i class="fas fa-umbrella-beach"></i> Rest Day</span>
+                    @else
+                    <span style="font-size:0.72rem;font-weight:700;color:{{ $healthColor }};">{{ $healthPct }}% · {{ $todayLogged }}/{{ $nonManagerCount }} logged</span>
+                    @endif
+                </div>
+
+                @if(now()->dayOfWeek === 0)
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:0.5rem 0;text-align:center;">
+                    <div class="health-avatars" style="opacity:0.3;filter:grayscale(1);justify-content:center;flex-wrap:wrap;gap:4px;">
+                        @foreach($allMembers as $m)
+                        <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} · RDO">
+                            <img class="health-avatar" style="margin-left:0;object-fit:cover;" src="{{ $m->avatarUrl() }}" alt="{{ $m->first_name }}">
+                        </span>
+                        @endforeach
+                    </div>
+                    <p style="margin:0;font-size:0.78rem;color:var(--muted-foreground);">The team is on Rest Day. No EOD submissions expected on Sundays.</p>
+                </div>
+                @else
+                <div class="health-bar-wrap">
+                    <div class="health-bar" style="width:{{ $healthPct }}%;background:{{ $healthColor }};"></div>
+                </div>
+                <div class="pulse-group-label">Logged ({{ $todayLogged }})</div>
+                <div class="health-avatars">
+                    @foreach($allMembers->filter(fn($m) => in_array($m->id, $loggedUserIds)) as $m)
+                    @php
+                        $ml = $todayLogMap->get($m->id);
+                        $mt = $ml ? ($ml->task_1 + $ml->task_2 + $ml->task_3 + $ml->task_4 + $ml->task_5) : null;
+                    @endphp
+                    <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $mt !== null ? $mt . ' tasks' : 'Logged' }}">
+                        <img class="health-avatar logged" src="{{ $m->avatarUrl() }}" style="object-fit:cover;" alt="{{ $m->first_name }}">
                     </span>
                     @endforeach
                 </div>
-                <p style="margin:0;font-size:0.78rem;color:var(--muted-foreground);">The team is on Rest Day. No EOD submissions expected on Sundays.</p>
-            </div>
-            @else
-            <div class="health-bar-wrap">
-                <div class="health-bar" style="width:{{ $healthPct }}%;background:{{ $healthColor }};"></div>
-            </div>
-            <div class="pulse-group-label">Logged ({{ $todayLogged }})</div>
-            <div class="health-avatars">
-                @foreach($allMembers->filter(fn($m) => in_array($m->id, $loggedUserIds)) as $m)
-                @php
-                    $ml = $todayLogMap->get($m->id);
-                    $mt = $ml ? ($ml->task_1 + $ml->task_2 + $ml->task_3 + $ml->task_4 + $ml->task_5) : null;
-                @endphp
-                <span class="avatar-tip-wrap" data-tooltip="{{ $m->first_name }} {{ $m->last_name }} · {{ $mt !== null ? $mt . ' tasks' : 'Logged' }}">
-                    <img class="health-avatar logged" src="{{ $m->avatarUrl() }}" style="object-fit:cover;" alt="{{ $m->first_name }}">
-                </span>
+
+                @if($todayPending > 0)
+                <div class="pulse-group-label rose">Pending ({{ $todayPending }})</div>
+                @foreach($allMembers->filter(fn($m) => !in_array($m->id, $loggedUserIds)) as $m)
+                <div class="pulse-row">
+                    <img class="pulse-avatar" src="{{ $m->avatarUrl() }}" alt="{{ $m->first_name }}">
+                    <div class="pulse-row-meta">
+                        <div class="pulse-row-name">{{ $m->first_name }} {{ $m->last_name }}</div>
+                        <div class="pulse-row-role">{{ ucfirst($m->role) }}</div>
+                    </div>
+                    <span class="pulse-chip">Pending</span>
+                </div>
                 @endforeach
+                @else
+                <div class="pulse-all-logged"><i class="fas fa-check-circle"></i> All members logged in</div>
+                @endif
+                @endif
             </div>
 
-            @if($todayPending > 0)
-            <div class="pulse-group-label rose">Pending ({{ $todayPending }})</div>
-            @foreach($allMembers->filter(fn($m) => !in_array($m->id, $loggedUserIds)) as $m)
-            <div class="pulse-row">
-                <img class="pulse-avatar" src="{{ $m->avatarUrl() }}" alt="{{ $m->first_name }}">
-                <div class="pulse-row-meta">
-                    <div class="pulse-row-name">{{ $m->first_name }} {{ $m->last_name }}</div>
-                    <div class="pulse-row-role">{{ ucfirst($m->role) }}</div>
-                </div>
-                <span class="pulse-chip">Pending</span>
-            </div>
-            @endforeach
-            @else
-            <div class="pulse-all-logged"><i class="fas fa-check-circle"></i> All members logged in</div>
-            @endif
-            @endif
-        </div>
-
-    </div>
-
-    {{-- ── Team Trend + Task Types ── --}}
-    <div class="dash-2col-insights anim-up d3">
-
-        {{-- Team Output Trend --}}
-        <div class="insight-card">
-            <div class="insight-header">
-                <h4>Team Output Trend</h4>
-                <div class="pill-row" id="trendRange">
-                    <button type="button" class="pill" data-days="7">7d</button>
-                    <button type="button" class="pill active" data-days="30">30d</button>
-                </div>
-            </div>
-            <div id="trendChart" style="height:210px;"></div>
-        </div>
-
-        {{-- Task Types — this month --}}
-        <div class="insight-card">
-            <div class="insight-header">
-                <h4>Task Types — {{ now()->format('F') }}</h4>
-                <div class="pill-row" id="ttRoles">
-                    <button type="button" class="pill active" data-role="content">Content</button>
-                    <button type="button" class="pill" data-role="graphics">Graphics</button>
-                    <button type="button" class="pill" data-role="backend">Backend</button>
-                    <button type="button" class="pill" data-role="researcher">Research</button>
-                </div>
-            </div>
-            <div id="taskTypeChart" style="height:210px;"></div>
-        </div>
-
-    </div>
-
-    {{-- ── Role Activity ── --}}
-    @php
-    $roleHexColors = [
-        'content'    => '#0ea5e9',
-        'graphics'   => '#f59e0b',
-        'backend'    => '#f43f5e',
-        'researcher' => '#10b981',
-    ];
-    @endphp
-    <div class="dash-heading anim-up d4">
-        <div>
-            <h4>Role Activity — Last 7 Days</h4>
-            <p>Total tasks output per role per day. <span style="color:#f43f5e;font-weight:600;">Sunday = RDO</span></p>
-        </div>
-        <a href="{{ route('admin.reports') }}">Full Reports <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
-    </div>
-    <div class="role-ov-grid anim-up d4">
-        @foreach($roleBreakdown as $r)
-        @php $hex = $roleHexColors[$r['role']] ?? '#6366f1'; @endphp
-        <div class="role-ov-card" style="border-top:3px solid {{ $hex }};">
-            <div class="role-ov-header">
-                <span class="role-badge {{ $r['role'] }}">{{ ucfirst($r['role']) }}</span>
-                <span class="role-ov-members">{{ $r['members'] }} {{ $r['members'] === 1 ? 'member' : 'members' }}</span>
-            </div>
-            <p style="font-size:0.65rem;color:var(--muted-foreground);margin:0.25rem 0 0;font-weight:500;">Daily output — last 7 days</p>
-            <div id="roleChart-{{ $r['role'] }}" style="height:100px;margin:0 -0.375rem;"></div>
-            <a href="{{ route('admin.reports') }}?role={{ $r['role'] }}" class="role-ov-link">
-                View Reports <i class="fas fa-arrow-right" style="font-size:0.58rem;"></i>
-            </a>
-        </div>
-        @endforeach
-    </div>
-
-    {{-- ── Bottom two-col: Activity + Quick Actions ── --}}
-    <div class="dash-2col-main anim-up d5">
-
-        {{-- Recent Activity --}}
-        <div class="activity-card">
-            <div class="activity-header">
-                <h4>Recent Activity</h4>
-                <a href="{{ route('admin.daily-logs') }}">View All <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
-            </div>
-            @forelse($recentActivity as $activity)
-            @php
-                $actColors = [
-                    'eod_submitted' => '#10b981', 'eod_updated'  => '#3b82f6',
-                    'eod_deleted'   => '#ef4444', 'user_created' => '#8b5cf6',
-                    'user_updated'  => '#f59e0b', 'user_deleted' => '#ef4444',
-                ];
-                $ac = $actColors[$activity->type] ?? '#64748b';
-            @endphp
-            <div class="activity-item">
-                <div class="activity-dot-wrap">
-                    <div class="activity-dot" style="background:{{ $ac }};"></div>
-                    @if(!$loop->last)<div class="activity-line"></div>@endif
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">{{ $activity->description }}</div>
-                    <div class="activity-meta">{{ $activity->user->first_name ?? 'System' }} · {{ ucfirst(str_replace('_', ' ', $activity->type)) }}</div>
-                </div>
-                <div class="activity-time">{{ $activity->created_at->diffForHumans() }}</div>
-            </div>
-            @empty
-            <div class="activity-empty"><i class="fas fa-inbox"></i>No activity yet</div>
-            @endforelse
-        </div>
-
-        {{-- Top Contributor + Quick Actions --}}
-        <div>
             {{-- Attendance This Week --}}
             <div class="att-card">
                 <div class="att-header">
@@ -537,6 +530,7 @@ $todayLogMap = $todayLogs->keyBy('user_id');
                     <i class="fas fa-chevron-right qa-arrow"></i>
                 </a>
             </div>
+
         </div>
 
     </div>
