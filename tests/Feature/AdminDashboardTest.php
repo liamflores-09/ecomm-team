@@ -92,4 +92,38 @@ class AdminDashboardTest extends TestCase
         $response->assertSee('data-days="7"', false);
         $response->assertSee('data-days="30"', false);
     }
+
+    public function test_task_type_breakdown_groups_this_month_by_role(): void
+    {
+        $admin    = $this->makeAdmin();
+        $content  = $this->makeMember();
+        $graphics = $this->makeMember('graphics');
+        TaskCategory::create(['department' => 'graphics', 'column_key' => 'task_1', 'label' => 'Banners']);
+        TaskCategory::create(['department' => 'graphics', 'column_key' => 'task_2', 'label' => 'Thumbnails']);
+
+        DailyLog::create([
+            'user_id' => $content->id, 'date' => now()->toDateString(),
+            'task_1' => 5, 'task_2' => 0, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+        DailyLog::create([
+            'user_id' => $graphics->id, 'date' => now()->toDateString(),
+            'task_1' => 0, 'task_2' => 7, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+        DailyLog::create([ // last day of previous month — excluded (avoid subMonth() overflow)
+            'user_id' => $content->id, 'date' => now()->startOfMonth()->subDay()->toDateString(),
+            'task_1' => 99, 'task_2' => 0, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $bd = $response->viewData('taskTypeBreakdown');
+        $this->assertSame(5, $bd['content']['data'][0]);
+        $this->assertSame('New SKU', $bd['content']['labels'][0]);
+        $this->assertSame(7, $bd['graphics']['data'][1]);
+        $this->assertSame('Banners', $bd['graphics']['labels'][0]);
+        // no researcher logs -> zeroed data, labels fall back to content's
+        $this->assertSame([0, 0, 0, 0, 0], $bd['researcher']['data']);
+        $this->assertSame('New SKU', $bd['researcher']['labels'][0]);
+    }
 }

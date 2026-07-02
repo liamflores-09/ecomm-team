@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\DailyLog;
 use App\Models\ActivityLog;
+use App\Support\TaskLabels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -179,6 +180,33 @@ class AdminController extends Controller
             ->filter(fn($r) => $r['members'] > 0)
             ->values();
 
+        // Task-type breakdown per role — this month
+        $memberRoles = ['content', 'graphics', 'backend', 'researcher'];
+        $taskTypeRaw = DailyLog::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->join('users', 'daily_logs.user_id', '=', 'users.id')
+            ->whereIn('users.role', $memberRoles)
+            ->select(
+                'users.role',
+                DB::raw('SUM(task_1) as t1'), DB::raw('SUM(task_2) as t2'),
+                DB::raw('SUM(task_3) as t3'), DB::raw('SUM(task_4) as t4'),
+                DB::raw('SUM(task_5) as t5')
+            )
+            ->groupBy('users.role')
+            ->get()->keyBy('role');
+
+        $taskTypeBreakdown = collect($memberRoles)->mapWithKeys(function ($role) use ($taskTypeRaw) {
+            $labels = TaskLabels::get($role);
+            $row    = $taskTypeRaw->get($role);
+            $names  = [];
+            $data   = [];
+            for ($i = 1; $i <= 5; $i++) {
+                $names[] = $labels["task_$i"] ?? "Task $i";
+                $data[]  = $row ? (int) $row->{"t$i"} : 0;
+            }
+            return [$role => ['labels' => $names, 'data' => $data]];
+        });
+
         return view('admin.dashboard', compact(
             'user', 'totalUsers', 'managers', 'researchers', 'content', 'graphics', 'backend',
             'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
@@ -190,7 +218,7 @@ class AdminController extends Controller
             'nonManagerCount', 'taskChange', 'healthPct', 'healthColor',
             'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData',
             'trendLabels', 'trendData', 'trendSundayIndices',
-            'roleBreakdown', 'weekLabels', 'weekSundayIndices'
+            'roleBreakdown', 'weekLabels', 'weekSundayIndices', 'taskTypeBreakdown'
         ));
     }
 
