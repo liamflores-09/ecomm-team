@@ -80,4 +80,16 @@ class AdminDashboardTest extends TestCase
         $this->assertSame(now()->format('M j'), $response->viewData('trendLabels')[29]);
         $this->assertSame(array_slice($trendData, -7), $response->viewData('sparkData'));
     }
+
+    public function test_trend_chart_and_toggle_render(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('id="trendChart"', false);
+        $response->assertSee('data-days="7"', false);
+        $response->assertSee('data-days="30"', false);
+    }
 }

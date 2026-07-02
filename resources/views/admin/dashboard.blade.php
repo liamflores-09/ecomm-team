@@ -124,6 +124,20 @@
 .role-ov-link { font-size: 0.7rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; margin-top: 0.25rem; }
 .role-ov-link:hover { gap: 7px; }
 
+/* ── Insights row (trend + task types) ─────────────────── */
+.dash-2col-insights { display: grid; grid-template-columns: 60fr 40fr; gap: 1.125rem; margin-bottom: 1.25rem; align-items: start; }
+.insight-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem 1.25rem; }
+.insight-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.insight-header h4 { font-size: 0.88rem; font-weight: 700; margin: 0; }
+.pill-row { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.pill {
+    font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 9999px;
+    border: 1px solid var(--border); background: transparent; color: var(--muted-foreground);
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.pill:hover { color: var(--foreground); border-color: var(--border-strong); }
+.pill.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+
 /* ── Activity feed ────────────────────────────────────── */
 .activity-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
 .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border); }
@@ -161,6 +175,7 @@
 @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px)  { .kpi-grid { grid-template-columns: 1fr; } }
 @media (max-width: 900px)  { .dash-2col, .dash-2col-main { grid-template-columns: 1fr; } }
+@media (max-width: 900px)  { .dash-2col-insights { grid-template-columns: 1fr; } }
 </style>
 @endsection
 
@@ -364,6 +379,23 @@ $todayLogMap = $todayLogs->keyBy('user_id');
 
     </div>
 
+    {{-- ── Team Trend + Task Types ── --}}
+    <div class="dash-2col-insights anim-up d3">
+
+        {{-- Team Output Trend --}}
+        <div class="insight-card">
+            <div class="insight-header">
+                <h4>Team Output Trend</h4>
+                <div class="pill-row" id="trendRange">
+                    <button type="button" class="pill" data-days="7">7d</button>
+                    <button type="button" class="pill active" data-days="30">30d</button>
+                </div>
+            </div>
+            <div id="trendChart" style="height:210px;"></div>
+        </div>
+
+    </div>
+
     {{-- ── Role Activity ── --}}
     @php
     $roleHexColors = [
@@ -373,14 +405,14 @@ $todayLogMap = $todayLogs->keyBy('user_id');
         'researcher' => '#10b981',
     ];
     @endphp
-    <div class="dash-heading anim-up d3">
+    <div class="dash-heading anim-up d4">
         <div>
             <h4>Role Activity — Last 7 Days</h4>
             <p>Total tasks output per role per day. <span style="color:#f43f5e;font-weight:600;">Sunday = RDO</span></p>
         </div>
         <a href="{{ route('admin.reports') }}">Full Reports <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i></a>
     </div>
-    <div class="role-ov-grid anim-up d3">
+    <div class="role-ov-grid anim-up d4">
         @foreach($roleBreakdown as $r)
         @php $hex = $roleHexColors[$r['role']] ?? '#6366f1'; @endphp
         <div class="role-ov-card" style="border-top:3px solid {{ $hex }};">
@@ -398,7 +430,7 @@ $todayLogMap = $todayLogs->keyBy('user_id');
     </div>
 
     {{-- ── Bottom two-col: Activity + Quick Actions ── --}}
-    <div class="dash-2col-main anim-up d4">
+    <div class="dash-2col-main anim-up d5">
 
         {{-- Recent Activity --}}
         <div class="activity-card">
@@ -520,6 +552,52 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).render();
     });
+
+    // Team trend chart (7d/30d)
+    var trendLabels  = {!! json_encode($trendLabels) !!};
+    var trendData    = {!! json_encode($trendData) !!};
+    var trendSundays = {!! json_encode($trendSundayIndices) !!};
+    var trendEl      = document.getElementById('trendChart');
+
+    function trendOptions(days) {
+        var offset = trendLabels.length - days;
+        return {
+            chart: { type: 'area', height: 210, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#94a3b8' },
+            series: [{ name: 'Tasks', data: trendData.slice(-days) }],
+            colors: ['#6366f1'],
+            stroke: { width: 2, curve: 'smooth' },
+            fill: { type: 'gradient', gradient: { opacityFrom: 0.25, opacityTo: 0.03 } },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: trendLabels.slice(-days),
+                tickAmount: days === 30 ? 9 : 6,
+                labels: { style: { fontSize: '10px', fontWeight: 600 }, rotate: 0 },
+                axisBorder: { show: false }, axisTicks: { show: false }
+            },
+            yaxis: { min: 0, forceNiceScale: true, labels: { style: { fontSize: '10px' } } },
+            grid: { borderColor: 'rgba(148,163,184,0.15)', strokeDashArray: 4, padding: { left: 8, right: 8 } },
+            tooltip: {
+                theme: isDark ? 'dark' : 'light', style: { fontSize: '12px' },
+                x: { formatter: function (v, o) {
+                    var i = o.dataPointIndex + offset;
+                    return trendSundays.indexOf(i) !== -1 ? trendLabels[i] + ' (RDO)' : trendLabels[i];
+                } },
+                y: { formatter: function (v) { return v + ' tasks'; } }
+            }
+        };
+    }
+
+    if (trendEl) {
+        var trendChart = new ApexCharts(trendEl, trendOptions(30));
+        trendChart.render();
+        document.querySelectorAll('#trendRange .pill').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#trendRange .pill').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                trendChart.updateOptions(trendOptions(parseInt(btn.dataset.days, 10)));
+            });
+        });
+    }
 });
 </script>
 @endsection
