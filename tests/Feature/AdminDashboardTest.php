@@ -170,4 +170,30 @@ class AdminDashboardTest extends TestCase
         $this->assertCount(1, $outToday);
         $this->assertTrue($outToday->first()->is($graphics));
     }
+
+    public function test_attendance_card_renders_with_out_today(): void
+    {
+        $this->travelTo(now()->startOfWeek()->addDays(2)->setTime(10, 0)); // Wednesday
+
+        $admin  = $this->makeAdmin();
+        $member = $this->makeMember();
+        Attendance::create(['user_id' => $member->id, 'date' => now()->toDateString(), 'status' => 'vl']);
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('Attendance This Week');
+        $response->assertSee('Out today');
+    }
+
+    public function test_attendance_card_empty_state(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('No attendance marked yet this week');
+        $response->assertDontSee('Out today');
+    }
 }

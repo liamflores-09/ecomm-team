@@ -157,6 +157,22 @@
 .activity-empty { text-align: center; padding: 2rem 1rem; color: var(--muted-foreground); font-size: 0.82rem; }
 .activity-empty i { font-size: 1.25rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
 
+/* ── Attendance This Week ─────────────────────────────── */
+.att-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem; margin-bottom: 0.875rem; }
+.att-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; }
+.att-title { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); display: flex; align-items: center; gap: 0.35rem; }
+.att-header a { font-size: 0.7rem; font-weight: 600; color: var(--muted-foreground); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
+.att-header a:hover { color: var(--foreground); }
+.att-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.att-chip { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.55rem; background: var(--muted); border-radius: 8px; }
+.att-chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.att-chip-count { font-size: 0.85rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
+.att-chip-label { font-size: 0.62rem; font-weight: 600; color: var(--muted-foreground); }
+.att-empty { font-size: 0.75rem; color: var(--muted-foreground); text-align: center; padding: 0.75rem 0; }
+.att-out { margin-top: 0.875rem; padding-top: 0.75rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.att-out-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); margin-right: 0.25rem; }
+.att-out-avatar { width: 26px; height: 26px; border-radius: 50%; display: block; border: 2px solid var(--card); }
+
 /* ── Quick Actions ────────────────────────────────────── */
 .qa-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .qa-card-header { display: flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1.125rem; background: var(--muted); border-bottom: 1px solid var(--border); font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--foreground); }
@@ -479,6 +495,44 @@ $todayLogMap = $todayLogs->keyBy('user_id');
 
         {{-- Top Contributor + Quick Actions --}}
         <div>
+            {{-- Attendance This Week --}}
+            <div class="att-card">
+                <div class="att-header">
+                    <span class="att-title"><i class="fas fa-calendar-check" style="color:#10b981;"></i> Attendance This Week</span>
+                    <a href="{{ route('admin.attendance') }}">View All <i class="fas fa-arrow-right" style="font-size:0.55rem;"></i></a>
+                </div>
+                @if($attWeekCounts->sum() === 0)
+                <div class="att-empty">No attendance marked yet this week</div>
+                @else
+                <div class="att-chips">
+                    @foreach([
+                        'present'  => ['Present',  '#10b981'],
+                        'half_day' => ['Half-day', '#f59e0b'],
+                        'vl'       => ['VL',       '#0ea5e9'],
+                        'sl'       => ['SL',       '#8b5cf6'],
+                        'ut'       => ['UT',       '#f97316'],
+                        'absent'   => ['Absent',   '#f43f5e'],
+                    ] as $key => [$label, $hex])
+                    <div class="att-chip">
+                        <span class="att-chip-dot" style="background:{{ $hex }};"></span>
+                        <span class="att-chip-count">{{ $attWeekCounts[$key] }}</span>
+                        <span class="att-chip-label">{{ $label }}</span>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+                @if(now()->dayOfWeek !== 0 && $outToday->isNotEmpty())
+                <div class="att-out">
+                    <span class="att-out-label">Out today</span>
+                    @foreach($outToday as $u)
+                    <span class="avatar-tip-wrap" data-tooltip="{{ $u->first_name }} {{ $u->last_name }}">
+                        <img class="att-out-avatar" src="{{ $u->avatarUrl() }}" alt="{{ $u->first_name }}" style="object-fit:cover;">
+                    </span>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
             {{-- Quick Actions --}}
             <div class="qa-card">
                 <div class="qa-card-header"><i class="fas fa-bolt" style="color:#f59e0b;font-size:0.6rem;"></i> Quick Actions</div>
