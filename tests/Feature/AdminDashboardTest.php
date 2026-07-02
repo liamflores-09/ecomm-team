@@ -54,4 +54,30 @@ class AdminDashboardTest extends TestCase
         // Only the amber KPI card keeps the "Top This Month" label
         $this->assertSame(1, substr_count($response->getContent(), 'Top This Month'));
     }
+
+    public function test_trend_data_covers_30_days_and_zero_fills(): void
+    {
+        $admin  = $this->makeAdmin();
+        $member = $this->makeMember();
+        DailyLog::create([
+            'user_id' => $member->id, 'date' => now()->toDateString(),
+            'task_1' => 3, 'task_2' => 2, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+        DailyLog::create([
+            'user_id' => $member->id, 'date' => now()->subDays(10)->toDateString(),
+            'task_1' => 4, 'task_2' => 0, 'task_3' => 0, 'task_4' => 0, 'task_5' => 0,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $trendData = $response->viewData('trendData');
+        $this->assertCount(30, $trendData);
+        $this->assertSame(5, $trendData[29]);          // today = index 29
+        $this->assertSame(4, $trendData[19]);          // 10 days ago
+        $this->assertSame(0, $trendData[0]);           // zero-filled
+        $this->assertCount(30, $response->viewData('trendLabels'));
+        $this->assertSame(now()->format('M j'), $response->viewData('trendLabels')[29]);
+        $this->assertSame(array_slice($trendData, -7), $response->viewData('sparkData'));
+    }
 }

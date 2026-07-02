@@ -56,7 +56,7 @@ class AdminController extends Controller
             ->orderByDesc('total')
             ->first();
 
-        $dailyTotals = DailyLog::where('date', '>=', now()->subDays(6)->startOfDay())
+        $dailyTotals = DailyLog::where('date', '>=', now()->subDays(29)->startOfDay())
             ->select(
                 'date',
                 DB::raw('SUM(task_1) as total_task_1'),
@@ -112,16 +112,23 @@ class AdminController extends Controller
         $allMembers       = User::whereNotIn('role', ['manager', 'head', 'analyst'])->get();
         $loggedUserIds    = $todayLogs->pluck('user_id')->toArray();
 
-        // Sparkline — derived from $dailyTotals already in memory, no extra queries
-        $sparkMap  = $dailyTotals->keyBy(fn($d) => $d->date->format('Y-m-d'));
-        $sparkData = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $dateStr     = now()->subDays($i)->format('Y-m-d');
-            $day         = $sparkMap->get($dateStr);
-            $sparkData[] = $day
-                ? ($day->total_task_1 + $day->total_task_2 + $day->total_task_3 + $day->total_task_4 + $day->total_task_5)
+        // 30-day trend — derived from $dailyTotals already in memory, no extra queries
+        $trendMap           = $dailyTotals->keyBy(fn($d) => $d->date->format('Y-m-d'));
+        $trendLabels        = [];
+        $trendData          = [];
+        $trendSundayIndices = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $date          = now()->subDays($i);
+            $trendLabels[] = $date->format('M j');
+            if ($date->dayOfWeek === 0) {
+                $trendSundayIndices[] = 29 - $i;
+            }
+            $day         = $trendMap->get($date->format('Y-m-d'));
+            $trendData[] = $day
+                ? (int) ($day->total_task_1 + $day->total_task_2 + $day->total_task_3 + $day->total_task_4 + $day->total_task_5)
                 : 0;
         }
+        $sparkData = array_slice($trendData, -7);
 
         // Per-role breakdown
         $roleMemberCounts = User::whereNotIn('role', ['manager', 'head'])
@@ -182,6 +189,7 @@ class AdminController extends Controller
             'todayLogs',
             'nonManagerCount', 'taskChange', 'healthPct', 'healthColor',
             'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData',
+            'trendLabels', 'trendData', 'trendSundayIndices',
             'roleBreakdown', 'weekLabels', 'weekSundayIndices'
         ));
     }
