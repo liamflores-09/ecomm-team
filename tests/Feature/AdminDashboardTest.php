@@ -58,6 +58,7 @@ class AdminDashboardTest extends TestCase
 
     public function test_trend_data_covers_30_days_and_zero_fills(): void
     {
+        $this->travelTo(now()->startOfWeek()->addDays(2)->setTime(10, 0)); // Wednesday
         $admin  = $this->makeAdmin();
         $member = $this->makeMember();
         DailyLog::create([
@@ -80,6 +81,7 @@ class AdminDashboardTest extends TestCase
         $this->assertCount(30, $response->viewData('trendLabels'));
         $this->assertSame(now()->format('M j'), $response->viewData('trendLabels')[29]);
         $this->assertSame(array_slice($trendData, -7), $response->viewData('sparkData'));
+        $this->assertSame([5, 12, 19, 26], $response->viewData('trendSundayIndices'));
     }
 
     public function test_trend_chart_and_toggle_render(): void

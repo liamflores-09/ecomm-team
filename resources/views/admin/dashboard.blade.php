@@ -415,7 +415,7 @@ $todayLogMap = $todayLogs->keyBy('user_id');
             <div class="insight-header">
                 <h4>Task Types — {{ now()->format('F') }}</h4>
                 <div class="pill-row" id="ttRoles">
-                    <button type="button" class="pill" data-role="content">Content</button>
+                    <button type="button" class="pill active" data-role="content">Content</button>
                     <button type="button" class="pill" data-role="graphics">Graphics</button>
                     <button type="button" class="pill" data-role="backend">Backend</button>
                     <button type="button" class="pill" data-role="researcher">Research</button>
@@ -629,6 +629,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function trendOptions(days) {
         var offset = trendLabels.length - days;
+        var trendLabelColors = trendLabels.slice(-days).map(function (_, i) {
+            return trendSundays.indexOf(i + offset) !== -1 ? '#ef4444' : '#94a3b8';
+        });
         return {
             chart: { type: 'area', height: 210, toolbar: { show: false }, fontFamily: 'Inter', foreColor: '#94a3b8' },
             series: [{ name: 'Tasks', data: trendData.slice(-days) }],
@@ -639,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
             xaxis: {
                 categories: trendLabels.slice(-days),
                 tickAmount: days === 30 ? 9 : 6,
-                labels: { style: { fontSize: '10px', fontWeight: 600 }, rotate: 0 },
+                labels: { style: { fontSize: '10px', fontWeight: 600, colors: trendLabelColors }, rotate: 0 },
                 axisBorder: { show: false }, axisTicks: { show: false }
             },
             yaxis: { min: 0, forceNiceScale: true, labels: { style: { fontSize: '10px' } } },
