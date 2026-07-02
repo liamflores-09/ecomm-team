@@ -41,7 +41,7 @@ class AdminController extends Controller
 
         // Today's status — analysts excluded (they don't submit EOD)
         $eodRoles = ['manager', 'head', 'analyst'];
-        $todayLogged = DailyLog::where('date', now()->toDateString())
+        $todayLogged = DailyLog::whereDate('date', now()->toDateString())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->whereNotIn('users.role', $eodRoles)
             ->distinct('daily_logs.user_id')
@@ -98,7 +98,7 @@ class AdminController extends Controller
             ->take(8)
             ->get();
 
-        $todayLogs = DailyLog::where('date', now()->toDateString())
+        $todayLogs = DailyLog::whereDate('date', now()->toDateString())
             ->join('users', 'daily_logs.user_id', '=', 'users.id')
             ->select('daily_logs.*', 'users.username', 'users.first_name', 'users.role')
             ->get();
