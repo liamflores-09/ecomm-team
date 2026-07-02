@@ -143,18 +143,6 @@
 .activity-empty { text-align: center; padding: 2rem 1rem; color: var(--muted-foreground); font-size: 0.82rem; }
 .activity-empty i { font-size: 1.25rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
 
-/* ── Top Contributor ──────────────────────────────────── */
-.tc-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.125rem; margin-bottom: 0.875rem; }
-.tc-header-label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted-foreground); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.35rem; }
-.tc-body { display: flex; align-items: center; gap: 0.875rem; }
-.tc-initial { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1 0%, #a78bfa 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.05rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; flex-shrink: 0; }
-.tc-info { flex: 1; min-width: 0; }
-.tc-name { font-size: 0.92rem; font-weight: 700; color: var(--foreground); font-family: 'Space Grotesk', sans-serif; }
-.tc-role { font-size: 0.65rem; color: var(--muted-foreground); font-weight: 500; margin-top: 1px; }
-.tc-score { text-align: right; flex-shrink: 0; }
-.tc-score-val   { font-size: 1.3rem; font-weight: 800; color: #6366f1; font-family: 'Space Grotesk', sans-serif; line-height: 1; }
-.tc-score-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: var(--muted-foreground); letter-spacing: 0.05em; }
-
 /* ── Quick Actions ────────────────────────────────────── */
 .qa-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .qa-card-header { display: flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1.125rem; background: var(--muted); border-bottom: 1px solid var(--border); font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--foreground); }
@@ -213,13 +201,6 @@ $todayLogMap = $todayLogs->keyBy('user_id');
                 <div class="wb-stat-val">{{ $todayLogged }}<span style="font-size:0.9rem;color:var(--muted-foreground);font-weight:500;">/{{ $nonManagerCount }}</span></div>
                 <div class="wb-stat-label">Members In</div>
             </div>
-            @if($topContributor)
-            <div class="wb-divider"></div>
-            <div class="wb-stat">
-                <div class="wb-stat-val" style="font-size:0.95rem;">{{ $topContributor->first_name }}</div>
-                <div class="wb-stat-label">Top This Month</div>
-            </div>
-            @endif
             @endif
         </div>
     </div>
@@ -452,24 +433,6 @@ $todayLogMap = $todayLogs->keyBy('user_id');
 
         {{-- Top Contributor + Quick Actions --}}
         <div>
-            {{-- Top Contributor --}}
-            @if($topContributor)
-            <div class="tc-card">
-                <div class="tc-header-label"><i class="fas fa-trophy" style="color:#f59e0b;"></i> Top Contributor — {{ now()->format('F') }}</div>
-                <div class="tc-body">
-                    <div class="tc-initial">{{ strtoupper(substr($topContributor->first_name, 0, 1)) }}</div>
-                    <div class="tc-info">
-                        <div class="tc-name">{{ $topContributor->first_name }}</div>
-                        <div class="tc-role">@{{ $topContributor->username }}</div>
-                    </div>
-                    <div class="tc-score">
-                        <div class="tc-score-val">{{ number_format($topContributor->total) }}</div>
-                        <div class="tc-score-label">tasks</div>
-                    </div>
-                </div>
-            </div>
-            @endif
-
             {{-- Quick Actions --}}
             <div class="qa-card">
                 <div class="qa-card-header"><i class="fas fa-bolt" style="color:#f59e0b;font-size:0.6rem;"></i> Quick Actions</div>
