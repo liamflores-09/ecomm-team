@@ -23,7 +23,7 @@ class TaskLabels
             }
 
             if (empty($labels)) {
-                return self::get('content');
+                return $role === 'content' ? [] : self::get('content');
             }
 
             return $labels;
