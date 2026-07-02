@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function () {
             grid: { show: false, padding: { left: 2, right: 2, top: 0, bottom: 0 } },
             dataLabels: { enabled: false },
             tooltip: {
-                theme: 'light', style: { fontSize: '12px' },
+                theme: isDark ? 'dark' : 'light', style: { fontSize: '12px' },
                 x: { formatter: function(v, o) { var i = o.dataPointIndex; return sundayIdx.indexOf(i) !== -1 ? weekLabels[i] + ' (RDO)' : weekLabels[i]; } },
                 y: { formatter: function(v) { return v + ' tasks'; } }
             }
