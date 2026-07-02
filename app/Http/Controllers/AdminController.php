@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Attendance;
 use App\Models\DailyLog;
 use App\Models\ActivityLog;
 use App\Support\TaskLabels;
@@ -207,6 +208,22 @@ class AdminController extends Controller
             return [$role => ['labels' => $names, 'data' => $data]];
         });
 
+        // Attendance — current week Mon–Sat
+        $weekStart      = now()->startOfWeek();          // Monday
+        $weekEnd        = $weekStart->copy()->addDays(5); // Saturday
+        $weekAttendance = Attendance::whereBetween('date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+            ->whereHas('user', fn($q) => $q->whereIn('role', $memberRoles))
+            ->with('user')
+            ->get();
+
+        $attWeekCounts = collect(['present', 'half_day', 'vl', 'sl', 'ut', 'absent'])
+            ->mapWithKeys(fn($s) => [$s => $weekAttendance->where('status', $s)->count()]);
+
+        $outToday = $weekAttendance
+            ->filter(fn($a) => $a->date->isToday() && in_array($a->status, ['absent', 'vl', 'sl', 'half_day', 'ut']))
+            ->map(fn($a) => $a->user)
+            ->values();
+
         return view('admin.dashboard', compact(
             'user', 'totalUsers', 'managers', 'researchers', 'content', 'graphics', 'backend',
             'totalLogs', 'thisMonthLogs', 'thisMonthTasks', 'lastMonthTasks',
@@ -218,7 +235,8 @@ class AdminController extends Controller
             'nonManagerCount', 'taskChange', 'healthPct', 'healthColor',
             'avgTasksPerson', 'allMembers', 'loggedUserIds', 'sparkData',
             'trendLabels', 'trendData', 'trendSundayIndices',
-            'roleBreakdown', 'weekLabels', 'weekSundayIndices', 'taskTypeBreakdown'
+            'roleBreakdown', 'weekLabels', 'weekSundayIndices', 'taskTypeBreakdown',
+            'attWeekCounts', 'outToday'
         ));
     }
 
