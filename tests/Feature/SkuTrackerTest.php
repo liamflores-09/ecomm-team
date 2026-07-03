@@ -252,4 +252,54 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('2026-01-05');
         $response->assertDontSee('2026-01-05T', false);
     }
+
+    public function test_table_shows_all_sku_fields_as_columns(): void
+    {
+        \App\Models\Sku::create([
+            'brand' => 'Acme', 'sku' => 'ACME-GRID-1',
+            'pr_file_location' => 'C:\path\to\research.xlsx',
+            'remarks' => 'Needs re-shoot',
+            'ready_for_cvp' => true,
+            'cvp_uploaded' => true,
+            'shopee_link' => 'https://shopee.ph/product/acme-grid-1',
+            'lazada_link' => 'https://lazada.com.ph/products/acme-grid-1',
+            'tiktok_link' => 'https://tiktok.com/view/product/acme-grid-1',
+            'jg_pro_shopee_link' => 'https://shopee.ph/product/jgpro-acme-1',
+            'jg_pro_lazada_link' => 'https://lazada.com.ph/products/jgpro-acme-1',
+            'shopify_link' => 'https://jgsuperstore.com/products/acme-grid-1',
+            'cinepro_link' => 'https://jgcinepro.com/product/acme-grid-1',
+            'lzd_brand_mall_link' => 'https://lazada.com.ph/shop/acme-grid-1',
+            'shp_brand_mall_link' => 'https://shopee.ph/shop/acme-grid-1',
+            'tt_brand_mall_link' => 'https://tiktok.com/shop/acme-grid-1',
+        ]);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertStatus(200);
+
+        // New column headers
+        foreach ([
+            'PR Date Started', 'PR Date Completed', 'PR File Location', 'Ready for CVP', 'Remarks',
+            'Content Date Started', 'Content Date Posted', 'CVP Uploaded',
+            'Shopee', 'Lazada', 'TikTok', 'JG PRO Shopee', 'JG PRO Lazada',
+            'Shopify', 'CinePro', 'LZD Brand Mall', 'SHP Brand Mall', 'TT Brand Mall',
+        ] as $header) {
+            $response->assertSee($header);
+        }
+
+        // New column values for the row itself
+        $response->assertSee('Needs re-shoot');
+        $response->assertSee('https://shopee.ph/product/acme-grid-1');
+        $response->assertSee('https://tiktok.com/shop/acme-grid-1');
+    }
+
+    public function test_brand_and_sku_columns_are_sticky(): void
+    {
+        \App\Models\Sku::create(['brand' => 'Acme', 'sku' => 'ACME-STICKY-1']);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertStatus(200);
+        $response->assertSee('sku-col-sticky', false);
+    }
 }

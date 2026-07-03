@@ -22,8 +22,11 @@
 
     .sku-table-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; overflow-x: auto; }
     table.sku-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; white-space: nowrap; }
-    table.sku-table th { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); color: var(--muted-foreground); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
-    table.sku-table td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); }
+    table.sku-table th { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); color: var(--muted-foreground); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; background: var(--card); }
+    table.sku-table td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+    .sku-col-sticky-1, .sku-col-sticky-2 { position: sticky; z-index: 2; background: var(--card); overflow: hidden; text-overflow: ellipsis; }
+    .sku-col-sticky-1 { left: 0; min-width: 130px; max-width: 130px; }
+    .sku-col-sticky-2 { left: 130px; min-width: 160px; max-width: 160px; border-right: 1px solid var(--border-light); }
     .sku-chip { display: inline-flex; padding: 0.18rem 0.6rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700; }
     .sku-chip.done { background: rgba(34,197,94,0.12); color: var(--success); }
     .sku-chip.pending { background: rgba(245,158,11,0.12); color: #f59e0b; }
@@ -114,28 +117,51 @@
         <table class="sku-table">
             <thead>
                 <tr>
-                    <th>Brand</th><th>SKU</th><th>Variant</th>
-                    <th>PR Assignee</th><th>PR Status</th><th>PR SLA</th>
-                    <th>Content Assignee</th><th>Content Status</th><th>Content SLA</th>
-                    <th>Posted</th><th></th>
+                    <th class="sku-col-sticky-1">Brand</th><th class="sku-col-sticky-2">SKU</th><th>Variant</th>
+                    <th>PR Assignee</th><th>PR Status</th><th>PR Date Started</th><th>PR Date Completed</th><th>PR SLA</th>
+                    <th>PR File Location</th><th>Ready for CVP</th><th>Remarks</th>
+                    <th>Content Assignee</th><th>Content Date Started</th><th>Content Date Posted</th><th>Content SLA</th><th>Content Status</th>
+                    <th>Posted</th><th>CVP Uploaded</th>
+                    <th>Shopee</th><th>Lazada</th><th>TikTok</th>
+                    <th>JG PRO Shopee</th><th>JG PRO Lazada</th><th>Shopify</th><th>CinePro</th>
+                    <th>LZD Brand Mall</th><th>SHP Brand Mall</th><th>TT Brand Mall</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($skus as $sku)
                 <tr>
-                    <td>{{ $sku->brand }}</td>
-                    <td>{{ $sku->sku }}</td>
+                    <td class="sku-col-sticky-1" title="{{ $sku->brand }}">{{ $sku->brand }}</td>
+                    <td class="sku-col-sticky-2" title="{{ $sku->sku }}">{{ $sku->sku }}</td>
                     <td>{{ $sku->variant ?? '—' }}</td>
                     <td>{{ $sku->pr_assignee ?? '—' }}</td>
                     <td>{{ $sku->pr_status ?? '—' }}</td>
+                    <td>{{ $sku->pr_date_started?->format('Y-m-d') ?? '—' }}</td>
+                    <td>{{ $sku->pr_date_completed?->format('Y-m-d') ?? '—' }}</td>
                     <td>{{ $sku->pr_sla !== null ? $sku->pr_sla . 'd' : '—' }}</td>
+                    <td title="{{ $sku->pr_file_location }}">{{ $sku->pr_file_location ?? '—' }}</td>
+                    <td>{{ $sku->ready_for_cvp ? 'Yes' : 'No' }}</td>
+                    <td title="{{ $sku->remarks }}">{{ $sku->remarks ?? '—' }}</td>
                     <td>{{ $sku->content_assignee ?? '—' }}</td>
+                    <td>{{ $sku->content_date_started?->format('Y-m-d') ?? '—' }}</td>
+                    <td>{{ $sku->content_date_posted?->format('Y-m-d') ?? '—' }}</td>
+                    <td>{{ $sku->content_sla !== null ? $sku->content_sla . 'd' : '—' }}</td>
                     <td>
                         @php $csKey = match($sku->content_status) { 'DONE' => 'done', 'PENDING' => 'pending', default => 'none' }; @endphp
                         <span class="sku-chip {{ $csKey }}">{{ $sku->content_status }}</span>
                     </td>
-                    <td>{{ $sku->content_sla !== null ? $sku->content_sla . 'd' : '—' }}</td>
                     <td>{{ $sku->posted ? 'Yes' : 'No' }}</td>
+                    <td>{{ $sku->cvp_uploaded ? 'Yes' : 'No' }}</td>
+                    <td title="{{ $sku->shopee_link }}">{{ $sku->shopee_link ?? '—' }}</td>
+                    <td title="{{ $sku->lazada_link }}">{{ $sku->lazada_link ?? '—' }}</td>
+                    <td title="{{ $sku->tiktok_link }}">{{ $sku->tiktok_link ?? '—' }}</td>
+                    <td title="{{ $sku->jg_pro_shopee_link }}">{{ $sku->jg_pro_shopee_link ?? '—' }}</td>
+                    <td title="{{ $sku->jg_pro_lazada_link }}">{{ $sku->jg_pro_lazada_link ?? '—' }}</td>
+                    <td title="{{ $sku->shopify_link }}">{{ $sku->shopify_link ?? '—' }}</td>
+                    <td title="{{ $sku->cinepro_link }}">{{ $sku->cinepro_link ?? '—' }}</td>
+                    <td title="{{ $sku->lzd_brand_mall_link }}">{{ $sku->lzd_brand_mall_link ?? '—' }}</td>
+                    <td title="{{ $sku->shp_brand_mall_link }}">{{ $sku->shp_brand_mall_link ?? '—' }}</td>
+                    <td title="{{ $sku->tt_brand_mall_link }}">{{ $sku->tt_brand_mall_link ?? '—' }}</td>
                     <td>
                         @if($perms['can_edit_pr'] || $perms['can_edit_content'])
                         <button class="sku-row-btn" title="Edit" onclick='openEditSku(@json($sku))'>
@@ -145,7 +171,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="11" class="empty-state">No SKUs match your filters.</td></tr>
+                <tr><td colspan="29" class="empty-state">No SKUs match your filters.</td></tr>
                 @endforelse
             </tbody>
         </table>
