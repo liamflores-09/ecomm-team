@@ -470,6 +470,8 @@
         }
         .app-dd .dd-item:hover { background: var(--muted); }
         .app-dd .dd-item.selected { background: var(--primary); color: white; }
+        .app-dd.disabled .dd-trigger { cursor: not-allowed; opacity: 0.55; }
+        .app-dd.disabled .dd-arrow { display: none; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

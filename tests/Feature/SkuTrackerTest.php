@@ -74,6 +74,14 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('id="aiPromptText"', false);
     }
 
+    public function test_bulk_add_modal_has_two_clearly_separated_steps(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('class="bulk-add-step"', false);
+        $response->assertSee('Step 1');
+        $response->assertSee('Step 2');
+    }
+
     public function test_existing_sku_codes_are_passed_to_view_for_duplicate_check(): void
     {
         $this->makeSku(['sku' => 'ACME-DUP-1']);
@@ -399,6 +407,25 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('data-color-type="remarks"', false);
         $response->assertSee('data-color-type="variant"', false);
         $response->assertSee('data-color-type="assignee"', false);
+    }
+
+    public function test_inline_dropdowns_use_custom_select_component(): void
+    {
+        $this->makeSku(['sku' => 'ACME-XSELECT-1']);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertSee('class="app-dd', false);
+        $response->assertDontSee('class="sku-cell-select"', false);
+    }
+
+    public function test_content_role_sees_disabled_custom_select_for_pr_fields(): void
+    {
+        $this->makeSku(['sku' => 'ACME-XSELECT-2']);
+
+        $response = $this->actingAs($this->makeUser('content'))->get('/sku-tracker');
+
+        $response->assertSee('app-dd disabled', false);
     }
 
     // ── Dropdowns use canonical values ───────────────────────────

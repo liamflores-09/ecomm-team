@@ -50,8 +50,21 @@
     .sku-cell-flash-err { background: rgba(239,68,68,0.18) !important; }
     .sku-readonly-cell { color: var(--muted-foreground); font-size: 0.8rem; }
 
+    .sku-table .app-dd .dd-trigger { height: 30px; padding: 0 6px; font-size: 0.8rem; border-radius: 5px; background: transparent; border-width: 1px; }
+    .sku-table .app-dd .dd-trigger:hover { background: var(--card); }
+    .sku-table .app-dd .dd-menu { font-size: 0.8rem; }
+    .sku-table .app-dd .dd-item { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+    .sku-table td { overflow: visible; }
+
     #addRowForm { display: flex; gap: 0.6rem; align-items: flex-end; }
     #addRowForm input { width: 180px; }
+
+    .bulk-add-step { background: var(--muted); border: 1px solid var(--border-light); border-radius: 8px; padding: 0.875rem; }
+    .bulk-add-step-head { display: flex; gap: 0.625rem; align-items: flex-start; margin-bottom: 0.625rem; }
+    .bulk-add-step-badge { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+    .bulk-add-step-title { font-size: 0.85rem; font-weight: 700; color: var(--foreground); }
+    .bulk-add-step-optional { font-size: 0.72rem; font-weight: 500; color: var(--muted-foreground); text-transform: none; }
+    .bulk-add-step-desc { font-size: 0.78rem; color: var(--muted-foreground); margin: 0.2rem 0 0; line-height: 1.4; }
 </style>
 @endsection
 
@@ -168,7 +181,22 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $variantOptions = collect(['' => '—'])->merge(collect($variants)->mapWithKeys(fn ($v) => [$v => $v]));
+                    $prStatusOptions = collect(['' => '—'])->merge(collect($prStatuses)->mapWithKeys(fn ($s) => [$s => $s]));
+                    $remarksOptionsMap = collect(['' => '—'])->merge(collect($remarksOptions)->mapWithKeys(fn ($r) => [$r => $r]));
+                @endphp
                 @forelse($skus as $sku)
+                @php
+                    $prAssigneeOptions = collect(['' => '—'])->merge($researchers->mapWithKeys(fn ($n) => [$n => $n]));
+                    if ($sku->pr_assignee && !$researchers->contains($sku->pr_assignee)) {
+                        $prAssigneeOptions[$sku->pr_assignee] = $sku->pr_assignee;
+                    }
+                    $contentAssigneeOptions = collect(['' => '—'])->merge($contentUsers->mapWithKeys(fn ($n) => [$n => $n]));
+                    if ($sku->content_assignee && !$contentUsers->contains($sku->content_assignee)) {
+                        $contentAssigneeOptions[$sku->content_assignee] = $sku->content_assignee;
+                    }
+                @endphp
                 <tr data-sku-id="{{ $sku->id }}">
                     <td class="sku-col-sticky-1">
                         <input type="text" class="sku-cell-input" value="{{ $sku->brand }}" title="{{ $sku->brand }}"
@@ -181,11 +209,9 @@
                             onchange="saveField({{ $sku->id }}, 'sku', this.value, this)">
                     </td>
                     <td class="sku-col-sticky-3">
-                        <select class="sku-cell-select" data-color-type="variant" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'variant', this.value, this)">
-                            <option value="" @selected(!$sku->variant)>—</option>
-                            @foreach($variants as $v)<option value="{{ $v }}" @selected($sku->variant === $v)>{{ $v }}</option>@endforeach
-                        </select>
+                        <x-select id="sku-variant-{{ $sku->id }}" name="variant_{{ $sku->id }}" data-color-type="variant"
+                            :options="$variantOptions" :selected="$sku->variant ?? ''" :disabled="!$perms['can_edit_pr']"
+                            onchange="var el=document.getElementById('sku-variant-{{ $sku->id }}').closest('.app-dd'); colorizeAppDd(el); saveField({{ $sku->id }}, 'variant', value, el.querySelector('.dd-trigger'))" />
                     </td>
                     <td>
                         <input type="text" class="sku-cell-input" value="{{ $sku->pr_file_location }}" title="{{ $sku->pr_file_location }}"
@@ -193,32 +219,23 @@
                             onchange="saveField({{ $sku->id }}, 'pr_file_location', this.value, this)">
                     </td>
                     <td>
-                        <select class="sku-cell-select" data-color-type="assignee" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'pr_assignee', this.value, this)">
-                            <option value="" @selected(!$sku->pr_assignee)>—</option>
-                            @foreach($researchers as $name)<option value="{{ $name }}" @selected($sku->pr_assignee === $name)>{{ $name }}</option>@endforeach
-                            @if($sku->pr_assignee && !$researchers->contains($sku->pr_assignee))
-                            <option value="{{ $sku->pr_assignee }}" selected>{{ $sku->pr_assignee }}</option>
-                            @endif
-                        </select>
+                        <x-select id="sku-pr-assignee-{{ $sku->id }}" name="pr_assignee_{{ $sku->id }}" data-color-type="assignee"
+                            :options="$prAssigneeOptions" :selected="$sku->pr_assignee ?? ''" :disabled="!$perms['can_edit_pr']"
+                            onchange="var el=document.getElementById('sku-pr-assignee-{{ $sku->id }}').closest('.app-dd'); colorizeAppDd(el); saveField({{ $sku->id }}, 'pr_assignee', value, el.querySelector('.dd-trigger'))" />
                     </td>
                     <td>
-                        <select class="sku-cell-select" data-color-type="pr_status" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'pr_status', this.value, this)">
-                            <option value="" @selected(!$sku->pr_status)>—</option>
-                            @foreach($prStatuses as $s)<option value="{{ $s }}" @selected($sku->pr_status === $s)>{{ $s }}</option>@endforeach
-                        </select>
+                        <x-select id="sku-pr-status-{{ $sku->id }}" name="pr_status_{{ $sku->id }}" data-color-type="pr_status"
+                            :options="$prStatusOptions" :selected="$sku->pr_status ?? ''" :disabled="!$perms['can_edit_pr']"
+                            onchange="var el=document.getElementById('sku-pr-status-{{ $sku->id }}').closest('.app-dd'); colorizeAppDd(el); saveField({{ $sku->id }}, 'pr_status', value, el.querySelector('.dd-trigger'))" />
                     </td>
                     <td style="text-align:center;">
                         <input type="checkbox" {{ $sku->ready_for_cvp ? 'checked' : '' }} {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
                             onchange="saveField({{ $sku->id }}, 'ready_for_cvp', this.checked, this)">
                     </td>
                     <td>
-                        <select class="sku-cell-select" data-color-type="remarks" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'remarks', this.value, this)">
-                            <option value="" @selected(!$sku->remarks)>—</option>
-                            @foreach($remarksOptions as $r)<option value="{{ $r }}" @selected($sku->remarks === $r)>{{ $r }}</option>@endforeach
-                        </select>
+                        <x-select id="sku-remarks-{{ $sku->id }}" name="remarks_{{ $sku->id }}" data-color-type="remarks"
+                            :options="$remarksOptionsMap" :selected="$sku->remarks ?? ''" :disabled="!$perms['can_edit_pr']"
+                            onchange="var el=document.getElementById('sku-remarks-{{ $sku->id }}').closest('.app-dd'); colorizeAppDd(el); saveField({{ $sku->id }}, 'remarks', value, el.querySelector('.dd-trigger'))" />
                     </td>
                     <td>
                         <input type="date" class="sku-cell-input" value="{{ $sku->pr_date_started?->format('Y-m-d') }}"
@@ -233,14 +250,9 @@
                     <td class="sku-readonly-cell sku-pr-sla">{{ $sku->pr_sla !== null ? $sku->pr_sla . 'd' : '—' }}</td>
 
                     <td class="sku-col-content">
-                        <select class="sku-cell-select" data-color-type="assignee" {{ $perms['can_edit_content'] ? '' : 'disabled' }}
-                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'content_assignee', this.value, this)">
-                            <option value="" @selected(!$sku->content_assignee)>—</option>
-                            @foreach($contentUsers as $name)<option value="{{ $name }}" @selected($sku->content_assignee === $name)>{{ $name }}</option>@endforeach
-                            @if($sku->content_assignee && !$contentUsers->contains($sku->content_assignee))
-                            <option value="{{ $sku->content_assignee }}" selected>{{ $sku->content_assignee }}</option>
-                            @endif
-                        </select>
+                        <x-select id="sku-content-assignee-{{ $sku->id }}" name="content_assignee_{{ $sku->id }}" data-color-type="assignee"
+                            :options="$contentAssigneeOptions" :selected="$sku->content_assignee ?? ''" :disabled="!$perms['can_edit_content']"
+                            onchange="var el=document.getElementById('sku-content-assignee-{{ $sku->id }}').closest('.app-dd'); colorizeAppDd(el); saveField({{ $sku->id }}, 'content_assignee', value, el.querySelector('.dd-trigger'))" />
                     </td>
                     <td class="sku-col-content sku-content-status">
                         @php $csKey = match($sku->content_status) { 'DONE' => 'done', 'PENDING' => 'pending', default => 'none' }; @endphp
@@ -272,36 +284,45 @@
 @if($perms['can_create'])
 <!-- Bulk Add Modal -->
 <div class="modal-overlay" id="bulkAddModal">
-    <div class="modal-box" style="max-width: 620px;">
+    <div class="modal-box" style="max-width: 640px;">
         <div class="modal-header">
             <h5>Bulk Add SKUs</h5>
             <button class="modal-close" onclick="closeModal('bulkAddModal')"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
-            <div>
-                <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0 0 0.4rem;">
-                    Not sure how to format your list? Copy this prompt, paste it (with your raw list) into an AI chat tool, then paste what it gives back into the box below.
-                </p>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:0.875rem;">
+            <div class="bulk-add-step">
+                <div class="bulk-add-step-head">
+                    <span class="bulk-add-step-badge">1</span>
+                    <div>
+                        <div class="bulk-add-step-title">Step 1: Format your list with AI <span class="bulk-add-step-optional">— optional</span></div>
+                        <p class="bulk-add-step-desc">Don't have a clean Brand/SKU list yet? Copy this prompt, paste it into an AI chat tool along with your raw list, then bring the result back here.</p>
+                    </div>
+                </div>
                 <textarea id="aiPromptText" class="form-input" rows="4" readonly
                     style="font-size:0.78rem;color:var(--muted-foreground);background:var(--muted);"
                 >I have a list of products with brand names and SKU/product codes. Reformat it into plain text lines, one product per line, in this exact format: Brand, SKU (brand name, a comma, then the SKU code — nothing else: no numbering, no bullets, no extra words). Output only the reformatted lines so I can copy them directly. Here is my list:
 
 [paste your raw list here]</textarea>
-                <button type="button" id="copyAiPromptBtn" class="btn-flat-secondary" style="height: 34px; font-size: 0.78rem; margin-top: 0.4rem;" onclick="copyAiPrompt()">
+                <button type="button" id="copyAiPromptBtn" class="btn-flat-secondary" style="height: 34px; font-size: 0.78rem; margin-top: 0.5rem;" onclick="copyAiPrompt()">
                     <i class="fas fa-copy"></i> <span id="copyAiPromptLabel">Copy Prompt</span>
                 </button>
             </div>
+
             <form method="POST" action="{{ route('sku-tracker.bulk-store') }}">
                 @csrf
-                <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0;">
-                        One row per line: <code>Brand, SKU</code> (also accepts pasting straight from Excel/Sheets columns).
-                    </p>
+                <div class="bulk-add-step">
+                    <div class="bulk-add-step-head">
+                        <span class="bulk-add-step-badge">2</span>
+                        <div>
+                            <div class="bulk-add-step-title">Step 2: Paste your list</div>
+                            <p class="bulk-add-step-desc">One row per line: <code>Brand, SKU</code> — also works pasting straight from Excel/Sheets columns.</p>
+                        </div>
+                    </div>
                     <textarea name="rows_text" class="form-input" rows="8" style="font-size:0.85rem;" placeholder="Acme, ACME-001&#10;Acme, ACME-002" required></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-flat-secondary" onclick="closeModal('bulkAddModal')">Cancel</button>
-                    <button type="submit" class="btn-flat-primary">Add Rows</button>
+                    <button type="submit" class="btn-flat-primary"><i class="fas fa-plus"></i> Add Rows</button>
                 </div>
             </form>
         </div>
@@ -335,30 +356,56 @@ function assigneeColor(name) {
     return SKU_ASSIGNEE_PALETTE[hash % SKU_ASSIGNEE_PALETTE.length];
 }
 
-function colorizeSelect(select) {
-    var type = select.dataset.colorType;
-    if (!type || !select.value) {
-        select.style.borderColor = '';
-        select.style.color = '';
-        select.style.background = '';
-        select.style.fontWeight = '';
+function colorizeAppDd(appDd) {
+    var trigger = appDd.querySelector('.dd-trigger');
+    var input = appDd.querySelector('input[type="hidden"]');
+    var type = appDd.dataset.colorType;
+    var value = input ? input.value : '';
+    if (!type || !value) {
+        trigger.style.borderColor = '';
+        trigger.style.color = '';
+        trigger.style.background = '';
+        trigger.style.fontWeight = '';
         return;
     }
-    var color = type === 'assignee' ? assigneeColor(select.value) : (SKU_SELECT_COLORS[type] || {})[select.value];
+    var color = type === 'assignee' ? assigneeColor(value) : (SKU_SELECT_COLORS[type] || {})[value];
     if (!color) {
-        select.style.borderColor = '';
-        select.style.color = '';
-        select.style.background = '';
-        select.style.fontWeight = '';
+        trigger.style.borderColor = '';
+        trigger.style.color = '';
+        trigger.style.background = '';
+        trigger.style.fontWeight = '';
         return;
     }
-    select.style.borderColor = color;
-    select.style.color = color;
-    select.style.background = color + '1A';
-    select.style.fontWeight = '700';
+    trigger.style.borderColor = color;
+    trigger.style.color = color;
+    trigger.style.background = color + '1A';
+    trigger.style.fontWeight = '700';
 }
 
-document.querySelectorAll('select[data-color-type]').forEach(colorizeSelect);
+document.querySelectorAll('.app-dd[data-color-type]').forEach(colorizeAppDd);
+
+// Reposition sku-table dropdown menus to escape the table's scroll clipping.
+(function () {
+    var originalToggle = window.appDdToggle;
+    window.appDdToggle = function (uid) {
+        originalToggle(uid);
+        var dd = document.getElementById(uid);
+        if (!dd || !dd.closest('.sku-table')) return;
+        var menu = dd.querySelector('.dd-menu');
+        if (!dd.classList.contains('open')) {
+            menu.style.position = '';
+            menu.style.top = '';
+            menu.style.left = '';
+            menu.style.minWidth = '';
+            return;
+        }
+        var rect = dd.querySelector('.dd-trigger').getBoundingClientRect();
+        menu.style.position = 'fixed';
+        menu.style.top = (rect.bottom + 4) + 'px';
+        menu.style.left = rect.left + 'px';
+        menu.style.minWidth = rect.width + 'px';
+    };
+})();
 
 // ── Bulk add AI prompt ───────────────────────────────────────
 function copyAiPrompt() {
