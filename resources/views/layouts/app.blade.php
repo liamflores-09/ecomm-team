@@ -851,6 +851,8 @@
             { name: 'Reports',         desc: 'Role reports',      icon: 'fa-chart-column',        url: '{{ route("admin.reports") }}' },
             { name: 'Brands',          desc: 'Manage brands',     icon: 'fa-layer-group',         url: '{{ route("admin.brands") }}' },
             { name: 'Brand Catalogs',  desc: 'Browse catalogs',   icon: 'fa-book-open',           url: '{{ route("brand-catalogs") }}' },
+            { name: 'SKU Tracker',    desc: 'PR to content pipeline', icon: 'fa-box',        url: '{{ route("sku-tracker") }}' },
+            { name: 'SLA and Weekly Output', desc: 'Weekly SLA analytics', icon: 'fa-chart-line', url: '{{ route("sla-weekly-output") }}' },
             { name: 'Announcements',   desc: 'Team announcements',icon: 'fa-bullhorn',            url: '{{ route("announcements") }}' },
             { name: 'Calendar',        desc: 'Team calendar',     icon: 'fa-calendar-days',       url: '{{ route("calendar") }}' },
             { name: 'The Team',        desc: 'Team directory',    icon: 'fa-people-group',        url: '{{ route("team") }}' },
@@ -863,6 +865,8 @@
             { name: 'Price Calculator', desc: 'Compute SRP',       icon: 'fa-calculator',        url: '{{ route("price-calculator") }}' },
             { name: 'Important Links',  desc: 'Quick access',      icon: 'fa-bookmark',          url: '{{ route("important-links") }}' },
             { name: 'Calendar',         desc: 'Team calendar',     icon: 'fa-calendar-days',     url: '{{ route("calendar") }}' },
+            { name: 'SKU Tracker',    desc: 'PR to content pipeline', icon: 'fa-box',        url: '{{ route("sku-tracker") }}' },
+            { name: 'SLA and Weekly Output', desc: 'Weekly SLA analytics', icon: 'fa-chart-line', url: '{{ route("sla-weekly-output") }}' },
             @endif
             @if($cmdRole === 'content')
             { name: 'Posting Procedure',  desc: 'Product posting guide', icon: 'fa-list-check',           url: '{{ route("posting-procedure") }}' },
