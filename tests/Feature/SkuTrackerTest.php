@@ -91,4 +91,36 @@ class SkuTrackerTest extends TestCase
             'ready_for_cvp' => true,
         ]);
     }
+
+    public function test_researcher_can_create_sku(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->post('/sku-tracker', [
+            'brand' => 'Acme',
+            'sku' => 'ACME-001',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('skus', ['sku' => 'ACME-001']);
+    }
+
+    public function test_content_role_cannot_create_sku(): void
+    {
+        $response = $this->actingAs($this->makeUser('content'))->post('/sku-tracker', [
+            'brand' => 'Acme',
+            'sku' => 'ACME-002',
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('skus', ['sku' => 'ACME-002']);
+    }
+
+    public function test_graphics_cannot_create_sku(): void
+    {
+        $response = $this->actingAs($this->makeUser('graphics'))->post('/sku-tracker', [
+            'brand' => 'Acme',
+            'sku' => 'ACME-003',
+        ]);
+
+        $response->assertStatus(403);
+    }
 }
