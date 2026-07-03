@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\SkuController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -80,6 +81,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/brand-catalogs', [BrandCatalogController::class, 'store'])->name('brand-catalogs.store');
         Route::put('/brand-catalogs/{catalog}', [BrandCatalogController::class, 'update'])->name('brand-catalogs.update');
         Route::delete('/brand-catalogs/{catalog}', [BrandCatalogController::class, 'destroy'])->name('brand-catalogs.destroy');
+    });
+
+    // SKU Management — all roles except analyst
+    Route::middleware(['not.analyst'])->group(function () {
+        Route::get('/sku-tracker', [SkuController::class, 'index'])->name('sku-tracker');
+        Route::post('/sku-tracker', [SkuController::class, 'store'])->name('sku-tracker.store');
+        Route::put('/sku-tracker/{sku}', [SkuController::class, 'update'])->name('sku-tracker.update');
+        Route::get('/sla-weekly-output', [SkuController::class, 'slaWeeklyOutput'])->name('sla-weekly-output');
     });
 
     Route::middleware(['admin'])->prefix('admin')->group(function () {
