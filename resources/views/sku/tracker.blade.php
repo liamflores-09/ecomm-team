@@ -136,7 +136,7 @@
     <form method="GET" class="sku-filter-card anim-up d2">
         <div class="sku-filter-group">
             <span class="sku-filter-label">Search</span>
-            <input type="text" name="brand" class="input-flat" placeholder="Brand or SKU..." value="{{ $filters['brand'] ?? '' }}">
+            <input type="text" name="brand" class="input-flat" placeholder="Brand or SKU..." value="{{ $filters['brand'] ?? '' }}" oninput="filterSkuRows(this.value)">
         </div>
         <div class="sku-filter-group">
             <span class="sku-filter-label">PR Status</span>
@@ -298,6 +298,7 @@
                 @empty
                 <tr><td colspan="17" class="empty-state">No SKUs match your filters.</td></tr>
                 @endforelse
+                <tr id="skuLiveSearchEmpty" style="display:none;"><td colspan="17" class="empty-state">No SKUs match your search.</td></tr>
             </tbody>
         </table>
     </div>
@@ -358,6 +359,26 @@ function checkDuplicateSku(value) {
     var warning = document.getElementById('addRowDuplicateWarning');
     var normalized = (value || '').trim().toLowerCase();
     warning.style.display = (normalized && existingSkuCodes.indexOf(normalized) !== -1) ? 'inline' : 'none';
+}
+
+// Live client-side search — filters the already-rendered rows instantly as you
+// type, no need to click Filter. (The other filters still submit to the server,
+// since they depend on data/date logic beyond what's currently loaded.)
+function filterSkuRows(query) {
+    var q = (query || '').trim().toLowerCase();
+    var rows = document.querySelectorAll('.sku-table tbody tr[data-sku-id]');
+    var visibleCount = 0;
+    rows.forEach(function (row) {
+        var brandInput = row.querySelector('.sku-col-sticky-1 input');
+        var skuInput = row.querySelector('.sku-col-sticky-2 input');
+        var brand = brandInput ? brandInput.value.toLowerCase() : '';
+        var sku = skuInput ? skuInput.value.toLowerCase() : '';
+        var match = !q || brand.indexOf(q) !== -1 || sku.indexOf(q) !== -1;
+        row.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+    });
+    var emptyRow = document.getElementById('skuLiveSearchEmpty');
+    if (emptyRow) emptyRow.style.display = (q && visibleCount === 0) ? '' : 'none';
 }
 
 // ── Dropdown coloring ─────────────────────────────────────────

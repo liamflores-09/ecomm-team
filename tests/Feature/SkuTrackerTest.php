@@ -109,6 +109,14 @@ class SkuTrackerTest extends TestCase
         $response->assertSee("if (e.target.closest('.app-dd')) return;", false);
     }
 
+    public function test_search_input_filters_live_without_needing_the_filter_button(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('oninput="filterSkuRows(this.value)"', false);
+        $response->assertSee('function filterSkuRows(query)', false);
+        $response->assertSee('id="skuLiveSearchEmpty"', false);
+    }
+
     public function test_assignee_color_palette_has_no_unreadable_dark_entry(): void
     {
         $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
