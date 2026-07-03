@@ -52,4 +52,18 @@ class SkuSlaWeeklyOutputTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Week');
     }
+
+    public function test_month_a_filter_query_executes_and_renders(): void
+    {
+        Sku::create([
+            'brand' => 'B', 'sku' => 'S3',
+            'pr_date_started' => '2026-01-05', 'pr_date_completed' => '2026-01-09',
+        ]);
+
+        $response = $this->actingAs($this->makeUser('backend'))
+            ->get('/sla-weekly-output?month_a=2026-01');
+
+        $response->assertStatus(200);
+        $response->assertSee('Week');
+    }
 }

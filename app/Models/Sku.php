@@ -22,10 +22,10 @@ class Sku extends Model
         return [
             'ready_for_cvp' => 'boolean',
             'cvp_uploaded' => 'boolean',
-            'pr_date_started' => 'date',
-            'pr_date_completed' => 'date',
-            'content_date_started' => 'date',
-            'content_date_posted' => 'date',
+            'pr_date_started' => 'date:Y-m-d',
+            'pr_date_completed' => 'date:Y-m-d',
+            'content_date_started' => 'date:Y-m-d',
+            'content_date_posted' => 'date:Y-m-d',
         ];
     }
 

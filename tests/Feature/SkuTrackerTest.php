@@ -224,4 +224,32 @@ class SkuTrackerTest extends TestCase
         $response = $this->actingAs($this->makeUser('manager'))->get('/admin');
         $response->assertSee('SKU Management');
     }
+
+    public function test_month_filter_returns_matching_row(): void
+    {
+        \App\Models\Sku::create([
+            'brand' => 'Acme', 'sku' => 'ACME-MONTH-1',
+            'pr_date_started' => '2026-01-05',
+        ]);
+
+        $response = $this->actingAs($this->makeUser('researcher'))
+            ->get('/sku-tracker?month=2026-01');
+
+        $response->assertStatus(200);
+        $response->assertSee('ACME-MONTH-1');
+    }
+
+    public function test_edit_payload_serializes_dates_as_plain_ymd(): void
+    {
+        \App\Models\Sku::create([
+            'brand' => 'Acme', 'sku' => 'ACME-DATE-1',
+            'pr_date_started' => '2026-01-05',
+        ]);
+
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+
+        $response->assertStatus(200);
+        $response->assertSee('2026-01-05');
+        $response->assertDontSee('2026-01-05T', false);
+    }
 }

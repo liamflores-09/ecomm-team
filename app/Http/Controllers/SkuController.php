@@ -45,10 +45,10 @@ class SkuController extends Controller
             $query->whereNull('content_date_posted');
         }
         if ($request->filled('month')) {
-            $month = $request->query('month');
-            $query->where(function ($q) use ($month) {
-                $q->whereRaw("strftime('%Y-%m', pr_date_started) = ?", [$month])
-                  ->orWhereRaw("strftime('%Y-%m', content_date_started) = ?", [$month]);
+            [$year, $mon] = explode('-', $request->query('month'));
+            $query->where(function ($q) use ($year, $mon) {
+                $q->where(fn ($q2) => $q2->whereYear('pr_date_started', $year)->whereMonth('pr_date_started', $mon))
+                  ->orWhere(fn ($q2) => $q2->whereYear('content_date_started', $year)->whereMonth('content_date_started', $mon));
             });
         }
 
@@ -62,12 +62,11 @@ class SkuController extends Controller
             'avg_content_sla' => round($allSkus->map->content_sla->filter()->avg() ?? 0, 1),
         ];
 
-        $availableMonths = Sku::selectRaw("strftime('%Y-%m', pr_date_started) as m")
-            ->whereNotNull('pr_date_started')
-            ->distinct()
-            ->orderByDesc('m')
-            ->pluck('m')
-            ->filter()
+        $availableMonths = Sku::whereNotNull('pr_date_started')
+            ->get(['pr_date_started'])
+            ->map(fn ($sku) => $sku->pr_date_started->format('Y-m'))
+            ->unique()
+            ->sortDesc()
             ->values();
 
         return view('sku.tracker', [
@@ -159,12 +158,11 @@ class SkuController extends Controller
 
     public function slaWeeklyOutput(Request $request)
     {
-        $availableMonths = Sku::selectRaw("strftime('%Y-%m', pr_date_started) as m")
-            ->whereNotNull('pr_date_started')
-            ->distinct()
-            ->orderByDesc('m')
-            ->pluck('m')
-            ->filter()
+        $availableMonths = Sku::whereNotNull('pr_date_started')
+            ->get(['pr_date_started'])
+            ->map(fn ($sku) => $sku->pr_date_started->format('Y-m'))
+            ->unique()
+            ->sortDesc()
             ->values();
 
         $monthA = $request->query('month_a', $availableMonths->first());
@@ -174,8 +172,10 @@ class SkuController extends Controller
             if (!$month) {
                 return collect();
             }
+            [$year, $mon] = explode('-', $month);
             return Sku::whereNotNull('pr_date_started')
-                ->whereRaw("strftime('%Y-%m', pr_date_started) = ?", [$month])
+                ->whereYear('pr_date_started', $year)
+                ->whereMonth('pr_date_started', $mon)
                 ->get()
                 ->groupBy(fn ($sku) => (int) $sku->pr_date_started->format('W'))
                 ->map(function ($rows, $week) {
