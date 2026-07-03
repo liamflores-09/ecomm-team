@@ -56,15 +56,33 @@
     .sku-table .app-dd .dd-item { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
     .sku-table td { overflow: visible; }
 
+    [data-theme="dark"] .sku-cell-input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.85); }
+
     #addRowForm { display: flex; gap: 0.6rem; align-items: flex-end; }
     #addRowForm input { width: 180px; }
 
-    .bulk-add-step { background: var(--muted); border: 1px solid var(--border-light); border-radius: 8px; padding: 0.875rem; }
-    .bulk-add-step-head { display: flex; gap: 0.625rem; align-items: flex-start; margin-bottom: 0.625rem; }
-    .bulk-add-step-badge { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
-    .bulk-add-step-title { font-size: 0.85rem; font-weight: 700; color: var(--foreground); }
+    .bulk-add-step { background: var(--card); border: 1px solid var(--border-light); border-top: 2px solid var(--primary); border-radius: 10px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .bulk-add-step-head { display: flex; gap: 0.625rem; align-items: flex-start; margin-bottom: 0.75rem; }
+    .bulk-add-step-badge { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(87,87,248,0.3); }
+    .bulk-add-step-title { font-size: 0.86rem; font-weight: 700; color: var(--foreground); }
     .bulk-add-step-optional { font-size: 0.72rem; font-weight: 500; color: var(--muted-foreground); text-transform: none; }
-    .bulk-add-step-desc { font-size: 0.78rem; color: var(--muted-foreground); margin: 0.2rem 0 0; line-height: 1.4; }
+    .bulk-add-step-desc { font-size: 0.78rem; color: var(--muted-foreground); margin: 0.2rem 0 0; line-height: 1.45; }
+
+    .bulk-add-textarea {
+        width: 100%; resize: vertical; box-sizing: border-box;
+        border: 2px solid var(--border-light); border-radius: 8px;
+        padding: 0.7rem 0.85rem; background: var(--muted); color: var(--fg);
+        font-family: var(--p-font-family-sans); font-size: 0.85rem; line-height: 1.6;
+        outline: none; transition: border-color 0.15s, background 0.15s;
+    }
+    .bulk-add-textarea:focus { border-color: var(--primary); background: var(--card); }
+    .bulk-add-textarea::placeholder { color: var(--gray-300); }
+    .bulk-add-textarea-readonly {
+        font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.76rem; line-height: 1.55;
+        color: var(--muted-foreground); background: var(--muted); cursor: text;
+    }
+    .bulk-add-textarea-readonly:focus { border-color: var(--border-light); background: var(--muted); }
+    .bulk-add-copy-btn { display: inline-flex; align-items: center; gap: 0.4rem; }
 </style>
 @endsection
 
@@ -298,12 +316,11 @@
                         <p class="bulk-add-step-desc">Don't have a clean Brand/SKU list yet? Copy this prompt, paste it into an AI chat tool along with your raw list, then bring the result back here.</p>
                     </div>
                 </div>
-                <textarea id="aiPromptText" class="form-input" rows="4" readonly
-                    style="font-size:0.78rem;color:var(--muted-foreground);background:var(--muted);"
+                <textarea id="aiPromptText" class="bulk-add-textarea bulk-add-textarea-readonly" rows="5" readonly
                 >I have a list of products with brand names and SKU/product codes. Reformat it into plain text lines, one product per line, in this exact format: Brand, SKU (brand name, a comma, then the SKU code — nothing else: no numbering, no bullets, no extra words). Output only the reformatted lines so I can copy them directly. Here is my list:
 
 [paste your raw list here]</textarea>
-                <button type="button" id="copyAiPromptBtn" class="btn-flat-secondary" style="height: 34px; font-size: 0.78rem; margin-top: 0.5rem;" onclick="copyAiPrompt()">
+                <button type="button" id="copyAiPromptBtn" class="btn-flat-primary bulk-add-copy-btn" style="height: 36px; font-size: 0.78rem; margin-top: 0.6rem;" onclick="copyAiPrompt()">
                     <i class="fas fa-copy"></i> <span id="copyAiPromptLabel">Copy Prompt</span>
                 </button>
             </div>
@@ -318,7 +335,7 @@
                             <p class="bulk-add-step-desc">One row per line: <code>Brand, SKU</code> — also works pasting straight from Excel/Sheets columns.</p>
                         </div>
                     </div>
-                    <textarea name="rows_text" class="form-input" rows="8" style="font-size:0.85rem;" placeholder="Acme, ACME-001&#10;Acme, ACME-002" required></textarea>
+                    <textarea name="rows_text" class="bulk-add-textarea" rows="8" placeholder="Acme, ACME-001&#10;Acme, ACME-002" required></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-flat-secondary" onclick="closeModal('bulkAddModal')">Cancel</button>
@@ -348,7 +365,7 @@ var SKU_SELECT_COLORS = {
     },
     variant: { 'Single': '#64748b', 'Variant/Parent': '#6366f1', 'Variant/Child': '#7c3aed', 'Add Variant': '#f59e0b' }
 };
-var SKU_ASSIGNEE_PALETTE = ['#7c3aed', '#6366f1', '#ec4899', '#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#1e293b'];
+var SKU_ASSIGNEE_PALETTE = ['#7c3aed', '#6366f1', '#ec4899', '#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#14b8a6'];
 
 function assigneeColor(name) {
     var hash = 0;
@@ -385,7 +402,11 @@ function colorizeAppDd(appDd) {
 document.querySelectorAll('.app-dd[data-color-type]').forEach(colorizeAppDd);
 
 // Reposition sku-table dropdown menus to escape the table's scroll clipping.
-(function () {
+// Deferred to DOMContentLoaded: the shared `function appDdToggle(uid)` declaration
+// lives in a later <script> block in the layout, so wrapping it synchronously here
+// (before that block runs) would capture undefined and then get silently overwritten
+// when the later declaration executes.
+document.addEventListener('DOMContentLoaded', function () {
     var originalToggle = window.appDdToggle;
     window.appDdToggle = function (uid) {
         originalToggle(uid);
@@ -405,7 +426,7 @@ document.querySelectorAll('.app-dd[data-color-type]').forEach(colorizeAppDd);
         menu.style.left = rect.left + 'px';
         menu.style.minWidth = rect.width + 'px';
     };
-})();
+});
 
 // ── Bulk add AI prompt ───────────────────────────────────────
 function copyAiPrompt() {

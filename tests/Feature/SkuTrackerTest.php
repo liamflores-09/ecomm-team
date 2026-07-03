@@ -82,6 +82,35 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('Step 2');
     }
 
+    public function test_bulk_add_textareas_do_not_use_the_cramped_single_line_form_input_class(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('bulk-add-textarea', false);
+        $response->assertDontSee('class="form-input" rows="4"', false);
+        $response->assertDontSee('class="form-input" rows="8"', false);
+    }
+
+    public function test_dropdown_reposition_fix_is_deferred_until_dom_ready(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee("document.addEventListener('DOMContentLoaded', function () {", false);
+    }
+
+    public function test_assignee_color_palette_has_no_unreadable_dark_entry(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('SKU_ASSIGNEE_PALETTE', false);
+        preg_match('/SKU_ASSIGNEE_PALETTE\s*=\s*\[([^\]]+)\]/', $response->getContent(), $matches);
+        $this->assertNotEmpty($matches, 'Could not find SKU_ASSIGNEE_PALETTE array in page source.');
+        $this->assertStringNotContainsString('#1e293b', $matches[1]);
+    }
+
+    public function test_date_inputs_have_dark_mode_calendar_icon_fix(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('::-webkit-calendar-picker-indicator', false);
+    }
+
     public function test_existing_sku_codes_are_passed_to_view_for_duplicate_check(): void
     {
         $this->makeSku(['sku' => 'ACME-DUP-1']);
