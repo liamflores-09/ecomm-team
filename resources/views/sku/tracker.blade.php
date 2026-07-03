@@ -51,13 +51,6 @@
 
     #addRowForm { display: flex; gap: 0.6rem; align-items: flex-end; }
     #addRowForm input { width: 180px; }
-
-    .sku-pagination { display: flex; align-items: center; justify-content: center; gap: 0.3rem; flex-wrap: wrap; }
-    .sku-page-link { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--border-light); color: var(--foreground); text-decoration: none; font-size: 0.8rem; font-weight: 600; background: var(--card); }
-    .sku-page-link:hover { border-color: var(--primary); }
-    .sku-page-link.active { background: var(--primary); border-color: var(--primary); color: white; }
-    .sku-page-link.disabled { color: var(--muted-foreground); pointer-events: none; opacity: 0.5; }
-    .sku-page-dots { padding: 0 4px; color: var(--muted-foreground); }
 </style>
 @endsection
 
@@ -129,9 +122,9 @@
         <div class="sku-filter-group">
             <span class="sku-filter-label">Month</span>
             <select name="month" class="input-flat">
-                <option value="">All</option>
+                <option value="" @selected($selectedMonth === '')>All Months</option>
                 @foreach($availableMonths as $m)
-                <option value="{{ $m }}" @selected(($filters['month'] ?? '') === $m)>{{ \Carbon\Carbon::parse($m)->format('M Y') }}</option>
+                <option value="{{ $m }}" @selected($selectedMonth === $m)>{{ \Carbon\Carbon::parse($m)->format('M Y') }}</option>
                 @endforeach
             </select>
         </div>
@@ -273,8 +266,6 @@
             </tbody>
         </table>
     </div>
-
-    <div class="anim-up d4" style="margin-top: 1rem;">{{ $skus->links('sku.partials.pagination') }}</div>
 </div>
 
 @if($perms['can_create'])

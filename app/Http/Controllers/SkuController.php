@@ -67,15 +67,17 @@ class SkuController extends Controller
         } elseif ($request->query('posted') === '0') {
             $query->whereNull('content_date_posted');
         }
-        if ($request->filled('month')) {
-            [$year, $mon] = explode('-', $request->query('month'));
+        $month = $request->has('month') ? ($request->query('month') ?? '') : now()->format('Y-m');
+        if ($month !== '') {
+            [$year, $mon] = explode('-', $month);
             $query->where(function ($q) use ($year, $mon) {
                 $q->where(fn ($q2) => $q2->whereYear('pr_date_started', $year)->whereMonth('pr_date_started', $mon))
-                  ->orWhere(fn ($q2) => $q2->whereYear('content_date_started', $year)->whereMonth('content_date_started', $mon));
+                  ->orWhere(fn ($q2) => $q2->whereYear('content_date_started', $year)->whereMonth('content_date_started', $mon))
+                  ->orWhere(fn ($q2) => $q2->whereNull('pr_date_started')->whereNull('content_date_started'));
             });
         }
 
-        $skus = $query->orderByDesc('id')->paginate(25)->withQueryString();
+        $skus = $query->orderByDesc('id')->get();
 
         $statsQuery = (clone $query);
         $filteredSkus = $statsQuery->get(['content_date_posted', 'pr_date_started', 'pr_date_completed', 'content_date_started']);
@@ -85,13 +87,15 @@ class SkuController extends Controller
             'avg_pr_sla' => round($filteredSkus->map->pr_sla->filter()->avg() ?? 0, 1),
             'avg_content_sla' => round($filteredSkus->map->content_sla->filter()->avg() ?? 0, 1),
         ];
-        $hasActiveFilters = $request->filled('brand') || $request->filled('pr_status') || $request->filled('posted') || $request->filled('month');
+        $hasActiveFilters = $request->filled('brand') || $request->filled('pr_status') || $request->filled('posted') || $month !== '';
         $globalTotal = $hasActiveFilters ? Sku::count() : null;
         $globalPosted = $hasActiveFilters ? Sku::whereNotNull('content_date_posted')->count() : null;
 
         $availableMonths = Sku::whereNotNull('pr_date_started')
             ->get(['pr_date_started'])
             ->map(fn ($sku) => $sku->pr_date_started->format('Y-m'))
+            ->toBase()
+            ->push(now()->format('Y-m'))
             ->unique()
             ->sortDesc()
             ->values();
@@ -105,7 +109,8 @@ class SkuController extends Controller
             'variants' => self::VARIANTS,
             'prStatuses' => self::PR_STATUSES,
             'remarksOptions' => self::REMARKS,
-            'filters' => $request->only(['brand', 'pr_status', 'posted', 'month']),
+            'filters' => $request->only(['brand', 'pr_status', 'posted']),
+            'selectedMonth' => $month,
             'availableMonths' => $availableMonths,
             'existingSkuCodes' => Sku::pluck('sku')->map(fn ($s) => strtolower($s))->values(),
             'researchers' => User::where('role', 'researcher')->orderBy('first_name')->pluck('first_name'),

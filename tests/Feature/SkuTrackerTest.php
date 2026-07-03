@@ -312,7 +312,7 @@ class SkuTrackerTest extends TestCase
     {
         $this->makeSku(['sku' => 'ACME-DATE-1', 'pr_date_started' => '2026-01-05']);
 
-        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker?month=');
 
         $response->assertStatus(200);
         $response->assertSee('2026-01-05');
@@ -415,17 +415,50 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('checked disabled', false);
     }
 
-    // ── Pagination ───────────────────────────────────────────────
+    // ── No pagination — show everything ─────────────────────────
 
-    public function test_pagination_uses_custom_styled_view(): void
+    public function test_no_pagination_controls_and_all_matching_rows_render(): void
     {
         for ($i = 1; $i <= 30; $i++) {
             $this->makeSku(['sku' => "PAGE-{$i}"]);
         }
 
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker?month=');
+
+        $response->assertDontSee('sku-pagination', false);
+        for ($i = 1; $i <= 30; $i++) {
+            $response->assertSee("PAGE-{$i}");
+        }
+    }
+
+    // ── Default month filter ─────────────────────────────────────
+
+    public function test_default_view_shows_current_month_and_dateless_rows(): void
+    {
+        $this->makeSku(['sku' => 'CURRENT-MONTH-1', 'pr_date_started' => now()->format('Y-m') . '-05']);
+        $this->makeSku(['sku' => 'NO-DATE-1']);
+        $this->makeSku(['sku' => 'OLD-MONTH-1', 'pr_date_started' => now()->subMonths(3)->format('Y-m') . '-05']);
+
         $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
 
-        $response->assertSee('sku-pagination', false);
-        $response->assertSee('sku-page-link', false);
+        $response->assertSee('CURRENT-MONTH-1');
+        $response->assertSee('NO-DATE-1');
+        $response->assertDontSee('OLD-MONTH-1');
+    }
+
+    public function test_all_months_option_shows_every_row_including_past_months(): void
+    {
+        $this->makeSku(['sku' => 'OLD-MONTH-2', 'pr_date_started' => now()->subMonths(5)->format('Y-m') . '-05']);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker?month=');
+
+        $response->assertSee('OLD-MONTH-2');
+    }
+
+    public function test_month_dropdown_has_all_months_option(): void
+    {
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertSee('All Months');
     }
 }
