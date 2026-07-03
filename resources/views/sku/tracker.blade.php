@@ -29,9 +29,10 @@
     table.sku-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; white-space: nowrap; }
     table.sku-table th { text-align: left; padding: 0.6rem 0.6rem; border-bottom: 1px solid var(--border-light); color: var(--muted-foreground); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.03em; background: var(--card); }
     table.sku-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border-light); max-width: 200px; }
-    .sku-col-sticky-1, .sku-col-sticky-2 { position: sticky; z-index: 2; background: var(--card); }
+    .sku-col-sticky-1, .sku-col-sticky-2, .sku-col-sticky-3 { position: sticky; z-index: 2; background: var(--card); }
     .sku-col-sticky-1 { left: 0; min-width: 120px; max-width: 120px; }
-    .sku-col-sticky-2 { left: 120px; min-width: 150px; max-width: 150px; border-right: 1px solid var(--border-light); }
+    .sku-col-sticky-2 { left: 120px; min-width: 150px; max-width: 150px; }
+    .sku-col-sticky-3 { left: 270px; min-width: 140px; max-width: 140px; border-right: 1px solid var(--border-light); }
     .sku-col-content { background: rgba(14,165,233,0.06); }
     [data-theme="dark"] .sku-col-content { background: rgba(14,165,233,0.1); }
     th.sku-col-content { background: rgba(14,165,233,0.12); }
@@ -158,7 +159,7 @@
         <table class="sku-table">
             <thead>
                 <tr>
-                    <th class="sku-col-sticky-1">Brand</th><th class="sku-col-sticky-2">SKU</th><th>Variant</th>
+                    <th class="sku-col-sticky-1">Brand</th><th class="sku-col-sticky-2">SKU</th><th class="sku-col-sticky-3">Variant</th>
                     <th>PR File Location</th><th>PR Assignee</th><th>PR Status</th><th>Ready for CVP</th><th>Remarks</th>
                     <th>PR Date Started</th><th>PR Date Completed</th><th>PR SLA</th>
                     <th class="sku-col-content">Content Assignee</th><th class="sku-col-content">Content Status</th>
@@ -179,9 +180,9 @@
                             {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
                             onchange="saveField({{ $sku->id }}, 'sku', this.value, this)">
                     </td>
-                    <td>
-                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="saveField({{ $sku->id }}, 'variant', this.value, this)">
+                    <td class="sku-col-sticky-3">
+                        <select class="sku-cell-select" data-color-type="variant" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'variant', this.value, this)">
                             <option value="" @selected(!$sku->variant)>—</option>
                             @foreach($variants as $v)<option value="{{ $v }}" @selected($sku->variant === $v)>{{ $v }}</option>@endforeach
                         </select>
@@ -192,8 +193,8 @@
                             onchange="saveField({{ $sku->id }}, 'pr_file_location', this.value, this)">
                     </td>
                     <td>
-                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="saveField({{ $sku->id }}, 'pr_assignee', this.value, this)">
+                        <select class="sku-cell-select" data-color-type="assignee" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'pr_assignee', this.value, this)">
                             <option value="" @selected(!$sku->pr_assignee)>—</option>
                             @foreach($researchers as $name)<option value="{{ $name }}" @selected($sku->pr_assignee === $name)>{{ $name }}</option>@endforeach
                             @if($sku->pr_assignee && !$researchers->contains($sku->pr_assignee))
@@ -202,8 +203,8 @@
                         </select>
                     </td>
                     <td>
-                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="saveField({{ $sku->id }}, 'pr_status', this.value, this)">
+                        <select class="sku-cell-select" data-color-type="pr_status" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'pr_status', this.value, this)">
                             <option value="" @selected(!$sku->pr_status)>—</option>
                             @foreach($prStatuses as $s)<option value="{{ $s }}" @selected($sku->pr_status === $s)>{{ $s }}</option>@endforeach
                         </select>
@@ -213,8 +214,8 @@
                             onchange="saveField({{ $sku->id }}, 'ready_for_cvp', this.checked, this)">
                     </td>
                     <td>
-                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
-                            onchange="saveField({{ $sku->id }}, 'remarks', this.value, this)">
+                        <select class="sku-cell-select" data-color-type="remarks" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'remarks', this.value, this)">
                             <option value="" @selected(!$sku->remarks)>—</option>
                             @foreach($remarksOptions as $r)<option value="{{ $r }}" @selected($sku->remarks === $r)>{{ $r }}</option>@endforeach
                         </select>
@@ -232,8 +233,8 @@
                     <td class="sku-readonly-cell sku-pr-sla">{{ $sku->pr_sla !== null ? $sku->pr_sla . 'd' : '—' }}</td>
 
                     <td class="sku-col-content">
-                        <select class="sku-cell-select" {{ $perms['can_edit_content'] ? '' : 'disabled' }}
-                            onchange="saveField({{ $sku->id }}, 'content_assignee', this.value, this)">
+                        <select class="sku-cell-select" data-color-type="assignee" {{ $perms['can_edit_content'] ? '' : 'disabled' }}
+                            onchange="colorizeSelect(this); saveField({{ $sku->id }}, 'content_assignee', this.value, this)">
                             <option value="" @selected(!$sku->content_assignee)>—</option>
                             @foreach($contentUsers as $name)<option value="{{ $name }}" @selected($sku->content_assignee === $name)>{{ $name }}</option>@endforeach
                             @if($sku->content_assignee && !$contentUsers->contains($sku->content_assignee))
@@ -271,24 +272,39 @@
 @if($perms['can_create'])
 <!-- Bulk Add Modal -->
 <div class="modal-overlay" id="bulkAddModal">
-    <div class="modal-box" style="max-width: 560px;">
+    <div class="modal-box" style="max-width: 620px;">
         <div class="modal-header">
             <h5>Bulk Add SKUs</h5>
             <button class="modal-close" onclick="closeModal('bulkAddModal')"><i class="fas fa-times"></i></button>
         </div>
-        <form method="POST" action="{{ route('sku-tracker.bulk-store') }}">
-            @csrf
-            <div class="modal-body" style="display:flex;flex-direction:column;gap:0.75rem;">
-                <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0;">
-                    Paste a JSON array of Brand/SKU pairs, e.g. <code>[{"brand":"Acme","sku":"ACME-1"},{"brand":"Acme","sku":"ACME-2"}]</code>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
+            <div>
+                <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0 0 0.4rem;">
+                    Not sure how to format your list? Copy this prompt, paste it (with your raw list) into an AI chat tool, then paste what it gives back into the box below.
                 </p>
-                <textarea name="rows_json" class="form-input" rows="8" style="font-family:ui-monospace,monospace;font-size:0.8rem;" placeholder='[{"brand":"Acme","sku":"ACME-1"}]' required></textarea>
+                <textarea id="aiPromptText" class="form-input" rows="4" readonly
+                    style="font-size:0.78rem;color:var(--muted-foreground);background:var(--muted);"
+                >I have a list of products with brand names and SKU/product codes. Reformat it into plain text lines, one product per line, in this exact format: Brand, SKU (brand name, a comma, then the SKU code — nothing else: no numbering, no bullets, no extra words). Output only the reformatted lines so I can copy them directly. Here is my list:
+
+[paste your raw list here]</textarea>
+                <button type="button" id="copyAiPromptBtn" class="btn-flat-secondary" style="height: 34px; font-size: 0.78rem; margin-top: 0.4rem;" onclick="copyAiPrompt()">
+                    <i class="fas fa-copy"></i> <span id="copyAiPromptLabel">Copy Prompt</span>
+                </button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-flat-secondary" onclick="closeModal('bulkAddModal')">Cancel</button>
-                <button type="submit" class="btn-flat-primary">Add Rows</button>
-            </div>
-        </form>
+            <form method="POST" action="{{ route('sku-tracker.bulk-store') }}">
+                @csrf
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0;">
+                        One row per line: <code>Brand, SKU</code> (also accepts pasting straight from Excel/Sheets columns).
+                    </p>
+                    <textarea name="rows_text" class="form-input" rows="8" style="font-size:0.85rem;" placeholder="Acme, ACME-001&#10;Acme, ACME-002" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-flat-secondary" onclick="closeModal('bulkAddModal')">Cancel</button>
+                    <button type="submit" class="btn-flat-primary">Add Rows</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endif
@@ -300,6 +316,61 @@ function checkDuplicateSku(value) {
     var warning = document.getElementById('addRowDuplicateWarning');
     var normalized = (value || '').trim().toLowerCase();
     warning.style.display = (normalized && existingSkuCodes.indexOf(normalized) !== -1) ? 'inline' : 'none';
+}
+
+// ── Dropdown coloring ─────────────────────────────────────────
+var SKU_SELECT_COLORS = {
+    pr_status: { 'In Progress': '#f59e0b', 'Done': '#10b981', 'On Hold': '#f43f5e' },
+    remarks: {
+        'No Resources': '#f43f5e', 'Out-of-Stock': '#f43f5e', 'SKU Issue': '#f43f5e',
+        'Posted': '#10b981', 'Advance PR': '#0ea5e9', 'Old Posted': '#94a3b8'
+    },
+    variant: { 'Single': '#64748b', 'Variant/Parent': '#6366f1', 'Variant/Child': '#7c3aed', 'Add Variant': '#f59e0b' }
+};
+var SKU_ASSIGNEE_PALETTE = ['#7c3aed', '#6366f1', '#ec4899', '#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#1e293b'];
+
+function assigneeColor(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) { hash = (hash * 31 + name.charCodeAt(i)) >>> 0; }
+    return SKU_ASSIGNEE_PALETTE[hash % SKU_ASSIGNEE_PALETTE.length];
+}
+
+function colorizeSelect(select) {
+    var type = select.dataset.colorType;
+    if (!type || !select.value) {
+        select.style.borderColor = '';
+        select.style.color = '';
+        select.style.background = '';
+        select.style.fontWeight = '';
+        return;
+    }
+    var color = type === 'assignee' ? assigneeColor(select.value) : (SKU_SELECT_COLORS[type] || {})[select.value];
+    if (!color) {
+        select.style.borderColor = '';
+        select.style.color = '';
+        select.style.background = '';
+        select.style.fontWeight = '';
+        return;
+    }
+    select.style.borderColor = color;
+    select.style.color = color;
+    select.style.background = color + '1A';
+    select.style.fontWeight = '700';
+}
+
+document.querySelectorAll('select[data-color-type]').forEach(colorizeSelect);
+
+// ── Bulk add AI prompt ───────────────────────────────────────
+function copyAiPrompt() {
+    var text = document.getElementById('aiPromptText');
+    var label = document.getElementById('copyAiPromptLabel');
+    navigator.clipboard.writeText(text.value).then(function () {
+        var original = label.textContent;
+        label.textContent = 'Copied!';
+        setTimeout(function () { label.textContent = original; }, 1500);
+    }).catch(function () {
+        text.select();
+    });
 }
 
 function flashCell(el, ok) {

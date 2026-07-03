@@ -137,29 +137,32 @@ class SkuController extends Controller
     {
         abort_unless($this->permissions(Auth::user()->role)['can_create'], 403);
 
-        $request->validate(['rows_json' => 'required|string']);
-        $rows = json_decode($request->input('rows_json'), true);
-
-        if (!is_array($rows)) {
-            return back()->with('error', 'That doesn\'t look like valid JSON.');
-        }
+        $request->validate(['rows_text' => 'required|string']);
+        $lines = preg_split('/\r\n|\r|\n/', $request->input('rows_text'));
 
         $created = 0;
         $skipped = 0;
-        foreach ($rows as $row) {
-            if (!is_array($row) || empty($row['brand']) || empty($row['sku'])) {
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+            $parts = preg_split('/,|\t/', $line, 2);
+            $brand = trim($parts[0] ?? '');
+            $sku = trim($parts[1] ?? '');
+            if ($brand === '' || $sku === '') {
                 $skipped++;
                 continue;
             }
             Sku::create([
-                'brand' => (string) $row['brand'],
-                'sku' => (string) $row['sku'],
+                'brand' => $brand,
+                'sku' => $sku,
                 'created_by' => Auth::id(),
             ]);
             $created++;
         }
 
-        return back()->with('success', "Added {$created} SKU(s)." . ($skipped > 0 ? " Skipped {$skipped} row(s) missing brand/sku." : ''));
+        return back()->with('success', "Added {$created} SKU(s)." . ($skipped > 0 ? " Skipped {$skipped} line(s) missing brand/SKU." : ''));
     }
 
     public function updateField(Request $request, Sku $sku)

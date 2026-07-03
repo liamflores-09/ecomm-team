@@ -67,6 +67,13 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('id="bulkAddModal"', false);
     }
 
+    public function test_bulk_add_modal_has_copyable_ai_prompt(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('id="copyAiPromptBtn"', false);
+        $response->assertSee('id="aiPromptText"', false);
+    }
+
     public function test_existing_sku_codes_are_passed_to_view_for_duplicate_check(): void
     {
         $this->makeSku(['sku' => 'ACME-DUP-1']);
@@ -109,15 +116,12 @@ class SkuTrackerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_bulk_add_creates_multiple_skus_from_json(): void
+    public function test_bulk_add_creates_multiple_skus_from_comma_separated_lines(): void
     {
-        $payload = json_encode([
-            ['brand' => 'Acme', 'sku' => 'BULK-1'],
-            ['brand' => 'Acme', 'sku' => 'BULK-2'],
-        ]);
+        $payload = "Acme, BULK-1\nAcme, BULK-2";
 
         $response = $this->actingAs($this->makeUser('researcher'))->post('/sku-tracker/bulk', [
-            'rows_json' => $payload,
+            'rows_text' => $payload,
         ]);
 
         $response->assertRedirect();
@@ -125,15 +129,23 @@ class SkuTrackerTest extends TestCase
         $this->assertDatabaseHas('skus', ['sku' => 'BULK-2']);
     }
 
-    public function test_bulk_add_skips_rows_missing_brand_or_sku(): void
+    public function test_bulk_add_accepts_tab_separated_lines(): void
     {
-        $payload = json_encode([
-            ['brand' => 'Acme', 'sku' => 'BULK-VALID'],
-            ['brand' => 'Acme'],
-        ]);
+        $payload = "Acme\tBULK-TAB-1";
 
         $this->actingAs($this->makeUser('researcher'))->post('/sku-tracker/bulk', [
-            'rows_json' => $payload,
+            'rows_text' => $payload,
+        ]);
+
+        $this->assertDatabaseHas('skus', ['sku' => 'BULK-TAB-1']);
+    }
+
+    public function test_bulk_add_skips_blank_and_malformed_lines(): void
+    {
+        $payload = "Acme, BULK-VALID\n\nJust one field with no separator";
+
+        $this->actingAs($this->makeUser('researcher'))->post('/sku-tracker/bulk', [
+            'rows_text' => $payload,
         ]);
 
         $this->assertDatabaseHas('skus', ['sku' => 'BULK-VALID']);
@@ -142,10 +154,8 @@ class SkuTrackerTest extends TestCase
 
     public function test_bulk_add_forbidden_for_content(): void
     {
-        $payload = json_encode([['brand' => 'Acme', 'sku' => 'BULK-DENIED']]);
-
         $response = $this->actingAs($this->makeUser('content'))->post('/sku-tracker/bulk', [
-            'rows_json' => $payload,
+            'rows_text' => 'Acme, BULK-DENIED',
         ]);
 
         $response->assertStatus(403);
@@ -361,6 +371,15 @@ class SkuTrackerTest extends TestCase
         $response->assertSee('sku-col-sticky', false);
     }
 
+    public function test_variant_column_is_sticky(): void
+    {
+        $this->makeSku(['sku' => 'ACME-STICKY-2']);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertSee('sku-col-sticky-3', false);
+    }
+
     public function test_content_columns_have_distinct_styling_class(): void
     {
         $this->makeSku(['sku' => 'ACME-COLOR-1']);
@@ -368,6 +387,18 @@ class SkuTrackerTest extends TestCase
         $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
 
         $response->assertSee('sku-col-content', false);
+    }
+
+    public function test_dropdown_cells_carry_color_hooks_for_js(): void
+    {
+        $this->makeSku(['sku' => 'ACME-COLOR-2']);
+
+        $response = $this->actingAs($this->makeUser('backend'))->get('/sku-tracker');
+
+        $response->assertSee('data-color-type="pr_status"', false);
+        $response->assertSee('data-color-type="remarks"', false);
+        $response->assertSee('data-color-type="variant"', false);
+        $response->assertSee('data-color-type="assignee"', false);
     }
 
     // ── Dropdowns use canonical values ───────────────────────────
