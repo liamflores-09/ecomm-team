@@ -205,4 +205,23 @@ class SkuTrackerTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('skus', ['id' => $sku->id, 'pr_status' => 'DONE', 'content_assignee' => 'Vin']);
     }
+
+    public function test_sku_management_nav_visible_to_non_analyst_member(): void
+    {
+        $response = $this->actingAs($this->makeUser('content'))->get('/dashboard');
+        $response->assertSee('SKU Management');
+        $response->assertSee('SKU Tracker');
+    }
+
+    public function test_sku_management_nav_hidden_from_analyst(): void
+    {
+        $response = $this->actingAs($this->makeUser('analyst'))->get('/dashboard');
+        $response->assertDontSee('SKU Management');
+    }
+
+    public function test_sku_management_nav_visible_to_admin(): void
+    {
+        $response = $this->actingAs($this->makeUser('manager'))->get('/admin');
+        $response->assertSee('SKU Management');
+    }
 }

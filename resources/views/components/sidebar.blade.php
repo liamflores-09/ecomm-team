@@ -36,6 +36,12 @@
             <li><a href="{{ route('admin.brands') }}"     class="{{ $active === 'admin.brands'    ? 'active' : '' }}"><i class="fas fa-layer-group"></i> Brands</a></li>
             <li><a href="{{ route('brand-catalogs') }}"   class="{{ $active === 'brand-catalogs'  ? 'active' : '' }}"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
 
+            {{-- ── SKU Management ── --}}
+            <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
+            <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">SKU Management</li>
+            <li><a href="{{ route('sku-tracker') }}"        class="{{ $active === 'sku-tracker'        ? 'active' : '' }}"><i class="fas fa-box"></i> SKU Tracker</a></li>
+            <li><a href="{{ route('sla-weekly-output') }}"  class="{{ $active === 'sla-weekly-output'  ? 'active' : '' }}"><i class="fas fa-chart-line"></i> SLA and Weekly Output</a></li>
+
             {{-- ── General ── --}}
             <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
             <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">General</li>
@@ -60,6 +66,14 @@
             <li><a href="{{ route('posting-procedure') }}"       class="{{ $active === 'posting-procedure'      ? 'active' : '' }}"><i class="fas fa-list-check"></i> Posting Procedure</a></li>
             <li><a href="{{ route('ecommerce-requirements') }}"  class="{{ $active === 'ecommerce-requirements' ? 'active' : '' }}"><i class="fas fa-clipboard-list"></i> Requirements</a></li>
             @endif
+            @endif
+
+            {{-- ── SKU Management (non-analyst) ── --}}
+            @if($role !== 'analyst')
+            <li style="height:1px;background:var(--sidebar-border);margin:6px 0;pointer-events:none;"></li>
+            <li style="padding:12px 12px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground);pointer-events:none;">SKU Management</li>
+            <li><a href="{{ route('sku-tracker') }}"        class="{{ $active === 'sku-tracker'        ? 'active' : '' }}"><i class="fas fa-box"></i> SKU Tracker</a></li>
+            <li><a href="{{ route('sla-weekly-output') }}"  class="{{ $active === 'sla-weekly-output'  ? 'active' : '' }}"><i class="fas fa-chart-line"></i> SLA and Weekly Output</a></li>
             @endif
 
             {{-- ── Tools (non-analyst) ── --}}
