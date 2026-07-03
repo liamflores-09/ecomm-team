@@ -15,28 +15,49 @@
     .sku-kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); }
     .sku-kpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white; background: var(--primary); flex-shrink: 0; }
     .sku-kpi-value { font-size: 1.75rem; font-weight: 700; line-height: 1; font-family: 'Space Grotesk', sans-serif; color: var(--foreground); }
+    .sku-kpi-range { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500; margin-top: 0.2rem; }
 
     .sku-filter-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
     .sku-filter-group { display: flex; flex-direction: column; gap: 0.3rem; min-width: 160px; }
     .sku-filter-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--muted-foreground); }
 
+    .sku-actions-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; padding: 0.875rem 1.25rem; margin-bottom: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+    .sku-actions-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sku-actions-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--muted-foreground); }
+
     .sku-table-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 8px; overflow-x: auto; }
     table.sku-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; white-space: nowrap; }
-    table.sku-table th { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); color: var(--muted-foreground); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; background: var(--card); }
-    table.sku-table td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border-light); max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
-    .sku-col-sticky-1, .sku-col-sticky-2 { position: sticky; z-index: 2; background: var(--card); overflow: hidden; text-overflow: ellipsis; }
-    .sku-col-sticky-1 { left: 0; min-width: 130px; max-width: 130px; }
-    .sku-col-sticky-2 { left: 130px; min-width: 160px; max-width: 160px; border-right: 1px solid var(--border-light); }
+    table.sku-table th { text-align: left; padding: 0.6rem 0.6rem; border-bottom: 1px solid var(--border-light); color: var(--muted-foreground); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.03em; background: var(--card); }
+    table.sku-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border-light); max-width: 200px; }
+    .sku-col-sticky-1, .sku-col-sticky-2 { position: sticky; z-index: 2; background: var(--card); }
+    .sku-col-sticky-1 { left: 0; min-width: 120px; max-width: 120px; }
+    .sku-col-sticky-2 { left: 120px; min-width: 150px; max-width: 150px; border-right: 1px solid var(--border-light); }
+    .sku-col-content { background: rgba(14,165,233,0.06); }
+    [data-theme="dark"] .sku-col-content { background: rgba(14,165,233,0.1); }
+    th.sku-col-content { background: rgba(14,165,233,0.12); }
+
     .sku-chip { display: inline-flex; padding: 0.18rem 0.6rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700; }
     .sku-chip.done { background: rgba(34,197,94,0.12); color: var(--success); }
     .sku-chip.pending { background: rgba(245,158,11,0.12); color: #f59e0b; }
     .sku-chip.none { background: var(--muted); color: var(--muted-foreground); }
-    .sku-row-btn { border: 1px solid var(--border-light); border-radius: 6px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; background: transparent; color: var(--muted-foreground); cursor: pointer; }
-    .sku-row-btn:hover { border-color: var(--foreground); color: var(--foreground); }
 
-    .sku-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
-    .sku-form-section-title { grid-column: 1 / -1; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); margin-top: 0.5rem; border-top: 1px solid var(--border-light); padding-top: 0.75rem; }
-    .sku-form-section-title:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+    .sku-cell-input, .sku-cell-select { width: 100%; min-width: 90px; height: 30px; padding: 2px 6px; border: 1px solid transparent; background: transparent; font-family: inherit; font-size: 0.8rem; color: inherit; border-radius: 5px; transition: border-color 0.12s, background 0.12s; }
+    .sku-cell-input:hover, .sku-cell-select:hover { border-color: var(--border-light); }
+    .sku-cell-input:focus, .sku-cell-select:focus { border-color: var(--primary); background: var(--card); outline: none; }
+    .sku-cell-input:disabled, .sku-cell-select:disabled { color: var(--muted-foreground); cursor: not-allowed; }
+    .sku-cell-flash-ok { background: rgba(34,197,94,0.18) !important; }
+    .sku-cell-flash-err { background: rgba(239,68,68,0.18) !important; }
+    .sku-readonly-cell { color: var(--muted-foreground); font-size: 0.8rem; }
+
+    #addRowForm { display: flex; gap: 0.6rem; align-items: flex-end; }
+    #addRowForm input { width: 180px; }
+
+    .sku-pagination { display: flex; align-items: center; justify-content: center; gap: 0.3rem; flex-wrap: wrap; }
+    .sku-page-link { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--border-light); color: var(--foreground); text-decoration: none; font-size: 0.8rem; font-weight: 600; background: var(--card); }
+    .sku-page-link:hover { border-color: var(--primary); }
+    .sku-page-link.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .sku-page-link.disabled { color: var(--muted-foreground); pointer-events: none; opacity: 0.5; }
+    .sku-page-dots { padding: 0 4px; color: var(--muted-foreground); }
 </style>
 @endsection
 
@@ -47,27 +68,31 @@
     <div class="top-bar anim-up" style="margin-bottom: 1.5rem;">
         <div>
             <h2>SKU <span class="highlight">Tracker</span></h2>
-            <p>Product research to content posting pipeline</p>
+            <p>Product research to content posting pipeline — edits save automatically</p>
         </div>
-        @if($perms['can_create'])
-        <button type="button" class="btn-flat-primary" style="height: 40px; padding: 0 1rem; font-size: 0.85rem;" onclick="openAddSku()">
-            <i class="fas fa-plus"></i> Add SKU
-        </button>
-        @endif
     </div>
 
     @if(session('success'))
     <div class="alert-flat success anim-fade"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+    <div class="alert-flat danger anim-fade"><i class="fas fa-circle-xmark"></i> {{ session('error') }}</div>
     @endif
 
     <div class="sku-kpi-grid anim-up d1">
         <div class="sku-kpi-card">
             <div class="sku-kpi-top"><span class="sku-kpi-label">Total SKUs</span><div class="sku-kpi-icon"><i class="fas fa-box"></i></div></div>
             <div class="sku-kpi-value">{{ number_format($stats['total']) }}</div>
+            @if($globalTotal !== null)
+            <div class="sku-kpi-range">of {{ number_format($globalTotal) }} total</div>
+            @endif
         </div>
         <div class="sku-kpi-card">
             <div class="sku-kpi-top"><span class="sku-kpi-label">Posted</span><div class="sku-kpi-icon"><i class="fas fa-circle-check"></i></div></div>
             <div class="sku-kpi-value">{{ number_format($stats['posted']) }}</div>
+            @if($globalPosted !== null)
+            <div class="sku-kpi-range">of {{ number_format($globalPosted) }} total</div>
+            @endif
         </div>
         <div class="sku-kpi-card">
             <div class="sku-kpi-top"><span class="sku-kpi-label">Avg PR SLA</span><div class="sku-kpi-icon"><i class="fas fa-magnifying-glass"></i></div></div>
@@ -113,203 +138,225 @@
         <button type="submit" class="btn-flat-secondary" style="height: 40px;">Filter</button>
     </form>
 
+    @if($perms['can_create'])
+    <div class="sku-actions-card anim-up d2">
+        <form id="addRowForm" method="POST" action="{{ route('sku-tracker.store') }}">
+            @csrf
+            <div class="sku-actions-group">
+                <span class="sku-actions-label">Brand</span>
+                <input type="text" name="brand" class="input-flat" placeholder="Brand" required>
+            </div>
+            <div class="sku-actions-group">
+                <span class="sku-actions-label">SKU</span>
+                <input type="text" name="sku" class="input-flat" placeholder="SKU code" oninput="checkDuplicateSku(this.value)" required>
+            </div>
+            <button type="submit" class="btn-flat-primary" style="height: 40px;"><i class="fas fa-plus"></i> Add Row</button>
+            <span id="addRowDuplicateWarning" style="display:none;color:#f59e0b;font-size:0.72rem;font-weight:600;align-self:center;">
+                <i class="fas fa-triangle-exclamation"></i> SKU already exists — still addable.
+            </span>
+        </form>
+        <button type="button" class="btn-flat-secondary" style="height: 40px;" onclick="openModal('bulkAddModal')" id="bulkAddModal-trigger">
+            <i class="fas fa-file-import"></i> Bulk Add (JSON)
+        </button>
+    </div>
+    @endif
+
     <div class="sku-table-card anim-up d3">
         <table class="sku-table">
             <thead>
                 <tr>
                     <th class="sku-col-sticky-1">Brand</th><th class="sku-col-sticky-2">SKU</th><th>Variant</th>
-                    <th>PR Assignee</th><th>PR Status</th><th>PR Date Started</th><th>PR Date Completed</th><th>PR SLA</th>
-                    <th>PR File Location</th><th>Ready for CVP</th><th>Remarks</th>
-                    <th>Content Assignee</th><th>Content Date Started</th><th>Content Date Posted</th><th>Content SLA</th><th>Content Status</th>
-                    <th>Posted</th><th>CVP Uploaded</th>
-                    <th>Shopee</th><th>Lazada</th><th>TikTok</th>
-                    <th>JG PRO Shopee</th><th>JG PRO Lazada</th><th>Shopify</th><th>CinePro</th>
-                    <th>LZD Brand Mall</th><th>SHP Brand Mall</th><th>TT Brand Mall</th>
-                    <th></th>
+                    <th>PR File Location</th><th>PR Assignee</th><th>PR Status</th><th>Ready for CVP</th><th>Remarks</th>
+                    <th>PR Date Started</th><th>PR Date Completed</th><th>PR SLA</th>
+                    <th class="sku-col-content">Content Assignee</th><th class="sku-col-content">Content Status</th>
+                    <th class="sku-col-content">Content Date Started</th><th class="sku-col-content">Content Date Posted</th>
+                    <th class="sku-col-content">Content SLA</th><th class="sku-col-content">Posted</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($skus as $sku)
-                <tr>
-                    <td class="sku-col-sticky-1" title="{{ $sku->brand }}">{{ $sku->brand }}</td>
-                    <td class="sku-col-sticky-2" title="{{ $sku->sku }}">{{ $sku->sku }}</td>
-                    <td>{{ $sku->variant ?? '—' }}</td>
-                    <td>{{ $sku->pr_assignee ?? '—' }}</td>
-                    <td>{{ $sku->pr_status ?? '—' }}</td>
-                    <td>{{ $sku->pr_date_started?->format('Y-m-d') ?? '—' }}</td>
-                    <td>{{ $sku->pr_date_completed?->format('Y-m-d') ?? '—' }}</td>
-                    <td>{{ $sku->pr_sla !== null ? $sku->pr_sla . 'd' : '—' }}</td>
-                    <td title="{{ $sku->pr_file_location }}">{{ $sku->pr_file_location ?? '—' }}</td>
-                    <td>{{ $sku->ready_for_cvp ? 'Yes' : 'No' }}</td>
-                    <td title="{{ $sku->remarks }}">{{ $sku->remarks ?? '—' }}</td>
-                    <td>{{ $sku->content_assignee ?? '—' }}</td>
-                    <td>{{ $sku->content_date_started?->format('Y-m-d') ?? '—' }}</td>
-                    <td>{{ $sku->content_date_posted?->format('Y-m-d') ?? '—' }}</td>
-                    <td>{{ $sku->content_sla !== null ? $sku->content_sla . 'd' : '—' }}</td>
+                <tr data-sku-id="{{ $sku->id }}">
+                    <td class="sku-col-sticky-1">
+                        <input type="text" class="sku-cell-input" value="{{ $sku->brand }}" title="{{ $sku->brand }}"
+                            {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'brand', this.value, this)">
+                    </td>
+                    <td class="sku-col-sticky-2">
+                        <input type="text" class="sku-cell-input" value="{{ $sku->sku }}" title="{{ $sku->sku }}"
+                            {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'sku', this.value, this)">
+                    </td>
                     <td>
+                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'variant', this.value, this)">
+                            <option value="" @selected(!$sku->variant)>—</option>
+                            @foreach($variants as $v)<option value="{{ $v }}" @selected($sku->variant === $v)>{{ $v }}</option>@endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="sku-cell-input" value="{{ $sku->pr_file_location }}" title="{{ $sku->pr_file_location }}"
+                            {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'pr_file_location', this.value, this)">
+                    </td>
+                    <td>
+                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'pr_assignee', this.value, this)">
+                            <option value="" @selected(!$sku->pr_assignee)>—</option>
+                            @foreach($researchers as $name)<option value="{{ $name }}" @selected($sku->pr_assignee === $name)>{{ $name }}</option>@endforeach
+                            @if($sku->pr_assignee && !$researchers->contains($sku->pr_assignee))
+                            <option value="{{ $sku->pr_assignee }}" selected>{{ $sku->pr_assignee }}</option>
+                            @endif
+                        </select>
+                    </td>
+                    <td>
+                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'pr_status', this.value, this)">
+                            <option value="" @selected(!$sku->pr_status)>—</option>
+                            @foreach($prStatuses as $s)<option value="{{ $s }}" @selected($sku->pr_status === $s)>{{ $s }}</option>@endforeach
+                        </select>
+                    </td>
+                    <td style="text-align:center;">
+                        <input type="checkbox" {{ $sku->ready_for_cvp ? 'checked' : '' }} {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'ready_for_cvp', this.checked, this)">
+                    </td>
+                    <td>
+                        <select class="sku-cell-select" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'remarks', this.value, this)">
+                            <option value="" @selected(!$sku->remarks)>—</option>
+                            @foreach($remarksOptions as $r)<option value="{{ $r }}" @selected($sku->remarks === $r)>{{ $r }}</option>@endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="date" class="sku-cell-input" value="{{ $sku->pr_date_started?->format('Y-m-d') }}"
+                            {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'pr_date_started', this.value, this)">
+                    </td>
+                    <td>
+                        <input type="date" class="sku-cell-input" value="{{ $sku->pr_date_completed?->format('Y-m-d') }}"
+                            {{ $perms['can_edit_pr'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'pr_date_completed', this.value, this)">
+                    </td>
+                    <td class="sku-readonly-cell sku-pr-sla">{{ $sku->pr_sla !== null ? $sku->pr_sla . 'd' : '—' }}</td>
+
+                    <td class="sku-col-content">
+                        <select class="sku-cell-select" {{ $perms['can_edit_content'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'content_assignee', this.value, this)">
+                            <option value="" @selected(!$sku->content_assignee)>—</option>
+                            @foreach($contentUsers as $name)<option value="{{ $name }}" @selected($sku->content_assignee === $name)>{{ $name }}</option>@endforeach
+                            @if($sku->content_assignee && !$contentUsers->contains($sku->content_assignee))
+                            <option value="{{ $sku->content_assignee }}" selected>{{ $sku->content_assignee }}</option>
+                            @endif
+                        </select>
+                    </td>
+                    <td class="sku-col-content sku-content-status">
                         @php $csKey = match($sku->content_status) { 'DONE' => 'done', 'PENDING' => 'pending', default => 'none' }; @endphp
                         <span class="sku-chip {{ $csKey }}">{{ $sku->content_status }}</span>
                     </td>
-                    <td>{{ $sku->posted ? 'Yes' : 'No' }}</td>
-                    <td>{{ $sku->cvp_uploaded ? 'Yes' : 'No' }}</td>
-                    <td title="{{ $sku->shopee_link }}">{{ $sku->shopee_link ?? '—' }}</td>
-                    <td title="{{ $sku->lazada_link }}">{{ $sku->lazada_link ?? '—' }}</td>
-                    <td title="{{ $sku->tiktok_link }}">{{ $sku->tiktok_link ?? '—' }}</td>
-                    <td title="{{ $sku->jg_pro_shopee_link }}">{{ $sku->jg_pro_shopee_link ?? '—' }}</td>
-                    <td title="{{ $sku->jg_pro_lazada_link }}">{{ $sku->jg_pro_lazada_link ?? '—' }}</td>
-                    <td title="{{ $sku->shopify_link }}">{{ $sku->shopify_link ?? '—' }}</td>
-                    <td title="{{ $sku->cinepro_link }}">{{ $sku->cinepro_link ?? '—' }}</td>
-                    <td title="{{ $sku->lzd_brand_mall_link }}">{{ $sku->lzd_brand_mall_link ?? '—' }}</td>
-                    <td title="{{ $sku->shp_brand_mall_link }}">{{ $sku->shp_brand_mall_link ?? '—' }}</td>
-                    <td title="{{ $sku->tt_brand_mall_link }}">{{ $sku->tt_brand_mall_link ?? '—' }}</td>
-                    <td>
-                        @if($perms['can_edit_pr'] || $perms['can_edit_content'])
-                        <button class="sku-row-btn" title="Edit" onclick='openEditSku(@json($sku))'>
-                            <i class="fas fa-pencil"></i>
-                        </button>
-                        @endif
+                    <td class="sku-col-content">
+                        <input type="date" class="sku-cell-input" value="{{ $sku->content_date_started?->format('Y-m-d') }}"
+                            {{ $perms['can_edit_content'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'content_date_started', this.value, this)">
+                    </td>
+                    <td class="sku-col-content">
+                        <input type="date" class="sku-cell-input" value="{{ $sku->content_date_posted?->format('Y-m-d') }}"
+                            {{ $perms['can_edit_content'] ? '' : 'disabled' }}
+                            onchange="saveField({{ $sku->id }}, 'content_date_posted', this.value, this)">
+                    </td>
+                    <td class="sku-col-content sku-readonly-cell sku-content-sla">{{ $sku->content_sla !== null ? $sku->content_sla . 'd' : '—' }}</td>
+                    <td class="sku-col-content sku-posted-cell" style="text-align:center;">
+                        <input type="checkbox" {{ $sku->posted ? 'checked' : '' }} disabled title="Automatically checked when Content Date Posted is set">
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="29" class="empty-state">No SKUs match your filters.</td></tr>
+                <tr><td colspan="17" class="empty-state">No SKUs match your filters.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="anim-up d4" style="margin-top: 1rem;">{{ $skus->links() }}</div>
+    <div class="anim-up d4" style="margin-top: 1rem;">{{ $skus->links('sku.partials.pagination') }}</div>
 </div>
 
-<!-- SKU Modal -->
-<div class="modal-overlay" id="skuModal">
-    <div class="modal-box" style="max-width: 640px;">
+@if($perms['can_create'])
+<!-- Bulk Add Modal -->
+<div class="modal-overlay" id="bulkAddModal">
+    <div class="modal-box" style="max-width: 560px;">
         <div class="modal-header">
-            <h5 id="skuModalTitle">SKU Details</h5>
-            <button class="modal-close" onclick="closeModal('skuModal')"><i class="fas fa-times"></i></button>
+            <h5>Bulk Add SKUs</h5>
+            <button class="modal-close" onclick="closeModal('bulkAddModal')"><i class="fas fa-times"></i></button>
         </div>
-        <form method="POST" id="skuForm">
+        <form method="POST" action="{{ route('sku-tracker.bulk-store') }}">
             @csrf
-            <input type="hidden" name="_method" id="skuMethod" value="">
-            <div class="modal-body">
-                <div class="sku-form-grid">
-                    <div class="sku-form-section-title">Basic Info</div>
-                    <div class="form-group"><label class="form-label">Brand</label><input type="text" name="brand" id="skuBrand" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }} required></div>
-                    <div class="form-group">
-                        <label class="form-label">SKU</label>
-                        <input type="text" name="sku" id="skuSku" class="form-input" oninput="checkDuplicateSku(this.value)" {{ $perms['can_edit_pr'] ? '' : 'disabled' }} required>
-                        <span id="skuDuplicateWarning" style="display:none;color:#f59e0b;font-size:0.72rem;font-weight:600;margin-top:0.2rem;">
-                            <i class="fas fa-triangle-exclamation"></i> A SKU with this code already exists — you can still save.
-                        </span>
-                    </div>
-                    <div class="form-group"><label class="form-label">Variant</label>
-                        <select name="variant" id="skuVariant" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}>
-                            <option value="">—</option>
-                            @foreach($variants as $v)<option value="{{ $v }}">{{ $v }}</option>@endforeach
-                        </select>
-                    </div>
-
-                    <div class="sku-form-section-title">PR Section</div>
-                    <div class="form-group"><label class="form-label">PR Assignee</label><input type="text" name="pr_assignee" id="skuPrAssignee" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
-                    <div class="form-group"><label class="form-label">PR Status</label>
-                        <select name="pr_status" id="skuPrStatus" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}>
-                            <option value="">—</option>
-                            @foreach($prStatuses as $s)<option value="{{ $s }}">{{ $s }}</option>@endforeach
-                        </select>
-                    </div>
-                    <div class="form-group"><label class="form-label">PR Date Started</label><input type="date" name="pr_date_started" id="skuPrStarted" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
-                    <div class="form-group"><label class="form-label">PR Date Completed</label><input type="date" name="pr_date_completed" id="skuPrCompleted" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
-                    <div class="form-group"><label class="form-label">PR File Location</label><input type="text" name="pr_file_location" id="skuPrFileLocation" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
-                    <div class="form-group">
-                        <label class="form-label"><input type="checkbox" name="ready_for_cvp" id="skuReadyForCvp" value="1" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}> Ready for CVP</label>
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1;"><label class="form-label">Remarks</label><textarea name="remarks" id="skuRemarks" class="form-input" rows="3" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></textarea></div>
-
-                    @if($perms['can_edit_content'])
-                    <div class="sku-form-section-title">Content Section</div>
-                    <div class="form-group"><label class="form-label">Content Assignee</label><input type="text" name="content_assignee" id="skuContentAssignee" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">Content Date Started</label><input type="date" name="content_date_started" id="skuContentStarted" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">Content Date Posted</label><input type="date" name="content_date_posted" id="skuContentPosted" class="form-input"></div>
-
-                    <div class="sku-form-section-title">Marketplace Links</div>
-                    <div class="form-group"><label class="form-label">Shopee</label><input type="text" name="shopee_link" id="skuShopee" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">Lazada</label><input type="text" name="lazada_link" id="skuLazada" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">TikTok</label><input type="text" name="tiktok_link" id="skuTiktok" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">Shopify</label><input type="text" name="shopify_link" id="skuShopify" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">CinePro</label><input type="text" name="cinepro_link" id="skuCinepro" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">JG PRO Shopee</label><input type="text" name="jg_pro_shopee_link" id="skuJgShopee" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">JG PRO Lazada</label><input type="text" name="jg_pro_lazada_link" id="skuJgLazada" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">LZD Brand Mall</label><input type="text" name="lzd_brand_mall_link" id="skuLzdMall" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">SHP Brand Mall</label><input type="text" name="shp_brand_mall_link" id="skuShpMall" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">TT Brand Mall</label><input type="text" name="tt_brand_mall_link" id="skuTtMall" class="form-input"></div>
-                    @endif
-                </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:0.75rem;">
+                <p style="font-size:0.8rem;color:var(--muted-foreground);margin:0;">
+                    Paste a JSON array of Brand/SKU pairs, e.g. <code>[{"brand":"Acme","sku":"ACME-1"},{"brand":"Acme","sku":"ACME-2"}]</code>
+                </p>
+                <textarea name="rows_json" class="form-input" rows="8" style="font-family:ui-monospace,monospace;font-size:0.8rem;" placeholder='[{"brand":"Acme","sku":"ACME-1"}]' required></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-flat-secondary" onclick="closeModal('skuModal')">Cancel</button>
-                <button type="submit" class="btn-flat-primary" {{ ($perms['can_edit_pr'] || $perms['can_edit_content']) ? '' : 'disabled' }}>Save</button>
+                <button type="button" class="btn-flat-secondary" onclick="closeModal('bulkAddModal')">Cancel</button>
+                <button type="submit" class="btn-flat-primary">Add Rows</button>
             </div>
         </form>
     </div>
 </div>
+@endif
 
 <script>
 var existingSkuCodes = @json($existingSkuCodes);
-var editingSkuCode = null;
 
 function checkDuplicateSku(value) {
-    var warning = document.getElementById('skuDuplicateWarning');
+    var warning = document.getElementById('addRowDuplicateWarning');
     var normalized = (value || '').trim().toLowerCase();
-    var isDuplicate = normalized && normalized !== editingSkuCode && existingSkuCodes.indexOf(normalized) !== -1;
-    warning.style.display = isDuplicate ? 'inline' : 'none';
+    warning.style.display = (normalized && existingSkuCodes.indexOf(normalized) !== -1) ? 'inline' : 'none';
 }
 
-@if($perms['can_create'])
-function openAddSku() {
-    document.getElementById('skuModalTitle').textContent = 'Add SKU';
-    document.getElementById('skuForm').action = '{{ route("sku-tracker.store") }}';
-    document.getElementById('skuMethod').value = '';
-    document.getElementById('skuForm').reset();
-    document.getElementById('skuDuplicateWarning').style.display = 'none';
-    document.getElementById('skuPrFileLocation').value = '';
-    document.getElementById('skuRemarks').value = '';
-    document.getElementById('skuReadyForCvp').checked = false;
-    editingSkuCode = null;
-    openModal('skuModal');
+function flashCell(el, ok) {
+    var cls = ok ? 'sku-cell-flash-ok' : 'sku-cell-flash-err';
+    el.classList.add(cls);
+    setTimeout(function () { el.classList.remove(cls); }, 700);
 }
-@endif
 
-function openEditSku(sku) {
-    document.getElementById('skuModalTitle').textContent = 'Edit SKU';
-    document.getElementById('skuForm').action = '/sku-tracker/' + sku.id;
-    document.getElementById('skuMethod').value = 'PUT';
-    document.getElementById('skuDuplicateWarning').style.display = 'none';
-    editingSkuCode = (sku.sku || '').trim().toLowerCase();
-    document.getElementById('skuBrand').value = sku.brand || '';
-    document.getElementById('skuSku').value = sku.sku || '';
-    document.getElementById('skuVariant').value = sku.variant || '';
-    document.getElementById('skuPrAssignee').value = sku.pr_assignee || '';
-    document.getElementById('skuPrStatus').value = sku.pr_status || '';
-    document.getElementById('skuPrStarted').value = sku.pr_date_started || '';
-    document.getElementById('skuPrCompleted').value = sku.pr_date_completed || '';
-    document.getElementById('skuPrFileLocation').value = sku.pr_file_location || '';
-    document.getElementById('skuRemarks').value = sku.remarks || '';
-    document.getElementById('skuReadyForCvp').checked = !!sku.ready_for_cvp;
-    @if($perms['can_edit_content'])
-    document.getElementById('skuContentAssignee').value = sku.content_assignee || '';
-    document.getElementById('skuContentStarted').value = sku.content_date_started || '';
-    document.getElementById('skuContentPosted').value = sku.content_date_posted || '';
-    document.getElementById('skuShopee').value = sku.shopee_link || '';
-    document.getElementById('skuLazada').value = sku.lazada_link || '';
-    document.getElementById('skuTiktok').value = sku.tiktok_link || '';
-    document.getElementById('skuShopify').value = sku.shopify_link || '';
-    document.getElementById('skuCinepro').value = sku.cinepro_link || '';
-    document.getElementById('skuJgShopee').value = sku.jg_pro_shopee_link || '';
-    document.getElementById('skuJgLazada').value = sku.jg_pro_lazada_link || '';
-    document.getElementById('skuLzdMall').value = sku.lzd_brand_mall_link || '';
-    document.getElementById('skuShpMall').value = sku.shp_brand_mall_link || '';
-    document.getElementById('skuTtMall').value = sku.tt_brand_mall_link || '';
-    @endif
-    openModal('skuModal');
+function saveField(skuId, field, value, el) {
+    fetch('/sku-tracker/' + skuId, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ field: field, value: value })
+    })
+    .then(function (res) { return res.json().then(function (body) { return { ok: res.ok, body: body }; }); })
+    .then(function (result) {
+        flashCell(el, result.ok);
+        if (!result.ok) {
+            console.warn('Save failed for ' + field + ':', result.body.message || result.body);
+            return;
+        }
+        var row = document.querySelector('tr[data-sku-id="' + skuId + '"]');
+        if (!row || !result.body.computed) return;
+        var c = result.body.computed;
+
+        var prSla = row.querySelector('.sku-pr-sla');
+        if (prSla) prSla.textContent = c.pr_sla !== null ? c.pr_sla + 'd' : '—';
+
+        var contentSla = row.querySelector('.sku-content-sla');
+        if (contentSla) contentSla.textContent = c.content_sla !== null ? c.content_sla + 'd' : '—';
+
+        var statusCell = row.querySelector('.sku-content-status');
+        if (statusCell) {
+            var key = c.content_status === 'DONE' ? 'done' : (c.content_status === 'PENDING' ? 'pending' : 'none');
+            statusCell.innerHTML = '<span class="sku-chip ' + key + '">' + c.content_status + '</span>';
+        }
+
+        var postedCheckbox = row.querySelector('.sku-posted-cell input[type="checkbox"]');
+        if (postedCheckbox) postedCheckbox.checked = !!c.posted;
+    })
+    .catch(function (err) {
+        flashCell(el, false);
+        console.error('Save request failed:', err);
+    });
 }
 </script>
 @endsection

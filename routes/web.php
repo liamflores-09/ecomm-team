@@ -87,7 +87,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['not.analyst'])->group(function () {
         Route::get('/sku-tracker', [SkuController::class, 'index'])->name('sku-tracker');
         Route::post('/sku-tracker', [SkuController::class, 'store'])->name('sku-tracker.store');
-        Route::put('/sku-tracker/{sku}', [SkuController::class, 'update'])->name('sku-tracker.update');
+        Route::post('/sku-tracker/bulk', [SkuController::class, 'bulkStore'])->name('sku-tracker.bulk-store');
+        Route::put('/sku-tracker/{sku}', [SkuController::class, 'updateField'])->name('sku-tracker.update');
         Route::get('/sla-weekly-output', [SkuController::class, 'slaWeeklyOutput'])->name('sla-weekly-output');
     });
 

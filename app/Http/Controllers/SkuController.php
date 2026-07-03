@@ -3,13 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sku;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class SkuController extends Controller
 {
     private const VARIANTS = ['Single', 'Variant/Parent', 'Variant/Child', 'Add Variant'];
-    private const PR_STATUSES = ['DONE', 'IN PROGRESS', 'On Hold'];
+    private const PR_STATUSES = ['In Progress', 'Done', 'On Hold'];
+    private const REMARKS = ['No Resources', 'Out-of-Stock', 'SKU Issue', 'Posted', 'Advance PR', 'Old Posted'];
+
+    private const PR_FIELDS = [
+        'brand', 'sku', 'variant', 'pr_file_location', 'pr_assignee',
+        'pr_status', 'ready_for_cvp', 'remarks', 'pr_date_started', 'pr_date_completed',
+    ];
+    private const CONTENT_FIELDS = ['content_assignee', 'content_date_started', 'content_date_posted'];
 
     private function permissions(string $role): array
     {
@@ -21,6 +30,20 @@ class SkuController extends Controller
             'can_edit_pr' => in_array($role, $prEditors),
             'can_edit_content' => in_array($role, $contentEditors),
         ];
+    }
+
+    private function fieldRule(string $field): string
+    {
+        return match ($field) {
+            'brand', 'sku' => 'required|string|max:255',
+            'variant' => 'nullable|in:' . implode(',', self::VARIANTS),
+            'pr_file_location' => 'nullable|string',
+            'pr_assignee', 'content_assignee' => 'nullable|string|max:255',
+            'pr_status' => 'nullable|in:' . implode(',', self::PR_STATUSES),
+            'ready_for_cvp' => 'nullable|boolean',
+            'remarks' => 'nullable|in:' . implode(',', self::REMARKS),
+            'pr_date_started', 'pr_date_completed', 'content_date_started', 'content_date_posted' => 'nullable|date',
+        };
     }
 
     public function index(Request $request)
@@ -54,13 +77,17 @@ class SkuController extends Controller
 
         $skus = $query->orderByDesc('id')->paginate(25)->withQueryString();
 
-        $allSkus = Sku::select('content_date_posted', 'pr_date_started', 'pr_date_completed', 'content_date_started')->get();
+        $statsQuery = (clone $query);
+        $filteredSkus = $statsQuery->get(['content_date_posted', 'pr_date_started', 'pr_date_completed', 'content_date_started']);
         $stats = [
-            'total' => Sku::count(),
-            'posted' => Sku::whereNotNull('content_date_posted')->count(),
-            'avg_pr_sla' => round($allSkus->map->pr_sla->filter()->avg() ?? 0, 1),
-            'avg_content_sla' => round($allSkus->map->content_sla->filter()->avg() ?? 0, 1),
+            'total' => $filteredSkus->count(),
+            'posted' => $filteredSkus->whereNotNull('content_date_posted')->count(),
+            'avg_pr_sla' => round($filteredSkus->map->pr_sla->filter()->avg() ?? 0, 1),
+            'avg_content_sla' => round($filteredSkus->map->content_sla->filter()->avg() ?? 0, 1),
         ];
+        $hasActiveFilters = $request->filled('brand') || $request->filled('pr_status') || $request->filled('posted') || $request->filled('month');
+        $globalTotal = $hasActiveFilters ? Sku::count() : null;
+        $globalPosted = $hasActiveFilters ? Sku::whereNotNull('content_date_posted')->count() : null;
 
         $availableMonths = Sku::whereNotNull('pr_date_started')
             ->get(['pr_date_started'])
@@ -72,12 +99,17 @@ class SkuController extends Controller
         return view('sku.tracker', [
             'skus' => $skus,
             'stats' => $stats,
+            'globalTotal' => $globalTotal,
+            'globalPosted' => $globalPosted,
             'perms' => $perms,
             'variants' => self::VARIANTS,
             'prStatuses' => self::PR_STATUSES,
+            'remarksOptions' => self::REMARKS,
             'filters' => $request->only(['brand', 'pr_status', 'posted', 'month']),
             'availableMonths' => $availableMonths,
             'existingSkuCodes' => Sku::pluck('sku')->map(fn ($s) => strtolower($s))->values(),
+            'researchers' => User::where('role', 'researcher')->orderBy('first_name')->pluck('first_name'),
+            'contentUsers' => User::where('role', 'content')->orderBy('first_name')->pluck('first_name'),
         ]);
     }
 
@@ -88,72 +120,81 @@ class SkuController extends Controller
         $data = $request->validate([
             'brand' => 'required|string|max:255',
             'sku' => 'required|string|max:255',
-            'variant' => 'nullable|in:' . implode(',', self::VARIANTS),
-            'pr_file_location' => 'nullable|string',
-            'pr_assignee' => 'nullable|string|max:255',
-            'pr_status' => 'nullable|in:' . implode(',', self::PR_STATUSES),
-            'ready_for_cvp' => 'nullable|boolean',
-            'remarks' => 'nullable|string',
-            'pr_date_started' => 'nullable|date',
-            'pr_date_completed' => 'nullable|date|after_or_equal:pr_date_started',
         ]);
         $data['created_by'] = Auth::id();
 
         Sku::create($data);
 
-        return back()->with('success', 'SKU added.');
+        return back()->with('success', 'Row added.');
     }
 
-    public function update(Request $request, Sku $sku)
+    public function bulkStore(Request $request)
+    {
+        abort_unless($this->permissions(Auth::user()->role)['can_create'], 403);
+
+        $request->validate(['rows_json' => 'required|string']);
+        $rows = json_decode($request->input('rows_json'), true);
+
+        if (!is_array($rows)) {
+            return back()->with('error', 'That doesn\'t look like valid JSON.');
+        }
+
+        $created = 0;
+        $skipped = 0;
+        foreach ($rows as $row) {
+            if (!is_array($row) || empty($row['brand']) || empty($row['sku'])) {
+                $skipped++;
+                continue;
+            }
+            Sku::create([
+                'brand' => (string) $row['brand'],
+                'sku' => (string) $row['sku'],
+                'created_by' => Auth::id(),
+            ]);
+            $created++;
+        }
+
+        return back()->with('success', "Added {$created} SKU(s)." . ($skipped > 0 ? " Skipped {$skipped} row(s) missing brand/sku." : ''));
+    }
+
+    public function updateField(Request $request, Sku $sku)
     {
         $perms = $this->permissions(Auth::user()->role);
-        abort_unless($perms['can_edit_pr'] || $perms['can_edit_content'], 403);
+        $field = $request->input('field');
 
-        $rules = [];
-        if ($perms['can_edit_pr']) {
-            $rules += [
-                'brand' => 'required|string|max:255',
-                'sku' => 'required|string|max:255',
-                'variant' => 'nullable|in:' . implode(',', self::VARIANTS),
-                'pr_file_location' => 'nullable|string',
-                'pr_assignee' => 'nullable|string|max:255',
-                'pr_status' => 'nullable|in:' . implode(',', self::PR_STATUSES),
-                'ready_for_cvp' => 'nullable|boolean',
-                'remarks' => 'nullable|string',
-                'pr_date_started' => 'nullable|date',
-                'pr_date_completed' => 'nullable|date|after_or_equal:pr_date_started',
-            ];
-        }
-        if ($perms['can_edit_content']) {
-            $rules += [
-                'content_assignee' => 'nullable|string|max:255',
-                'content_date_started' => 'nullable|date',
-                'content_date_posted' => 'nullable|date|after_or_equal:content_date_started',
-                'cvp_uploaded' => 'nullable|boolean',
-                'shopee_link' => 'nullable|string|max:2000',
-                'lazada_link' => 'nullable|string|max:2000',
-                'tiktok_link' => 'nullable|string|max:2000',
-                'jg_pro_shopee_link' => 'nullable|string|max:2000',
-                'jg_pro_lazada_link' => 'nullable|string|max:2000',
-                'shopify_link' => 'nullable|string|max:2000',
-                'cinepro_link' => 'nullable|string|max:2000',
-                'lzd_brand_mall_link' => 'nullable|string|max:2000',
-                'shp_brand_mall_link' => 'nullable|string|max:2000',
-                'tt_brand_mall_link' => 'nullable|string|max:2000',
-            ];
+        if (in_array($field, self::PR_FIELDS, true)) {
+            abort_unless($perms['can_edit_pr'], 403);
+        } elseif (in_array($field, self::CONTENT_FIELDS, true)) {
+            abort_unless($perms['can_edit_content'], 403);
+        } else {
+            return response()->json(['message' => 'Unknown field.'], 422);
         }
 
-        $data = $request->validate($rules);
-        if (array_key_exists('ready_for_cvp', $rules)) {
-            $data['ready_for_cvp'] = $request->boolean('ready_for_cvp');
-        }
-        if (array_key_exists('cvp_uploaded', $rules)) {
-            $data['cvp_uploaded'] = $request->boolean('cvp_uploaded');
+        $validator = Validator::make(
+            ['value' => $request->input('value')],
+            ['value' => $this->fieldRule($field)]
+        );
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 422);
         }
 
-        $sku->update($data);
+        $value = $validator->validated()['value'];
+        if ($field === 'ready_for_cvp') {
+            $value = $request->boolean('value');
+        }
 
-        return back()->with('success', 'SKU updated.');
+        $sku->update([$field => $value]);
+        $sku->refresh();
+
+        return response()->json([
+            'success' => true,
+            'computed' => [
+                'pr_sla' => $sku->pr_sla,
+                'content_sla' => $sku->content_sla,
+                'content_status' => $sku->content_status,
+                'posted' => $sku->posted,
+            ],
+        ]);
     }
 
     public function slaWeeklyOutput(Request $request)
