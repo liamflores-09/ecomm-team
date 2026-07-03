@@ -123,4 +123,86 @@ class SkuTrackerTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    private function makeSku(): \App\Models\Sku
+    {
+        return \App\Models\Sku::create(['brand' => 'Acme', 'sku' => 'ACME-EDIT']);
+    }
+
+    public function test_researcher_can_edit_pr_fields(): void
+    {
+        $sku = $this->makeSku();
+
+        $response = $this->actingAs($this->makeUser('researcher'))->put("/sku-tracker/{$sku->id}", [
+            'brand' => 'Acme',
+            'sku' => 'ACME-EDIT',
+            'pr_status' => 'DONE',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('skus', ['id' => $sku->id, 'pr_status' => 'DONE']);
+    }
+
+    public function test_researcher_cannot_edit_content_fields(): void
+    {
+        $sku = $this->makeSku();
+
+        $this->actingAs($this->makeUser('researcher'))->put("/sku-tracker/{$sku->id}", [
+            'brand' => 'Acme',
+            'sku' => 'ACME-EDIT',
+            'content_assignee' => 'ShouldNotSave',
+        ]);
+
+        $this->assertDatabaseMissing('skus', ['id' => $sku->id, 'content_assignee' => 'ShouldNotSave']);
+    }
+
+    public function test_content_can_edit_content_fields(): void
+    {
+        $sku = $this->makeSku();
+
+        $response = $this->actingAs($this->makeUser('content'))->put("/sku-tracker/{$sku->id}", [
+            'content_assignee' => 'Em',
+            'content_date_started' => '2026-07-01',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('skus', ['id' => $sku->id, 'content_assignee' => 'Em']);
+    }
+
+    public function test_content_cannot_edit_pr_fields(): void
+    {
+        $sku = $this->makeSku();
+
+        $this->actingAs($this->makeUser('content'))->put("/sku-tracker/{$sku->id}", [
+            'pr_status' => 'DONE',
+        ]);
+
+        $this->assertDatabaseMissing('skus', ['id' => $sku->id, 'pr_status' => 'DONE']);
+    }
+
+    public function test_graphics_cannot_edit_anything(): void
+    {
+        $sku = $this->makeSku();
+
+        $response = $this->actingAs($this->makeUser('graphics'))->put("/sku-tracker/{$sku->id}", [
+            'pr_status' => 'DONE',
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_backend_can_edit_both_sections(): void
+    {
+        $sku = $this->makeSku();
+
+        $response = $this->actingAs($this->makeUser('backend'))->put("/sku-tracker/{$sku->id}", [
+            'brand' => 'Acme',
+            'sku' => 'ACME-EDIT',
+            'pr_status' => 'DONE',
+            'content_assignee' => 'Vin',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('skus', ['id' => $sku->id, 'pr_status' => 'DONE', 'content_assignee' => 'Vin']);
+    }
 }
