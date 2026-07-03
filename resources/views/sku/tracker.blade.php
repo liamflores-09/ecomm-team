@@ -137,9 +137,11 @@
                     <td>{{ $sku->content_sla !== null ? $sku->content_sla . 'd' : '—' }}</td>
                     <td>{{ $sku->posted ? 'Yes' : 'No' }}</td>
                     <td>
+                        @if($perms['can_edit_pr'] || $perms['can_edit_content'])
                         <button class="sku-row-btn" title="Edit" onclick='openEditSku(@json($sku))'>
                             <i class="fas fa-pencil"></i>
                         </button>
+                        @endif
                     </td>
                 </tr>
                 @empty
@@ -165,16 +167,16 @@
             <div class="modal-body">
                 <div class="sku-form-grid">
                     <div class="sku-form-section-title">Basic Info</div>
-                    <div class="form-group"><label class="form-label">Brand</label><input type="text" name="brand" id="skuBrand" class="form-input" required></div>
+                    <div class="form-group"><label class="form-label">Brand</label><input type="text" name="brand" id="skuBrand" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }} required></div>
                     <div class="form-group">
                         <label class="form-label">SKU</label>
-                        <input type="text" name="sku" id="skuSku" class="form-input" oninput="checkDuplicateSku(this.value)" required>
+                        <input type="text" name="sku" id="skuSku" class="form-input" oninput="checkDuplicateSku(this.value)" {{ $perms['can_edit_pr'] ? '' : 'disabled' }} required>
                         <span id="skuDuplicateWarning" style="display:none;color:#f59e0b;font-size:0.72rem;font-weight:600;margin-top:0.2rem;">
                             <i class="fas fa-triangle-exclamation"></i> A SKU with this code already exists — you can still save.
                         </span>
                     </div>
                     <div class="form-group"><label class="form-label">Variant</label>
-                        <select name="variant" id="skuVariant" class="form-input">
+                        <select name="variant" id="skuVariant" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}>
                             <option value="">—</option>
                             @foreach($variants as $v)<option value="{{ $v }}">{{ $v }}</option>@endforeach
                         </select>
@@ -213,7 +215,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-flat-secondary" onclick="closeModal('skuModal')">Cancel</button>
-                <button type="submit" class="btn-flat-primary">Save</button>
+                <button type="submit" class="btn-flat-primary" {{ ($perms['can_edit_pr'] || $perms['can_edit_content']) ? '' : 'disabled' }}>Save</button>
             </div>
         </form>
     </div>

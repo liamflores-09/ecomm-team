@@ -54,4 +54,20 @@ class SkuTrackerTest extends TestCase
         $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
         $response->assertSee('acme-dup-1');
     }
+
+    public function test_edit_button_hidden_for_graphics(): void
+    {
+        \App\Models\Sku::create(['brand' => 'Acme', 'sku' => 'ACME-EDIT-1']);
+
+        $response = $this->actingAs($this->makeUser('graphics'))->get('/sku-tracker');
+        $response->assertDontSee('title="Edit"', false);
+    }
+
+    public function test_edit_button_visible_for_researcher(): void
+    {
+        \App\Models\Sku::create(['brand' => 'Acme', 'sku' => 'ACME-EDIT-2']);
+
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('title="Edit"', false);
+    }
 }
