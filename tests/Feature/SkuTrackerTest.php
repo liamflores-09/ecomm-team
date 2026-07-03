@@ -70,4 +70,25 @@ class SkuTrackerTest extends TestCase
         $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
         $response->assertSee('title="Edit"', false);
     }
+
+    public function test_researcher_can_save_pr_file_location_remarks_and_ready_for_cvp(): void
+    {
+        $sku = \App\Models\Sku::create(['brand' => 'Acme', 'sku' => 'ACME-PR-FIELDS']);
+
+        $response = $this->actingAs($this->makeUser('researcher'))->put("/sku-tracker/{$sku->id}", [
+            'brand' => 'Acme',
+            'sku' => 'ACME-PR-FIELDS',
+            'pr_file_location' => 'C:\\shared\\pr\\acme-pr-fields.docx',
+            'remarks' => 'Waiting on supplier photos.',
+            'ready_for_cvp' => '1',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('skus', [
+            'id' => $sku->id,
+            'pr_file_location' => 'C:\\shared\\pr\\acme-pr-fields.docx',
+            'remarks' => 'Waiting on supplier photos.',
+            'ready_for_cvp' => true,
+        ]);
+    }
 }

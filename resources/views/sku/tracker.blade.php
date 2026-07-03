@@ -192,6 +192,11 @@
                     </div>
                     <div class="form-group"><label class="form-label">PR Date Started</label><input type="date" name="pr_date_started" id="skuPrStarted" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
                     <div class="form-group"><label class="form-label">PR Date Completed</label><input type="date" name="pr_date_completed" id="skuPrCompleted" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
+                    <div class="form-group"><label class="form-label">PR File Location</label><input type="text" name="pr_file_location" id="skuPrFileLocation" class="form-input" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></div>
+                    <div class="form-group">
+                        <label class="form-label"><input type="checkbox" name="ready_for_cvp" id="skuReadyForCvp" value="1" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}> Ready for CVP</label>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;"><label class="form-label">Remarks</label><textarea name="remarks" id="skuRemarks" class="form-input" rows="3" {{ $perms['can_edit_pr'] ? '' : 'disabled' }}></textarea></div>
 
                     @if($perms['can_edit_content'])
                     <div class="sku-form-section-title">Content Section</div>
@@ -239,6 +244,9 @@ function openAddSku() {
     document.getElementById('skuMethod').value = '';
     document.getElementById('skuForm').reset();
     document.getElementById('skuDuplicateWarning').style.display = 'none';
+    document.getElementById('skuPrFileLocation').value = '';
+    document.getElementById('skuRemarks').value = '';
+    document.getElementById('skuReadyForCvp').checked = false;
     editingSkuCode = null;
     openModal('skuModal');
 }
@@ -257,6 +265,9 @@ function openEditSku(sku) {
     document.getElementById('skuPrStatus').value = sku.pr_status || '';
     document.getElementById('skuPrStarted').value = sku.pr_date_started || '';
     document.getElementById('skuPrCompleted').value = sku.pr_date_completed || '';
+    document.getElementById('skuPrFileLocation').value = sku.pr_file_location || '';
+    document.getElementById('skuRemarks').value = sku.remarks || '';
+    document.getElementById('skuReadyForCvp').checked = !!sku.ready_for_cvp;
     @if($perms['can_edit_content'])
     document.getElementById('skuContentAssignee').value = sku.content_assignee || '';
     document.getElementById('skuContentStarted').value = sku.content_date_started || '';
