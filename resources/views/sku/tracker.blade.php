@@ -33,6 +33,10 @@
     .sku-col-sticky-1 { left: 0; min-width: 120px; max-width: 120px; }
     .sku-col-sticky-2 { left: 120px; min-width: 150px; max-width: 150px; }
     .sku-col-sticky-3 { left: 270px; min-width: 140px; max-width: 140px; border-right: 1px solid var(--border-light); }
+    /* Sticky cells all share z-index:2, and ties resolve by DOM order — so a later
+       row's sticky cells can paint over an earlier row's open dropdown. Bump the
+       open cell's own z-index while its dropdown is open to guarantee it wins. */
+    .sku-dd-cell-active { z-index: 50 !important; }
     .sku-col-content { background: rgba(14,165,233,0.06); }
     [data-theme="dark"] .sku-col-content { background: rgba(14,165,233,0.1); }
     th.sku-col-content { background: rgba(14,165,233,0.12); }
@@ -401,7 +405,10 @@ function colorizeAppDd(appDd) {
 
 document.querySelectorAll('.app-dd[data-color-type]').forEach(colorizeAppDd);
 
-// Reposition sku-table dropdown menus to escape the table's scroll clipping.
+// Reposition sku-table dropdown menus to escape the table's scroll clipping, and
+// elevate the containing cell's z-index while open — sticky cells all share
+// z-index:2, and ties resolve by DOM order, so a later row's sticky cells can
+// otherwise paint over an earlier row's open dropdown.
 // Deferred to DOMContentLoaded: the shared `function appDdToggle(uid)` declaration
 // lives in a later <script> block in the layout, so wrapping it synchronously here
 // (before that block runs) would capture undefined and then get silently overwritten
@@ -409,23 +416,48 @@ document.querySelectorAll('.app-dd[data-color-type]').forEach(colorizeAppDd);
 document.addEventListener('DOMContentLoaded', function () {
     var originalToggle = window.appDdToggle;
     window.appDdToggle = function (uid) {
+        document.querySelectorAll('.sku-dd-cell-active').forEach(function (cell) {
+            cell.classList.remove('sku-dd-cell-active');
+        });
         originalToggle(uid);
         var dd = document.getElementById(uid);
         if (!dd || !dd.closest('.sku-table')) return;
         var menu = dd.querySelector('.dd-menu');
+        var cell = dd.closest('td, th');
         if (!dd.classList.contains('open')) {
             menu.style.position = '';
             menu.style.top = '';
             menu.style.left = '';
             menu.style.minWidth = '';
+            menu.style.zIndex = '';
             return;
         }
+        if (cell) cell.classList.add('sku-dd-cell-active');
         var rect = dd.querySelector('.dd-trigger').getBoundingClientRect();
         menu.style.position = 'fixed';
         menu.style.top = (rect.bottom + 4) + 'px';
         menu.style.left = rect.left + 'px';
         menu.style.minWidth = rect.width + 'px';
+        menu.style.zIndex = '9999';
     };
+
+    // The shared layout's outside-click handler closes .app-dd directly
+    // (bypassing appDdToggle), so it wouldn't clean up the styles/class set
+    // above. Run the same cleanup independently whenever a click lands
+    // outside every .app-dd.
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.app-dd')) return;
+        document.querySelectorAll('.sku-dd-cell-active').forEach(function (cell) {
+            cell.classList.remove('sku-dd-cell-active');
+        });
+        document.querySelectorAll('.sku-table .app-dd .dd-menu').forEach(function (menu) {
+            menu.style.position = '';
+            menu.style.top = '';
+            menu.style.left = '';
+            menu.style.minWidth = '';
+            menu.style.zIndex = '';
+        });
+    });
 });
 
 // ── Bulk add AI prompt ───────────────────────────────────────

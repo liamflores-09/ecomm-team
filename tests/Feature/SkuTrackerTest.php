@@ -96,6 +96,19 @@ class SkuTrackerTest extends TestCase
         $response->assertSee("document.addEventListener('DOMContentLoaded', function () {", false);
     }
 
+    public function test_sticky_cell_gets_elevated_zindex_while_its_dropdown_is_open(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee('sku-dd-cell-active', false);
+        $response->assertSee('z-index: 50 !important', false);
+    }
+
+    public function test_outside_click_cleans_up_dropdown_positioning_state(): void
+    {
+        $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
+        $response->assertSee("if (e.target.closest('.app-dd')) return;", false);
+    }
+
     public function test_assignee_color_palette_has_no_unreadable_dark_entry(): void
     {
         $response = $this->actingAs($this->makeUser('researcher'))->get('/sku-tracker');
