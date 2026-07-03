@@ -159,6 +159,62 @@ class SkuController extends Controller
 
     public function slaWeeklyOutput(Request $request)
     {
-        return view('sku.sla-weekly-output');
+        $availableMonths = Sku::selectRaw("strftime('%Y-%m', pr_date_started) as m")
+            ->whereNotNull('pr_date_started')
+            ->distinct()
+            ->orderByDesc('m')
+            ->pluck('m')
+            ->filter()
+            ->values();
+
+        $monthA = $request->query('month_a', $availableMonths->first());
+        $monthB = $request->query('month_b', $availableMonths->get(1, $availableMonths->first()));
+
+        $weeklyAverages = function (?string $month) {
+            if (!$month) {
+                return collect();
+            }
+            return Sku::whereNotNull('pr_date_started')
+                ->whereRaw("strftime('%Y-%m', pr_date_started) = ?", [$month])
+                ->get()
+                ->groupBy(fn ($sku) => (int) $sku->pr_date_started->format('W'))
+                ->map(function ($rows, $week) {
+                    return [
+                        'week' => $week,
+                        'avg_pr_sla' => round($rows->map->pr_sla->filter()->avg() ?? 0, 1),
+                        'avg_content_sla' => round($rows->map->content_sla->filter()->avg() ?? 0, 1),
+                    ];
+                })
+                ->sortKeys()
+                ->values();
+        };
+
+        $weeksA = $weeklyAverages($monthA)->keyBy('week');
+        $weeksB = $weeklyAverages($monthB)->keyBy('week');
+        $allWeeks = $weeksA->keys()->merge($weeksB->keys())->unique()->sort()->values();
+
+        $comparison = $allWeeks->map(function ($week) use ($weeksA, $weeksB) {
+            $a = $weeksA->get($week, ['avg_pr_sla' => 0, 'avg_content_sla' => 0]);
+            $b = $weeksB->get($week, ['avg_pr_sla' => 0, 'avg_content_sla' => 0]);
+            $prChange = $a['avg_pr_sla'] > 0 ? round((($b['avg_pr_sla'] - $a['avg_pr_sla']) / $a['avg_pr_sla']) * 100, 1) : null;
+            $contentChange = $a['avg_content_sla'] > 0 ? round((($b['avg_content_sla'] - $a['avg_content_sla']) / $a['avg_content_sla']) * 100, 1) : null;
+
+            return [
+                'week' => $week,
+                'pr_a' => $a['avg_pr_sla'],
+                'pr_b' => $b['avg_pr_sla'],
+                'pr_change' => $prChange,
+                'content_a' => $a['avg_content_sla'],
+                'content_b' => $b['avg_content_sla'],
+                'content_change' => $contentChange,
+            ];
+        });
+
+        return view('sku.sla-weekly-output', [
+            'availableMonths' => $availableMonths,
+            'monthA' => $monthA,
+            'monthB' => $monthB,
+            'comparison' => $comparison,
+        ]);
     }
 }
