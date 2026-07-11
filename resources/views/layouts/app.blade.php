@@ -709,6 +709,8 @@
                         <a href="{{ route('dashboard') }}" class="user-menu-item"><i class="fas fa-grip" style="width:14px;text-align:center;font-size:0.8rem;"></i> Dashboard</a>
                         @endif
                         <div class="user-menu-divider"></div>
+                        <a href="{{ route('user-manual') }}" class="user-menu-item"><i class="fas fa-book" style="width:14px;text-align:center;font-size:0.8rem;"></i> User Manual</a>
+                        <div class="user-menu-divider"></div>
                         <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                             @csrf
                             <button type="submit" class="user-menu-item danger"><i class="fas fa-right-from-bracket" style="width:14px;text-align:center;font-size:0.8rem;"></i> Logout</button>

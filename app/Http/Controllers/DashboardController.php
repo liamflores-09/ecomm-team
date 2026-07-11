@@ -75,6 +75,11 @@ class DashboardController extends Controller
         ));
     }
 
+    public function userManual()
+    {
+        return view('user-manual');
+    }
+
     public function postingProcedure()
     {
         return view('posting-procedure');

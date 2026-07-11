@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/user-manual', [DashboardController::class, 'userManual'])->name('user-manual');
     Route::get('/posting-procedure', [DashboardController::class, 'postingProcedure'])->name('posting-procedure');
     Route::get('/data-gathering', [DashboardController::class, 'dataGathering'])->name('data-gathering');
     Route::get('/ecommerce-requirements', [DashboardController::class, 'ecommerceRequirements'])->name('ecommerce-requirements');
