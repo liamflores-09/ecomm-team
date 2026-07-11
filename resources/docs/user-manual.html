@@ -335,6 +335,9 @@ a { text-decoration: none; color: inherit; }
     <input id="search-input" type="text" placeholder="Search documentation…" autocomplete="off" oninput="doSearch(this.value)" onfocus="openSR()" onblur="setTimeout(closeSR,180)">
     <div id="search-results"></div>
   </div>
+  <a href="/dashboard" class="btn btn-ghost" style="height:32px;padding:0 12px;font-size:12.5px;flex-shrink:0;">
+    <i class="fas fa-arrow-left" style="font-size:10px"></i> Back to Hub
+  </a>
 </header>
 
 <!-- Mobile TOC drawer -->
@@ -345,7 +348,6 @@ a { text-decoration: none; color: inherit; }
   </div>
   <div class="toc-d-group">Overview</div>
   <a class="toc-d-link" href="#introduction" onclick="toggleDrawer()"><i class="fas fa-house"></i> Introduction</a>
-  <a class="toc-d-link" href="#whats-new" onclick="toggleDrawer()"><i class="fas fa-sparkles"></i> What's New v2.0</a>
   <a class="toc-d-link" href="#getting-started" onclick="toggleDrawer()"><i class="fas fa-rocket"></i> Getting Started</a>
   <a class="toc-d-link" href="#roles" onclick="toggleDrawer()"><i class="fas fa-user-group"></i> Roles & Permissions</a>
   <a class="toc-d-link" href="#navigation" onclick="toggleDrawer()"><i class="fas fa-compass"></i> Navigation</a>
@@ -381,7 +383,6 @@ a { text-decoration: none; color: inherit; }
   <div class="toc-label">On this page</div>
   <div class="toc-group">Overview</div>
   <a class="toc-link" href="#introduction">Introduction</a>
-  <a class="toc-link" href="#whats-new">What's New v2.0</a>
   <a class="toc-link" href="#getting-started">Getting Started</a>
   <a class="toc-link" href="#roles">Roles & Permissions</a>
   <a class="toc-link" href="#navigation">Navigation</a>
@@ -433,23 +434,6 @@ a { text-decoration: none; color: inherit; }
       </div>
     </div>
   </section>
-
-  <!-- ─── WHAT'S NEW ─── -->
-  <section id="whats-new" class="section fade">
-    <div class="sec-header"><div><div class="sec-title">What's New in v2.0</div><div class="sec-desc">Recent updates and improvements to the platform.</div></div></div>
-    <div class="card">
-      <div class="card-body">
-        <div class="f-row"><div class="f-icon"><i class="fas fa-sidebar"></i></div><div><h4>Reorganized Sidebar</h4><p>Both admin and member sidebars now have labeled groups — <strong style="color:var(--graphite)">Analytics, Brand Management, General</strong> for admin; <strong style="color:var(--graphite)">Work, Tools, Resources, Team</strong> for members. Brand Catalogs and Calendar moved under the Team group for members.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-terminal"></i></div><div><h4>Enhanced Command Palette</h4><p>Press <strong style="color:var(--graphite)">Ctrl+K</strong> to open the command palette. Now fully role-aware with two groups: <strong style="color:var(--graphite)">Navigation</strong> (pages for your role) and <strong style="color:var(--graphite)">Actions</strong> (toggle theme, notifications, logout, and more).</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-image"></i></div><div><h4>Welcome Banner Redesign</h4><p>The dashboard banner now features a richer look — a two-tone gradient, subtle dot grid, and decorative background shapes instead of a flat solid color.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-umbrella-beach"></i></div><div><h4>RDO State on EOD Card</h4><p>On Sundays, the EOD bento card on the dashboard now shows a <strong style="color:var(--graphite)">Rest Day (RDO)</strong> indicator instead of prompting you to submit a report.</p></div></div>
-        <div class="f-row"><div class="f-icon"><i class="fas fa-arrow-right-from-bracket"></i></div><div><h4>Member View in Profile Dropdown</h4><p>Admins can now open the Member View (role preview) directly from the profile dropdown in the top-right corner.</p></div></div>
-        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-user-minus"></i></div><div><h4>Lead Role Removed</h4><p>The Lead role has been discontinued. Existing Lead accounts have been reassigned. The role no longer appears in the system.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
 
   <!-- ─── GETTING STARTED ─── -->
   <section id="getting-started" class="section fade">
@@ -1197,7 +1181,6 @@ a { text-decoration: none; color: inherit; }
 // ── Search ──
 var idx = [
   { id:'introduction',      icon:'fa-house',               title:'Introduction',          sub:'What is this app' },
-  { id:'whats-new',         icon:'fa-star',                title:"What's New in v2.0",    sub:'Recent updates and changes' },
   { id:'getting-started',   icon:'fa-rocket',              title:'Getting Started',       sub:'Login & logout' },
   { id:'roles',             icon:'fa-user-group',          title:'Roles & Permissions',   sub:'All 8 roles explained' },
   { id:'navigation',        icon:'fa-compass',             title:'Navigation',            sub:'Sidebar & top bar guide' },
