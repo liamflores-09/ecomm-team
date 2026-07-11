@@ -1,0 +1,14 @@
+[Unit]
+Description=Ecomm Dept Hub queue worker
+After=network.target mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=3
+WorkingDirectory=/var/www/ecomm-team
+ExecStart=/usr/bin/php /var/www/ecomm-team/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+
+[Install]
+WantedBy=multi-user.target
