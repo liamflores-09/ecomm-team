@@ -12,15 +12,28 @@
     .um-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.75rem; align-items: start; }
 
     .um-nav { position: sticky; top: 96px; background: var(--card); border: 1px solid var(--border-light); border-radius: 10px; padding: 0.75rem; }
+    .um-nav-label {
+        font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+        color: var(--muted-foreground); padding: 0.25rem 0.625rem 0.625rem;
+    }
+    .um-nav-list { list-style: none; margin: 0; padding: 0; position: relative; }
+    .um-nav-list li { margin: 0; padding: 0; }
+    .um-nav-list::before { content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px; width: 2px; background: var(--border-light); border-radius: 2px; }
     .um-nav a {
         display: flex; align-items: center; gap: 0.6rem;
-        padding: 0.5rem 0.625rem; border-radius: 6px;
+        padding: 0.4rem 0.625rem 0.4rem 22px; border-radius: 6px;
         font-size: 0.82rem; font-weight: 500; color: var(--muted-foreground);
-        text-decoration: none; transition: all 0.15s;
+        text-decoration: none; transition: all 0.15s; position: relative;
     }
     .um-nav a i { width: 14px; text-align: center; font-size: 0.75rem; flex-shrink: 0; }
-    .um-nav a:hover { background: var(--muted); color: var(--foreground); }
-    .um-nav a.active { background: var(--primary); color: white; }
+    .um-nav a:hover { color: var(--foreground); }
+    .um-nav a.active { color: var(--primary); font-weight: 700; }
+    .um-nav a::before {
+        content: ''; position: absolute; left: 7px; top: 50%; transform: translateY(-50%);
+        width: 8px; height: 8px; border-radius: 50%; background: var(--card); border: 2px solid var(--border-light);
+        transition: all 0.15s; z-index: 1;
+    }
+    .um-nav a.active::before { background: var(--primary); border-color: var(--primary); }
 
     .um-content { display: flex; flex-direction: column; gap: 1.25rem; }
 
@@ -70,21 +83,24 @@
 
     <div class="um-layout anim-up d1">
         <nav class="um-nav" id="umNav">
-            <a href="#getting-around"><i class="fas fa-compass"></i> Getting Around</a>
-            <a href="#dashboard"><i class="fas fa-table-cells-large"></i> Dashboard</a>
-            <a href="#eod"><i class="fas fa-calendar-check"></i> EOD Reports</a>
-            <a href="#sku-tracker"><i class="fas fa-box"></i> SKU Tracker</a>
-            <a href="#announcements"><i class="fas fa-bullhorn"></i> Announcements</a>
-            <a href="#calendar"><i class="fas fa-calendar-days"></i> Calendar</a>
-            <a href="#brand-catalogs"><i class="fas fa-book-open"></i> Brand Catalogs</a>
-            <a href="#important-links"><i class="fas fa-bookmark"></i> Important Links</a>
-            <a href="#price-calculator"><i class="fas fa-calculator"></i> Price Calculator</a>
-            <a href="#content-tools"><i class="fas fa-list-check"></i> Content Tools</a>
-            <a href="#team"><i class="fas fa-people-group"></i> The Team</a>
-            <a href="#profile"><i class="fas fa-circle-user"></i> Profile & Theme</a>
-            @if(Auth::user()->isAdmin())
-            <a href="#admin"><i class="fas fa-gauge"></i> Admin Dashboard</a>
-            @endif
+            <div class="um-nav-label">On This Page</div>
+            <ul class="um-nav-list">
+                <li><a href="#getting-around"><i class="fas fa-compass"></i> Getting Around</a></li>
+                <li><a href="#dashboard"><i class="fas fa-table-cells-large"></i> Dashboard</a></li>
+                <li><a href="#eod"><i class="fas fa-calendar-check"></i> EOD Reports</a></li>
+                <li><a href="#sku-tracker"><i class="fas fa-box"></i> SKU Tracker</a></li>
+                <li><a href="#announcements"><i class="fas fa-bullhorn"></i> Announcements</a></li>
+                <li><a href="#calendar"><i class="fas fa-calendar-days"></i> Calendar</a></li>
+                <li><a href="#brand-catalogs"><i class="fas fa-book-open"></i> Brand Catalogs</a></li>
+                <li><a href="#important-links"><i class="fas fa-bookmark"></i> Important Links</a></li>
+                <li><a href="#price-calculator"><i class="fas fa-calculator"></i> Price Calculator</a></li>
+                <li><a href="#content-tools"><i class="fas fa-list-check"></i> Content Tools</a></li>
+                <li><a href="#team"><i class="fas fa-people-group"></i> The Team</a></li>
+                <li><a href="#profile"><i class="fas fa-circle-user"></i> Profile & Theme</a></li>
+                @if(Auth::user()->isAdmin())
+                <li><a href="#admin"><i class="fas fa-gauge"></i> Admin Dashboard</a></li>
+                @endif
+            </ul>
         </nav>
 
         <div class="um-content">
@@ -259,11 +275,19 @@
     });
 
     function onScroll() {
-        var pos = window.scrollY + 110;
-        var current = sections[0];
-        sections.forEach(function(sec) {
-            if (sec && sec.offsetTop <= pos) current = sec;
-        });
+        var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        var current;
+
+        if (atBottom) {
+            current = sections[sections.length - 1];
+        } else {
+            var pos = window.scrollY + 110;
+            current = sections[0];
+            sections.forEach(function(sec) {
+                if (sec && sec.offsetTop <= pos) current = sec;
+            });
+        }
+
         links.forEach(function(a) {
             a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id);
         });
