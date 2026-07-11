@@ -360,14 +360,18 @@ a { text-decoration: none; color: inherit; }
   <a class="toc-d-link" href="#notifications" onclick="toggleDrawer()"><i class="fas fa-bell"></i> Notifications</a>
   <div class="toc-d-group">Tools</div>
   <a class="toc-d-link" href="#posting-procedure" onclick="toggleDrawer()"><i class="fas fa-list-check"></i> Posting Procedure</a>
-  <a class="toc-d-link" href="#price-calculator" onclick="toggleDrawer()"><i class="fas fa-calculator"></i> Price Calculator</a>
+  <a class="toc-d-link" href="#requirements" onclick="toggleDrawer()"><i class="fas fa-clipboard-list"></i> Requirements</a>
   <a class="toc-d-link" href="#data-gathering" onclick="toggleDrawer()"><i class="fas fa-magnifying-glass-chart"></i> Data Gathering</a>
+  <a class="toc-d-link" href="#sku-tracker" onclick="toggleDrawer()"><i class="fas fa-box"></i> SKU Tracker</a>
+  <a class="toc-d-link" href="#sla-weekly-output" onclick="toggleDrawer()"><i class="fas fa-chart-line"></i> SLA & Weekly Output</a>
+  <a class="toc-d-link" href="#price-calculator" onclick="toggleDrawer()"><i class="fas fa-calculator"></i> Price Calculator</a>
   <a class="toc-d-link" href="#important-links" onclick="toggleDrawer()"><i class="fas fa-bookmark"></i> Important Links</a>
   <div class="toc-d-group">Admin Panel</div>
   <a class="toc-d-link" href="#admin-overview" onclick="toggleDrawer()"><i class="fas fa-shield-halved"></i> Admin Overview</a>
   <a class="toc-d-link" href="#admin-dashboard" onclick="toggleDrawer()"><i class="fas fa-chart-column"></i> Admin Dashboard</a>
   <a class="toc-d-link" href="#admin-users" onclick="toggleDrawer()"><i class="fas fa-user-group"></i> Manage Users</a>
   <a class="toc-d-link" href="#admin-logs" onclick="toggleDrawer()"><i class="fas fa-clock-rotate-left"></i> Daily Logs</a>
+  <a class="toc-d-link" href="#admin-attendance" onclick="toggleDrawer()"><i class="fas fa-calendar-check"></i> Attendance</a>
   <a class="toc-d-link" href="#admin-reports" onclick="toggleDrawer()"><i class="fas fa-chart-pie"></i> Reports</a>
   <a class="toc-d-link" href="#admin-brands" onclick="toggleDrawer()"><i class="fas fa-layer-group"></i> Brands</a>
 </div>
@@ -392,14 +396,18 @@ a { text-decoration: none; color: inherit; }
   <a class="toc-link" href="#notifications">Notifications</a>
   <div class="toc-group">Tools</div>
   <a class="toc-link" href="#posting-procedure">Posting Procedure</a>
-  <a class="toc-link" href="#price-calculator">Price Calculator</a>
+  <a class="toc-link" href="#requirements">Requirements</a>
   <a class="toc-link" href="#data-gathering">Data Gathering</a>
+  <a class="toc-link" href="#sku-tracker">SKU Tracker</a>
+  <a class="toc-link" href="#sla-weekly-output">SLA & Weekly Output</a>
+  <a class="toc-link" href="#price-calculator">Price Calculator</a>
   <a class="toc-link" href="#important-links">Important Links</a>
   <div class="toc-group">Admin</div>
   <a class="toc-link" href="#admin-overview">Overview</a>
   <a class="toc-link" href="#admin-dashboard">Dashboard</a>
   <a class="toc-link" href="#admin-users">Manage Users</a>
   <a class="toc-link" href="#admin-logs">Daily Logs</a>
+  <a class="toc-link" href="#admin-attendance">Attendance</a>
   <a class="toc-link" href="#admin-reports">Reports</a>
   <a class="toc-link" href="#admin-brands">Brands</a>
 </nav>
@@ -896,6 +904,15 @@ a { text-decoration: none; color: inherit; }
     </div>
   </section>
 
+  <section id="requirements" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">Requirements</div><div class="sec-desc">Platform-specific listing rules. Content team.</div></div></div>
+    <div class="card">
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        A reference page of platform-by-platform rules to follow when listing a product — title formatting, required fields, image specs, and other constraints that differ between Lazada, Shopify, Shopee, and TikTok. Check this before posting anything you're unsure about.
+      </div>
+    </div>
+  </section>
+
   <section id="price-calculator" class="section fade" style="margin-top:32px">
     <div class="sec-header"><div><div class="sec-title">Price Calculator</div><div class="sec-desc">Compute Suggested Retail Price (SRP). Available to all non-analyst roles.</div></div></div>
     <div class="card">
@@ -912,6 +929,60 @@ a { text-decoration: none; color: inherit; }
     <div class="callout callout-warn">
       <i class="fas fa-tools"></i>
       <span>This module is currently under active development. Content will be added as the feature expands. Check back regularly for updates from management.</span>
+    </div>
+  </section>
+
+  <section id="sku-tracker" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">SKU Tracker</div><div class="sec-desc">Spreadsheet-style pipeline tracking a SKU from product research through to posted content. Not available to analysts.</div></div></div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Product Research (PR) Fields</span><div style="display:flex;gap:4px"><span class="role role-researcher" style="font-size:11px">Researcher</span><span class="role role-backend" style="font-size:11px">Backend</span><span class="role role-manager" style="font-size:11px">Manager</span><span class="role role-head" style="font-size:11px">Head</span></div></div>
+      <div class="card-body">
+        <div class="info-grid" style="margin-bottom:14px">
+          <div class="info-cell"><div class="lbl">Variant</div><div class="val">Single, Variant/Parent, Variant/Child, Add Variant</div></div>
+          <div class="info-cell"><div class="lbl">PR Status</div><div class="val">In Progress, Done, On Hold</div></div>
+          <div class="info-cell"><div class="lbl">Remarks</div><div class="val">No Resources, Out-of-Stock, SKU Issue, Posted, Advance PR, Old Posted</div></div>
+          <div class="info-cell"><div class="lbl">Ready for CVP</div><div class="val">Checkbox flag</div></div>
+        </div>
+        <p style="font-size:13px;color:var(--concrete);line-height:1.7">Every cell is inline-editable — click a cell to change Brand, SKU, PR assignee, file location, or PR dates directly. Only the roles above can edit these fields.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Content Fields</span><div style="display:flex;gap:4px"><span class="role role-content" style="font-size:11px">Content</span><span class="role role-backend" style="font-size:11px">Backend</span><span class="role role-manager" style="font-size:11px">Manager</span><span class="role role-head" style="font-size:11px">Head</span></div></div>
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        Content assignee, content date started, and content date posted — editable only by the roles shown above.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Adding SKUs</span></div>
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-plus"></i></div><div><h4>Single Row</h4><p>Add one SKU at a time with just its Brand and SKU code.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-layer-group"></i></div><div><h4>Bulk Add</h4><p>Paste many at once — one per line, as "Brand, SKU" or "Brand" + Tab + "SKU". Blank or malformed lines are skipped and reported back to you.</p></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Filtering & Stats</span></div>
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-magnifying-glass"></i></div><div><h4>Live Search</h4><p>Filters by brand or SKU as you type — no filter button needed.</p></div></div>
+        <div class="f-row"><div class="f-icon"><i class="fas fa-filter"></i></div><div><h4>Status & Posted Filters</h4><p>Filter by PR status, or by posted / not-posted.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-calendar"></i></div><div><h4>Month Filter</h4><p>Defaults to the current month, matched against PR or content start dates. Clear it to see everything.</p></div></div>
+        <div class="callout callout-note" style="margin-top:14px">
+          <i class="fas fa-circle-info"></i>
+          <span>Stat cards show total SKUs, posted count, and average PR / content SLA (turnaround time) — all recalculated live against whatever filters are active.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sla-weekly-output" class="section fade" style="margin-top:32px">
+    <div class="sec-header"><div><div class="sec-title">SLA & Weekly Output</div><div class="sec-desc">Month-over-month SLA comparison, broken down week by week.</div></div></div>
+    <div class="card">
+      <div class="card-body" style="font-size:13px;color:var(--concrete);line-height:1.7">
+        Pick two months to compare side by side. For each week, see the average PR SLA and average content SLA, plus the percent change between the two months for that week — useful for spotting whether turnaround times are improving or slipping.
+      </div>
     </div>
   </section>
 
@@ -944,7 +1015,9 @@ a { text-decoration: none; color: inherit; }
       <a class="admin-nav-item" href="#admin-dashboard"><div class="admin-nav-icon"><i class="fas fa-chart-column"></i></div><div><h4>Admin Dashboard</h4><p>KPIs, team health pulse, activity feed</p></div></a>
       <a class="admin-nav-item" href="#admin-users"><div class="admin-nav-icon"><i class="fas fa-user-group"></i></div><div><h4>Manage Users</h4><p>Add, edit, delete team accounts</p></div></a>
       <a class="admin-nav-item" href="#admin-logs"><div class="admin-nav-icon"><i class="fas fa-clock-rotate-left"></i></div><div><h4>Daily Logs</h4><p>All team EOD submissions</p></div></a>
+      <a class="admin-nav-item" href="#admin-attendance"><div class="admin-nav-icon"><i class="fas fa-calendar-check"></i></div><div><h4>Attendance</h4><p>Weekly attendance grid</p></div></a>
       <a class="admin-nav-item" href="#admin-reports"><div class="admin-nav-icon"><i class="fas fa-chart-pie"></i></div><div><h4>Reports</h4><p>Analytics and productivity trends</p></div></a>
+      <a class="admin-nav-item" href="#admin-brands"><div class="admin-nav-icon"><i class="fas fa-layer-group"></i></div><div><h4>Brands</h4><p>Brand master list</p></div></a>
     </div>
   </section>
 
@@ -1042,6 +1115,32 @@ a { text-decoration: none; color: inherit; }
 
   <div class="divider"></div>
 
+  <!-- ─── ADMIN ATTENDANCE ─── -->
+  <section id="admin-attendance" class="section fade">
+    <div class="sec-header"><div><div class="sec-title">Attendance</div><div class="sec-desc">Weekly attendance grid for the team. Managed by Head and Manager.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Status Codes</span></div>
+      <div class="card-body">
+        <div class="att-grid">
+          <div class="att-item"><span class="att-code">Present</span><span>Full day worked</span></div>
+          <div class="att-item"><span class="att-code">Half Day</span><span>Partial day worked</span></div>
+          <div class="att-item"><span class="att-code">VL</span><span>Vacation leave</span></div>
+          <div class="att-item"><span class="att-code">SL</span><span>Sick leave</span></div>
+          <div class="att-item"><span class="att-code">UT</span><span>Undertime</span></div>
+          <div class="att-item"><span class="att-code">Absent</span><span>No attendance recorded</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="f-row"><div class="f-icon"><i class="fas fa-table-cells"></i></div><div><h4>Monthly Grid</h4><p>One row per team member, one column per day of the selected month. Click a cell to set that day's status.</p></div></div>
+        <div class="f-row" style="border:none"><div class="f-icon"><i class="fas fa-umbrella-beach"></i></div><div><h4>Mark Holiday</h4><p>Apply a "Holiday" status to every team member at once for a given date, instead of setting it person by person.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
   <!-- ─── ADMIN REPORTS ─── -->
   <section id="admin-reports" class="section fade">
     <div class="sec-header"><div><div class="sec-title">Reports</div><div class="sec-desc">Analytics and productivity trends by role and time period.</div></div></div>
@@ -1111,13 +1210,17 @@ var idx = [
   { id:'profile',           icon:'fa-circle-user',         title:'Profile',               sub:'Edit personal info' },
   { id:'notifications',     icon:'fa-bell',                title:'Notifications',         sub:'System alerts' },
   { id:'posting-procedure', icon:'fa-list-check',          title:'Posting Procedure',     sub:'Product posting guide' },
+  { id:'requirements',      icon:'fa-clipboard-list',      title:'Requirements',          sub:'Platform listing rules' },
   { id:'price-calculator',  icon:'fa-calculator',          title:'Price Calculator',      sub:'Compute SRP' },
   { id:'data-gathering',    icon:'fa-magnifying-glass-chart', title:'Data Gathering',     sub:'Product research module' },
+  { id:'sku-tracker',       icon:'fa-box',                 title:'SKU Tracker',           sub:'PR to content pipeline' },
+  { id:'sla-weekly-output', icon:'fa-chart-line',          title:'SLA & Weekly Output',   sub:'Month-over-month SLA' },
   { id:'important-links',   icon:'fa-bookmark',            title:'Important Links',       sub:'Curated resources' },
   { id:'admin-overview',    icon:'fa-shield-halved',       title:'Admin Overview',        sub:'Head & Manager only' },
   { id:'admin-dashboard',   icon:'fa-chart-column',        title:'Admin Dashboard',       sub:'KPIs, pulse, activity' },
   { id:'admin-users',       icon:'fa-user-group',          title:'Manage Users',          sub:'Add, edit, delete accounts' },
   { id:'admin-logs',        icon:'fa-clock-rotate-left',   title:'Daily Logs (Admin)',    sub:'All team submissions' },
+  { id:'admin-attendance',  icon:'fa-calendar-check',      title:'Attendance',            sub:'Weekly attendance grid' },
   { id:'admin-reports',     icon:'fa-chart-pie',           title:'Reports',               sub:'Analytics and trends' },
   { id:'admin-brands',      icon:'fa-layer-group',         title:'Brands Management',     sub:'Brand master list' },
 ];

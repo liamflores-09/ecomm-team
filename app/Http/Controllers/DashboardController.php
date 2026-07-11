@@ -77,7 +77,8 @@ class DashboardController extends Controller
 
     public function userManual()
     {
-        return view('user-manual');
+        return response(file_get_contents(resource_path('docs/user-manual.html')))
+            ->header('Content-Type', 'text/html');
     }
 
     public function postingProcedure()
