@@ -77,8 +77,10 @@ class DashboardController extends Controller
 
     public function userManual()
     {
-        return response(file_get_contents(resource_path('docs/user-manual.html')))
-            ->header('Content-Type', 'text/html');
+        $hubUrl = Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard');
+        $html = str_replace('__HUB_URL__', $hubUrl, file_get_contents(resource_path('docs/user-manual.html')));
+
+        return response($html)->header('Content-Type', 'text/html');
     }
 
     public function postingProcedure()
