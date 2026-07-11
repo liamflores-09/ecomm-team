@@ -272,29 +272,37 @@
     var links = document.querySelectorAll('#umNav a');
     var sections = Array.prototype.map.call(links, function(a) {
         return document.getElementById(a.getAttribute('href').slice(1));
-    });
+    }).filter(Boolean);
 
-    function onScroll() {
-        var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-        var current;
+    if (!sections.length) return;
 
-        if (atBottom) {
-            current = sections[sections.length - 1];
-        } else {
-            var pos = window.scrollY + 110;
-            current = sections[0];
-            sections.forEach(function(sec) {
-                if (sec && sec.offsetTop <= pos) current = sec;
-            });
-        }
-
+    function setActive(id) {
         links.forEach(function(a) {
-            a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id);
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
         });
     }
 
-    window.addEventListener('scroll', onScroll);
-    onScroll();
+    // Track each section against a thin band near the top of the viewport,
+    // rather than doing cumulative offset math — avoids skipping short
+    // sections when several sit back-to-back near the bottom of the page.
+    var observer = new IntersectionObserver(function(entries) {
+        var visible = entries.filter(function(e) { return e.isIntersecting; });
+        if (!visible.length) return;
+        visible.sort(function(a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        setActive(visible[0].target.id);
+    }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(function(sec) { observer.observe(sec); });
+
+    // A section shorter than the trigger band near the very bottom of the
+    // page may never intersect it — force the last item active once the
+    // user has actually reached the bottom of the page.
+    window.addEventListener('scroll', function() {
+        var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        if (atBottom) setActive(sections[sections.length - 1].id);
+    });
+
+    setActive(sections[0].id);
 })();
 </script>
 @endsection
